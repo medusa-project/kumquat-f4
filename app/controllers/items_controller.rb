@@ -11,8 +11,11 @@ class ItemsController < ApplicationController
 
   def index
     solr = RSolr.connect(url: Kumquat::Application.kumquat_config['solr_url'])
-    response = solr.get('select', params: { :q => '*:*' })
-
+    limit = Kumquat::Application.kumquat_config['results_per_page']
+    response = solr.get('select', params: {
+                                    q: params[:q] ? params[:q] : '*:*',
+                                    start: params[:start] ? params[:start] : 0,
+                                    rows: limit })
     f4 = Fedora4.new
     @items = response['response']['docs'].map{ |doc| f4.item(doc['id']) }
   end

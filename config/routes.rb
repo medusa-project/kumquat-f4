@@ -54,5 +54,7 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  resources 'items', param: :uuid
+  resources 'items', param: :uuid, only: [:index, :show] do
+    match '/bytestream', to: 'items#bytestream', via: 'get'
+  end
 end

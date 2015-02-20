@@ -1,39 +1,21 @@
-class Item
+class Item < FedoraResource
 
-  extend ActiveModel::Naming
+  attr_reader :bytestreams
 
-  attr_accessor :triples
-  attr_accessor :fedora_uri
-  attr_accessor :uuid
+  def initialize(fedora_json_ld)
+    @bytestreams = []
+    super(fedora_json_ld)
+  end
 
-  def initialize(params = {})
-    self.triples = []
-    params.each do |k, v|
-      if respond_to?("#{k}=")
-        send "#{k}=", v
-      else
-        instance_variable_set "@#{k}", v
-      end
+  def json_ld_representation=(json_ld)
+    super(json_ld)
+    # populate bytestreams
+    struct = JSON.parse(json_ld).select do |node|
+      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
     end
-  end
-
-  def persisted?
-    true
-  end
-
-  def title
-    t = self.triples.select do |e|
-      e.predicate.include?('http://purl.org/dc/elements/1.1/title')
+    struct[0]['http://www.w3.org/ns/ldp#contains'].each do |node|
+      @bytestreams << Bytestream.new(node['@id'])
     end
-    t.first ? t.first.value : 'Untitled'
-  end
-
-  def to_model
-    self
-  end
-
-  def to_param
-    self.uuid
   end
 
 end

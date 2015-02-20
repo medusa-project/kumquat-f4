@@ -1,0 +1,11 @@
+development:
+  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/
+  solr_url: http://localhost:8983/solr/
+
+test:
+  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/
+  solr_url: http://localhost:8983/solr/
+
+production:
+  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/
+  solr_url: http://localhost:8983/solr/

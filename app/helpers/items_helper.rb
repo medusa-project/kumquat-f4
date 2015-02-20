@@ -15,7 +15,9 @@ module ItemsHelper
     triples.each do |predicate, objects|
       next if predicate.include?('http://fedora.info/definitions/')
       if objects.any?
-        dl += "<dt>#{predicate}</dt>"
+        term = Triple::LABELS.keys.include?(predicate) ?
+            Triple::LABELS[predicate] : predicate
+        dl += "<dt>#{term}</dt>"
         objects.each do |object|
           dl += "<dd>#{object}</dd>"
         end

@@ -35,7 +35,7 @@ class FedoraResource
 
   def subtitle
     t = self.triples.select do |e|
-      e.predicate.include?('http://purl.org/dc/elements/1.1/alternative')
+      e.predicate.include?('http://purl.org/dc/terms/alternative')
     end
     t.first ? t.first.value : nil
   end

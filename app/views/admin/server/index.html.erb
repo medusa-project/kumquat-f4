@@ -1,0 +1,100 @@
+<% provide :title, 'Server' %>
+<% provide :body_id, 'server' %>
+<% provide :active_nav, 'server' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li class="active">Server</li>
+</ol>
+
+<h1>Server Status</h1>
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Kumquat</h3>
+      </div>
+      <div class="panel-body">
+        <dl>
+          <dt>Application Root</dt>
+          <dd><%= Rails.root %></dd>
+          <dt>Website URL</dt>
+          <dd><%= link_to root_url, root_url %></dd>
+          <dt>Control Panel URL</dt>
+          <dd><%= link_to admin_root_url, admin_root_url %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="panel panel-default" id="website">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Website <span class="label label-success kq-service-status">Online</span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <dl>
+          <dt>URL</dt>
+          <dd><%= link_to root_url, root_url %></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="panel panel-default kq-dynamic-status" id="kq-search-server">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Repository
+          <span class="label label-success kq-service-status hidden"
+                data-check="<%= admin_server_repository_status_url %>"></span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <dl>
+          <dt>URL</dt>
+          <dd><%= link_to Kumquat::Application.kumquat_config['fedora_url'],
+                          Kumquat::Application.kumquat_config['fedora_url'] %></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="panel panel-default kq-dynamic-status" id="kq-search-server">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Search Server
+          <span class="label label-success kq-service-status hidden"
+                data-check="<%= admin_server_search_server_status_url %>"></span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <dl>
+          <dt>URL</dt>
+          <dd><%= link_to Kumquat::Application.kumquat_config['solr_url'],
+                          Kumquat::Application.kumquat_config['solr_url'] %></dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="panel panel-default kq-dynamic-status" id="kq-image-server">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Image Server
+          <span class="label label-success kq-service-status hidden"
+                data-check="<%= admin_server_image_server_status_url %>"></span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <dl>
+          <dt>URL</dt>
+          <dd id="image-server-uri">
+            <%= link_to Kumquat::Application.kumquat_config['loris_url'],
+                        Kumquat::Application.kumquat_config['loris_url'] %>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+</div>

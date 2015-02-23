@@ -47,15 +47,17 @@ Rails.application.routes.draw do
   #   resources :posts, concerns: :toggleable
   #   resources :photos, concerns: :toggleable
 
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+  root 'landing#index'
 
   namespace :admin do
     root 'dashboard#index'
+    match '/server', to: 'server#index', via: 'get'
+    match '/server/image-server-status', to: 'server#image_server_status',
+          via: 'get', as: 'server_image_server_status'
+    match '/server/repository-status', to: 'server#repository_status',
+          via: 'get', as: 'server_repository_status'
+    match '/server/search-server-status', to: 'server#search_server_status',
+          via: 'get', as: 'server_search_server_status'
   end
 
   resources 'items', param: :uuid, only: [:index, :show] do

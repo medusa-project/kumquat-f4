@@ -6,16 +6,30 @@
 <% end %>
 </h1>
 
-<div class="pull-right">
-  <%= link_to item_bytestream_url(@item), class: 'btn btn-default' do %>
-    <i class="fa fa-download"></i> Download
-  <% end %>
+<div class="clearfix">
+  <div class="pull-right">
+    <%= link_to item_bytestream_url(@item), class: 'btn btn-default' do %>
+      <i class="fa fa-download"></i> Download
+    <% end %>
+  </div>
 </div>
 
-<h2>Triples</h2>
-<%= triples_to_dl(@item) %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">Triples</h2>
+  </div>
+  <div class="panel-body">
+    <%= triples_to_dl(@item) %>
+  </div>
+</div>
 
 <% if Rails.env.development? %>
-  <h2>Fedora JSON-LD</h2>
-  <%= @item.json_ld_representation %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Fedora JSON-LD</h2>
+    </div>
+    <div class="panel-body">
+      <%= @item.json_ld_representation %>
+    </div>
+  </div>
 <% end %>

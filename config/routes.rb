@@ -49,6 +49,11 @@ Rails.application.routes.draw do
 
   root 'landing#index'
 
+  resources :collections, param: :uuid, only: [:index, :show]
+  resources 'items', param: :uuid, only: [:index, :show] do
+    match '/bytestream', to: 'items#bytestream', via: 'get'
+  end
+
   namespace :admin do
     root 'dashboard#index'
     match '/server', to: 'server#index', via: 'get'
@@ -60,7 +65,4 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
   end
 
-  resources 'items', param: :uuid, only: [:index, :show] do
-    match '/bytestream', to: 'items#bytestream', via: 'get'
-  end
 end

@@ -24,6 +24,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'bootstrap-sass', '~> 3.3.3'
+gem 'font-awesome-sass', '~> 4.2.0'
 gem 'httpclient', :git => 'git@github.com:/adolski/httpclient.git'
 gem 'rsolr'
 gem 'sprockets-rails'

@@ -14,7 +14,7 @@ class Item < FedoraResource
       node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
     end
     struct[0]['http://www.w3.org/ns/ldp#contains'].each do |node|
-      @bytestreams << Bytestream.new(node['@id'])
+      @bytestreams << Bytestream.new(fedora_uri: node['@id'])
     end
   end
 

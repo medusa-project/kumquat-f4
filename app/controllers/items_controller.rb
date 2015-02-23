@@ -16,6 +16,8 @@ class ItemsController < ApplicationController
                                     q: params[:q] ? params[:q] : '*:*',
                                     start: params[:start] ? params[:start] : 0,
                                     rows: limit })
+    @num_results_shown = response['response']['docs'].length
+    @num_results_total = response['response']['numFound'].to_i
     f4 = Fedora4.new
     @items = response['response']['docs'].map{ |doc| f4.item(doc['id']) }
   end

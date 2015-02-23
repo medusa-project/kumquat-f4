@@ -6,7 +6,11 @@
 <% end %>
 </h1>
 
-<%= link_to 'Download', item_bytestream_url(@item) %>
+<div class="pull-right">
+  <%= link_to item_bytestream_url(@item), class: 'btn btn-default' do %>
+    <i class="fa fa-download"></i> Download
+  <% end %>
+</div>
 
 <h2>Triples</h2>
 <%= triples_to_dl(@item) %>

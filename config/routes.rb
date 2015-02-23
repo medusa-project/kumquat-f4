@@ -54,6 +54,10 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
+  namespace :admin do
+    root 'dashboard#index'
+  end
+
   resources 'items', param: :uuid, only: [:index, :show] do
     match '/bytestream', to: 'items#bytestream', via: 'get'
   end

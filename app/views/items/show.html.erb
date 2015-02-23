@@ -26,10 +26,19 @@
 <% if Rails.env.development? %>
   <div class="panel panel-default">
     <div class="panel-heading">
+      <h2 class="panel-title">Solr JSON</h2>
+    </div>
+    <div class="panel-body">
+      <pre><%= @item.solr_representation %></pre>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
       <h2 class="panel-title">Fedora JSON-LD</h2>
     </div>
     <div class="panel-body">
-      <%= @item.json_ld_representation %>
+      <pre><%= @item.json_ld_representation %></pre>
     </div>
   </div>
 <% end %>

@@ -4,6 +4,7 @@ class FedoraResource
 
   attr_accessor :fedora_uri
   attr_accessor :json_ld_representation
+  attr_accessor :solr_representation
   attr_accessor :triples
   attr_accessor :uuid
 

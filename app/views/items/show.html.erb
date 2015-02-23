@@ -11,5 +11,7 @@
 <h2>Triples</h2>
 <%= triples_to_dl(@item) %>
 
-<h2>Fedora JSON-LD</h2>
-<%= @item.json_ld_representation %>
+<% if Rails.env.development? %>
+  <h2>Fedora JSON-LD</h2>
+  <%= @item.json_ld_representation %>
+<% end %>

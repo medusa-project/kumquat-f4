@@ -4,11 +4,8 @@ class ItemsController < ApplicationController
   # Responds to GET /items/:uuid/bytestream
   #
   def bytestream
-    record = solr_record_by_uuid(params[:item_uuid])
-    if record
-      item = Item.find(record['id'])
-      redirect_to item.children.first.fedora_url
-    end
+    item = Container.find_by_uuid(params[:item_uuid])
+    redirect_to item.children.first.fedora_url # TODO: improve logic
   end
 
   def index
@@ -28,26 +25,7 @@ class ItemsController < ApplicationController
   end
 
   def show
-    # look up the item by its UUID in Solr to get its Fedora URL
-    solr_record = solr_record_by_uuid(params[:uuid])
-    f4_url = solr_record['id']
-
-    # get the item from Fedora
-    @item = Item.find(f4_url)
-    @item.solr_representation = solr_record.to_s
-  end
-
-  private
-
-  ##
-  # Gets an item's Solr record.
-  #
-  # @return hash
-  #
-  def solr_record_by_uuid(uuid)
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    response = solr.get('select', params: { q: "uuid:#{uuid}" })
-    response['response']['docs'].first
+    @item = Item.find_by_uuid(params[:uuid])
   end
 
 end

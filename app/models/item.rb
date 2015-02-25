@@ -18,6 +18,19 @@ class Item
     Item.new(Fedora::Container.find(uri))
   end
 
+  ##
+  # @param uuid
+  # @return Item
+  #
+  def self.find_by_uuid(uuid)
+    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+    response = solr.get('select', params: { q: "uuid:#{uuid}" })
+    record = response['response']['docs'].first
+    item = Item.find(record['id'])
+    item.solr_representation = record
+    item
+  end
+
   def children
     self.fedora_container.children.each{ |c| @children << Item.new(c) } unless
         @children.any?

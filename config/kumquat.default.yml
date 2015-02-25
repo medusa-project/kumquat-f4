@@ -1,17 +1,17 @@
 development:
-  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/
+  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
   loris_url: http://localhost:8081/
   solr_url: http://localhost:8983/solr/
   results_per_page: 20
 
 test:
-  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/
+  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
   loris_url: http://localhost:8081/
   solr_url: http://localhost:8983/solr/
   results_per_page: 20
 
 production:
-  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/
+  fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
   loris_url: http://localhost:8081/
   solr_url: http://localhost:8983/solr/
   results_per_page: 20

@@ -2,19 +2,35 @@ class FedoraResource
 
   extend ActiveModel::Naming
 
-  attr_accessor :fedora_uri
-  attr_accessor :json_ld_representation
+  @@http_client = HTTPClient.new
+
+  attr_accessor :fedora_json_ld
+  attr_accessor :fedora_url
   attr_accessor :solr_representation
   attr_accessor :triples
   attr_accessor :uuid
 
-  def initialize(fedora_json_ld = nil)
+  ##
+  # @param params Hash with available keys: :fedora_url, :json_ld
+  #
+  def initialize(params = {})
     @persisted = false
-    self.json_ld_representation = fedora_json_ld
+    @triples = []
+    params.each do |k, v|
+      if respond_to?("#{k}=")
+        send "#{k}=", v
+      else
+        instance_variable_set "@#{k}", v
+      end
+    end
   end
 
-  def json_ld_representation=(json)
-    @json_ld_representation = json
+  def delete
+    @@http_client.delete(self.fedora_url)
+  end
+
+  def fedora_json_ld=(json)
+    @fedora_json_ld = json
     struct = JSON.parse(json).select do |node|
       node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
     end

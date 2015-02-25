@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:/adolski/httpclient.git
-  revision: 5165a359e46c5045a52174d9ea3b5c5da29ceb14
+  revision: e6179dd99247d68e925627b75386236ee5a77e31
   specs:
     httpclient (2.6.0.1)
 
@@ -74,7 +74,7 @@ GEM
       activesupport (>= 4.1.0)
     hike (1.2.3)
     i18n (0.7.0)
-    jbuilder (2.2.7)
+    jbuilder (2.2.8)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
     jquery-rails (4.0.3)

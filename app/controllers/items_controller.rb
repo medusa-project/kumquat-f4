@@ -12,8 +12,8 @@ class ItemsController < ApplicationController
   end
 
   def index
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config['solr_url'])
-    limit = Kumquat::Application.kumquat_config['results_per_page']
+    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+    limit = Kumquat::Application.kumquat_config[:results_per_page]
     response = solr.get('select', params: {
                                     q: params[:q] ? params[:q] : '*:*',
                                     start: params[:start] ? params[:start] : 0,
@@ -45,7 +45,7 @@ class ItemsController < ApplicationController
   # @return hash
   #
   def solr_record_by_uuid(uuid)
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config['solr_url'])
+    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
     response = solr.get('select', params: { q: "uuid:#{uuid}" })
     response['response']['docs'].first
   end

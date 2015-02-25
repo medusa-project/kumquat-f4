@@ -5,7 +5,7 @@ class ContentdmImporter
   #
   def initialize(source_path)
     @source_path = source_path
-    @root_container_url = Kumquat::Application.kumquat_config['fedora_url']
+    @root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
     @http = HTTPClient.new
   end
 

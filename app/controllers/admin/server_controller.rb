@@ -11,7 +11,7 @@ module Admin
     #
     def image_server_status
       http = HTTPClient.new
-      response = http.get(Kumquat::Application.kumquat_config['loris_url'])
+      response = http.get(Kumquat::Application.kumquat_config[:loris_url])
       if response.body.include?('Internet Imaging Protocol Server')
         render text: 'online'
       else
@@ -25,7 +25,7 @@ module Admin
     #
     def repository_status
       http = HTTPClient.new
-      response = http.get(Kumquat::Application.kumquat_config['fedora_url'])
+      response = http.get(Kumquat::Application.kumquat_config[:fedora_url])
       if response.status == 200
         render text: 'online'
       else
@@ -38,7 +38,7 @@ module Admin
     # or 503
     #
     def search_server_status
-      solr = RSolr.connect(url: Kumquat::Application.kumquat_config['solr_url'])
+      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
       begin
         solr.get('select', params: { q: '*:*', start: 0, rows: 1 })
       rescue RSolr::Error::Http

@@ -7,7 +7,6 @@ class ContentdmImporter
     @source_path = source_path
     @root_container_url = Kumquat::Application.kumquat_config['fedora_url']
     @http = HTTPClient.new
-    @fedora = Fedora4.new
   end
 
   def import
@@ -46,11 +45,11 @@ class ContentdmImporter
     @http.delete("#{url}/fcr:tombstone") rescue nil
 
     # create a new collection container
-    container = @fedora.create_container(nil, collection.slug)
+    container = Container.create(@root_container_url, collection.slug)
     collection.fedora_url = container.fedora_url
 
     # GET the newly created container's JSON-LD representation
-    struct = @fedora.json_ld_representation(collection.fedora_url)
+    struct = JSON.parse(container.fedora_json_ld)
 
     # append metadata to the JSON-LD representation via PUT
     url = "#{collection.fedora_url}/fcr:metadata"
@@ -81,11 +80,11 @@ class ContentdmImporter
     puts "#{item.collection.alias} #{item.pointer}"
 
     # create a new item container
-    container = @fedora.create_container(container_url, item.slug)
+    container = Container.create(container_url, item.slug)
     item.fedora_url = container.fedora_url
 
     # GET the newly created container's JSON-LD representation
-    struct = @fedora.json_ld_representation(item.fedora_url)
+    struct = JSON.parse(container.fedora_json_ld)
 
     # append metadata to the JSON-LD representation via PUT
     url = "#{item.fedora_url}/fcr:metadata"
@@ -96,14 +95,14 @@ class ContentdmImporter
     # container
     pathname = item.pages.any? ? nil : item.master_file_pathname
     if item.url
-      f4_item = @fedora.create_binary(item.fedora_url, nil, nil, item.url)
+      f4_item = Bytestream.create(item.fedora_url, nil, nil, item.url)
       item.bytestream_url = f4_item.fedora_url
     elsif pathname and File.exists?(pathname)
-      f4_item = @fedora.create_binary(item.fedora_url, nil, pathname)
+      f4_item = Bytestream.create(item.fedora_url, nil, pathname)
       item.bytestream_url = f4_item.fedora_url
     end
 
-    @fedora.make_indexable(item.fedora_url) if make_indexable
+    item.make_indexable if make_indexable
 
     item.pages.each { |page| self.import_item(page, item.fedora_url, false) }
 

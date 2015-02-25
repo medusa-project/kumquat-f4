@@ -25,7 +25,8 @@ class ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find_by_uuid(params[:uuid])
+    @item = Item.find_by_web_id(params[:web_id])
+    render text: '404 Not Found', status: 404 unless @item
   end
 
 end

@@ -45,7 +45,7 @@ class ContentdmImporter
     @http.delete("#{url}/fcr:tombstone") rescue nil
 
     # create a new collection container
-    container = Container.create(@root_container_url, collection.slug)
+    container = Fedora::Container.create(@root_container_url, collection.slug)
     collection.fedora_url = container.fedora_url
 
     # GET the newly created container's JSON-LD representation
@@ -80,7 +80,7 @@ class ContentdmImporter
     puts "#{item.collection.alias} #{item.pointer}"
 
     # create a new item container
-    container = Container.create(container_url, item.slug)
+    container = Fedora::Container.create(container_url, item.slug)
     item.fedora_url = container.fedora_url
 
     # GET the newly created container's JSON-LD representation
@@ -91,18 +91,21 @@ class ContentdmImporter
     body = item.to_json_ld(struct)
     @http.put(url, body, { 'Content-Type' => 'application/ld+json' })
 
+    container.make_indexable if make_indexable
+
     # create a binary resource for the item's bytestream within the item
     # container
     pathname = item.pages.any? ? nil : item.master_file_pathname
     if item.url
-      f4_item = Bytestream.create(item.fedora_url, nil, nil, item.url)
-      item.bytestream_url = f4_item.fedora_url
+      f4_binary = Fedora::Bytestream.create(item.fedora_url, nil, nil, item.url)
+      item.bytestream_url = f4_binary.fedora_url
     elsif pathname and File.exists?(pathname)
-      f4_item = Bytestream.create(item.fedora_url, nil, pathname)
-      item.bytestream_url = f4_item.fedora_url
+      f4_binary = Fedora::Bytestream.create(item.fedora_url, nil, pathname)
+      item.bytestream_url = f4_binary.fedora_url
     end
 
-    item.make_indexable if make_indexable
+    @http.get(Kumquat::Application.kumquat_config[:solr_url].chomp('/') +
+                  '/update?commit=true')
 
     item.pages.each { |page| self.import_item(page, item.fedora_url, false) }
 

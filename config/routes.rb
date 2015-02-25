@@ -49,8 +49,8 @@ Rails.application.routes.draw do
 
   root 'landing#index'
 
-  resources :collections, param: :uuid, only: [:index, :show]
-  resources 'items', param: :uuid, only: [:index, :show] do
+  resources :collections, param: :web_id, only: [:index, :show]
+  resources 'items', param: :web_id, only: [:index, :show] do
     match '/bytestream', to: 'items#bytestream', via: 'get'
   end
 

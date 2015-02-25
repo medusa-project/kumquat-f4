@@ -29,6 +29,10 @@ module Fedora
       struct = JSON.parse(json).select do |node|
         node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
       end
+
+      if struct[0]['http://example.org/web_id']
+        self.web_id = struct[0]['http://example.org/web_id'].first['@value'] # TODO: fix namespace
+      end
       self.uuid = struct[0]['http://fedora.info/definitions/v4/repository#uuid'].first['@value']
       # populate triples
       self.triples = []

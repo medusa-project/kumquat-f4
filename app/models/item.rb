@@ -2,7 +2,8 @@ class Item
 
   extend ActiveModel::Naming
   extend Forwardable
-  delegate [:fedora_json_ld, :fedora_url, :triples, :uuid] => :fedora_container
+  delegate [:fedora_json_ld, :fedora_url, :triples, :uuid, :web_id] =>
+               :fedora_container
 
   @@http = HTTPClient.new
 
@@ -19,7 +20,7 @@ class Item
   end
 
   ##
-  # @param uuid
+  # @param uuid string
   # @return Item
   #
   def self.find_by_uuid(uuid)
@@ -28,6 +29,24 @@ class Item
     record = response['response']['docs'].first
     item = Item.find(record['id'])
     item.solr_representation = record
+    item
+  end
+
+  ##
+  # @param web_id string
+  # @return Item
+  #
+  def self.find_by_web_id(web_id)
+    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+    response = solr.get('select', params: { q: "web_id:#{web_id}" })
+    record = response['response']['docs'].first
+    item = nil
+    if record
+      item = Item.find(record['id'])
+      if item
+        item.solr_representation = record
+      end
+    end
     item
   end
 
@@ -51,7 +70,7 @@ class Item
   end
 
   def to_param
-    self.uuid
+    self.web_id
   end
 
   def subtitle

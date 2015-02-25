@@ -7,6 +7,7 @@ module Fedora
   class Container < Resource
 
     attr_reader :children
+    attr_accessor :web_id
 
     ##
     # @param container_url URL of the parent container
@@ -55,7 +56,7 @@ module Fedora
       'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
       'DELETE { } '\
       'INSERT { '\
-        '<> indexing:hasIndexingTransformation "default"; '\
+        "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::TRANSFORM_NAME}\"; "\
         'rdf:type indexing:Indexable; } '\
       'WHERE { }'
       @@http.patch(url, body, headers)

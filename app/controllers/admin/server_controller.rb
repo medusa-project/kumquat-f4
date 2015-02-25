@@ -11,10 +11,14 @@ module Admin
     #
     def image_server_status
       http = HTTPClient.new
-      response = http.get(Kumquat::Application.kumquat_config[:loris_url])
-      if response.body.include?('Internet Imaging Protocol Server')
-        render text: 'online'
-      else
+      begin
+        response = http.get(Kumquat::Application.kumquat_config[:loris_url])
+        if response.body.include?('Internet Imaging Protocol Server')
+          render text: 'online'
+        else
+          render text: 'offline', status: 503
+        end
+      rescue
         render text: 'offline', status: 503
       end
     end
@@ -25,10 +29,14 @@ module Admin
     #
     def repository_status
       http = HTTPClient.new
-      response = http.get(Kumquat::Application.kumquat_config[:fedora_url])
-      if response.status == 200
-        render text: 'online'
-      else
+      begin
+        response = http.get(Kumquat::Application.kumquat_config[:fedora_url])
+        if response.status == 200
+          render text: 'online'
+        else
+          render text: 'offline', status: 503
+        end
+      rescue
         render text: 'offline', status: 503
       end
     end
@@ -46,6 +54,22 @@ module Admin
       else
         render text: 'online'
       end
+    end
+
+    ##
+    # Responds to PATCH /admin/server/update-index
+    #
+    def update_index
+      http = HTTPClient.new
+      url = Kumquat::Application.kumquat_config[:solr_url].chomp('/') +
+          '/update?commit=true'
+      response = http.get(url)
+      if response.status == 200
+        flash['success'] = 'Index updated.'
+      else
+        flash['error'] = response.body
+      end
+      redirect_to :back
     end
 
   end

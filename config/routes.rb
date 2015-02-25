@@ -63,6 +63,8 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_repository_status'
     match '/server/search-server-status', to: 'server#search_server_status',
           via: 'get', as: 'server_search_server_status'
+    match '/server/update-index', to: 'server#update_index',
+          via: 'patch', as: 'server_update_index'
   end
 
 end

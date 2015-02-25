@@ -74,6 +74,8 @@
           <dd><%= link_to Kumquat::Application.kumquat_config[:solr_url],
                           Kumquat::Application.kumquat_config[:solr_url] %></dd>
         </dl>
+        <%= link_to 'Update Index', admin_server_update_index_url,
+                    class: 'btn btn-default', method: :patch %>
       </div>
     </div>
 

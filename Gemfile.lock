@@ -82,6 +82,8 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.2)
+    local_time (1.0.0)
+      coffee-rails
     loofah (2.0.1)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -173,6 +175,7 @@ DEPENDENCIES
   httpclient!
   jbuilder (~> 2.0)
   jquery-rails
+  local_time
   pg
   rails (= 4.2.0)
   rsolr

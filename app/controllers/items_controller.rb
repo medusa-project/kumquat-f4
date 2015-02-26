@@ -13,6 +13,7 @@ class ItemsController < ApplicationController
     limit = Kumquat::Application.kumquat_config[:results_per_page]
     response = solr.get('select', params: {
                                     q: params[:q] ? params[:q] : '*:*',
+                                    df: 'dc_title',
                                     start: params[:start] ? params[:start] : 0,
                                     rows: limit })
     @num_results_shown = response['response']['docs'].length

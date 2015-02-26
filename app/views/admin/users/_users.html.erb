@@ -1,0 +1,22 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Role(s)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.username, admin_user_path(user) %></td>
+        <td>
+          <ul>
+            <% user.roles.each do |role| %>
+              <li><%= link_to role.name, admin_role_path(role) %></li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

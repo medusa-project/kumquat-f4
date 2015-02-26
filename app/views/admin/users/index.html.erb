@@ -1,0 +1,24 @@
+<% provide :title, 'Users' %>
+<% provide :body_id, 'users' %>
+<% provide :active_nav, 'access' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li class="active">Users</li>
+</ol>
+
+<div class="pull-right">
+  <%= form_tag admin_users_path, method: 'get', class: 'entity_search',
+               style: 'float:right' do %>
+      <%= hidden_field_tag :direction, params[:direction] %>
+      <%= hidden_field_tag :sort, params[:sort] %>
+      <%= search_field_tag :q, params[:q], placeholder: 'Search',
+                           class: 'form-control' %>
+  <% end %>
+</div>
+
+<h1>Users <small class="entity_count"></small></h1>
+
+<div id="users_table">
+  <%= render 'users' %>
+</div>

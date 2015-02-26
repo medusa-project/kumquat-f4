@@ -24,6 +24,7 @@ en:
   permission_roles_create: 'Create Roles'
   permission_roles_delete: 'Delete Roles'
   permission_roles_update: 'Update Roles'
+  permission_settings_update: 'Update Settings'
   permission_users_create: 'Create Users'
   permission_users_delete: 'Delete Users'
   permission_users_disable: 'Disable Users'

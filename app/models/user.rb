@@ -11,17 +11,13 @@ class User < ActiveRecord::Base
   end
 
   def has_permission?(key)
-    self.roles.each do |role|
-      return true if role.has_permission?(key)
-    end
-    false
+    self.roles_having_permission(key).any?
   end
 
+  alias_method :can?, :has_permission?
+
   def is_admin?
-    self.roles.each do |role|
-      return true if role.key == 'admin'
-    end
-    false
+    (self.roles.where(key: 'admin').count > 0)
   end
 
   def roles_having_permission(key)

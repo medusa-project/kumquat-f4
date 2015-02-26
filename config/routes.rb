@@ -54,6 +54,10 @@ Rails.application.routes.draw do
     match '/bytestream', to: 'items#bytestream', via: 'get'
   end
 
+  resources :sessions, only: [:new, :create, :destroy]
+  match '/signin', to: 'sessions#new', via: 'get'
+  match '/signout', to: 'sessions#destroy', via: 'delete'
+
   namespace :admin do
     root 'dashboard#index'
     match '/server', to: 'server#index', via: 'get'
@@ -65,6 +69,8 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
     match '/server/update-index', to: 'server#update_index',
           via: 'patch', as: 'server_update_index'
+    resources :roles, param: :key
+    resources :users, param: :username, only: [:index, :show]
   end
 
 end

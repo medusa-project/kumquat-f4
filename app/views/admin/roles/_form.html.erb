@@ -1,0 +1,57 @@
+<% can_edit_name = !%w(admin visitor).include?(@role.key) %>
+<% can_edit_key = !%w(admin visitor).include?(@role.key) %>
+<% can_edit_permissions = !%w(admin).include?(@role.key) %>
+
+<%= form_for [:admin, @role] do |f| %>
+    <% render 'admin/shared/error_messages', :object => f.object %>
+
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control', disabled: !can_edit_name %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :key %>
+      <%= f.text_field :key, class: 'form-control', disabled: !can_edit_key %>
+    </div>
+
+    <div class="row">
+
+      <div class="col-sm-6">
+        <h3>Permissions</h3>
+
+        <%= can_edit_permissions ?
+                    hidden_field_tag('role[permission_ids][]', nil) : nil %>
+
+        <div class="form-group">
+          <% Permission.order(:key).each do |permission| %>
+            <div class="checkbox">
+              <%= check_box_tag 'role[permission_ids][]', permission.id,
+                                @role.permission_ids.include?(permission.id),
+                                id: dom_id(permission),
+                                disabled: !can_edit_permissions %>
+              <%= label_tag dom_id(permission), permission.name %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <h3>Users</h3>
+
+        <%= hidden_field_tag 'role[user_ids][]', nil %>
+
+        <% @users.each do |user| %>
+          <div class="checkbox">
+            <%= check_box_tag 'role[user_ids][]', user.id,
+                              @role.user_ids.include?(user.id),
+                              id: dom_id(user) %>
+            <%= label_tag dom_id(user), user.username %>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+
+    <%= f.submit 'Save Changes', class: 'btn btn-primary' %>
+<% end %>

@@ -20,8 +20,10 @@ module Fedora
       end
     end
 
-    def delete
-      @@http.delete(self.fedora_url)
+    def delete(also_tombstone = false)
+      url = self.fedora_url.chomp('/')
+      @@http.delete(url)
+      @@http.delete("#{url}/fcr:tombstone") if also_tombstone
     end
 
     def fedora_json_ld=(json)

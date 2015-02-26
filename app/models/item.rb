@@ -56,6 +56,10 @@ class Item
     @children
   end
 
+  def delete(also_tombstone = false)
+    self.fedora_container.delete(also_tombstone)
+  end
+
   def initialize(fedora_container)
     @children = []
     @fedora_container = fedora_container

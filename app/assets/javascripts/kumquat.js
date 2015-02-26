@@ -27,10 +27,10 @@ var Kumquat = {
             }
 
             // remove any existing messages
-            $('div.alert').remove();
+            $('div.kq-flash').remove();
 
             // construct the message
-            var flash = $('<div class="alert ' + bootstrap_class + '"></div>');
+            var flash = $('<div class="kq-flash alert ' + bootstrap_class + '"></div>');
             var button = $('<button type="button" class="close"' +
             ' data-dismiss="alert" aria-hidden="true">&times;</button>');
             flash.append(button);
@@ -52,9 +52,10 @@ var Kumquat = {
      */
     init: function() {
         // make flash messages disappear after a delay
-        if ($('div.alert').length) {
+        var flash = $('div.kq-flash');
+        if (flash.length) {
             setTimeout(function () {
-                $('div.alert').fadeOut();
+                flash.fadeOut();
             }, Kumquat.Flash.FADE_OUT_DELAY);
         }
     }

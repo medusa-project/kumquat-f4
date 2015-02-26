@@ -44,6 +44,10 @@ module Fedora
       end
     end
 
+    def fedora_metadata_url
+      "#{self.fedora_url.chomp('/')}/fcr:metadata"
+    end
+
   end
 
 end

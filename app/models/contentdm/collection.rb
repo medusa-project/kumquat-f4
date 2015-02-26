@@ -25,7 +25,6 @@ module Contentdm
     }
 
     attr_accessor :alias
-    attr_accessor :fedora_url
 
     ##
     # @param alias_ CONTENTdm collection alias

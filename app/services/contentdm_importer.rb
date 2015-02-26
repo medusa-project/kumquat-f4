@@ -7,6 +7,7 @@ class ContentdmImporter
     @source_path = source_path
     @root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
     @http = HTTPClient.new
+    @solr = Solr::Solr.new
   end
 
   def import
@@ -46,22 +47,21 @@ class ContentdmImporter
 
     # create a new collection container
     container = Fedora::Container.create(@root_container_url, collection.slug)
-    collection.fedora_url = container.fedora_url
 
     # GET the newly created container's JSON-LD representation
     struct = JSON.parse(container.fedora_json_ld)
 
     # append metadata to the JSON-LD representation via PUT
-    url = "#{collection.fedora_url}/fcr:metadata"
-    body = collection.to_json_ld(struct)
-    @http.put(url, body, { 'Content-Type' => 'application/ld+json' })
+    @http.put(container.fedora_metadata_url,
+              collection.to_json_ld(container.fedora_url, struct),
+              { 'Content-Type' => 'application/ld+json' })
 
     File.open(File.join(File.expand_path(@source_path),
                         collection.alias + '.xml')) do |file|
       doc = Nokogiri::XML(file)
       doc.xpath('//record').each do |record|
         item = Contentdm::Item.from_cdm_xml(@source_path, collection, record)
-        self.import_item(item)
+        self.import_item(item, container.fedora_url)
       end
     end
   end
@@ -74,22 +74,19 @@ class ContentdmImporter
   # @param make_indexable boolean
   # @return string Resource URL from response Location header
   #
-  def import_item(item, container_url = nil, make_indexable = true)
-    container_url ||= item.collection.fedora_url
-
+  def import_item(item, container_url, make_indexable = true)
     puts "#{item.collection.alias} #{item.pointer}"
 
     # create a new item container
     container = Fedora::Container.create(container_url, item.slug)
-    item.fedora_url = container.fedora_url
 
     # GET the newly created container's JSON-LD representation
     struct = JSON.parse(container.fedora_json_ld)
 
     # append metadata to the JSON-LD representation via PUT
-    url = "#{item.fedora_url}/fcr:metadata"
-    body = item.to_json_ld(struct)
-    @http.put(url, body, { 'Content-Type' => 'application/ld+json' })
+    @http.put(container.fedora_metadata_url,
+              item.to_json_ld(container.fedora_url, struct),
+              { 'Content-Type' => 'application/ld+json' })
 
     container.make_indexable if make_indexable
 
@@ -97,19 +94,16 @@ class ContentdmImporter
     # container
     pathname = item.pages.any? ? nil : item.master_file_pathname
     if item.url
-      f4_binary = Fedora::Bytestream.create(item.fedora_url, nil, nil, item.url)
-      item.bytestream_url = f4_binary.fedora_url
+      Fedora::Bytestream.create(container.fedora_url, nil, nil, item.url)
     elsif pathname and File.exists?(pathname)
-      f4_binary = Fedora::Bytestream.create(item.fedora_url, nil, pathname)
-      item.bytestream_url = f4_binary.fedora_url
+      Fedora::Bytestream.create(container.fedora_url, nil, pathname)
     end
 
-    @http.get(Kumquat::Application.kumquat_config[:solr_url].chomp('/') +
-                  '/update?commit=true')
+    @solr.commit
 
-    item.pages.each { |page| self.import_item(page, item.fedora_url, false) }
+    item.pages.each { |p| self.import_item(p, container.fedora_url, false) }
 
-    item.fedora_url
+    container.fedora_url
   end
 
 end

@@ -14,10 +14,8 @@ module Contentdm
     relation references relation replaces requires rights rightsHolder source
     spatial subject tableOfContents temporal title type valid)
 
-    attr_accessor :bytestream_url # string
     attr_accessor :collection # Collection
     attr_accessor :created # string date, yyyy-mm-dd
-    attr_accessor :fedora_url # string
     attr_accessor :filename # string
     attr_accessor :full_text # string
     attr_accessor :pages # array of Items

@@ -11,16 +11,17 @@ module Contentdm
     end
 
     ##
+    # @param f4_url
     # @param f4_json_structure JSON-LD structure in which to embed the
     # object's metadata
     # @return JSON string
     #
-    def to_json_ld(f4_json_structure = nil)
+    def to_json_ld(f4_url, f4_json_structure = nil)
       f4_json_structure = [] unless f4_json_structure
       f4_metadata = f4_json_structure.
-          select{ |h| h['@id'] == "#{self.fedora_url}/fcr:metadata" }.first
+          select{ |h| h['@id'] == "#{f4_url}/fcr:metadata" }.first
       unless f4_metadata
-        f4_metadata = { '@id' => "#{self.fedora_url}/fcr:metadata" }
+        f4_metadata = { '@id' => "#{f4_url}/fcr:metadata" }
         f4_json_structure << f4_metadata
       end
 

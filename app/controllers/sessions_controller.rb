@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
     username = params[:session] ? params[:session][:username] : ''
     password = params[:session] ? params[:session][:password] : ''
 
-    command = SignInCommand.new(username, password, request.remote_ip)
+    command = SignInCommand.new(username, password)
     begin
       command.execute
     rescue => e
@@ -22,8 +22,8 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    command = SignOutCommand.new(current_user, request.remote_ip)
-    command.execute
+    command = SignOutCommand.new(current_user)
+    executor.execute(command)
     sign_out
     redirect_to root_url
   end

@@ -14,22 +14,19 @@ class SignInCommand < Command
 
   DEVELOPMENT_PASSWORD = 'password'
 
-  def initialize(username, password, remote_ip)
+  def initialize(username, password)
     @username = username.chomp
     @password = password
-    @remote_ip = remote_ip
     @user = nil
   end
 
   def execute
     begin
       @user = authenticate(@username, @password)
-      if @user
-      else
+      unless @user
         public_message = 'Sign-in failed.'
         log_message = "Sign-in failed for #{@username}: invalid username "\
             "or password."
-
         ex = SignInFailure.new(log_message)
         ex.public_message = public_message
         raise ex
@@ -39,15 +36,6 @@ class SignInCommand < Command
       #    description: "#{e}", user: @user, remote_ip: @remote_ip,
       #    event_level: EventLevel::NOTICE)
       raise "#{e.public_message}"
-    rescue => e
-      #@user.events << Event.create(
-      #    description: "#{e}", user: @user, remote_ip: @remote_ip,
-      #    event_level: EventLevel::NOTICE)
-      raise e
-    else
-      #@user.events << Event.create(
-      #    description: "User #{@user.username} signed in",
-      #    user: @user, remote_ip: @remote_ip)
     end
   end
 

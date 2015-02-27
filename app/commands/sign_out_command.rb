@@ -1,14 +1,14 @@
 class SignOutCommand < Command
 
-  def initialize(user, remote_ip)
+  def initialize(user)
     @user = user
-    @remote_ip = remote_ip
   end
 
   def execute
-    #@user.events << Event.create(
-    #    description: "User #{@user.username} signed out",
-    #    user: @user, remote_ip: @remote_ip) if @user
+    # noop
+    # This command basically exists to have something to pass to
+    # CommandExecutor which will carry out any necessary logging. It doesn't
+    # sign out itself because it would need access to SessionsHelper.
   end
 
   def object

@@ -5,6 +5,14 @@ class ApplicationController < ActionController::Base
 
   include SessionsHelper
 
+  before_filter :setup
+
+  attr_reader :executor
+
+  def setup
+    @executor = CommandExecutor.new(current_user)
+  end
+
   def admin_user
     unless current_user.is_admin?
       flash['error'] = 'Access denied.'

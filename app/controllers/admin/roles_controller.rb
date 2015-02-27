@@ -7,13 +7,10 @@ module Admin
     before_action :update_roles_rbac, only: [:edit, :update]
 
     def create
-      command = CreateRoleCommand.new(sanitized_params, current_user,
-                                      request.remote_ip)
+      command = CreateRoleCommand.new(sanitized_params)
       @role = command.object
       begin
-        command.execute
-      rescue ValidationError
-		render 'new'
+        executor.execute(command)
       rescue => e
         flash[:error] = "#{e}"
         render 'new'
@@ -27,10 +24,9 @@ module Admin
       @role = Role.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @role
 
-      command = DeleteRoleCommand.new(@role, current_user,
-                                      request.remote_ip)
+      command = DeleteRoleCommand.new(@role)
       begin
-        command.execute
+        executor.execute(command)
       rescue => e
         flash[:error] = "#{e}"
         redirect_to admin_role_url(@role)
@@ -66,13 +62,11 @@ module Admin
       @role = Role.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @role
 
-      command = UpdateRoleCommand.new(@role, sanitized_params,
-                                      current_user, request.remote_ip)
+      command = UpdateRoleCommand.new(@role, sanitized_params)
       begin
-        command.execute
-      rescue ValidationError
-		render 'edit'
+        executor.execute(command)
       rescue => e
+        @users = User.order(:username)
         flash[:error] = "#{e}"
         render 'edit'
       else

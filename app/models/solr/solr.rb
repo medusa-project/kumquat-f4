@@ -444,7 +444,7 @@ module Solr
     end
 
     def commit
-      @http.get(@url + '/update?commit=true')
+      @http.get("#{@url}/#{@collection}/update?commit=true")
     end
 
     ##

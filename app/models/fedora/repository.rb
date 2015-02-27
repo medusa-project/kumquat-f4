@@ -5,6 +5,8 @@ module Fedora
     TRANSFORM_NAME = 'kumquat'
 
     ##
+    # Creates or updates the Fedora indexing transform used by the application.
+    #
     # https://wiki.duraspace.org/display/FEDORA41/Indexing+Transformations
     #
     def apply_indexing_transform
@@ -88,7 +90,7 @@ module Fedora
       dcterm_type = dcterms:type :: xsd:string;
       dcterm_valid = dcterms:valid :: xsd:string;'
       http = HTTPClient.new
-      url = "#{Kumquat::Application.kumquat_config['fedora_url'].chomp('/')}"\
+      url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
     "/fedora:system/fedora:transform/fedora:ldpath/#{TRANSFORM_NAME}/fedora:Container"
       http.put(url, body, { 'Content-Type' => 'application/rdf+ldpath' })
     end

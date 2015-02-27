@@ -42,8 +42,10 @@ The resulting F4 node structure looks like this:
   "Costume Name" mapped to the DC "title" element will become simply "Title."
 * Unmapped elements will be assigned a name of "unmapped".
 * Only one level of compound object structure will be imported.
-* CONTENTdm field settings like searchable, hidden, etc. are ignored. (These
-  would either work differently or are not applicable to F4.)
+* CONTENTdm field settings like searchable, hidden, etc. are ignored.
+* When an import is re-run, old collection nodes (and all child nodes) will be
+  deleted and replaced by new ones, but the resulting UUIDs and "web IDs" will
+  be different, the latter of which will break public URLs.
 
 ## Instructions
 
@@ -54,11 +56,11 @@ The resulting F4 node structure looks like this:
    according to the collection's alias, like this:
 
         source_folder/
-          collection1/    <-- Collection folder
-          collection1.xml <-- Collection's exported metadata
-          collection2/
-          collection2.xml
-          catalog.txt     <-- CONTENTdm catalog.txt file
+            collection1/    <-- Collection folder
+            collection1.xml <-- Collection's exported metadata
+            collection2/
+            collection2.xml
+            catalog.txt     <-- CONTENTdm catalog.txt file
 
    (The `catalog.txt` file can be found in the CONTENTdm web server's document
    root. To skip certain collections, comment them out with a pound (`#`)
@@ -66,8 +68,3 @@ The resulting F4 node structure looks like this:
 
 2. Run `bundle exec rake kumquat:cdm_import[/path/to/source/data]`. This task
    will output status information for each item.
-
-   This command will delete old collection node (and all child nodes) before
-   adding new ones, thus cleaning up after itself, but the generated "web IDs"
-   will be different, thus breaking public URLs. This is, for the time being
-   anyway, a one-shot importer.

@@ -1,3 +1,7 @@
+class Array
+  attr_accessor :total_length
+end
+
 class ItemsController < ApplicationController
 
   ##
@@ -10,19 +14,21 @@ class ItemsController < ApplicationController
 
   def index
     solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    limit = Kumquat::Application.kumquat_config[:results_per_page]
+    @limit = Kumquat::Application.kumquat_config[:results_per_page]
+    @start = params[:start] ? params[:start].to_i : 0
     response = solr.get('select', params: {
                                     q: params[:q] ? params[:q] : '*:*',
                                     df: 'dc_title',
-                                    start: params[:start] ? params[:start] : 0,
-                                    rows: limit })
+                                    start: @start,
+                                    rows: @limit })
     @num_results_shown = response['response']['docs'].length
-    @num_results_total = response['response']['numFound'].to_i
     @items = response['response']['docs'].map do |doc|
       item = Item.find(doc['id'])
       item.solr_representation = doc.to_s
       item
     end
+    @items.total_length = response['response']['numFound'].to_i
+    @current_page = (@start / @limit.to_f).ceil + 1
   end
 
   def show

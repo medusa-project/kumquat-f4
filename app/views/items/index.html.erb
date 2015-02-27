@@ -1,7 +1,10 @@
-<p>Showing <%= @num_results_shown %> of <%= @num_results_total %> items</p>
+<p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+  <%= @items.total_length %> items</p>
 
-<ol>
+<ol start="<%= @start + 1 %>">
   <% @items.each do |item| %>
     <li><%= link_to item.title, item %></li>
   <% end %>
 </ol>
+
+<%= paginate(@items, @limit, @current_page) %>

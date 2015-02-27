@@ -440,6 +440,7 @@ module Solr
     def initialize
       @http = HTTPClient.new
       @url = Kumquat::Application.kumquat_config[:solr_url].chomp('/')
+      @collection = Kumquat::Application.kumquat_config[:solr_collection]
     end
 
     def commit
@@ -455,7 +456,7 @@ module Solr
     def update_schema
       # TODO: the Solr API doesn't allow it yet as of 4.10, but it would be
       # nice to be able to update existing fields in the schema.
-      fields_url = @url + '/collection1/schema/fields'
+      fields_url = "#{@url}/#{@collection}/schema/fields"
       # get the current list of fields
       response = @http.get(fields_url)
       struct = JSON.parse(response.body)

@@ -38,7 +38,7 @@ class Item
   #
   def self.find_by_web_id(web_id)
     solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    response = solr.get('select', params: { q: "web_id:#{web_id}" })
+    response = solr.get('select', params: { q: "kq_web_id:#{web_id}" })
     record = response['response']['docs'].first
     item = nil
     if record

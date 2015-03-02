@@ -18,8 +18,9 @@ module Fedora
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
-      web_id = kumquat:web_id :: xsd:string;
-      resource_type = kumquat:resource_type :: xsd:string;
+      kq_web_id = kumquat:webID :: xsd:string;
+      kq_collection_key = kumquat:collectionKey :: xsd:string;
+      kq_resource_type = kumquat:resourceType :: xsd:string;
       dc_contributor = dc:contributor :: xsd:string;
       dc_coverage = dc:coverage :: xsd:string;
       dc_creator = dc:creator :: xsd:string;

@@ -7,6 +7,7 @@ module Fedora
   class Container < Resource
 
     attr_reader :children
+    attr_accessor :collection_key
     attr_accessor :web_id
 
     ##
@@ -48,6 +49,9 @@ module Fedora
         struct[0]['http://www.w3.org/ns/ldp#contains'].each do |node|
           @children << Bytestream.new(fedora_url: node['@id']) # TODO: make this either a Bytestream or Container
         end
+      end
+      if struct[0]['http://example.org/collectionKey']
+        self.collection_key = struct[0]['http://example.org/collectionKey'].first['@value'] # TODO: fix namespace
       end
     end
 

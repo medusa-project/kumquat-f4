@@ -3,20 +3,26 @@ module Solr
   class Solr
 
     FIELDS = [
-        { # Fedora-specific
+        {
             name: 'uuid',
             type: 'text_general',
             stored: true,
             indexed: true
         },
-        { # Kumquat-specific
-            name: 'resource_type',
+        {
+            name: 'kq_resource_type',
             type: 'text_general',
             stored: true,
             indexed: true
         },
-        { # Kumquat-specific
-            name: 'web_id',
+        {
+            name: 'kq_collection_key',
+            type: 'text_general',
+            stored: true,
+            indexed: true
+        },
+        {
+            name: 'kq_web_id',
             type: 'text_general',
             stored: true,
             indexed: true

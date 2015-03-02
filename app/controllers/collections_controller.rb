@@ -8,7 +8,7 @@ class CollectionsController < ApplicationController
     solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
     @start = params[:start] ? params[:start].to_i : 0
-    base_query = "resource_type:#{Fedora::ResourceType::COLLECTION}"
+    base_query = "kq_resource_type:#{Fedora::ResourceType::COLLECTION}"
     # TODO: search over fields other than title
     user_query = "dc_title:#{params[:q]} AND #{base_query}"
     response = solr.get('select', params: {

@@ -105,8 +105,9 @@ module Contentdm
       end
 
       f4_metadata['@context']['kumquat'] = 'http://example.org/' # TODO: fix
-      f4_metadata['kumquat:resource_type'] = Fedora::ResourceType::COLLECTION
-      f4_metadata['kumquat:web_id'] = self.alias
+      f4_metadata['kumquat:resourceType'] = Fedora::ResourceType::COLLECTION
+      f4_metadata['kumquat:webID'] = self.alias
+      f4_metadata['kumquat:collectionKey'] = self.alias
 
       JSON.pretty_generate(f4_json_structure)
     end

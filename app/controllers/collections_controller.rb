@@ -12,7 +12,7 @@ class CollectionsController < ApplicationController
     # TODO: search over fields other than title
     user_query = "dc_title:#{params[:q]} AND #{base_query}"
     response = solr.get('select', params: {
-                                    q: params[:q] ? user_query : base_query,
+                                    q: !params[:q].blank? ? user_query : base_query,
                                     df: 'dc_title',
                                     start: @start,
                                     rows: @limit })

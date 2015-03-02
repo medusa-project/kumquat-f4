@@ -7,7 +7,7 @@ module ItemsHelper
   # @param max_links integer (ideally odd)
   #
   def paginate(items, per_page, current_page, max_links = 9)
-    return '' unless items.any?
+    return '' unless items.total_length > per_page
     num_pages = (items.total_length / per_page.to_f).ceil
     first_page = [1, current_page - (max_links / 2.0).floor].max
     last_page = [first_page + max_links - 1, num_pages].min

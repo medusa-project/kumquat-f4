@@ -5,7 +5,7 @@ end
 class ItemsController < ApplicationController
 
   ##
-  # Responds to GET /items/:uuid/bytestream
+  # Responds to GET /items/:web_id/bytestream
   #
   def bytestream
     item = Item.find_by_web_id(params[:item_web_id])

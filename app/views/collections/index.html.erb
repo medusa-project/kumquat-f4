@@ -1,10 +1,8 @@
-<% provide(:title, 'Collections') %>
-<% provide(:body_id, 'collections_index') %>
+<% provide :title, 'Collections' %>
+<% provide :body_id, 'collections_index' %>
+<% provide :active_nav, 'collections' %>
 
-<h1>Collections</h1>
-
-<p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-  <%= @collections.total_length %> collections</p>
+<h1>Collections <small><%= @collections.total_length %> total</small></h1>
 
 <ul>
   <% @collections.each do |collection| %>

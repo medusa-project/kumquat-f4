@@ -57,21 +57,26 @@ module ItemsHelper
   # @param item Item
   #
   def triples_to_dl(item)
-    # collect triples into a hash of object (value) arrays keyed by predicate
-    triples = {}
-    item.triples.each{ |t| triples[t.predicate] = [] }
-    triples.keys.each do |k|
-      triples[k] = item.triples.select{ |t2| t2.predicate == k }.map{ |t2| t2.object }
+    triples = []
+    item.triples.sort.each do |t|
+      triples << {
+          predicate: t.predicate,
+          label: t.label,
+          objects: []
+      }
+    end
+    item.triples.each do |t|
+      triples.select{ |t2| t2[:predicate] == t.predicate }.first[:objects] << t.object
     end
 
     dl = '<dl>'
-    triples.each do |predicate, objects|
-      next if predicate.include?('http://fedora.info/definitions/')
-      next if predicate.include?('http://example.org/') # TODO: fix this URI
-      if objects.any?
-
-        dl += "<dt>#{I18n.t('uri_' + predicate.gsub('://', '_').tr(':/.', '_'), default: predicate)}</dt>"
-        objects.each do |object|
+    triples.each do |struct|
+      next if struct[:predicate].include?('http://fedora.info/definitions/')
+      next if struct[:predicate].include?('http://example.org/') # TODO: fix this URI
+      if struct[:objects].any?
+        dl += "<dt>#{I18n.t('uri_' + struct[:predicate].gsub('://', '_').tr(':/.', '_'),
+                            default: struct[:predicate])}</dt>"
+        struct[:objects].each do |object|
           dl += "<dd>#{object}</dd>"
         end
       end

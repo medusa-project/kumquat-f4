@@ -1,12 +1,24 @@
+<% provide(:title, 'Collections') %>
+<% provide(:body_id, 'collections_index') %>
+
 <h1>Collections</h1>
 
 <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-  <%= @collections.total_length %> items</p>
+  <%= @collections.total_length %> collections</p>
 
-<ol start="<%= @start + 1 %>">
+<ul>
   <% @collections.each do |collection| %>
-      <li><%= link_to collection.title, collection %></li>
+    <li class="clearfix">
+      <%= link_to collection do %>
+        <%= image_tag('', width: 100, height: 100) %>
+      <% end %>
+      <span class="title"><%= link_to collection.title, collection %></span>
+      <br>
+      <span class="description">
+        <%= truncate(collection.triple('http://purl.org/dc/elements/1.1/description'), length: 400) %>
+      </span>
+    </li>
   <% end %>
-</ol>
+</ul>
 
 <%= paginate(@collections, @limit, @current_page) %>

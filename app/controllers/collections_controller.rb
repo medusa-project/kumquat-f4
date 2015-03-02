@@ -15,6 +15,7 @@ class CollectionsController < ApplicationController
                                     q: !params[:q].blank? ? user_query : base_query,
                                     df: 'dc_title',
                                     start: @start,
+                                    sort: 'dc_title asc',
                                     rows: @limit })
     @num_results_shown = response['response']['docs'].length
     @collections = response['response']['docs'].map do |doc|
@@ -27,6 +28,8 @@ class CollectionsController < ApplicationController
   end
 
   def show
+    @collection = Collection.find_by_web_id(params[:web_id])
+    render text: '404 Not Found', status: 404 unless @collection
   end
 
 end

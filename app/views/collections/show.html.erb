@@ -1,0 +1,51 @@
+<% provide :title, @collection.title %>
+<% provide :body_id, 'collections_show' %>
+
+<h1><%= @collection.title %>
+  <% if @collection.subtitle %>
+    <br><small><%= @collection.subtitle %></small>
+  <% end %>
+</h1>
+
+<div class="row">
+  <div class="col-sm-7">
+    <% if @collection.triple('http://purl.org/dc/elements/1.1/description') %>
+      <p>
+        <%= @collection.triple('http://purl.org/dc/elements/1.1/description') %>
+      </p>
+      <%= link_to('Browse the collection', '', class: 'btn btn-lg btn-default') %>
+    <% end %>
+  </div>
+  <div class="col-sm-5">
+    <%= image_tag('', width: 300, height: 400, alt: 'Representative image') %>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">Triples</h2>
+  </div>
+  <div class="panel-body">
+    <%= triples_to_dl(@collection) %>
+  </div>
+</div>
+
+<% if Rails.env.development? %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Solr JSON</h2>
+    </div>
+    <div class="panel-body">
+      <pre><%= @collection.solr_representation %></pre>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Fedora JSON-LD</h2>
+    </div>
+    <div class="panel-body">
+      <pre><%= @collection.fedora_json_ld %></pre>
+    </div>
+  </div>
+<% end %>

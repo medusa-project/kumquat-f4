@@ -94,4 +94,11 @@ class Collection
     t.first ? t.first.value : 'Untitled'
   end
 
+  def triple(predicate)
+    t = self.triples.select do |e|
+      e.predicate.include?(predicate)
+    end
+    t.first ? t.first.value : nil
+  end
+
 end

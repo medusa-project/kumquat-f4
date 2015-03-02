@@ -16,7 +16,8 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
-  <body>
+  <body <%= !yield(:body_id).empty? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
+        <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
 
     <%= render 'layouts/header' %>
 

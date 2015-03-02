@@ -3,6 +3,7 @@ development:
   :loris_url: http://localhost:8081/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
+  :page_title: My Great Organization
   :results_per_page: 20
 
 test:
@@ -10,6 +11,7 @@ test:
   :loris_url: http://localhost:8081/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
+  :page_title: My Great Organization
   :results_per_page: 20
 
 production:
@@ -17,4 +19,5 @@ production:
   :loris_url: http://localhost:8081/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
+  :page_title: My Great Organization
   :results_per_page: 20

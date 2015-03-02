@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= yield :title %></title>
+    <title><%= yield :title %> |
+      <%= Kumquat::Application.kumquat_config[:page_title] %></title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

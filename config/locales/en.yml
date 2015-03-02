@@ -20,16 +20,87 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  permission_control_panel_access: 'Access Control Panel'
-  permission_roles_create: 'Create Roles'
-  permission_roles_delete: 'Delete Roles'
-  permission_roles_update: 'Update Roles'
-  permission_settings_update: 'Update Settings'
-  permission_users_create: 'Create Users'
-  permission_users_delete: 'Delete Users'
-  permission_users_disable: 'Disable Users'
-  permission_users_enable: 'Enable Users'
-  permission_users_update: 'Update Other Users'
-  permission_users_update_self: 'Update Self'
-  permission_users_view: 'View Users'
+  permission_control_panel_access: Access Control Panel
+  permission_roles_create: Create Roles
+  permission_roles_delete: Delete Roles
+  permission_roles_update: Update Roles
+  permission_settings_update: Update Settings
+  permission_users_create: Create Users
+  permission_users_delete: Delete Users
+  permission_users_disable: Disable Users
+  permission_users_enable: Enable Users
+  permission_users_update: Update Other Users
+  permission_users_update_self: Update Self
+  permission_users_view: View Users
 
+  # linked data predicate URI labels
+  uri_http_purl_org_dc_elements_1_1_contributor: Contributor
+  uri_http_purl_org_dc_elements_1_1_coverage: Coverage
+  uri_http_purl_org_dc_elements_1_1_creator: Creator
+  uri_http_purl_org_dc_elements_1_1_date: Date
+  uri_http_purl_org_dc_elements_1_1_description: Description
+  uri_http_purl_org_dc_elements_1_1_format: Format
+  uri_http_purl_org_dc_elements_1_1_identifier: Identifier
+  uri_http_purl_org_dc_elements_1_1_language: Language
+  uri_http_purl_org_dc_elements_1_1_publisher: Publisher
+  uri_http_purl_org_dc_elements_1_1_relation: Relation
+  uri_http_purl_org_dc_elements_1_1_rights: Rights
+  uri_http_purl_org_dc_elements_1_1_source: Source
+  uri_http_purl_org_dc_elements_1_1_subject: Subject
+  uri_http_purl_org_dc_elements_1_1_title: Title
+  uri_http_purl_org_dc_elements_1_1_type: Type
+  uri_http_purl_org_dc_terms_abstract: Abstract
+  uri_http_purl_org_dc_terms_accessRights: Access Rights
+  uri_http_purl_org_dc_terms_accrualMethod: Accrual Method
+  uri_http_purl_org_dc_terms_accrualPeriodicity: Accrual Periodicity
+  uri_http_purl_org_dc_terms_accrualPolicy: Accrual Policy
+  uri_http_purl_org_dc_terms_alternative: Alternative Title
+  uri_http_purl_org_dc_terms_audience: Audience
+  uri_http_purl_org_dc_terms_available: Date Available
+  uri_http_purl_org_dc_terms_bibliographicCitation: Bibliographic Citation
+  uri_http_purl_org_dc_terms_conformsTo: Conforms To
+  uri_http_purl_org_dc_terms_contributor: Contributor
+  uri_http_purl_org_dc_terms_coverage: Coverage
+  uri_http_purl_org_dc_terms_created: Created
+  uri_http_purl_org_dc_terms_creator: Creator
+  uri_http_purl_org_dc_terms_date: Date
+  uri_http_purl_org_dc_terms_dateAccepted: Date Accepted
+  uri_http_purl_org_dc_terms_dateCopyrighted: Date Copyrighted
+  uri_http_purl_org_dc_terms_dateSubmitted: Date Submitted
+  uri_http_purl_org_dc_terms_description: Description
+  uri_http_purl_org_dc_terms_educationLevel: Audience Education Level
+  uri_http_purl_org_dc_terms_extent: Extent
+  uri_http_purl_org_dc_terms_format: Format
+  uri_http_purl_org_dc_terms_hasFormat: Has Format
+  uri_http_purl_org_dc_terms_hasPart: Has Part
+  uri_http_purl_org_dc_terms_hasVersion: Has Version
+  uri_http_purl_org_dc_terms_identifier: Identifier
+  uri_http_purl_org_dc_terms_instructionalMethod: Instructional Method
+  uri_http_purl_org_dc_terms_isFormatOf: Is Format Of
+  uri_http_purl_org_dc_terms_isPartOf: Is Part Of
+  uri_http_purl_org_dc_terms_isReferencedBy: Is Referenced By
+  uri_http_purl_org_dc_terms_isReplacedBy: Is Replaced By
+  uri_http_purl_org_dc_terms_isRequiredBy: Is Required By
+  uri_http_purl_org_dc_terms_issued: Issued
+  uri_http_purl_org_dc_terms_isVersionOf: Is Version Of
+  uri_http_purl_org_dc_terms_language: Language
+  uri_http_purl_org_dc_terms_license: License
+  uri_http_purl_org_dc_terms_mediator: Mediator
+  uri_http_purl_org_dc_terms_medium: Medium
+  uri_http_purl_org_dc_terms_modified: Date Modified
+  uri_http_purl_org_dc_terms_provenance: Provenance
+  uri_http_purl_org_dc_terms_publisher: Publisher
+  uri_http_purl_org_dc_terms_references: References
+  uri_http_purl_org_dc_terms_relation: Relation
+  uri_http_purl_org_dc_terms_replaces: Replaces
+  uri_http_purl_org_dc_terms_requires: Requires
+  uri_http_purl_org_dc_terms_rights: Rights
+  uri_http_purl_org_dc_terms_rightsHolder: Rights Holder
+  uri_http_purl_org_dc_terms_source: Source
+  uri_http_purl_org_dc_terms_spatial: Spatial
+  uri_http_purl_org_dc_terms_subject: Subject
+  uri_http_purl_org_dc_terms_tableOfContents: Table Of Contents
+  uri_http_purl_org_dc_terms_temporal: Temporal Coverage
+  uri_http_purl_org_dc_terms_title: Title
+  uri_http_purl_org_dc_terms_type: Type
+  uri_http_purl_org_dc_terms_valid: Date Valid

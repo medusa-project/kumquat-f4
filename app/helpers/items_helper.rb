@@ -67,10 +67,10 @@ module ItemsHelper
     dl = '<dl>'
     triples.each do |predicate, objects|
       next if predicate.include?('http://fedora.info/definitions/')
+      next if predicate.include?('http://example.org/') # TODO: fix this URI
       if objects.any?
-        term = Triple::LABELS.keys.include?(predicate) ?
-            Triple::LABELS[predicate] : predicate
-        dl += "<dt>#{term}</dt>"
+
+        dl += "<dt>#{I18n.t('uri_' + predicate.gsub('://', '_').tr(':/.', '_'), default: predicate)}</dt>"
         objects.each do |object|
           dl += "<dd>#{object}</dd>"
         end

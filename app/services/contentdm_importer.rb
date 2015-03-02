@@ -47,14 +47,10 @@ class ContentdmImporter
 
     # create a new collection container
     container = Fedora::Container.create(@root_container_url, collection.slug)
-
-    # GET the newly created container's JSON-LD representation
-    struct = JSON.parse(container.fedora_json_ld)
-
-    # append metadata to the JSON-LD representation via PUT
-    @http.put(container.fedora_metadata_url,
-              collection.to_json_ld(container.fedora_url, struct),
-              { 'Content-Type' => 'application/ld+json' })
+    container.fedora_json_ld = collection.to_json_ld(container.fedora_url,
+                                                     JSON.parse(container.fedora_json_ld))
+    container.save
+    container.make_indexable
 
     File.open(File.join(File.expand_path(@source_path),
                         collection.alias + '.xml')) do |file|
@@ -79,24 +75,18 @@ class ContentdmImporter
 
     # create a new item container
     container = Fedora::Container.create(container_url, item.slug)
-
-    # GET the newly created container's JSON-LD representation
-    struct = JSON.parse(container.fedora_json_ld)
-
-    # append metadata to the JSON-LD representation via PUT
-    @http.put(container.fedora_metadata_url,
-              item.to_json_ld(container.fedora_url, struct),
-              { 'Content-Type' => 'application/ld+json' })
-
+    container.fedora_json_ld = item.to_json_ld(container.fedora_url,
+                                               JSON.parse(container.fedora_json_ld))
+    container.save
     container.make_indexable if make_indexable
 
     # create a binary resource for the item's bytestream within the item
     # container
     pathname = item.pages.any? ? nil : item.master_file_pathname
     if item.url
-      Fedora::Bytestream.create(container.fedora_url, nil, nil, item.url)
+      Fedora::Bytestream.create(container, nil, nil, item.url)
     elsif pathname and File.exists?(pathname)
-      Fedora::Bytestream.create(container.fedora_url, nil, pathname)
+      Fedora::Bytestream.create(container, nil, pathname)
     end
 
     @solr.commit

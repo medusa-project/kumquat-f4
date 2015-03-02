@@ -1,1 +1,12 @@
 <h1>Collections</h1>
+
+<p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+  <%= @collections.total_length %> items</p>
+
+<ol start="<%= @start + 1 %>">
+  <% @collections.each do |collection| %>
+      <li><%= link_to collection.title, collection %></li>
+  <% end %>
+</ol>
+
+<%= paginate(@collections, @limit, @current_page) %>

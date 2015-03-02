@@ -17,7 +17,9 @@ module Fedora
     def self.create(container_url, slug = nil)
       slug_url = slug ? "#{container_url}/#{slug}" : container_url
       response = slug ? @@http.put(slug_url) : @@http.post(container_url)
-      find(response.header['Location'].first)
+      container = find(response.header['Location'].first)
+      container.container_url = container_url
+      container
     end
 
     ##
@@ -50,7 +52,6 @@ module Fedora
     end
 
     def make_indexable
-      url = "#{self.fedora_url}/fcr:metadata"
       headers = { 'Content-Type' => 'application/sparql-update' }
       body = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '\
       'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
@@ -59,7 +60,26 @@ module Fedora
         "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::TRANSFORM_NAME}\"; "\
         'rdf:type indexing:Indexable; } '\
       'WHERE { }'
-      @@http.patch(url, body, headers)
+      @@http.patch(self.fedora_metadata_url, body, headers)
+    end
+
+    ##
+    # Persists the container. For this to work, the container must already have
+    # a URL (e.g. fedora_url not nil), OR the container must have a parent
+    # container URL (e.g. container_url not nil).
+    #
+    # @raise RuntimeError if container_url and fedora_url are both nil.
+    #
+    def save
+      if self.fedora_url
+        @@http.put(self.fedora_metadata_url, self.fedora_json_ld,
+                   { 'Content-Type' => 'application/ld+json' })
+      elsif self.container_url
+        @@http.post(self.container_url, self.fedora_json_ld,
+                    { 'Content-Type' => 'application/ld+json' })
+      else
+        raise RuntimeError 'Container has no URL.'
+      end
     end
 
   end

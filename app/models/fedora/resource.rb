@@ -4,8 +4,10 @@ module Fedora
 
     @@http = HTTPClient.new
 
+    attr_accessor :container_url # URL of the resource's parent container
     attr_accessor :fedora_json_ld
     attr_accessor :fedora_url
+    attr_accessor :resource_type # one of the ResourceType constants
     attr_accessor :triples
     attr_accessor :uuid
 
@@ -35,7 +37,11 @@ module Fedora
       if struct[0]['http://example.org/web_id']
         self.web_id = struct[0]['http://example.org/web_id'].first['@value'] # TODO: fix namespace
       end
+      if struct[0]['http://example.org/resource_type']
+        self.resource_type = struct[0]['http://example.org/resource_type'].first['@value'] # TODO: fix namespace
+      end
       self.uuid = struct[0]['http://fedora.info/definitions/v4/repository#uuid'].first['@value']
+
       # populate triples
       self.triples = []
       struct[0].select{ |k, v| k[0] != '@' }.each do |k, v|

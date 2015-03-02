@@ -2,7 +2,7 @@ module Fedora
 
   class Repository
 
-    TRANSFORM_NAME = 'kumquat'
+    TRANSFORM_NAME = 'kumquat' # TODO: rename to INDEXING_TRANSFORM_NAME
 
     ##
     # Creates or updates the Fedora indexing transform used by the application.
@@ -19,6 +19,7 @@ module Fedora
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
       web_id = kumquat:web_id :: xsd:string;
+      resource_type = kumquat:resource_type :: xsd:string;
       dc_contributor = dc:contributor :: xsd:string;
       dc_coverage = dc:coverage :: xsd:string;
       dc_creator = dc:creator :: xsd:string;
@@ -91,7 +92,7 @@ module Fedora
       dcterm_valid = dcterms:valid :: xsd:string;'
       http = HTTPClient.new
       url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
-    "/fedora:system/fedora:transform/fedora:ldpath/#{TRANSFORM_NAME}/fedora:Container"
+      "/fedora:system/fedora:transform/fedora:ldpath/#{TRANSFORM_NAME}/fedora:Container"
       http.put(url, body, { 'Content-Type' => 'application/rdf+ldpath' })
     end
 

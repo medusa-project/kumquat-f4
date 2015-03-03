@@ -57,13 +57,10 @@ module ItemsHelper
   # @param item Item
   #
   def triples_to_dl(item)
-    triples = []
-    item.triples.sort.each do |t|
-      triples << {
-          predicate: t.predicate,
-          label: t.label,
-          objects: []
-      }
+    # process the item's triples into an array of hashes, collapsing
+    # identical subjects
+    triples = item.triples.sort.map do |t|
+      { predicate: t.predicate, label: t.label, objects: [] }
     end
     item.triples.each do |t|
       triples.select{ |t2| t2[:predicate] == t.predicate }.first[:objects] << t.object
@@ -74,8 +71,7 @@ module ItemsHelper
       next if struct[:predicate].include?('http://fedora.info/definitions/')
       next if struct[:predicate].include?('http://example.org/') # TODO: fix this URI
       if struct[:objects].any?
-        dl += "<dt>#{I18n.t('uri_' + struct[:predicate].gsub('://', '_').tr(':/.', '_'),
-                            default: struct[:predicate])}</dt>"
+        dl += "<dt>#{struct[:label]}</dt>"
         struct[:objects].each do |object|
           dl += "<dd>#{object}</dd>"
         end

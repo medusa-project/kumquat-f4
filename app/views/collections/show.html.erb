@@ -3,6 +3,7 @@
 <% provide :active_nav, 'collections' %>
 
 <h1><%= @collection.title %>
+  <small><%= pluralize(@collection.num_items, 'item') %></small>
   <% if @collection.subtitle %>
     <br><small><%= @collection.subtitle %></small>
   <% end %>

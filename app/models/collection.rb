@@ -65,6 +65,16 @@ class Collection
     @fedora_container = fedora_container
   end
 
+  def num_items
+    unless @num_items
+      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+      query = "kq_collection_key:#{self.web_id}"
+      response = solr.get('select', params: { q: query, start: 0, rows: 0 })
+      @num_items = response['response']['numFound']
+    end
+    @num_items
+  end
+
   def persisted?
     !self.fedora_container.nil?
   end

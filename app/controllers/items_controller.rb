@@ -4,6 +4,14 @@ end
 
 class ItemsController < ApplicationController
 
+  class BrowseContext
+    BROWSE_ALL_ITEMS = 0
+    BROWSE_COLLECTION = 1
+    SEARCH = 2
+  end
+
+  before_action :set_browse_context, only: :index
+
   ##
   # Responds to GET /items/:web_id/bytestream
   #
@@ -41,6 +49,25 @@ class ItemsController < ApplicationController
   def show
     @item = Item.find_by_web_id(params[:web_id])
     render text: '404 Not Found', status: 404 unless @item
+  end
+
+  private
+
+  ##
+  # The browse context is "what the user is doing" -- necessary information in
+  # item view in which we need to know the "mode of entry" in order to display
+  # appropriate navigational controls, either "back to results" or "back to
+  # collection" etc.
+  #
+  def set_browse_context
+    session[:browse_context_url] = request.url
+    if !params[:q].blank?
+      session[:browse_context] = BrowseContext::SEARCH
+    elsif params[:collection_web_id]
+      session[:browse_context] = BrowseContext::BROWSE_COLLECTION
+    else
+      session[:browse_context] = BrowseContext::BROWSE_ALL_ITEMS
+    end
   end
 
 end

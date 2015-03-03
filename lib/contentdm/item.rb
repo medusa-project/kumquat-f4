@@ -9,6 +9,7 @@ module Contentdm
     attr_accessor :filename # string
     attr_accessor :full_text # string
     attr_accessor :pages # array of Items
+    attr_accessor :parent # Item
     attr_accessor :pointer # integer
     attr_accessor :source_path # string
     attr_accessor :updated # string date, yyyy-mm-dd
@@ -52,6 +53,7 @@ module Contentdm
               xpath("//page[pageptr = #{page.pointer}]/pagefile").first.content
             page.source_path = File.join(source_path, collection.alias,
                                          'image', page.filename)
+            page.parent = item
             item.pages << page
           end
         end
@@ -90,9 +92,12 @@ module Contentdm
     # @param f4_url
     # @param f4_json_structure JSON-LD structure in which to embed the
     # item's metadata
+    # @param parent_container_uuid string
+    # @param page_index integer
     # @return JSON string
     #
-    def to_json_ld(f4_url, f4_json_structure = nil)
+    def to_json_ld(f4_url, f4_json_structure, parent_container_uuid = nil,
+                   page_index = nil)
       f4_json_structure = [] unless f4_json_structure
       f4_metadata = f4_json_structure.
           select{ |h| h['@id'] == "#{f4_url}/fcr:metadata" }.first
@@ -112,6 +117,8 @@ module Contentdm
       f4_metadata['@context']['kumquat'] = ::Entity::NAMESPACE_URI
       f4_metadata['kumquat:resourceType'] = Fedora::ResourceType::ITEM
       f4_metadata['kumquat:webID'] = generate_web_id
+      f4_metadata['kumquat:parentUUID'] = parent_container_uuid if self.parent
+      f4_metadata['kumquat:pageIndex'] = page_index if self.parent
       f4_metadata['kumquat:collectionKey'] = self.collection.alias
 
       JSON.pretty_generate(f4_json_structure)

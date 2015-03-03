@@ -57,7 +57,7 @@ class ContentdmImporter
       doc = Nokogiri::XML(file)
       doc.xpath('//record').each do |record|
         item = Contentdm::Item.from_cdm_xml(@source_path, collection, record)
-        self.import_item(item, container.fedora_url)
+        self.import_item(item, container)
       end
     end
   end
@@ -66,34 +66,38 @@ class ContentdmImporter
   # Ingests an item and all of its pages (if a compound object).
   #
   # @param item Contentdm::Item
-  # @param container_url string
-  # @param make_indexable boolean
-  # @return string Resource URL from response Location header
+  # @param parent_container Fedora::Container
+  # @param page_index integer
+  # @return Fedora::Container
   #
-  def import_item(item, container_url, make_indexable = true)
+  def import_item(item, parent_container, page_index = nil)
     puts "#{item.collection.alias} #{item.pointer}"
 
-    # create a new item container
-    container = Fedora::Container.create(container_url, item.slug)
-    container.fedora_json_ld = item.to_json_ld(container.fedora_url,
-                                               JSON.parse(container.fedora_json_ld))
-    container.save
-    container.make_indexable if make_indexable
+    # create a new item container (Fedora analog of the CONTENTdm item)
+    item_container = Fedora::Container.create(parent_container.fedora_url,
+                                              item.slug)
+    item_container.fedora_json_ld = item.to_json_ld(
+        item_container.fedora_url, JSON.parse(item_container.fedora_json_ld),
+        parent_container.uuid, page_index)
+    item_container.save
+    item_container.make_indexable # TODO: Container.save should do this automatically
 
     # create a binary resource for the item's bytestream within the item
-    # container
+    # item_container
     pathname = item.pages.any? ? nil : item.master_file_pathname
     if item.url
-      Fedora::Bytestream.create(container, nil, nil, item.url)
+      Fedora::Bytestream.create(item_container, nil, nil, item.url)
     elsif pathname and File.exists?(pathname)
-      Fedora::Bytestream.create(container, nil, pathname)
+      Fedora::Bytestream.create(item_container, nil, pathname)
     end
 
     @solr.commit
 
-    item.pages.each { |p| self.import_item(p, container.fedora_url, false) }
+    item.pages.each_with_index do |p, i|
+      self.import_item(p, item_container, i)
+    end
 
-    container.fedora_url
+    item_container
   end
 
 end

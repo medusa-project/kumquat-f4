@@ -8,18 +8,19 @@ module Fedora
 
     attr_reader :children
     attr_accessor :collection_key
+    attr_accessor :parent_uuid
     attr_accessor :web_id
 
     ##
-    # @param container_url URL of the parent container
+    # @param parent_container_url URL of the parent container
     # @param slug Optional URL slug
     # @return Container
     #
-    def self.create(container_url, slug = nil)
-      slug_url = slug ? "#{container_url}/#{slug}" : container_url
-      response = slug ? @@http.put(slug_url) : @@http.post(container_url)
+    def self.create(parent_container_url, slug = nil)
+      slug_url = slug ? "#{parent_container_url}/#{slug}" : parent_container_url
+      response = slug ? @@http.put(slug_url) : @@http.post(parent_container_url)
       container = find(response.header['Location'].first)
-      container.container_url = container_url
+      container.container_url = parent_container_url
       container
     end
 
@@ -53,6 +54,9 @@ module Fedora
       if struct[0]["#{Entity::NAMESPACE_URI}collectionKey"]
         self.collection_key = struct[0]["#{Entity::NAMESPACE_URI}collectionKey"].first['@value']
       end
+      if struct[0]["#{Entity::NAMESPACE_URI}parentUUID"]
+        self.parent_uuid = struct[0]["#{Entity::NAMESPACE_URI}parentUUID"].first['@value']
+      end
     end
 
     def make_indexable
@@ -70,9 +74,9 @@ module Fedora
     ##
     # Persists the container. For this to work, the container must already have
     # a URL (e.g. fedora_url not nil), OR the container must have a parent
-    # container URL (e.g. container_url not nil).
+    # container URL (e.g. parent_container_url not nil).
     #
-    # @raise RuntimeError if container_url and fedora_url are both nil.
+    # @raise RuntimeError if parent_container_url and fedora_url are both nil.
     #
     def save
       if self.fedora_url
@@ -84,6 +88,7 @@ module Fedora
       else
         raise RuntimeError 'Container has no URL.'
       end
+      self.make_indexable
     end
 
   end

@@ -24,7 +24,7 @@ class ItemsController < ApplicationController
     solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
     @start = params[:start] ? params[:start].to_i : 0
-    base_query = "kq_resource_type:#{Fedora::ResourceType::ITEM}"
+    base_query = "kq_resource_type:#{Fedora::ResourceType::ITEM} AND -kq_parent_uuid:[* TO *]"
     if params[:collection_web_id]
       @collection = Collection.find_by_web_id(params[:collection_web_id])
       base_query += " AND kq_collection_key:#{@collection.web_id}"

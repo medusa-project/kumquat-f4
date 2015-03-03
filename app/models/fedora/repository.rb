@@ -17,6 +17,8 @@ module Fedora
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
+      kq_page_index = kumquat:pageIndex :: xsd:integer;
+      kq_parent_uuid = kumquat:parentUUID :: xsd:string;
       kq_web_id = kumquat:webID :: xsd:string;
       kq_collection_key = kumquat:collectionKey :: xsd:string;
       kq_resource_type = kumquat:resourceType :: xsd:string;

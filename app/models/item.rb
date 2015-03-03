@@ -8,6 +8,7 @@ class Item < Entity
   @@http = HTTPClient.new
 
   attr_reader :children
+  attr_accessor :collection
   attr_reader :fedora_container
   attr_accessor :solr_representation
 
@@ -50,19 +51,27 @@ class Item < Entity
     item
   end
 
+  def initialize(fedora_container)
+    @children = []
+    @fedora_container = fedora_container
+  end
+
   def children
     self.fedora_container.children.each{ |c| @children << Item.new(c) } unless
         @children.any?
     @children
   end
 
-  def delete(also_tombstone = false)
-    self.fedora_container.delete(also_tombstone)
+  def collection
+    unless @collection
+      @collection = Collection.find_by_web_id(
+          self.solr_representation['kq_collection_key'])
+    end
+    @collection
   end
 
-  def initialize(fedora_container)
-    @children = []
-    @fedora_container = fedora_container
+  def delete(also_tombstone = false)
+    self.fedora_container.delete(also_tombstone)
   end
 
   def persisted?

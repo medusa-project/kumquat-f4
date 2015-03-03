@@ -77,6 +77,11 @@ class Item
     self.web_id
   end
 
+  def save
+    self.fedora_container.save
+    # TODO: save associated dirty entities (bytestreams, collection)
+  end
+
   def subtitle
     t = self.triples.select do |e|
       e.predicate.include?('http://purl.org/dc/terms/alternative')

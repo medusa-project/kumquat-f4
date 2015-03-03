@@ -87,6 +87,10 @@ class Collection
     self.web_id
   end
 
+  def save
+    self.fedora_container.save
+  end
+
   def subtitle
     t = self.triples.select do |e|
       e.predicate.include?('http://purl.org/dc/terms/alternative')

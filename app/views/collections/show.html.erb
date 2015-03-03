@@ -38,7 +38,7 @@
       <h2 class="panel-title">Solr JSON</h2>
     </div>
     <div class="panel-body">
-      <pre><%= @collection.solr_representation %></pre>
+      <pre><%= JSON.pretty_generate(@collection.solr_representation) %></pre>
     </div>
   </div>
 

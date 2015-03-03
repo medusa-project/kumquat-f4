@@ -29,7 +29,7 @@ module Fedora
     end
 
     def fedora_json_ld=(json)
-      @fedora_json_ld = json
+      @fedora_json_ld = json.force_encoding('UTF-8')
       struct = JSON.parse(json).select do |node|
         node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
       end

@@ -18,7 +18,8 @@ class ItemsController < ApplicationController
     @start = params[:start] ? params[:start].to_i : 0
     base_query = "kq_resource_type:#{Fedora::ResourceType::ITEM}"
     if params[:collection_web_id]
-      base_query += " AND kq_collection_key:#{params[:collection_web_id]}"
+      @collection = Collection.find_by_web_id(params[:collection_web_id])
+      base_query += " AND kq_collection_key:#{@collection.web_id}"
     end
     # TODO: search over fields other than title
     user_query = "dc_title:#{params[:q]} AND #{base_query}"

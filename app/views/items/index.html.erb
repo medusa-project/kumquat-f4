@@ -1,6 +1,15 @@
 <% provide(:title, 'Items') %>
 <% provide(:body_id, 'items') %>
 
+<% if @collection %>
+  <% provide(:active_nav, 'collections') %>
+  <h1><%= @collection.title %>
+    <% if @collection.subtitle %>
+      <br><small><%= @collection.subtitle %></small>
+    <% end %>
+  </h1>
+<% end %>
+
 <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
   <%= @items.total_length %> items</p>
 

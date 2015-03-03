@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   include SessionsHelper
 
-  before_filter :setup
+  before_action :setup
 
   attr_reader :executor
 

@@ -4,7 +4,7 @@ module Admin
 
     layout 'admin/application'
 
-    before_filter :signed_in_user, :can_access_control_panel
+    before_action :signed_in_user, :can_access_control_panel
 
     private
 

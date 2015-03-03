@@ -51,8 +51,13 @@ class Collection
   end
 
   def items
-    self.fedora_container.items.each{ |c| @items << Item.new(c) } unless
-        @items.any?
+    unless @items.any?
+      self.fedora_container.items.each do |c|
+        item = Item.new(c)
+        item.collection = self
+        @items << item
+      end
+    end
     @items
   end
 

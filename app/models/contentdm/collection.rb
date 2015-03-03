@@ -104,7 +104,7 @@ module Contentdm
         f4_metadata["#{element.namespace_prefix}:#{element_name}"] = element.value
       end
 
-      f4_metadata['@context']['kumquat'] = 'http://example.org/' # TODO: fix
+      f4_metadata['@context']['kumquat'] = Entity::NAMESPACE_URI
       f4_metadata['kumquat:resourceType'] = Fedora::ResourceType::COLLECTION
       f4_metadata['kumquat:webID'] = self.alias
       f4_metadata['kumquat:collectionKey'] = self.alias

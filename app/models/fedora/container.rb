@@ -50,8 +50,8 @@ module Fedora
           @children << Bytestream.new(fedora_url: node['@id']) # TODO: make this either a Bytestream or Container
         end
       end
-      if struct[0]['http://example.org/collectionKey']
-        self.collection_key = struct[0]['http://example.org/collectionKey'].first['@value'] # TODO: fix namespace
+      if struct[0]["#{Entity::NAMESPACE_URI}collectionKey"]
+        self.collection_key = struct[0]["#{Entity::NAMESPACE_URI}collectionKey"].first['@value']
       end
     end
 

@@ -34,11 +34,11 @@ module Fedora
         node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
       end
 
-      if struct[0]['http://example.org/webID']
-        self.web_id = struct[0]['http://example.org/webID'].first['@value'] # TODO: fix namespace
+      if struct[0]["#{Entity::NAMESPACE_URI}webID"]
+        self.web_id = struct[0]["#{Entity::NAMESPACE_URI}webID"].first['@value']
       end
-      if struct[0]['http://example.org/resourceType']
-        self.resource_type = struct[0]['http://example.org/resourceType'].first['@value'] # TODO: fix namespace
+      if struct[0]["#{Entity::NAMESPACE_URI}resourceType"]
+        self.resource_type = struct[0]["#{Entity::NAMESPACE_URI}resourceType"].first['@value']
       end
       self.uuid = struct[0]['http://fedora.info/definitions/v4/repository#uuid'].first['@value']
 

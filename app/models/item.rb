@@ -1,4 +1,4 @@
-class Item
+class Item < Entity
 
   extend ActiveModel::Naming
   extend Forwardable

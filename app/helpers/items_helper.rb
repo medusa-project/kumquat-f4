@@ -69,7 +69,7 @@ module ItemsHelper
     dl = '<dl>'
     triples.each do |struct|
       next if struct[:predicate].include?('http://fedora.info/definitions/')
-      next if struct[:predicate].include?('http://example.org/') # TODO: fix this URI
+      next if struct[:predicate].include?(Entity::NAMESPACE_URI)
       if struct[:objects].any?
         dl += "<dt>#{struct[:label]}</dt>"
         struct[:objects].each do |object|

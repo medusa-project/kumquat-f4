@@ -1,4 +1,4 @@
-class Collection
+class Collection < Entity
 
   extend ActiveModel::Naming
   extend Forwardable

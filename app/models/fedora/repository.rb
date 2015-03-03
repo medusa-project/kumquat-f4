@@ -10,11 +10,10 @@ module Fedora
     # https://wiki.duraspace.org/display/FEDORA41/Indexing+Transformations
     #
     def apply_indexing_transform
-      # TODO: fix kumquat namespace
-      body = '@prefix fcrepo : <http://fedora.info/definitions/v4/repository#>
+      body = "@prefix fcrepo : <http://fedora.info/definitions/v4/repository#>
       @prefix dc : <http://purl.org/dc/elements/1.1/>
       @prefix dcterms : <http://purl.org/dc/terms/>
-      @prefix kumquat : <http://example.org/>
+      @prefix kumquat : <#{Entity::NAMESPACE_URI}>
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
@@ -90,7 +89,7 @@ module Fedora
       dcterm_temporal = dcterms:temporal :: xsd:string;
       dcterm_title = dcterms:title :: xsd:string;
       dcterm_type = dcterms:type :: xsd:string;
-      dcterm_valid = dcterms:valid :: xsd:string;'
+      dcterm_valid = dcterms:valid :: xsd:string;"
       http = HTTPClient.new
       url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
       "/fedora:system/fedora:transform/fedora:ldpath/#{TRANSFORM_NAME}/fedora:Container"

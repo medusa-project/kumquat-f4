@@ -46,12 +46,8 @@ class Collection < Entity
   end
 
   def num_items
-    unless @num_items
-      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-      query = "kq_collection_key:#{self.web_id} AND -kq_parent_uuid:[* TO *]"
-      response = solr.get('select', params: { q: query, start: 0, rows: 0 })
-      @num_items = response['response']['numFound']
-    end
+    @num_items = Item.where(kq_collection_key: self.web_id).
+        where('-kq_parent_uuid:[* TO *]').count unless @num_items
     @num_items
   end
 

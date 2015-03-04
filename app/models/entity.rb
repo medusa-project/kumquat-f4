@@ -59,7 +59,7 @@ class Entity
   end
 
   def self.method_missing(name, *args, &block)
-    if [:first, :limit, :order, :start, :where].include?(name.to_sym)
+    if [:count, :first, :limit, :order, :start, :where].include?(name.to_sym)
       ActiveKumquat::Entity.new(self).send(name, *args, &block)
     end
   end

@@ -17,6 +17,12 @@ module ActiveKumquat
       @where_conditions = [] # will be joined by AND
     end
 
+    def count
+      @start = 0
+      @limit = 0
+      self.to_a.total_length
+    end
+
     def first
       self.limit = 1
       self.to_a.first

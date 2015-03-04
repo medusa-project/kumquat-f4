@@ -85,7 +85,7 @@ module Fedora
         @@http.post(self.container_url, self.fedora_json_ld,
                     { 'Content-Type' => 'application/ld+json' })
       else
-        raise RuntimeError 'Container has no URL.'
+        raise RuntimeError, 'Container has no URL.'
       end
       self.make_indexable
     end

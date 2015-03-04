@@ -11,6 +11,8 @@ class Entity
 
   @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
+  attr_accessor :solr_representation
+
   ##
   # @return ActiveKumquat::ResultSet
   #
@@ -35,7 +37,7 @@ class Entity
     record = response['response']['docs'].first
     entity = nil
     if record
-      entity = self.new(Fedora::Container.find(record['id']))
+      entity = self.new(fedora_container: Fedora::Container.find(record['id']))
       entity.solr_representation = record if entity
     end
     entity
@@ -50,7 +52,7 @@ class Entity
     record = response['response']['docs'].first
     entity = nil
     if record
-      entity = self.new(Fedora::Container.find(record['id']))
+      entity = self.new(fedora_container: Fedora::Container.find(record['id']))
       entity.solr_representation = record if entity
     end
     entity

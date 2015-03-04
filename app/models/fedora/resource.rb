@@ -20,6 +20,7 @@ module Fedora
           instance_variable_set "@#{k}", v
         end
       end
+      self.container_url ||= Kumquat::Application.kumquat_config[:fedora_url]
     end
 
     def delete(also_tombstone = false)

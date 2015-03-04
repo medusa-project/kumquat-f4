@@ -2,6 +2,12 @@
 <% provide :body_id, 'collections_index' %>
 <% provide :active_nav, 'collections' %>
 
+<div class="btn-group pull-right">
+  <%= link_to new_admin_collection_path, class: 'btn btn-default' do %>
+    <i class="fa fa-cubes"></i> Add Collection
+  <% end %>
+</div>
+
 <h1>Collections <small><%= @collections.total_length %> total</small></h1>
 
 <ul>

@@ -12,14 +12,19 @@ class Item < Entity
   attr_reader :children
   attr_accessor :collection
   attr_reader :fedora_container
-  attr_accessor :solr_representation
 
-  ##
-  # @param fedora_container Fedora::Container
-  #
-  def initialize(fedora_container)
+  def initialize(params = {})
     @children = []
-    @fedora_container = fedora_container
+    params[:fedora_container] ||= Fedora::Container.new
+    @fedora_container = params[:fedora_container]
+
+    params.each do |k, v|
+      if respond_to?("#{k}=")
+        send "#{k}=", v
+      else
+        instance_variable_set "@#{k}", v
+      end
+    end
   end
 
   def ==(other)

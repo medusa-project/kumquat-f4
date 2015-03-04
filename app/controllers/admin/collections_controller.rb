@@ -70,7 +70,7 @@ module Admin
         flash[:error] = "#{e}"
         render 'edit'
       else
-        flash[:success] = "Collection \"#{@collection.name}\" updated."
+        flash[:success] = "Collection \"#{@collection.title}\" updated."
         redirect_to admin_collection_url(@collection)
       end
     end
@@ -88,8 +88,7 @@ module Admin
     end
 
     def sanitized_params
-      params.require(:role).permit(:key, :name, permission_ids: [],
-                                   user_ids: [])
+      params.require(:collection).permit(:key, :title)
     end
 
     def update_rbac

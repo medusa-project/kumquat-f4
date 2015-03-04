@@ -102,7 +102,7 @@ module ActiveKumquat
                                           sort: @order,
                                           rows: @limit })
         response['response']['docs'].each do |doc|
-          entity = @caller.new(Fedora::Container.find(doc['id']))
+          entity = @caller.new(fedora_container: Fedora::Container.find(doc['id']))
           entity.solr_representation = doc.to_s
           @results << entity
         end

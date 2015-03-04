@@ -11,10 +11,11 @@ class Role < ActiveRecord::Base
   validates :name, presence: true, length: { maximum: 255 },
             uniqueness: { case_sensitive: false }
 
-  # TODO: assign all permissions whenever the admin role is loaded
-
-  def readonly?
-    self.key == 'admin'
+  def after_initialize
+    if self.key == 'admin'
+      self.permissions = Permission.all
+      self.save!
+    end
   end
 
   def to_param

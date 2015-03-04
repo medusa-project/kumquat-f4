@@ -5,26 +5,14 @@ end
 class CollectionsController < ApplicationController
 
   def index
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    @limit = Kumquat::Application.kumquat_config[:results_per_page]
     @start = params[:start] ? params[:start].to_i : 0
-    base_query = "kq_resource_type:#{Fedora::ResourceType::COLLECTION}"
+    @limit = Kumquat::Application.kumquat_config[:results_per_page]
     # TODO: search over fields other than title
-    user_query = "dc_title:#{params[:q]} AND #{base_query}"
-    response = solr.get('select', params: {
-                                    q: !params[:q].blank? ? user_query : base_query,
-                                    df: 'dc_title',
-                                    start: @start,
-                                    sort: 'dc_title asc',
-                                    rows: @limit })
-    @num_results_shown = response['response']['docs'].length
-    @collections = response['response']['docs'].map do |doc|
-      item = Collection.find(doc['id'])
-      item.solr_representation = doc.to_s
-      item
-    end
-    @collections.total_length = response['response']['numFound'].to_i
-    @current_page = (@start / @limit.to_f).ceil + 1
+    query = !params[:q].blank? ? "dc_title:#{params[:q]}" : nil
+    @collections = Collection.where(query).order(:dc_title).start(@start).
+        limit(@limit)
+    @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
+    @num_shown = [@limit, @collections.total_length].min
   end
 
   def show

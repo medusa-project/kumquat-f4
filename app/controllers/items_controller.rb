@@ -5,9 +5,9 @@ end
 class ItemsController < ApplicationController
 
   class BrowseContext
-    BROWSE_ALL_ITEMS = 0
-    BROWSE_COLLECTION = 1
-    SEARCH = 2
+    BROWSING_ALL_ITEMS = 0
+    BROWSING_COLLECTION = 1
+    SEARCHING = 2
   end
 
   before_action :set_browse_context, only: :index
@@ -21,29 +21,17 @@ class ItemsController < ApplicationController
   end
 
   def index
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    @limit = Kumquat::Application.kumquat_config[:results_per_page]
     @start = params[:start] ? params[:start].to_i : 0
-    base_query = "kq_resource_type:#{Fedora::ResourceType::ITEM} AND -kq_parent_uuid:[* TO *]"
+    @limit = Kumquat::Application.kumquat_config[:results_per_page]
+    # TODO: search over fields other than title
+    @items = Item.all.where('-kq_parent_uuid:[* TO *]').where(params[:q])
     if params[:collection_web_id]
       @collection = Collection.find_by_web_id(params[:collection_web_id])
-      base_query += " AND kq_collection_key:#{@collection.web_id}"
+      @items = @items.where(kq_collection_key: @collection.web_id)
     end
-    # TODO: search over fields other than title
-    user_query = "dc_title:#{params[:q]} AND #{base_query}"
-    response = solr.get('select', params: {
-                                    q: !params[:q].blank? ? user_query : base_query,
-                                    df: 'dc_title',
-                                    start: @start,
-                                    rows: @limit })
-    @num_results_shown = response['response']['docs'].length
-    @items = response['response']['docs'].map do |doc|
-      item = Item.find(doc['id'])
-      item.solr_representation = doc.to_s
-      item
-    end
-    @items.total_length = response['response']['numFound'].to_i
-    @current_page = (@start / @limit.to_f).ceil + 1
+    @items = @items.order(:dc_title).start(@start).limit(@limit)
+    @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
+    @num_results_shown = [@limit, @items.total_length].min
   end
 
   def show
@@ -62,11 +50,11 @@ class ItemsController < ApplicationController
   def set_browse_context
     session[:browse_context_url] = request.url
     if !params[:q].blank?
-      session[:browse_context] = BrowseContext::SEARCH
-    elsif params[:collection_web_id]
-      session[:browse_context] = BrowseContext::BROWSE_COLLECTION
+      session[:browse_context] = BrowseContext::SEARCHING
+    elsif !params[:collection_web_id]
+      session[:browse_context] = BrowseContext::BROWSING_ALL_ITEMS
     else
-      session[:browse_context] = BrowseContext::BROWSE_ALL_ITEMS
+      session[:browse_context] = BrowseContext::BROWSING_COLLECTION
     end
   end
 

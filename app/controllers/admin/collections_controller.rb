@@ -42,23 +42,11 @@ module Admin
     end
 
     def index
-      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-      @limit = Kumquat::Application.kumquat_config[:results_per_page]
       @start = params[:start] ? params[:start].to_i : 0
-      query = "kq_resource_type:#{Fedora::ResourceType::COLLECTION}"
-      response = solr.get('select', params: {
-                                      q: query,
-                                      start: @start,
-                                      sort: 'dc_title asc',
-                                      rows: @limit })
-      @num_results_shown = response['response']['docs'].length
-      @collections = response['response']['docs'].map do |doc|
-        collection = Collection.find(doc['id'])
-        collection.solr_representation = doc.to_s
-        collection
-      end
-      @collections.total_length = response['response']['numFound'].to_i
-      @current_page = (@start / @limit.to_f).ceil + 1
+      @limit = Kumquat::Application.kumquat_config[:results_per_page]
+      @collections = Collection.order(:dc_title).start(@start).limit(@limit)
+      @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
+      @num_shown = [@limit, @collections.total_length].min
     end
 
     def new

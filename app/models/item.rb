@@ -5,49 +5,14 @@ class Item < Entity
   delegate [:fedora_json_ld, :fedora_url, :triples, :uuid, :web_id] =>
                :fedora_container
 
+  RESOURCE_TYPE = Fedora::ResourceType::ITEM
+
   @@http = HTTPClient.new
 
   attr_reader :children
   attr_accessor :collection
   attr_reader :fedora_container
   attr_accessor :solr_representation
-
-  ##
-  # @param uri Fedora resource URI
-  # @return Item
-  #
-  def self.find(uri) # TODO: rename to find_by_uri
-    Item.new(Fedora::Container.find(uri))
-  end
-
-  ##
-  # @param uuid string
-  # @return Item
-  #
-  def self.find_by_uuid(uuid)
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    response = solr.get('select', params: { q: "uuid:#{uuid}" })
-    record = response['response']['docs'].first
-    item = Item.find(record['id'])
-    item.solr_representation = record
-    item
-  end
-
-  ##
-  # @param web_id string
-  # @return Item
-  #
-  def self.find_by_web_id(web_id)
-    solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-    response = solr.get('select', params: { q: "kq_web_id:#{web_id}" })
-    record = response['response']['docs'].first
-    item = nil
-    if record
-      item = Item.find(record['id'])
-      item.solr_representation = record if item
-    end
-    item
-  end
 
   ##
   # @param fedora_container Fedora::Container
@@ -58,23 +23,15 @@ class Item < Entity
   end
 
   def ==(other)
-    other.kind_of?(Item) and (self.uuid == other.uuid)
+    other.kind_of?(Item) and self.uuid == other.uuid
   end
 
   ##
   # @return array of Items
   #
   def children
-    unless @children.any?
-      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
-      response = solr.get('select', params: { q: "kq_parent_uuid:#{self.uuid}",
-                                              sort: 'kq_page_index asc' })
-      response['response']['docs'].each do |doc|
-        item = Item.find(doc['id'])
-        item.solr_representation = doc
-        @children << item
-      end
-    end
+    @children = Item.all.where(kq_parent_uuid: self.uuid).
+        order(:kq_page_index) unless @children.any?
     @children
   end
 
@@ -82,10 +39,8 @@ class Item < Entity
   # @return Collection
   #
   def collection
-    unless @collection
-      @collection = Collection.find_by_web_id(
-          self.solr_representation['kq_collection_key'])
-    end
+    @collection = Collection.find_by_web_id(
+        self.solr_representation['kq_collection_key']) unless @collection
     @collection
   end
 

@@ -6,7 +6,6 @@ module Fedora
   #
   class Container < Resource
 
-    attr_reader :children
     attr_accessor :collection_key
     attr_accessor :parent_uuid
     attr_accessor :web_id

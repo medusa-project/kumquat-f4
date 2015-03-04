@@ -16,7 +16,7 @@ class Item < Entity
   # @param uri Fedora resource URI
   # @return Item
   #
-  def self.find(uri)
+  def self.find(uri) # TODO: rename to find_by_uri
     Item.new(Fedora::Container.find(uri))
   end
 
@@ -44,24 +44,43 @@ class Item < Entity
     item = nil
     if record
       item = Item.find(record['id'])
-      if item
-        item.solr_representation = record
-      end
+      item.solr_representation = record if item
     end
     item
   end
 
+  ##
+  # @param fedora_container Fedora::Container
+  #
   def initialize(fedora_container)
     @children = []
     @fedora_container = fedora_container
   end
 
+  def ==(other)
+    other.kind_of?(Item) and (self.uuid == other.uuid)
+  end
+
+  ##
+  # @return array of Items
+  #
   def children
-    self.fedora_container.children.each{ |c| @children << Item.new(c) } unless
-        @children.any?
+    unless @children.any?
+      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+      response = solr.get('select', params: { q: "kq_parent_uuid:#{self.uuid}",
+                                              sort: 'kq_page_index asc' })
+      response['response']['docs'].each do |doc|
+        item = Item.find(doc['id'])
+        item.solr_representation = doc
+        @children << item
+      end
+    end
     @children
   end
 
+  ##
+  # @return Collection
+  #
   def collection
     unless @collection
       @collection = Collection.find_by_web_id(
@@ -72,6 +91,17 @@ class Item < Entity
 
   def delete(also_tombstone = false)
     self.fedora_container.delete(also_tombstone)
+  end
+
+  ##
+  # @return Item
+  #
+  def parent
+    unless @parent
+      uuid = self.solr_representation['kq_parent_uuid']
+      @parent = Item.find_by_uuid(uuid) if uuid
+    end
+    @parent
   end
 
   def persisted?
@@ -91,6 +121,7 @@ class Item < Entity
     # TODO: save associated dirty entities (bytestreams, collection)
   end
 
+  # TODO: get rid of this
   def subtitle
     t = self.triples.select do |e|
       e.predicate.include?('http://purl.org/dc/terms/alternative')

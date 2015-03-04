@@ -2,6 +2,12 @@
 <% provide :body_id, 'collections_show' %>
 <% provide :active_nav, 'collections' %>
 
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', root_path %></li>
+  <li><%= link_to 'Collections', collections_path %></li>
+  <li class="active"><%= truncate(@collection.title, length: 50) %></li>
+</ol>
+
 <h1><%= @collection.title %>
   <small><%= pluralize(@collection.num_items, 'item') %></small>
   <% if @collection.subtitle %>

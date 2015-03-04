@@ -23,6 +23,9 @@ class Permission < ActiveRecord::Base
             uniqueness: { case_sensitive: false }
 
   CONTROL_PANEL_ACCESS = 'control_panel.access'
+  COLLECTIONS_CREATE = 'collections.create'
+  COLLECTIONS_DELETE = 'collections.delete'
+  COLLECTIONS_UPDATE = 'collections.update'
   ROLES_CREATE = 'roles.create'
   ROLES_DELETE = 'roles.delete'
   ROLES_UPDATE = 'roles.update'

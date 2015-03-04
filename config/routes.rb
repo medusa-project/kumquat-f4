@@ -62,6 +62,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
+    resources :collections, param: :web_id
+    resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',
           via: 'get', as: 'server_image_server_status'
@@ -71,7 +73,6 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
     match '/server/update-index', to: 'server#update_index',
           via: 'patch', as: 'server_update_index'
-    resources :roles, param: :key
     resources :users, param: :username, only: [:index, :show]
   end
 

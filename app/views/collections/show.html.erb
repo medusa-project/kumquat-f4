@@ -44,7 +44,9 @@
 <% if Rails.env.development? %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Solr JSON</h2>
+      <h2 class="panel-title">
+        Solr JSON <small>(this will not appear in production)</small>
+      </h2>
     </div>
     <div class="panel-body">
       <pre><%= JSON.pretty_generate(@collection.solr_representation) %></pre>
@@ -53,7 +55,9 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Fedora JSON-LD</h2>
+      <h2 class="panel-title">
+        Fedora JSON-LD <small>(this will not appear in production)</small>
+      </h2>
     </div>
     <div class="panel-body">
       <pre><%= @collection.fedora_json_ld %></pre>

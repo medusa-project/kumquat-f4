@@ -74,7 +74,7 @@ class Entity
   end
 
   def initialize(params = {})
-    @fedora_json_ld = {}
+    @fedora_json_ld = fedora_json_ld_skeleton
     @triples = []
 
     params.each do |k, v|
@@ -149,7 +149,6 @@ class Entity
     else
       raise RuntimeError 'Container has no URL.'
     end
-    self.make_indexable
   end
 
   alias_method :save!, :save
@@ -164,16 +163,20 @@ class Entity
     "#{self.fedora_url.chomp('/')}/fcr:metadata"
   end
 
-  def make_indexable # TODO: get rid of this
-    headers = { 'Content-Type' => 'application/sparql-update' }
-    body = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '\
-      'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
-      'DELETE { } '\
-      'INSERT { '\
-        "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::TRANSFORM_NAME}\"; "\
-        'rdf:type indexing:Indexable; } '\
-      'WHERE { }'
-    @@http.patch(self.fedora_metadata_url, body, headers)
+  private
+
+  ##
+  # @return Hash
+  #
+  def fedora_json_ld_skeleton
+    {
+        '@context' => {
+            'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'indexing' => 'http://fedora.info/definitions/v4/indexing#'
+        },
+        'indexing:hasIndexingTransformation' => Fedora::Repository::TRANSFORM_NAME,
+        'rdf:type' => 'indexing:Indexable'
+    }
   end
 
 end

@@ -50,7 +50,6 @@ class ContentdmImporter
     container.fedora_json_ld = collection.to_json_ld(container.fedora_url,
                                                      JSON.parse(container.fedora_json_ld))
     container.save
-    container.make_indexable
 
     File.open(File.join(File.expand_path(@source_path),
                         collection.alias + '.xml')) do |file|
@@ -80,7 +79,6 @@ class ContentdmImporter
         item_container.fedora_url, JSON.parse(item_container.fedora_json_ld),
         parent_container.uuid, page_index)
     item_container.save
-    item_container.make_indexable # TODO: Container.save should do this automatically
 
     # create a binary resource for the item's bytestream within the item
     # item_container

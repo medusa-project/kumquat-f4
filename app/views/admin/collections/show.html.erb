@@ -1,0 +1,55 @@
+<% provide :title, @collection.title %>
+<% provide :body_id, 'collections_show' %>
+<% provide :active_nav, 'collections' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li><%= link_to 'Collections', admin_collections_path %></li>
+  <li class="active"><%= truncate(@collection.title, length: 50) %></li>
+</ol>
+
+<div class="btn-group pull-right">
+  <%= link_to edit_admin_collection_path(@collection), class: 'btn btn-default' do %>
+    <i class="fa fa-pencil-square-o"></i> Edit
+  <% end %>
+</div>
+
+<h1><%= @collection.title %>
+  <small><%= pluralize(@collection.num_items, 'item') %></small>
+  <% if @collection.subtitle %>
+      <br><small><%= @collection.subtitle %></small>
+  <% end %>
+</h1>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">Triples</h2>
+  </div>
+  <div class="panel-body">
+    <%= triples_to_dl(@collection, show_uris: true) %>
+  </div>
+</div>
+
+<% if Rails.env.development? %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        Solr JSON <small>(this will not appear in production)</small>
+      </h2>
+    </div>
+    <div class="panel-body">
+      <pre><%= JSON.pretty_generate(@collection.solr_representation) %></pre>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        Fedora JSON-LD <small>(this will not appear in production)</small>
+      </h2>
+    </div>
+    <div class="panel-body">
+      <pre><%= JSON.pretty_generate(@collection.fedora_json_ld) %></pre>
+    </div>
+  </div>
+<% end %>

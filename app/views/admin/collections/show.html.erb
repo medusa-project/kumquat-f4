@@ -17,7 +17,7 @@
 <h1><%= @collection.title %>
   <small><%= pluralize(@collection.num_items, 'item') %></small>
   <% if @collection.subtitle %>
-      <br><small><%= @collection.subtitle %></small>
+    <br><small><%= @collection.subtitle %></small>
   <% end %>
 </h1>
 
@@ -30,26 +30,9 @@
   </div>
 </div>
 
-<% if Rails.env.development? %>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">
-        Solr JSON <small>(this will not appear in production)</small>
-      </h2>
-    </div>
-    <div class="panel-body">
-      <pre><%= JSON.pretty_generate(@collection.solr_representation) %></pre>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">
-        Fedora JSON-LD <small>(this will not appear in production)</small>
-      </h2>
-    </div>
-    <div class="panel-body">
-      <pre><%= JSON.pretty_generate(@collection.fedora_json_ld) %></pre>
-    </div>
-  </div>
-<% end %>
+<%= render partial: 'shared/code_panel',
+           locals: { title: 'Solr JSON',
+                     body: JSON.pretty_generate(@collection.solr_representation) } %>
+<%= render partial: 'shared/code_panel',
+           locals: { title: 'Fedora JSON-LD',
+                     body: JSON.pretty_generate(@collection.fedora_json_ld) } %>

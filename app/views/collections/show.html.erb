@@ -42,25 +42,10 @@
 </div>
 
 <% if Rails.env.development? %>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">
-        Solr JSON <small>(this will not appear in production)</small>
-      </h2>
-    </div>
-    <div class="panel-body">
-      <pre><%= JSON.pretty_generate(@collection.solr_representation) %></pre>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">
-        Fedora JSON-LD <small>(this will not appear in production)</small>
-      </h2>
-    </div>
-    <div class="panel-body">
-      <pre><%= JSON.pretty_generate(@collection.fedora_json_ld) %></pre>
-    </div>
-  </div>
+  <%= render partial: 'shared/code_panel',
+             locals: { title: 'Solr JSON',
+                       body: JSON.pretty_generate(@collection.solr_representation) } %>
+  <%= render partial: 'shared/code_panel',
+             locals: { title: 'Fedora JSON-LD',
+                       body: JSON.pretty_generate(@collection.fedora_json_ld) } %>
 <% end %>

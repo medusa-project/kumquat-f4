@@ -2,6 +2,12 @@
 <% provide :body_id, 'collections_new' %>
 <% provide :active_nav, 'collections' %>
 
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li><%= link_to 'Collections', admin_collections_path %></li>
+  <li class="active">New Collection</li>
+</ol>
+
 <h1>New Collection</h1>
 
 <%= form_for [:admin, @collection], method: :post do |f| %>

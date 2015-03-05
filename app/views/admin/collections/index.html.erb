@@ -2,9 +2,14 @@
 <% provide :body_id, 'collections_index' %>
 <% provide :active_nav, 'collections' %>
 
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li class="active">Collections</li>
+</ol>
+
 <div class="btn-group pull-right">
   <%= link_to new_admin_collection_path, class: 'btn btn-default' do %>
-    <i class="fa fa-cubes"></i> Add Collection
+    <i class="fa fa-cubes"></i> New Collection
   <% end %>
 </div>
 

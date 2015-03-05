@@ -22,8 +22,8 @@ module ActiveKumquat
       @array.send(name, *args, &block)
     end
 
-    def respond_to_missing?(method_name, include_private = false)
-      @array.respond_to?(method_name) || super
+    def respond_to_missing?(method_name, include_private = true)
+      @array.respond_to?(method_name, include_private)
     end
 
   end

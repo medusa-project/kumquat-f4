@@ -115,7 +115,7 @@ module Contentdm
       end
 
       f4_metadata['@context']['kumquat'] = ::Entity::NAMESPACE_URI
-      f4_metadata['kumquat:resourceType'] = Fedora::ResourceType::ITEM
+      f4_metadata['kumquat:resourceType'] = Entity::Type::ITEM
       f4_metadata['kumquat:webID'] = generate_web_id
       f4_metadata['kumquat:parentUUID'] = parent_container_uuid if self.parent
       f4_metadata['kumquat:pageIndex'] = page_index if self.parent

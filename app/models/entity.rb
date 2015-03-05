@@ -5,22 +5,34 @@ class Entity
 
   include ActiveModel::Model
 
+  class Type
+    BYTESTREAM = 'bytestream'
+    COLLECTION = 'collection'
+    ITEM = 'item'
+  end
+
   ##
   # Namespace URI for application-specific metadata. Must end with a slash or
   # hash!
   #
-  NAMESPACE_URI = 'http://example.org/' # TODO: fix
+  NAMESPACE_URI = 'http://example.org/' # TODO: fix and move
 
+  @@http = HTTPClient.new
   @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
-  delegate :fedora_json_ld, :fedora_url, :triples, :uuid, :web_id,
-           to: :fedora_container
-
-  attr_reader :fedora_container
+  attr_accessor :container_url # URL of the entity's parent container
+  attr_accessor :fedora_json_ld
+  attr_accessor :fedora_url
+  attr_accessor :parent_uuid
   attr_accessor :solr_representation
+  attr_accessor :triples
+  attr_accessor :uuid
+  attr_accessor :web_id
+
+  validates :title, length: { minimum: 2, maximum: 200 }
 
   ##
-  # @return ActiveKumquat::ResultSet
+  # @return ActiveKumquat::Entity
   #
   def self.all
     ActiveKumquat::Entity.new(self)
@@ -31,7 +43,7 @@ class Entity
   # @return Entity
   #
   def self.find(uri) # TODO: rename to find_by_uri
-    self.new(Fedora::Container.find(uri))
+    self.where(id: uri).first
   end
 
   ##
@@ -39,14 +51,7 @@ class Entity
   # @return Entity
   #
   def self.find_by_uuid(uuid)
-    response = @@solr.get('select', params: { q: "uuid:#{uuid}" })
-    record = response['response']['docs'].first
-    entity = nil
-    if record
-      entity = self.new(fedora_container: Fedora::Container.find(record['id']))
-      entity.solr_representation = record if entity
-    end
-    entity
+    self.where(uuid: uuid).first
   end
 
   ##
@@ -54,14 +59,7 @@ class Entity
   # @return Entity
   #
   def self.find_by_web_id(web_id)
-    response = @@solr.get('select', params: { q: "kq_web_id:#{web_id}" })
-    record = response['response']['docs'].first
-    entity = nil
-    if record
-      entity = self.new(fedora_container: Fedora::Container.find(record['id']))
-      entity.solr_representation = record if entity
-    end
-    entity
+    self.where(kq_web_id: web_id).first
   end
 
   def self.method_missing(name, *args, &block)
@@ -70,20 +68,13 @@ class Entity
     end
   end
 
-  ##
-  # @return ActiveKumquat::ResultSet
-  #
-  def self.none
-    ResultSet.new
-  end
-
   def self.respond_to_missing?(method_name, include_private = false)
     [:first, :limit, :order, :start, :where].include?(method_name.to_sym)
   end
 
   def initialize(params = {})
-    params[:fedora_container] ||= Fedora::Container.new
-    @fedora_container = params[:fedora_container]
+    @fedora_json_ld = {}
+    @triples = []
 
     params.each do |k, v|
       if respond_to?("#{k}=")
@@ -95,27 +86,81 @@ class Entity
   end
 
   def delete(also_tombstone = false)
-    self.fedora_container.delete(also_tombstone)
+    url = self.fedora_url.chomp('/')
+    @@http.delete(url)
+    @@http.delete("#{url}/fcr:tombstone") if also_tombstone
   end
 
+  ##
+  # @param json JSON string
+  # @return void
+  #
+  def fedora_json_ld=(json)
+    @fedora_json_ld = JSON.parse(json.force_encoding('UTF-8'))
+    struct = @fedora_json_ld.select do |node|
+      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
+    end
+
+    self.uuid = struct[0]['http://fedora.info/definitions/v4/repository#uuid'].
+        first['@value']
+    if struct[0]["#{Entity::NAMESPACE_URI}webID"]
+      self.web_id = struct[0]["#{Entity::NAMESPACE_URI}webID"].first['@value']
+    end
+
+    # populate triples
+    self.triples = []
+    struct[0].select{ |k, v| k[0] != '@' }.each do |k, v|
+      v.each do |value|
+        self.triples << Triple.new(predicate: k, object: value['@value'],
+                                   type: value['@type'])
+      end
+    end
+
+    # populate bytestreams
+    struct[0].select do |node|
+      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
+    end
+    if struct[0]['http://www.w3.org/ns/ldp#contains']
+      struct[0]['http://www.w3.org/ns/ldp#contains'].each do |node|
+        #@children << Bytestream.new(fedora_url: node['@id']) # TODO: fix this
+      end
+    end
+  end
+
+  def persisted?
+    !self.web_id.blank?
+  end
+
+  ##
+  # Persists the entity. For this to work, The entity must already have a URL
+  # (e.g. fedora_url not nil), OR it must have a parent container URL (e.g.
+  # container_url not nil).
+  #
+  # @raise RuntimeError if container_url and fedora_url are both nil.
+  #
   def save
-    self.fedora_container.save
+    if self.fedora_url
+      @@http.put(self.fedora_metadata_url, self.fedora_json_ld,
+                 { 'Content-Type' => 'application/ld+json' })
+    elsif self.container_url
+      @@http.post(self.container_url, self.fedora_json_ld,
+                  { 'Content-Type' => 'application/ld+json' })
+    else
+      raise RuntimeError 'Container has no URL.'
+    end
+    self.make_indexable
   end
 
   alias_method :save!, :save
 
   def subtitle
-    t = self.triples.select do |e|
-      e.predicate.include?('http://purl.org/dc/terms/alternative')
-    end
-    t.first ? t.first.value : nil
+    t = self.triple('http://purl.org/dc/terms/alternative')
+    t ? t.object : nil
   end
 
   def title
-    t = self.triples.select do |e|
-      e.predicate.include?('http://purl.org/dc/elements/1.1/title')
-    end
-    t.first ? t.first.value : nil
+    t = self.triple('http://purl.org/dc/elements/1.1/title')
+    t ? t.object : nil
   end
 
   def title=(title)
@@ -128,11 +173,29 @@ class Entity
     self.web_id
   end
 
+  ##
+  # Returns a single triple matching the predicate.
+  #
   def triple(predicate)
-    t = self.triples.select do |e|
-      e.predicate.include?(predicate)
-    end
-    t.first ? t.first.value : nil
+    self.triples.select{ |e| e.predicate.include?(predicate) }.first
+  end
+
+  protected
+
+  def fedora_metadata_url
+    "#{self.fedora_url.chomp('/')}/fcr:metadata"
+  end
+
+  def make_indexable # TODO: get rid of this
+    headers = { 'Content-Type' => 'application/sparql-update' }
+    body = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '\
+      'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
+      'DELETE { } '\
+      'INSERT { '\
+        "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::TRANSFORM_NAME}\"; "\
+        'rdf:type indexing:Indexable; } '\
+      'WHERE { }'
+    @@http.patch(self.fedora_metadata_url, body, headers)
   end
 
 end

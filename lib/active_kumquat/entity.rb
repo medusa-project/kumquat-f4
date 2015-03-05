@@ -5,6 +5,7 @@ module ActiveKumquat
   #
   class Entity
 
+    @@http = HTTPClient.new
     @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
     def initialize(caller)
@@ -24,7 +25,7 @@ module ActiveKumquat
     end
 
     def first
-      self.limit = 1
+      @limit = 1
       self.to_a.first
     end
 
@@ -100,19 +101,23 @@ module ActiveKumquat
 
     def load
       unless @loaded
-        @where_conditions << "kq_resource_type:#{@caller::RESOURCE_TYPE}"
-        response = @@solr.get('select', params: {
-                                          q: @where_conditions.join(' AND '),
-                                          df: 'dc_title',
-                                          start: @start,
-                                          sort: @order,
-                                          rows: @limit })
-        response['response']['docs'].each do |doc|
-          entity = @caller.new(fedora_container: Fedora::Container.find(doc['id']))
-          entity.solr_representation = doc.to_s
+        @where_conditions << "kq_resource_type:#{@caller::ENTITY_TYPE}"
+        solr_response = @@solr.get('select',
+                                   params: {
+                                       q: @where_conditions.join(' AND '),
+                                       df: 'dc_title',
+                                       start: @start,
+                                       sort: @order,
+                                       rows: @limit })
+        solr_response['response']['docs'].each do |doc|
+          entity = @caller.new(solr_representation: doc)
+
+          f4_response = @@http.get(doc['id'], nil,
+                                { 'Accept' => 'application/ld+json' })
+          entity.fedora_json_ld = f4_response.body
           @results << entity
         end
-        @results.total_length = response['response']['numFound'].to_i
+        @results.total_length = solr_response['response']['numFound'].to_i
         @loaded = true
       end
     end

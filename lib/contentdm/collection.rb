@@ -105,7 +105,7 @@ module Contentdm
       end
 
       f4_metadata['@context']['kumquat'] = ::Entity::NAMESPACE_URI
-      f4_metadata['kumquat:resourceType'] = Fedora::ResourceType::COLLECTION
+      f4_metadata['kumquat:resourceType'] = Entity::Type::COLLECTION
       f4_metadata['kumquat:webID'] = self.alias
       f4_metadata['kumquat:collectionKey'] = self.alias
 

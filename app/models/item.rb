@@ -1,6 +1,6 @@
 class Item < Entity
 
-  RESOURCE_TYPE = Fedora::ResourceType::ITEM
+  ENTITY_TYPE = Entity::Type::ITEM
 
   attr_accessor :collection
 
@@ -14,7 +14,7 @@ class Item < Entity
   end
 
   ##
-  # @return array of Items
+  # @return ActiveKumquat::Entity
   #
   def children
     @children = Item.all.where(kq_parent_uuid: self.uuid).
@@ -29,6 +29,24 @@ class Item < Entity
     @collection = Collection.find_by_web_id(
         self.solr_representation['kq_collection_key']) unless @collection
     @collection
+  end
+
+  ##
+  # Overrides parent to extract Item-specific metadata from the Fedora JSON-LD
+  # representation.
+  #
+  # @param json JSON string
+  # @return void
+  #
+  def fedora_json_ld=(json)
+    super(json)
+    struct = JSON.parse(json.force_encoding('UTF-8')).select do |node|
+      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
+    end
+    if struct[0]["#{Entity::NAMESPACE_URI}parentUUID"]
+      self.parent_uuid = struct[0]["#{Entity::NAMESPACE_URI}parentUUID"].
+          first['@value']
+    end
   end
 
   ##

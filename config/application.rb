@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module Kumquat
   class Application < Rails::Application
+
+    NAMESPACE_URI = 'http://example.org/' # TODO: change this
+
     attr_accessor :kumquat_config
 
     # Settings in config/environments/* take precedence over those specified here.

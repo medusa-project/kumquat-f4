@@ -13,7 +13,7 @@ module Fedora
       body = "@prefix fcrepo : <http://fedora.info/definitions/v4/repository#>
       @prefix dc : <http://purl.org/dc/elements/1.1/>
       @prefix dcterms : <http://purl.org/dc/terms/>
-      @prefix kumquat : <#{Entity::NAMESPACE_URI}>
+      @prefix kumquat : <#{Kumquat::Application::NAMESPACE_URI}>
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;

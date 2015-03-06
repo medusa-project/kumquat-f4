@@ -1,8 +1,8 @@
-class Collection < Entity
+class Collection < ActiveKumquat::Base
 
   include Introspection
 
-  ENTITY_TYPE = Entity::Type::COLLECTION
+  ENTITY_TYPE = ActiveKumquat::Base::Type::COLLECTION
 
   attr_accessor :key
 
@@ -22,12 +22,14 @@ class Collection < Entity
 
     # collectionKey
     s = RDF::Statement.new(
-        subject, RDF::URI("#{Entity::NAMESPACE_URI}collectionKey"), self.key)
+        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}collectionKey"),
+        self.key)
     replace_statement(graph, s)
 
     # resourceType
     s = RDF::Statement.new(
-        subject, RDF::URI("#{Entity::NAMESPACE_URI}resourceType"), ENTITY_TYPE)
+        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}resourceType"),
+        ENTITY_TYPE)
     replace_statement(graph, s)
 
     graph

@@ -1,6 +1,6 @@
-class Item < Entity
+class Item < ActiveKumquat::Base
 
-  ENTITY_TYPE = Entity::Type::ITEM
+  ENTITY_TYPE = ActiveKumquat::Base::Type::ITEM
 
   attr_accessor :collection
   attr_accessor :page_index
@@ -52,14 +52,14 @@ class Item < Entity
 
     # collectionKey
     s = RDF::Statement.new(
-        subject, RDF::URI("#{Entity::NAMESPACE_URI}collectionKey"),
+        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}collectionKey"),
         self.collection.key)
     replace_statement(graph, s)
 
     # parentUUID
     if self.parent_uuid
       s = RDF::Statement.new(
-          subject, RDF::URI("#{Entity::NAMESPACE_URI}parentUUID"),
+          subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}parentUUID"),
           self.parent_uuid)
       replace_statement(graph, s)
     end
@@ -67,14 +67,15 @@ class Item < Entity
     # pageIndex
     unless self.page_index.nil?
       s = RDF::Statement.new(
-          subject, RDF::URI("#{Entity::NAMESPACE_URI}pageIndex"),
+          subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}pageIndex"),
           self.page_index)
       replace_statement(graph, s)
     end
 
     # resourceType
     s = RDF::Statement.new(
-        subject, RDF::URI("#{Entity::NAMESPACE_URI}resourceType"), ENTITY_TYPE)
+        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}resourceType"),
+        ENTITY_TYPE)
     replace_statement(graph, s)
 
     graph

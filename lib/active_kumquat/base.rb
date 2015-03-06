@@ -23,7 +23,7 @@ module ActiveKumquat
     attr_accessor :fedora_graph # RDF::Graph
     attr_accessor :fedora_url
     attr_accessor :requested_slug # requested F4 last path component for new entities
-    attr_accessor :solr_representation
+    attr_accessor :solr_json
     attr_accessor :uuid
     alias_method :id, :uuid
     attr_accessor :web_id

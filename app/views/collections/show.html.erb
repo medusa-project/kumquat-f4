@@ -44,7 +44,7 @@
 <% if Rails.env.development? %>
   <%= render partial: 'shared/code_panel',
              locals: { title: 'Solr JSON',
-                       body: JSON.pretty_generate(@collection.solr_representation) } %>
+                       body: JSON.pretty_generate(@collection.solr_json) } %>
   <%= render partial: 'shared/code_panel',
              locals: { title: 'Fedora RDF',
                        body: @collection.fedora_graph.dump(:ttl) } %>

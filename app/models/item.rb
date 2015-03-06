@@ -29,7 +29,7 @@ class Item < ActiveKumquat::Base
   #
   def collection
     @collection = Collection.find_by_web_id(
-        self.solr_representation['kq_collection_key']) unless @collection
+        self.solr_json['kq_collection_key']) unless @collection
     @collection
   end
 
@@ -38,7 +38,7 @@ class Item < ActiveKumquat::Base
   #
   def parent
     unless @parent
-      uuid = self.solr_representation['kq_parent_uuid']
+      uuid = self.solr_json['kq_parent_uuid']
       @parent = Item.find_by_uuid(uuid) if uuid
     end
     @parent

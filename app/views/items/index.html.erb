@@ -10,8 +10,12 @@
   </h1>
 <% end %>
 
-<p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-  <%= @items.total_length %> items</p>
+<% if @items.total_length > 0 %>
+  <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+    <%= @items.total_length %> items</p>
+<% else %>
+  <p>No items.</p>
+<% end %>
 
 <ol start="<%= @start + 1 %>">
   <% @items.each do |item| %>

@@ -35,3 +35,14 @@ dl ul {
   margin-left: 1.5em;
   padding-left: 0em;
 }
+
+.kq-code-panel {
+  .panel-body {
+    pre {
+      overflow: auto;
+      word-wrap: normal;
+      white-space: pre;
+    }
+    overflow-x: scroll;
+  }
+}

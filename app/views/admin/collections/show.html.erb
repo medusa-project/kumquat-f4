@@ -26,6 +26,9 @@
   <% if @collection.subtitle %>
     <br><small><%= @collection.subtitle %></small>
   <% end %>
+  <%= link_to @collection, class: 'btn btn-default btn-sm' do %>
+    <i class="fa fa-globe"></i> Public View
+  <% end %>
 </h1>
 
 <div class="panel panel-default">

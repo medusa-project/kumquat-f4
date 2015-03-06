@@ -93,11 +93,11 @@ module ActiveKumquat
     end
 
     def to_a
-      self.load
+      load
       @results
     end
 
-    protected
+    private
 
     def load
       unless @loaded

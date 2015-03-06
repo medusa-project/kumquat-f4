@@ -23,4 +23,14 @@
   <% end %>
 </ol>
 
-<%= paginate(@items, @limit, @current_page) %>
+<div class="clearfix">
+  <%= paginate(@items, @limit, @current_page) %>
+</div>
+
+<% if Rails.env.development? %>
+  <%= render partial: 'shared/code_panel',
+             locals: { title: 'Solr Query',
+                       body: link_to(@items.solr_request[:uri],
+                                     @items.solr_request[:uri].to_s,
+                                     target: '_blank') } %>
+<% end %>

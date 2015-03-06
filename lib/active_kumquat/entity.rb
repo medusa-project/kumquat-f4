@@ -8,6 +8,8 @@ module ActiveKumquat
     @@http = HTTPClient.new
     @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
+    attr_reader :solr_request
+
     def initialize(caller)
       @caller = caller
       @limit = nil
@@ -110,6 +112,7 @@ module ActiveKumquat
                                        start: @start,
                                        sort: @order,
                                        rows: @limit })
+        @solr_request = solr_response.request
         solr_response['response']['docs'].each do |doc|
           entity = @caller.new(solr_json: doc, fedora_url: doc['id'])
 

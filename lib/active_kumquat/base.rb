@@ -40,10 +40,18 @@ module ActiveKumquat
     end
 
     ##
+    # @param id UUID
+    # @return Entity
+    #
+    def self.find(id)
+      self.find_by_uuid(id)
+    end
+
+    ##
     # @param uri Fedora resource URI
     # @return Entity
     #
-    def self.find(uri) # TODO: rename to find_by_uri
+    def self.find_by_uri(uri)
       self.where(id: uri).first
     end
 

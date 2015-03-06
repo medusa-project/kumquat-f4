@@ -218,7 +218,7 @@ module ActiveKumquat
         'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
         'DELETE { } '\
         'INSERT { '\
-          "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::TRANSFORM_NAME}\"; "\
+          "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::INDEXING_TRANSFORM_NAME}\"; "\
           'rdf:type indexing:Indexable; } '\
         'WHERE { }'
       @@http.patch(self.fedora_metadata_url, body, headers)

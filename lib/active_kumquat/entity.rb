@@ -15,7 +15,7 @@ module ActiveKumquat
       @order = nil
       @results = ResultSet.new
       @start = 0
-      @where_conditions = [] # will be joined by AND
+      @where_clauses = [] # will be joined by AND
     end
 
     def count
@@ -84,10 +84,10 @@ module ActiveKumquat
       if where.blank?
         # noop
       elsif where.kind_of?(Hash)
-        @where_conditions += where.reject{ |k, v| v.blank? }.
+        @where_clauses += where.reject{ |k, v| v.blank? }.
             map{ |k, v| "#{k}:#{v}" }
       elsif where.respond_to?('to_s')
-        @where_conditions << where.to_s
+        @where_clauses << where.to_s
       end
       self
     end
@@ -101,11 +101,11 @@ module ActiveKumquat
 
     def load
       unless @loaded
-        @where_conditions << "kq_resource_type:#{@caller::ENTITY_TYPE}" if
+        @where_clauses << "kq_resource_type:#{@caller::ENTITY_TYPE}" if
             @caller.constants.include?(:ENTITY_TYPE)
         solr_response = @@solr.get('select',
                                    params: {
-                                       q: @where_conditions.join(' AND '),
+                                       q: @where_clauses.join(' AND '),
                                        df: 'dc_title',
                                        start: @start,
                                        sort: @order,

@@ -106,6 +106,8 @@ module ActiveKumquat
 
     ##
     # Populates the instance with data from an RDF graph.
+    # Subclasses should override this (and call super) to populate their own
+    # attributes from the graph received from F4.
     #
     # @param graph RDF::Graph
     #
@@ -157,7 +159,11 @@ module ActiveKumquat
 
     protected
 
-    def graph_outgoing_to_f4
+    ##
+    # Subclasses should override this (and call super) to populate their own
+    # attributes into the graph to be sent to F4.
+    #
+    def populate_into_graph
       graph = RDF::Graph.new
       @fedora_graph.each_statement { |statement| graph << statement }
 
@@ -214,7 +220,7 @@ module ActiveKumquat
       self.reload! # GET its representation in order to append triples to it
       # PUT it back
       @@http.put(self.fedora_metadata_url,
-                 self.graph_outgoing_to_f4.dump(:ttl),
+                 self.populate_into_graph.dump(:ttl),
                  { 'Content-Type' => 'application/n-triples' })
       self.reload!
     end
@@ -238,7 +244,7 @@ module ActiveKumquat
       self.reload! # GET its representation in order to append triples to it
       # PUT it back
       @@http.put(self.fedora_metadata_url,
-                 self.graph_outgoing_to_f4.dump(:ttl),
+                 self.populate_into_graph.dump(:ttl),
                  { 'Content-Type' => 'text/turtle' })
       # Maybe I'm doing something wrong, but SPARQL via PATCH seems to be the
       # only way to get indexability to work as of Fedora 4.1.

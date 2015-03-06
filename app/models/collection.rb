@@ -28,7 +28,7 @@ class Collection < ActiveKumquat::Base
 
   protected
 
-  def graph_outgoing_to_f4
+  def populate_into_graph
     graph = super
     subject = RDF::URI(self.fedora_metadata_url)
 

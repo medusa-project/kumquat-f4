@@ -14,6 +14,18 @@ class Collection < ActiveKumquat::Base
     @num_items
   end
 
+  ##
+  # @param graph RDF::Graph
+  #
+  def populate_from_graph(graph)
+    super(graph)
+    graph.each_triple do |subject, predicate, object|
+      if predicate == "#{Kumquat::Application::NAMESPACE_URI}collectionKey"
+        self.key = object.to_s
+      end
+    end
+  end
+
   protected
 
   def graph_outgoing_to_f4

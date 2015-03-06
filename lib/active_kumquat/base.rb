@@ -25,9 +25,12 @@ module ActiveKumquat
     attr_accessor :requested_slug # requested F4 last path component for new entities
     attr_accessor :solr_representation
     attr_accessor :uuid
+    alias_method :id, :uuid
     attr_accessor :web_id
 
     validates :title, length: { minimum: 2, maximum: 200 }
+    validates :uuid, length: { minimum: 36, maximum: 36 }
+    validates_presence_of :web_id
 
     ##
     # @return ActiveKumquat::Entity
@@ -121,49 +124,29 @@ module ActiveKumquat
     end
 
     ##
-    # Persists the entity. For this to work, The entity must already have a URL
-    # (e.g. fedora_url not nil), OR it must have a parent container URL (e.g.
-    # container_url not nil).
+    # Persists the entity. For this to work, The entity must already have a
+    # UUID (for existing entities) OR it must have a parent container URL (for
+    # new entities).
     #
-    # @raise RuntimeError if container_url and fedora_url are both nil.
+    # @param commit_immediately boolean
+    # @raise RuntimeError if uuid and container_url are both nil.
     #
-    def save
-      if self.fedora_url
-        # GET its representation in order to append triples to it
-        self.reload!
-
-        # PUT it back
-        @@http.put(self.fedora_metadata_url,
-                   self.graph_outgoing_to_f4.dump(:ttl),
-                   { 'Content-Type' => 'application/n-triples' })
+    def save(commit_immediately = true)
+      if self.uuid
+        save_existing
       elsif self.container_url
-        # As of version 4.1, Fedora doesn't like to accept triples via POST for
-        # some reason; it just returns 201 Created regardless of the Content-Type
-        # header and body content. PUT works, though. So we will POST to create
-        # an empty container, and then PUT to that.
-
-        # POST to create a new resource
-        headers = { 'Content-Type' => 'application/n-triples' }
-        headers['slug'] = self.requested_slug if self.requested_slug
-        response = @@http.post(self.container_url, nil, headers)
-        self.fedora_url = response.header['Location'].first
-        self.requested_slug = nil
-
-        # GET its representation in order to append triples to it
-        self.reload!
-
-        # PUT it back
-        @@http.put(self.fedora_metadata_url,
-                   self.graph_outgoing_to_f4.dump(:ttl),
-                   { 'Content-Type' => 'text/turtle' })
-
-        # not sure why this is necessary, but SPARQL via PATCH seems to be the
-        # only way to get indexability to work as of Fedora 4.1
-        make_indexable
+        save_new
       else
-        raise RuntimeError 'container_url and fedora_url are both nil.'
+        raise RuntimeError, 'UUID and container URL are both nil. One or the
+        other is required.'
       end
       @persisted = true
+      if commit_immediately
+        # wait for solr to get the add from fcrepo-message-consumer
+        # TODO: this is horrible; can we wait for a notification from solr?
+        sleep 2
+        @@solr.commit
+      end
     end
 
     alias_method :save!, :save
@@ -207,7 +190,7 @@ module ActiveKumquat
       while true
         proposed_id = (36 ** (WEB_ID_LENGTH - 1) +
             rand(36 ** WEB_ID_LENGTH - 36 ** (WEB_ID_LENGTH - 1))).to_s(36)
-        break unless ::Entity.find_by_web_id(proposed_id)
+        break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
       end
       proposed_id
     end
@@ -222,6 +205,45 @@ module ActiveKumquat
           'rdf:type indexing:Indexable; } '\
         'WHERE { }'
       @@http.patch(self.fedora_metadata_url, body, headers)
+    end
+
+    ##
+    # Updates an existing item.
+    #
+    def save_existing
+      self.reload! # GET its representation in order to append triples to it
+      # PUT it back
+      @@http.put(self.fedora_metadata_url,
+                 self.graph_outgoing_to_f4.dump(:ttl),
+                 { 'Content-Type' => 'application/n-triples' })
+      self.reload!
+    end
+
+    ##
+    # Creates a new item.
+    #
+    def save_new
+      # As of version 4.1, Fedora doesn't like to accept triples via POST for
+      # some reason; it just returns 201 Created regardless of the Content-Type
+      # header and body content. PUT works, though. So we will POST to create
+      # an empty container, and then PUT to that.
+
+      # POST to create a new resource
+      headers = { 'Content-Type' => 'application/n-triples' }
+      headers['slug'] = self.requested_slug if self.requested_slug
+      response = @@http.post(self.container_url, nil, headers)
+      self.fedora_url = response.header['Location'].first
+      self.requested_slug = nil
+
+      self.reload! # GET its representation in order to append triples to it
+      # PUT it back
+      @@http.put(self.fedora_metadata_url,
+                 self.graph_outgoing_to_f4.dump(:ttl),
+                 { 'Content-Type' => 'text/turtle' })
+      # Maybe I'm doing something wrong, but SPARQL via PATCH seems to be the
+      # only way to get indexability to work as of Fedora 4.1.
+      make_indexable
+      self.reload!
     end
 
   end

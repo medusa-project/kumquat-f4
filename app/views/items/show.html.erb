@@ -31,19 +31,17 @@
     </ol>
 <% end %>
 
-<h1><%= @item.title %>
-<% if @item.subtitle %>
-  <br><small><%= @item.subtitle %></small>
-<% end %>
-</h1>
-
-<div class="clearfix">
-  <div class="pull-right">
-    <%= link_to item_bytestream_url(@item), class: 'btn btn-default' do %>
-      <i class="fa fa-download"></i> Download
-    <% end %>
-  </div>
+<div class="btn-group pull-right">
+  <%= link_to item_bytestream_url(@item), class: 'btn btn-default' do %>
+    <i class="fa fa-download"></i> Download
+  <% end %>
 </div>
+
+<h1><%= @item.title %>
+  <% if @item.subtitle %>
+    <br><small><%= @item.subtitle %></small>
+  <% end %>
+</h1>
 
 <% if @item.parent or @item.children.any? %>
   <div class="panel panel-default">

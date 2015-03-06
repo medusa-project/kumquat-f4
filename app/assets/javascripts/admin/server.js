@@ -13,13 +13,13 @@ var ServerStatusMonitor = function() {
                 complete: function(xhr) {
                     if (xhr.status == 200) {
                         status.addClass('label-success').
-                            removeClass('label-danger').removeClass('hidden').
+                            removeClass('label-danger hidden').
                             text('Online');
                     }
                 },
                 error: function(xhr, statusText, err) {
                     status.addClass('label-danger').
-                        removeClass('label-success').removeClass('hidden').
+                        removeClass('label-success hidden').
                         text('Offline');
                 }
             });

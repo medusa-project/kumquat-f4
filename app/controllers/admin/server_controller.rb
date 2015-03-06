@@ -57,17 +57,15 @@ module Admin
     end
 
     ##
-    # Responds to PATCH /admin/server/update-index
+    # Responds to PATCH /admin/server/commit
     #
-    def update_index
-      http = HTTPClient.new
-      url = Kumquat::Application.kumquat_config[:solr_url].chomp('/') +
-          '/update?commit=true'
-      response = http.get(url)
-      if response.status == 200
-        flash['success'] = 'Index updated.'
+    def commit
+      begin
+        Solr::Solr.new.commit
+      rescue => e
+        flash['error'] = "#{e}"
       else
-        flash['error'] = response.body
+        flash['success'] = 'Index updated.'
       end
       redirect_to :back
     end

@@ -4,41 +4,28 @@
 
 <ol class="breadcrumb">
   <li><%= link_to 'Home', admin_root_path %></li>
-  <li class="active">Server</li>
+  <li class="active">Server Status</li>
 </ol>
 
 <h1>Server Status</h1>
 
 <div class="row">
-  <div class="col-sm-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Kumquat</h3>
-      </div>
-      <div class="panel-body">
-        <dl>
-          <dt>Application Root</dt>
-          <dd><%= Rails.root %></dd>
-          <dt>Website URL</dt>
-          <dd><%= link_to root_url, root_url %></dd>
-          <dt>Control Panel URL</dt>
-          <dd><%= link_to admin_root_url, admin_root_url %></dd>
-        </dl>
-      </div>
-    </div>
-  </div>
 
   <div class="col-sm-6">
     <div class="panel panel-default" id="website">
       <div class="panel-heading">
         <h3 class="panel-title">
-          Website <span class="label label-success kq-service-status">Online</span>
+          Kumquat <span class="label label-success label-sm kq-service-status">Online</span>
         </h3>
       </div>
       <div class="panel-body">
         <dl>
-          <dt>URL</dt>
+          <dt>Website URL</dt>
           <dd><%= link_to root_url, root_url %></dd>
+          <dt>Control Panel URL</dt>
+          <dd><%= link_to admin_root_url, admin_root_url %></dd>
+          <dt>Application Root</dt>
+          <dd><%= Rails.root %></dd>
         </dl>
       </div>
     </div>
@@ -59,7 +46,9 @@
         </dl>
       </div>
     </div>
+  </div>
 
+  <div class="col-sm-6">
     <div class="panel panel-default kq-dynamic-status" id="kq-search-server">
       <div class="panel-heading">
         <h3 class="panel-title">
@@ -73,9 +62,11 @@
           <dt>URL</dt>
           <dd><%= link_to Kumquat::Application.kumquat_config[:solr_url],
                           Kumquat::Application.kumquat_config[:solr_url] %></dd>
+          <dt>Collection</dt>
+          <dd><%= Kumquat::Application.kumquat_config[:solr_collection] %></dd>
         </dl>
-        <%= link_to 'Update Index', admin_server_update_index_url,
-                    class: 'btn btn-default', method: :patch %>
+        <%= link_to 'Commit', admin_server_commit_url,
+                    class: 'btn btn-sm btn-primary', method: :patch %>
       </div>
     </div>
 

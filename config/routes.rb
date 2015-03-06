@@ -52,7 +52,7 @@ Rails.application.routes.draw do
   resources :collections, param: :web_id, only: [:index, :show] do
     resources 'items', param: :web_id, only: :index
   end
-  resources 'items', param: :web_id, only: [:index, :show] do
+  resources :items, param: :web_id, only: [:index, :show] do
     match '/bytestream', to: 'items#bytestream', via: 'get'
   end
 
@@ -71,8 +71,8 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_repository_status'
     match '/server/search-server-status', to: 'server#search_server_status',
           via: 'get', as: 'server_search_server_status'
-    match '/server/update-index', to: 'server#update_index',
-          via: 'patch', as: 'server_update_index'
+    match '/server/commit', to: 'server#commit',
+          via: 'patch', as: 'server_commit'
     resources :users, param: :username, only: [:index, :show]
   end
 

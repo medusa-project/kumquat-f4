@@ -74,6 +74,7 @@ module ActiveKumquat
     end
 
     def initialize(params = {})
+      @destroyed = false
       @persisted = false
       @triples = []
 
@@ -86,11 +87,29 @@ module ActiveKumquat
       end
     end
 
-    def delete(also_tombstone = false)
+    ##
+    # @param also_tombstone boolean
+    # @param commit_immediately boolean
+    #
+    def delete(also_tombstone = false, commit_immediately = true)
       url = self.fedora_url.chomp('/')
       @@http.delete(url)
       @@http.delete("#{url}/fcr:tombstone") if also_tombstone
+      @destroyed = true
+      @persisted = false
+
+      if commit_immediately
+        # wait for solr to get the delete from fcrepo-message-consumer
+        # TODO: this is horrible; can we wait for a notification from solr?
+        # (also doing this in save())
+        sleep 2
+        @@solr.commit
+      end
+
     end
+
+    alias_method :destroy, :delete
+    alias_method :destroy!, :delete
 
     def reload!
       response = @@http.get(self.fedora_metadata_url, nil,
@@ -101,7 +120,7 @@ module ActiveKumquat
     end
 
     def persisted?
-      @persisted
+      @persisted and !@destroyed
     end
 
     ##
@@ -131,10 +150,12 @@ module ActiveKumquat
     # new entities).
     #
     # @param commit_immediately boolean
-    # @raise RuntimeError if uuid and container_url are both nil.
+    # @raise RuntimeError
     #
-    def save(commit_immediately = true)
-      if self.uuid
+    def save(commit_immediately = true) # TODO: look into Solr soft commits
+      if @destroyed
+        raise RuntimeError, 'Cannot save a destroyed object.'
+      elsif self.uuid
         save_existing
       elsif self.container_url
         save_new
@@ -146,6 +167,7 @@ module ActiveKumquat
       if commit_immediately
         # wait for solr to get the add from fcrepo-message-consumer
         # TODO: this is horrible; can we wait for a notification from solr?
+        # (also doing this in delete())
         sleep 2
         @@solr.commit
       end

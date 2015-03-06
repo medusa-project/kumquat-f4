@@ -34,5 +34,5 @@
            locals: { title: 'Solr JSON',
                      body: JSON.pretty_generate(@collection.solr_representation) } %>
 <%= render partial: 'shared/code_panel',
-           locals: { title: 'Fedora JSON-LD',
-                     body: JSON.pretty_generate(@collection.fedora_json_ld) } %>
+           locals: { title: 'Fedora RDF',
+                     body: @collection.fedora_graph.dump(:ttl) } %>

@@ -84,46 +84,6 @@ module Contentdm
                 self.filename)
     end
 
-    def slug
-      self.pointer.to_s
-    end
-
-    ##
-    # @param f4_url
-    # @param f4_json_structure JSON-LD structure in which to embed the
-    # item's metadata
-    # @param parent_container_uuid string
-    # @param page_index integer
-    # @return JSON string
-    #
-    def to_json_ld(f4_url, f4_json_structure, parent_container_uuid = nil,
-                   page_index = nil)
-      f4_json_structure = [] unless f4_json_structure
-      f4_metadata = f4_json_structure.
-          select{ |h| h['@id'] == "#{f4_url}/fcr:metadata" }.first
-      unless f4_metadata
-        f4_metadata = { '@id' => "#{f4_url}/fcr:metadata" }
-        f4_json_structure << f4_metadata
-      end
-
-      f4_metadata['@context'] = {} unless f4_metadata.keys.include?('@context')
-
-      self.elements.each do |element|
-        element_name = element.name ? element.name : 'unmapped'
-        f4_metadata['@context'][element.namespace_prefix] = element.namespace_uri
-        f4_metadata["#{element.namespace_prefix}:#{element_name}"] = element.value
-      end
-
-      f4_metadata['@context']['kumquat'] = ::Entity::NAMESPACE_URI
-      f4_metadata['kumquat:resourceType'] = Entity::Type::ITEM
-      f4_metadata['kumquat:webID'] = generate_web_id
-      f4_metadata['kumquat:parentUUID'] = parent_container_uuid if self.parent
-      f4_metadata['kumquat:pageIndex'] = page_index if self.parent
-      f4_metadata['kumquat:collectionKey'] = self.collection.alias
-
-      JSON.pretty_generate(f4_json_structure)
-    end
-
     private
 
     def self.elements_from_xml(node)
@@ -140,20 +100,6 @@ module Contentdm
         end
       end
       elements
-    end
-
-    ##
-    # Generates a guaranteed-unique web ID, of which there are
-    # 36^WEB_ID_LENGTH available.
-    #
-    def generate_web_id
-      proposed_id = nil
-      while true
-        proposed_id = (36 ** (WEB_ID_LENGTH - 1) +
-            rand(36 ** WEB_ID_LENGTH - 36 ** (WEB_ID_LENGTH - 1))).to_s(36)
-        break unless ::Item.find_by_web_id(proposed_id)
-      end
-      proposed_id
     end
 
   end

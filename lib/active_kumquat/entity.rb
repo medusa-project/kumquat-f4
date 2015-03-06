@@ -101,7 +101,8 @@ module ActiveKumquat
 
     def load
       unless @loaded
-        @where_conditions << "kq_resource_type:#{@caller::ENTITY_TYPE}"
+        @where_conditions << "kq_resource_type:#{@caller::ENTITY_TYPE}" if
+            @caller.constants.include?(:ENTITY_TYPE)
         solr_response = @@solr.get('select',
                                    params: {
                                        q: @where_conditions.join(' AND '),
@@ -113,8 +114,10 @@ module ActiveKumquat
           entity = @caller.new(solr_representation: doc)
 
           f4_response = @@http.get(doc['id'], nil,
-                                { 'Accept' => 'application/ld+json' })
-          entity.fedora_json_ld = f4_response.body
+                                { 'Accept' => 'application/n-triples' })
+          graph = RDF::Graph.new
+          graph.from_ntriples(f4_response.body)
+          entity.populate_from_graph(graph)
           @results << entity
         end
         @results.total_length = solr_response['response']['numFound'].to_i

@@ -26,6 +26,8 @@ gem 'font-awesome-sass', '~> 4.2.0'
 gem 'httpclient', :git => 'git@github.com:/adolski/httpclient.git'
 gem 'local_time'
 gem 'pg'
+gem 'rdf'
+gem 'rdf-turtle'
 gem 'rsolr'
 gem 'sprockets-rails'
 

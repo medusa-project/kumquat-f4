@@ -17,16 +17,16 @@ class Entity
   # hash!
   #
   NAMESPACE_URI = 'http://example.org/' # TODO: fix and move
+  WEB_ID_LENGTH = 5
 
   @@http = HTTPClient.new
   @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
   attr_accessor :container_url # URL of the entity's parent container
-  attr_accessor :fedora_json_ld
+  attr_accessor :fedora_graph # RDF::Graph
   attr_accessor :fedora_url
-  attr_accessor :parent_uuid
+  attr_accessor :requested_slug # requested F4 last path component for new entities
   attr_accessor :solr_representation
-
   attr_accessor :uuid
   attr_accessor :web_id
 
@@ -74,7 +74,7 @@ class Entity
   end
 
   def initialize(params = {})
-    @fedora_json_ld = fedora_json_ld_skeleton
+    @persisted = false
     @triples = []
 
     params.each do |k, v|
@@ -92,44 +92,35 @@ class Entity
     @@http.delete("#{url}/fcr:tombstone") if also_tombstone
   end
 
-  ##
-  # @param json JSON string
-  # @return void
-  #
-  def fedora_json_ld=(json)
-    @fedora_json_ld = JSON.parse(json.force_encoding('UTF-8'))
-    struct = @fedora_json_ld.select do |node|
-      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
-    end
-
-    self.uuid = struct[0]['http://fedora.info/definitions/v4/repository#uuid'].
-        first['@value']
-    if struct[0]["#{Entity::NAMESPACE_URI}webID"]
-      self.web_id = struct[0]["#{Entity::NAMESPACE_URI}webID"].first['@value']
-    end
-
-    # populate triples
-    self.triples = []
-    struct[0].select{ |k, v| k[0] != '@' }.each do |k, v|
-      v.each do |value|
-        self.triples << Triple.new(predicate: k, object: value['@value'],
-                                   type: value['@type'])
-      end
-    end
-
-    # populate bytestreams
-    struct[0].select do |node|
-      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
-    end
-    if struct[0]['http://www.w3.org/ns/ldp#contains']
-      struct[0]['http://www.w3.org/ns/ldp#contains'].each do |node|
-        #@children << Bytestream.new(fedora_url: node['@id']) # TODO: fix this
-      end
-    end
+  def reload!
+    response = @@http.get(self.fedora_metadata_url, nil,
+                          { 'Accept' => 'application/n-triples' })
+    graph = RDF::Graph.new
+    graph.from_ntriples(response.body)
+    self.populate_from_graph(graph)
   end
 
   def persisted?
-    !self.web_id.blank?
+    @persisted
+  end
+
+  ##
+  # Populates the instance with data from an RDF graph.
+  #
+  # @param graph RDF::Graph
+  #
+  def populate_from_graph(graph)
+    graph.each_triple do |subject, predicate, object|
+      if predicate == "#{Entity::NAMESPACE_URI}webID"
+        self.web_id = object.to_s
+      elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
+        self.uuid = object.to_s
+      elsif predicate.to_s.include?('http://purl.org/dc/')
+        self.triples << Triple.new(predicate: predicate.to_s, object: object.to_s)
+      end
+    end
+    @fedora_graph = graph
+    @persisted = true
   end
 
   ##
@@ -141,14 +132,41 @@ class Entity
   #
   def save
     if self.fedora_url
-      @@http.put(self.fedora_metadata_url, self.fedora_json_ld,
-                 { 'Content-Type' => 'application/ld+json' })
+      # GET its representation in order to append triples to it
+      self.reload!
+
+      # PUT it back
+      @@http.put(self.fedora_metadata_url,
+                 self.graph_outgoing_to_f4.dump(:ttl),
+                 { 'Content-Type' => 'application/n-triples' })
     elsif self.container_url
-      @@http.post(self.container_url, self.fedora_json_ld,
-                  { 'Content-Type' => 'application/ld+json' })
+      # As of version 4.1, Fedora doesn't like to accept triples via POST for
+      # some reason; it just returns 201 Created regardless of the Content-Type
+      # header and body content. PUT works, though. So we will POST to create
+      # an empty container, and then PUT to that.
+
+      # POST to create a new resource
+      headers = { 'Content-Type' => 'application/n-triples' }
+      headers['slug'] = self.requested_slug if self.requested_slug
+      response = @@http.post(self.container_url, nil, headers)
+      self.fedora_url = response.header['Location'].first
+      self.requested_slug = nil
+
+      # GET its representation in order to append triples to it
+      self.reload!
+
+      # PUT it back
+      @@http.put(self.fedora_metadata_url,
+                 self.graph_outgoing_to_f4.dump(:ttl),
+                 { 'Content-Type' => 'text/turtle' })
+
+      # not sure why this is necessary, but SPARQL via PATCH seems to be the
+      # only way to get indexability to work as of Fedora 4.1
+      make_indexable
     else
-      raise RuntimeError 'Container has no URL.'
+      raise RuntimeError 'container_url and fedora_url are both nil.'
     end
+    @persisted = true
   end
 
   alias_method :save!, :save
@@ -159,6 +177,24 @@ class Entity
 
   protected
 
+  def graph_outgoing_to_f4
+    graph = RDF::Graph.new
+    @fedora_graph.each_statement { |statement| graph << statement }
+
+    subject = RDF::URI(self.fedora_metadata_url)
+    statement = RDF::Statement.new(subject,
+                                   RDF::URI("#{Entity::NAMESPACE_URI}webID"),
+                                   self.web_id ? self.web_id : generate_web_id)
+    graph << statement unless graph.has_statement?(statement)
+
+    self.triples.each do |triple|
+      statement = RDF::Statement.new(subject, RDF::URI(triple.predicate),
+                                     triple.object)
+      replace_statement(graph, statement)
+    end
+    graph
+  end
+
   def fedora_metadata_url
     "#{self.fedora_url.chomp('/')}/fcr:metadata"
   end
@@ -166,17 +202,29 @@ class Entity
   private
 
   ##
-  # @return Hash
+  # Generates a guaranteed-unique web ID, of which there are
+  # 36^WEB_ID_LENGTH available.
   #
-  def fedora_json_ld_skeleton
-    {
-        '@context' => {
-            'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-            'indexing' => 'http://fedora.info/definitions/v4/indexing#'
-        },
-        'indexing:hasIndexingTransformation' => Fedora::Repository::TRANSFORM_NAME,
-        'rdf:type' => 'indexing:Indexable'
-    }
+  def generate_web_id
+    proposed_id = nil
+    while true
+      proposed_id = (36 ** (WEB_ID_LENGTH - 1) +
+          rand(36 ** WEB_ID_LENGTH - 36 ** (WEB_ID_LENGTH - 1))).to_s(36)
+      break unless ::Entity.find_by_web_id(proposed_id)
+    end
+    proposed_id
+  end
+
+  def make_indexable
+    headers = { 'Content-Type' => 'application/sparql-update' }
+    body = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '\
+      'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
+      'DELETE { } '\
+      'INSERT { '\
+        "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::TRANSFORM_NAME}\"; "\
+        'rdf:type indexing:Indexable; } '\
+      'WHERE { }'
+    @@http.patch(self.fedora_metadata_url, body, headers)
   end
 
 end

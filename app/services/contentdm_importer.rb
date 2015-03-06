@@ -25,7 +25,7 @@ class ContentdmImporter
           raise "#{File.basename(metadata_pathname)} is missing." unless
               File.exists?(metadata_pathname)
 
-          self.import_collection(
+          self.import_cdm_collection(
               Contentdm::Collection.with_alias(col_alias, @source_path))
         end
       end
@@ -35,28 +35,35 @@ class ContentdmImporter
   ##
   # Ingests a collection and all of its items.
   #
-  # @param collection Contentdm::Collection
+  # @param cdm_collection Contentdm::Collection
   #
-  def import_collection(collection)
-    puts "Ingesting #{collection.name} (#{collection.alias})"
+  def import_cdm_collection(cdm_collection)
+    puts "Ingesting #{cdm_collection.name} (#{cdm_collection.alias})"
 
-    # delete any old collection containers
-    url = "#{@root_container_url}/#{collection.slug}"
+    # delete its old container
+    url = "#{@root_container_url}/#{cdm_collection.alias}"
     @http.delete(url) rescue nil
     @http.delete("#{url}/fcr:tombstone") rescue nil
 
-    # create a new collection container
-    container = Fedora::Container.create(@root_container_url, collection.slug)
-    container.fedora_json_ld = collection.to_json_ld(container.fedora_url,
-                                                     JSON.parse(container.fedora_json_ld))
-    container.save
+    # copy the cdm collection's properties into a new kq collection
+    kq_collection = Collection.new(container_url: @root_container_url,
+                                   requested_slug: cdm_collection.alias)
+    cdm_collection.elements.each do |element|
+      element_name = element.name ? element.name : 'unmapped'
+      kq_collection.triples << Triple.new(
+          predicate: "#{element.namespace_uri}#{element_name}",
+          object: element.value)
+    end
+    kq_collection.web_id = cdm_collection.alias
+    kq_collection.key = cdm_collection.alias
+    kq_collection.save!
 
     File.open(File.join(File.expand_path(@source_path),
-                        collection.alias + '.xml')) do |file|
+                        cdm_collection.alias + '.xml')) do |file|
       doc = Nokogiri::XML(file)
       doc.xpath('//record').each do |record|
-        item = Contentdm::Item.from_cdm_xml(@source_path, collection, record)
-        self.import_item(item, container)
+        cdm_item = Contentdm::Item.from_cdm_xml(@source_path, cdm_collection, record)
+        self.import_cdm_item(cdm_item, kq_collection, kq_collection.fedora_url)
       end
     end
   end
@@ -64,38 +71,43 @@ class ContentdmImporter
   ##
   # Ingests an item and all of its pages (if a compound object).
   #
-  # @param item Contentdm::Item
-  # @param parent_container Fedora::Container
+  # @param cdm_item Contentdm::Item
+  # @param parent_container_url string
+  # @param parent_item_uuid string
   # @param page_index integer
-  # @return Fedora::Container
   #
-  def import_item(item, parent_container, page_index = nil)
-    puts "#{item.collection.alias} #{item.pointer}"
+  def import_cdm_item(cdm_item, kq_collection, parent_container_url,
+                      parent_item_uuid = nil, page_index = nil)
+    puts "#{cdm_item.collection.alias} #{cdm_item.pointer}"
 
-    # create a new item container (Fedora analog of the CONTENTdm item)
-    item_container = Fedora::Container.create(parent_container.fedora_url,
-                                              item.slug)
-    item_container.fedora_json_ld = item.to_json_ld(
-        item_container.fedora_url, JSON.parse(item_container.fedora_json_ld),
-        parent_container.uuid, page_index)
-    item_container.save
-
-    # create a binary resource for the item's bytestream within the item
-    # item_container
-    pathname = item.pages.any? ? nil : item.master_file_pathname
-    if item.url
-      Fedora::Bytestream.create(item_container, nil, nil, item.url)
+    # create a new Kumquat item (analog of the CONTENTdm cdm_item)
+    kq_item = Item.new(container_url: parent_container_url,
+                       requested_slug: cdm_item.pointer,
+                       parent_uuid: parent_item_uuid,
+                       collection: kq_collection)
+    cdm_item.elements.each do |element|
+      element_name = element.name ? element.name : 'unmapped'
+      kq_item.triples << Triple.new(
+          predicate: "#{element.namespace_uri}#{element_name}",
+          object: element.value)
+    end
+    kq_item.page_index = page_index
+    kq_item.save!
+=begin
+    # create a binary resource for the cdm_item's bytestream within the cdm_item
+    # kq_item
+    pathname = cdm_item.pages.any? ? nil : cdm_item.master_file_pathname
+    if cdm_item.url
+      Fedora::Bytestream.create(kq_item, nil, nil, cdm_item.url)
     elsif pathname and File.exists?(pathname)
-      Fedora::Bytestream.create(item_container, nil, pathname)
+      Fedora::Bytestream.create(kq_item, nil, pathname)
+    end
+=end
+    cdm_item.pages.each_with_index do |p, i|
+      self.import_cdm_item(p, kq_collection, kq_item.fedora_url, kq_item.uuid, i)
     end
 
     @solr.commit
-
-    item.pages.each_with_index do |p, i|
-      self.import_item(p, item_container, i)
-    end
-
-    item_container
   end
 
 end

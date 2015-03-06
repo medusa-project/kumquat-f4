@@ -6,6 +6,17 @@ module Describable
     attr_accessor :triples
   end
 
+  ##
+  # @param graph RDF::Graph
+  # @param statement RDF::Statement
+  #
+  def replace_statement(graph, statement)
+    g2 = RDF::Graph.new
+    g2 << statement
+    graph.delete(g2)
+    graph << g2.statements.first
+  end
+
   def subtitle
     t = self.triple('http://purl.org/dc/terms/alternative')
     t ? t.object : nil

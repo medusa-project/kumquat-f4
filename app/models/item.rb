@@ -3,6 +3,8 @@ class Item < Entity
   ENTITY_TYPE = Entity::Type::ITEM
 
   attr_accessor :collection
+  attr_accessor :page_index
+  attr_accessor :parent_uuid
 
   def initialize(params = {})
     @children = []
@@ -32,24 +34,6 @@ class Item < Entity
   end
 
   ##
-  # Overrides parent to extract Item-specific metadata from the Fedora JSON-LD
-  # representation.
-  #
-  # @param json JSON string
-  # @return void
-  #
-  def fedora_json_ld=(json)
-    super(json)
-    struct = JSON.parse(json.force_encoding('UTF-8')).select do |node|
-      node['@type'] and node['@type'].include?('http://www.w3.org/ns/ldp#RDFSource')
-    end
-    if struct[0]["#{Entity::NAMESPACE_URI}parentUUID"]
-      self.parent_uuid = struct[0]["#{Entity::NAMESPACE_URI}parentUUID"].
-          first['@value']
-    end
-  end
-
-  ##
   # @return Item
   #
   def parent
@@ -58,6 +42,42 @@ class Item < Entity
       @parent = Item.find_by_uuid(uuid) if uuid
     end
     @parent
+  end
+
+  protected
+
+  def graph_outgoing_to_f4
+    graph = super
+    subject = RDF::URI(self.fedora_metadata_url)
+
+    # collectionKey
+    s = RDF::Statement.new(
+        subject, RDF::URI("#{Entity::NAMESPACE_URI}collectionKey"),
+        self.collection.key)
+    replace_statement(graph, s)
+
+    # parentUUID
+    if self.parent_uuid
+      s = RDF::Statement.new(
+          subject, RDF::URI("#{Entity::NAMESPACE_URI}parentUUID"),
+          self.parent_uuid)
+      replace_statement(graph, s)
+    end
+
+    # pageIndex
+    unless self.page_index.nil?
+      s = RDF::Statement.new(
+          subject, RDF::URI("#{Entity::NAMESPACE_URI}pageIndex"),
+          self.page_index)
+      replace_statement(graph, s)
+    end
+
+    # resourceType
+    s = RDF::Statement.new(
+        subject, RDF::URI("#{Entity::NAMESPACE_URI}resourceType"), ENTITY_TYPE)
+    replace_statement(graph, s)
+
+    graph
   end
 
 end

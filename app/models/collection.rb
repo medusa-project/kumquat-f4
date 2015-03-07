@@ -26,25 +26,23 @@ class Collection < ActiveKumquat::Base
     end
   end
 
-  protected
-
-  def populate_into_graph
-    graph = super
+  def populate_into_graph(in_graph)
+    out_graph = super(in_graph)
     subject = RDF::URI(self.fedora_metadata_url)
 
     # collectionKey
     s = RDF::Statement.new(
         subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}collectionKey"),
         self.key)
-    replace_statement(graph, s)
+    replace_statement(out_graph, s)
 
     # resourceType
     s = RDF::Statement.new(
         subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}resourceType"),
         ENTITY_TYPE)
-    replace_statement(graph, s)
+    replace_statement(out_graph, s)
 
-    graph
+    out_graph
   end
 
 end

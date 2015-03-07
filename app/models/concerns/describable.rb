@@ -7,6 +7,17 @@ module Describable
   end
 
   ##
+  # Deletes all statements with the given predicate.
+  #
+  def delete_predicate(graph, predicate)
+    delete_statements = RDF::Graph.new
+    graph.each_statement do |statement|
+      delete_statements << statement if statement.predicate.to_s == predicate
+    end
+    graph.delete(delete_statements)
+  end
+
+  ##
   # @param graph RDF::Graph
   # @param statement RDF::Statement
   #

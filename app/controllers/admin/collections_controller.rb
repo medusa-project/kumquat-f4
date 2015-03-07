@@ -66,7 +66,6 @@ module Admin
       begin
         executor.execute(command)
       rescue => e
-        @collections = Collection.all
         flash[:error] = "#{e}"
         render 'edit'
       else

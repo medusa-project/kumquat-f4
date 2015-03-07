@@ -44,24 +44,22 @@ class Item < ActiveKumquat::Base
     @parent
   end
 
-  protected
-
-  def populate_into_graph
-    graph = super
+  def populate_into_graph(in_graph)
+    out_graph = super(in_graph)
     subject = RDF::URI(self.fedora_metadata_url)
 
     # collectionKey
     s = RDF::Statement.new(
         subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}collectionKey"),
         self.collection.key)
-    replace_statement(graph, s)
+    replace_statement(out_graph, s)
 
     # parentUUID
     if self.parent_uuid
       s = RDF::Statement.new(
           subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}parentUUID"),
           self.parent_uuid)
-      replace_statement(graph, s)
+      replace_statement(out_graph, s)
     end
 
     # pageIndex
@@ -69,16 +67,16 @@ class Item < ActiveKumquat::Base
       s = RDF::Statement.new(
           subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}pageIndex"),
           self.page_index)
-      replace_statement(graph, s)
+      replace_statement(out_graph, s)
     end
 
     # resourceType
     s = RDF::Statement.new(
         subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}resourceType"),
         ENTITY_TYPE)
-    replace_statement(graph, s)
+    replace_statement(out_graph, s)
 
-    graph
+    out_graph
   end
 
 end

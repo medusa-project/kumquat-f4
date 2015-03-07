@@ -1,0 +1,17 @@
+<%= form_for [:admin, collection], method: context == :create ? :post : :patch do |f| %>
+
+  <% render 'shared/error_messages', object: f.object %>
+
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: 'form-control'  %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :key %>
+    <%= f.text_field :key, class: 'form-control', maxlength: f.object.class.max_length(:key)  %>
+  </div>
+
+  <%= f.submit(context == :create ? 'Create' : 'Save Changes', class: 'btn btn-primary') %>
+
+<% end %>

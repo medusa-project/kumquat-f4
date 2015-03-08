@@ -19,9 +19,11 @@ module ActiveKumquat
     # @param subject string nil will result in "<>"
     # @param predicate string
     # @param object string
+    # @param quote_object boolean
     # @return self
     #
-    def delete(subject, predicate, object)
+    def delete(subject, predicate, object, quote_object = true)
+      object = quote_object ? "\"#{object.to_s.gsub('"', '\"')}\"" : object
       @deletes << { subject: subject, predicate: predicate, object: object }
       self
     end
@@ -32,9 +34,11 @@ module ActiveKumquat
     # @param subject string nil will result in "<>"
     # @param predicate string
     # @param object string
+    # @param quote_object boolean
     # @return self
     #
-    def insert(subject, predicate, object)
+    def insert(subject, predicate, object, quote_object = true)
+      object = quote_object ? "\"#{object.to_s.gsub('"', '\"')}\"" : object
       @inserts << { subject: subject, predicate: predicate, object: object }
       self
     end

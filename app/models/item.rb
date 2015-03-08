@@ -53,24 +53,26 @@ class Item < ActiveKumquat::Base
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
     # collection key
     update.delete('?s', '<kumquat:collectionKey>', '?o').
-        insert(nil, 'kumquat:collectionKey', "\"#{collection_key}\"")
+        insert(nil, 'kumquat:collectionKey', self.collection.key)
     # page index
     update.delete('?s', '<kumquat:pageIndex>', '?o')
-    update.insert(nil, 'kumquat:pageIndex' "\"#{self.page_index}\"") if
-        self.page_index
+    update.insert(nil, 'kumquat:pageIndex', self.page_index) if self.page_index
     # parent uuid
     update.delete('?s', '<kumquat:parentUUID>', '?o')
-    update.insert(nil, 'kumquat:parentUUID', "\"#{self.parent_uuid}\"") if
+    update.insert(nil, 'kumquat:parentUUID', self.parent_uuid) if
         self.parent_uuid
     # resource type
     update.delete('?s', '<kumquat:resourceType>', '?o').
-        insert(nil, 'kumquat:resourceType', "\"#{ENTITY_TYPE}\"")
+        insert(nil, 'kumquat:resourceType', ENTITY_TYPE)
   end
 
   private
 
   def collection_key
-    self.solr_json['kq_collection_key']
+    if self.solr_json
+      self.solr_json['kq_collection_key']
+    end
+    nil
   end
 
 end

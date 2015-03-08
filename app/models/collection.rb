@@ -36,10 +36,10 @@ class Collection < ActiveKumquat::Base
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
     # key
     update.delete('?s', '<kumquat:collectionKey>', '?o').
-        insert(nil, 'kumquat:collectionKey', "\"#{self.key}\"")
+        insert(nil, 'kumquat:collectionKey', self.key)
     # resource type
     update.delete('?s', '<kumquat:resourceType>', '?o').
-        insert(nil, 'kumquat:resourceType', "\"#{ENTITY_TYPE}\"")
+        insert(nil, 'kumquat:resourceType', ENTITY_TYPE)
   end
 
 end

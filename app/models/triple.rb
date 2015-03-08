@@ -32,4 +32,8 @@ class Triple
            default: self.predicate)
   end
 
+  def to_s
+    self.object
+  end
+
 end

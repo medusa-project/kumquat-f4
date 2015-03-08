@@ -16,7 +16,7 @@
       </span>
       <br>
       <span class="description">
-        <%= truncate(collection.triple('http://purl.org/dc/elements/1.1/description'), length: 400) %>
+        <%= truncate(collection.triple('description').to_s, length: 400) %>
       </span>
     </li>
   <% end %>

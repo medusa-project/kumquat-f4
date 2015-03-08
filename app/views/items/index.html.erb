@@ -1,5 +1,5 @@
 <% provide(:title, 'Items') %>
-<% provide(:body_id, 'items') %>
+<% provide(:body_id, 'items_index') %>
 
 <% if @collection %>
   <% provide(:active_nav, 'collections') %>
@@ -19,7 +19,18 @@
 
 <ol start="<%= @start + 1 %>">
   <% @items.each do |item| %>
-    <li><%= link_to item.title, item %></li>
+    <li>
+      <div>
+        <%= link_to item do %>
+          <%= image_tag('', width: 100, height: 100) %>
+        <% end %>
+        <span class="title"><%= link_to item.title, item %></span>
+        <br>
+        <span class="description">
+          <%= truncate(item.triple('description').to_s, length: 400) %>
+        </span>
+      </div>
+    </li>
   <% end %>
 </ol>
 

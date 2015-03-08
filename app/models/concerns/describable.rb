@@ -48,7 +48,7 @@ module Describable
   # Returns a single triple matching the predicate.
   #
   def triple(predicate)
-    self.triples.select{ |e| e.predicate.include?(predicate) }.first
+    self.triples.select{ |e| e.predicate.end_with?(predicate) }.first
   end
 
 end

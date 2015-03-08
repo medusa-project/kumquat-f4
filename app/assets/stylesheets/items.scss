@@ -1,3 +1,31 @@
 // Place all the styles related to the items controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+body#items_index div#kq-page-content {
+  ol {
+    margin-left:0px;
+    padding-left:0px;
+    li {
+      margin-bottom: 1em;
+      margin-left:2em;
+      div {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      img {
+        float: left;
+        margin-right: 1em;
+      }
+      .title {
+        font-size: 1.4em;
+      }
+      .description {
+      }
+    }
+  }
+}
+
+body#items_show {
+
+}

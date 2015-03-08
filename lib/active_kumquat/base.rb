@@ -115,12 +115,8 @@ module ActiveKumquat
     alias_method :destroy, :delete
     alias_method :destroy!, :delete
 
-    def reload!
-      response = @@http.get(self.fedora_metadata_url, nil,
-                            { 'Accept' => 'application/n-triples' })
-      graph = RDF::Graph.new
-      graph.from_ntriples(response.body)
-      self.populate_from_graph(graph)
+    def destroyed?
+      @destroyed
     end
 
     def persisted?
@@ -140,7 +136,8 @@ module ActiveKumquat
           self.web_id = object.to_s
         elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
           self.uuid = object.to_s
-        elsif predicate.to_s.include?('http://purl.org/dc/')
+        elsif predicate.to_s.include?('http://purl.org/dc/') and
+            !object.to_s.include?('/fedora.info/')
           self.triples << Triple.new(predicate: predicate.to_s, object: object.to_s)
         end
       end
@@ -148,28 +145,12 @@ module ActiveKumquat
       @persisted = true
     end
 
-    ##
-    # Subclasses should override this (and call super) to populate their own
-    # attributes into the graph to be sent to F4.
-    #
-    # @param in_graph RDF::Graph
-    #
-    def populate_into_graph(in_graph)
-      out_graph = RDF::Graph.new
-      in_graph.each_statement { |statement| out_graph << statement }
-
-      subject = RDF::URI(self.fedora_metadata_url)
-      statement = RDF::Statement.new(subject,
-                                     RDF::URI("#{Kumquat::Application::NAMESPACE_URI}webID"),
-                                     self.web_id ? self.web_id : generate_web_id)
-      out_graph << statement unless out_graph.has_statement?(statement)
-
-      self.triples.each do |triple|
-        delete_predicate(out_graph, triple.predicate)
-        out_graph << RDF::Statement.new(subject, RDF::URI(triple.predicate),
-                                        triple.object)
-      end
-      out_graph
+    def reload!
+      response = @@http.get(self.fedora_url, nil,
+                            { 'Accept' => 'application/n-triples' })
+      graph = RDF::Graph.new
+      graph.from_ntriples(response.body)
+      self.populate_from_graph(graph)
     end
 
     ##
@@ -208,6 +189,34 @@ module ActiveKumquat
       self.web_id
     end
 
+    ##
+    # Generates a SparqlUpdate with the instance's current properties.
+    # Subclasses should override and add their own statements into the return
+    # value of super.
+    #
+    # @return ActiveKumquat::SparqlUpdate
+    #
+    def to_sparql_update
+      update = SparqlUpdate.new
+      update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+
+      _web_id = self.web_id.blank? ? generate_web_id : self.web_id
+      update.delete('?s', '<kumquat:webID>', '?o').
+          insert(nil, 'kumquat:webID', "\"#{_web_id}\"")
+      update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
+          delete('?s', '<indexing:hasIndexingTransformation>', '?o').
+          insert(nil, 'indexing:hasIndexingTransformation',
+                 "\"#{Fedora::Repository::INDEXING_TRANSFORM_NAME}\"")
+      update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
+          delete('?s', '<rdf:type>', 'indexing:Indexable').
+          insert(nil, 'rdf:type', 'indexing:Indexable')
+      self.triples.each do |triple|
+        update.delete('?s', "<#{triple.predicate}>", '?o').
+            insert(nil, "<#{triple.predicate}>", "\"#{triple.object}\"")
+      end
+      update
+    end
+
     def update(params)
       params.except(:id, :uuid).each do |k, v|
         send("#{k}=", v) if respond_to?("#{k}=")
@@ -217,10 +226,6 @@ module ActiveKumquat
     def update!(params)
       self.update(params)
       self.save!
-    end
-
-    def fedora_metadata_url
-      "#{self.fedora_url.chomp('/')}/fcr:metadata"
     end
 
     private
@@ -239,32 +244,12 @@ module ActiveKumquat
       proposed_id
     end
 
-    def make_indexable
-      headers = { 'Content-Type' => 'application/sparql-update' }
-      body = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '\
-        'PREFIX indexing: <http://fedora.info/definitions/v4/indexing#> '\
-        'DELETE { } '\
-        'INSERT { '\
-          "<> indexing:hasIndexingTransformation \"#{Fedora::Repository::INDEXING_TRANSFORM_NAME}\"; "\
-          'rdf:type indexing:Indexable; } '\
-        'WHERE { }'
-      @@http.patch(self.fedora_metadata_url, body, headers)
-    end
-
     ##
     # Updates an existing item.
     #
     def save_existing
-      # GET its representation in order to append triples to it
-      response = @@http.get(self.fedora_metadata_url, nil,
-                            { 'Accept' => 'application/n-triples' })
-      graph = RDF::Graph.new
-      graph.from_ntriples(response.body)
-
-      # PUT it back
-      @@http.put(self.fedora_metadata_url,
-                 self.populate_into_graph(graph).dump(:ttl),
-                 { 'Content-Type' => 'text/turtle' })
+      @@http.patch(self.fedora_url, self.to_sparql_update.to_s,
+                   { 'Content-Type' => 'application/sparql-update' })
     end
 
     ##
@@ -283,14 +268,7 @@ module ActiveKumquat
       self.fedora_url = response.header['Location'].first
       self.requested_slug = nil
 
-      self.reload! # GET its representation in order to append triples to it
-      # PUT it back
-      @@http.put(self.fedora_metadata_url,
-                 self.populate_into_graph(@fedora_graph).dump(:ttl),
-                 { 'Content-Type' => 'text/turtle' })
-      # Maybe I'm doing something wrong, but SPARQL via PATCH seems to be the
-      # only way to get indexability to work as of Fedora 4.1.
-      make_indexable
+      save_existing
     end
 
   end

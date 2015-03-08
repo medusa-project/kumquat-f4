@@ -39,7 +39,7 @@ module Describable
   end
 
   def title=(title)
-    self.triples.reject!{ |t| t.predicate.include?('/title') }
+    self.triples.reject!{ |t| t.predicate.end_with?('/title') }
     self.triples << Triple.new(predicate: 'http://purl.org/dc/elements/1.1/title',
                                object: title) unless title.blank?
   end

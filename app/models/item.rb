@@ -28,8 +28,7 @@ class Item < ActiveKumquat::Base
   # @return Collection
   #
   def collection
-    @collection = Collection.find_by_web_id(
-        self.solr_json['kq_collection_key']) unless @collection
+    @collection = Collection.find_by_web_id(collection_key) unless @collection
     @collection
   end
 
@@ -44,39 +43,34 @@ class Item < ActiveKumquat::Base
     @parent
   end
 
-  def populate_into_graph(in_graph)
-    out_graph = super(in_graph)
-    subject = RDF::URI(self.fedora_metadata_url)
+  ##
+  # Overrides parent
+  #
+  # @return ActiveKumquat::SparqlUpdate
+  #
+  def to_sparql_update
+    update = super
+    update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+    # collection key
+    update.delete('?s', '<kumquat:collectionKey>', '?o').
+        insert(nil, 'kumquat:collectionKey', "\"#{collection_key}\"")
+    # page index
+    update.delete('?s', '<kumquat:pageIndex>', '?o')
+    update.insert(nil, 'kumquat:pageIndex' "\"#{self.page_index}\"") if
+        self.page_index
+    # parent uuid
+    update.delete('?s', '<kumquat:parentUUID>', '?o')
+    update.insert(nil, 'kumquat:parentUUID', "\"#{self.parent_uuid}\"") if
+        self.parent_uuid
+    # resource type
+    update.delete('?s', '<kumquat:resourceType>', '?o').
+        insert(nil, 'kumquat:resourceType', "\"#{ENTITY_TYPE}\"")
+  end
 
-    # collectionKey
-    s = RDF::Statement.new(
-        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}collectionKey"),
-        self.collection.key)
-    replace_statement(out_graph, s)
+  private
 
-    # parentUUID
-    if self.parent_uuid
-      s = RDF::Statement.new(
-          subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}parentUUID"),
-          self.parent_uuid)
-      replace_statement(out_graph, s)
-    end
-
-    # pageIndex
-    unless self.page_index.nil?
-      s = RDF::Statement.new(
-          subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}pageIndex"),
-          self.page_index)
-      replace_statement(out_graph, s)
-    end
-
-    # resourceType
-    s = RDF::Statement.new(
-        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}resourceType"),
-        ENTITY_TYPE)
-    replace_statement(out_graph, s)
-
-    out_graph
+  def collection_key
+    self.solr_json['kq_collection_key']
   end
 
 end

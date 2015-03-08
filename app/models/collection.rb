@@ -26,23 +26,20 @@ class Collection < ActiveKumquat::Base
     end
   end
 
-  def populate_into_graph(in_graph)
-    out_graph = super(in_graph)
-    subject = RDF::URI(self.fedora_metadata_url)
-
-    # collectionKey
-    s = RDF::Statement.new(
-        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}collectionKey"),
-        self.key)
-    replace_statement(out_graph, s)
-
-    # resourceType
-    s = RDF::Statement.new(
-        subject, RDF::URI("#{Kumquat::Application::NAMESPACE_URI}resourceType"),
-        ENTITY_TYPE)
-    replace_statement(out_graph, s)
-
-    out_graph
+  ##
+  # Overrides parent
+  #
+  # @return ActiveKumquat::SparqlUpdate
+  #
+  def to_sparql_update
+    update = super
+    update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+    # key
+    update.delete('?s', '<kumquat:collectionKey>', '?o').
+        insert(nil, 'kumquat:collectionKey', "\"#{self.key}\"")
+    # resource type
+    update.delete('?s', '<kumquat:resourceType>', '?o').
+        insert(nil, 'kumquat:resourceType', "\"#{ENTITY_TYPE}\"")
   end
 
 end

@@ -103,12 +103,12 @@ module ActiveKumquat
 
     def load
       unless @loaded
-        @where_clauses << "kq_resource_type:#{@caller::ENTITY_TYPE}" if
+        @where_clauses << "#{Solr::Solr::ENTITY_TYPE_KEY}:#{@caller::ENTITY_TYPE}" if
             @caller.constants.include?(:ENTITY_TYPE)
         solr_response = @@solr.get('select',
                                    params: {
                                        q: @where_clauses.join(' AND '),
-                                       df: 'dc_title',
+                                       df: 'kq_searchall',
                                        start: @start,
                                        sort: @order,
                                        rows: @limit })

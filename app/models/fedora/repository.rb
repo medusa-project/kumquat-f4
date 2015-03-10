@@ -17,11 +17,15 @@ module Fedora
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
-      kq_page_index = kumquat:pageIndex :: xsd:integer;
-      kq_parent_uuid = kumquat:parentUUID :: xsd:string;
-      kq_web_id = kumquat:webID :: xsd:string;
-      kq_collection_key = kumquat:collectionKey :: xsd:string;
-      kq_resource_type = kumquat:resourceType :: xsd:string;
+      kq_system_bytestream_type = kumquat:bytestreamType :: xsd:string;
+      kq_system_collection_key = kumquat:collectionKey :: xsd:string;
+      kq_system_height = kumquat:height :: xsd:integer;
+      kq_system_media_type = kumquat:mediaType :: xsd:string;
+      kq_system_page_index = kumquat:pageIndex :: xsd:integer;
+      kq_system_parent_uuid = kumquat:parentUUID :: xsd:string;
+      kq_system_resource_type = kumquat:resourceType :: xsd:string;
+      kq_system_web_id = kumquat:webID :: xsd:string;
+      kq_system_width = kumquat:width :: xsd:integer;
       dc_contributor = dc:contributor :: xsd:string;
       dc_coverage = dc:coverage :: xsd:string;
       dc_creator = dc:creator :: xsd:string;

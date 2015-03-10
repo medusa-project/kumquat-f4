@@ -34,7 +34,8 @@ module Describable
   end
 
   def title
-    t = self.triple('http://purl.org/dc/elements/1.1/title')
+    t = self.triple('http://purl.org/dc/elements/1.1/title') ||
+        self.triple('http://purl.org/dc/terms/title')
     t ? t.object : nil
   end
 

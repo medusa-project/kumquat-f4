@@ -10,8 +10,6 @@ namespace :kumquat do
   task :update_indexing => :environment do |task, args|
     puts 'Creating Fedora indexing transform'
     Fedora::Repository.new.apply_indexing_transform
-    puts 'Updating the Solr schema'
-    Solr::Solr.new.update_schema
   end
 
 end

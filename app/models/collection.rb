@@ -9,8 +9,8 @@ class Collection < ActiveKumquat::Base
   validates :key, length: { minimum: 2, maximum: 20 }
 
   def num_items
-    @num_items = Item.where(kq_collection_key: self.key).
-        where('-kq_parent_uuid:[* TO *]').count unless @num_items
+    @num_items = Item.where(Solr::Solr::COLLECTION_KEY_KEY => self.key).
+        where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").count unless @num_items
     @num_items
   end
 

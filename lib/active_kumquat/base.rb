@@ -69,7 +69,7 @@ module ActiveKumquat
     # @return Entity
     #
     def self.find_by_web_id(web_id)
-      self.where(kq_web_id: web_id).first
+      self.where(Solr::Solr::WEB_ID_KEY => web_id).first
     end
 
     def self.method_missing(name, *args, &block)

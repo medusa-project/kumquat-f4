@@ -19,8 +19,8 @@ class Item < ActiveKumquat::Base
   # @return ActiveKumquat::Entity
   #
   def children
-    @children = Item.all.where(kq_parent_uuid: self.uuid).
-        order(:kq_page_index) unless @children.any?
+    @children = Item.all.where(Solr::Solr::PARENT_UUID_KEY => self.uuid).
+        order(Solr::Solr::PAGE_INDEX_KEY) unless @children.any?
     @children
   end
 
@@ -37,7 +37,7 @@ class Item < ActiveKumquat::Base
   #
   def parent
     unless @parent
-      uuid = self.solr_json['kq_parent_uuid']
+      uuid = self.solr_json[Solr::Solr::PARENT_UUID_KEY.to_s]
       @parent = Item.find_by_uuid(uuid) if uuid
     end
     @parent
@@ -70,7 +70,7 @@ class Item < ActiveKumquat::Base
 
   def collection_key
     if self.solr_json
-      self.solr_json['kq_collection_key']
+      self.solr_json[Solr::Solr::COLLECTION_KEY_KEY.to_s]
     end
     nil
   end

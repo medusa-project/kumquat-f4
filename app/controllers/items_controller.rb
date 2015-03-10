@@ -15,13 +15,15 @@ class ItemsController < ApplicationController
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
-    # TODO: search over fields other than title
-    @items = Item.all.where('-kq_parent_uuid:[* TO *]').where(params[:q])
+    @items = Item.all.where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").
+        where(params[:q])
     if params[:collection_web_id]
       @collection = Collection.find_by_web_id(params[:collection_web_id])
-      @items = @items.where(kq_collection_key: @collection.web_id)
+      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.web_id)
     end
-    @items = @items.order(:dc_title).start(@start).limit(@limit)
+    #@items = @items.order(:kq_title).start(@start).limit(@limit)
+    # TODO: find a way to re-enable sorting
+    @items = @items.start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_results_shown = [@limit, @items.total_length].min
   end

@@ -96,6 +96,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.4.3)
+    mimemagic (0.2.1)
     mini_portile (0.6.2)
     minitest (5.5.1)
     multi_json (1.11.0)
@@ -136,6 +137,7 @@ GEM
       ebnf (~> 0.3, >= 0.3.6)
       rdf (~> 1.1, >= 1.1.4)
     rdoc (4.2.0)
+    rmagick (2.13.4)
     rsolr (1.0.11)
       builder (>= 2.1.2)
     sass (3.4.13)
@@ -188,10 +190,12 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   local_time
+  mimemagic
   pg
   rails (= 4.2.0)
   rdf
   rdf-turtle
+  rmagick
   rsolr
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

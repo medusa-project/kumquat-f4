@@ -19,6 +19,7 @@ module ActiveKumquat
     @@http = HTTPClient.new
     @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
+    attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
     attr_accessor :fedora_graph # RDF::Graph
     attr_accessor :fedora_url
@@ -82,10 +83,10 @@ module ActiveKumquat
     end
 
     def initialize(params = {})
+      @bytestreams = Set.new
       @destroyed = false
       @persisted = false
       @triples = []
-
       params.except(:id, :uuid).each do |k, v|
         send("#{k}=", v) if respond_to?("#{k}=")
       end
@@ -104,7 +105,7 @@ module ActiveKumquat
 
       if commit_immediately
         # wait for solr to get the delete from fcrepo-message-consumer
-        # TODO: this is horrible; can we wait for a notification from solr?
+        # TODO: this is horrible
         # (also doing this in save())
         sleep 2
         @@solr.commit
@@ -175,8 +176,7 @@ module ActiveKumquat
       @persisted = true
       if commit_immediately
         # wait for solr to get the add from fcrepo-message-consumer
-        # TODO: this is horrible; can we wait for a notification from solr?
-        # (also doing this in delete())
+        # TODO: this is horrible (also doing it in delete())
         sleep 2
         @@solr.commit
         self.reload!
@@ -259,7 +259,7 @@ module ActiveKumquat
       # As of version 4.1, Fedora doesn't like to accept triples via POST for
       # some reason; it just returns 201 Created regardless of the Content-Type
       # header and body content. PUT works, though. So we will POST to create
-      # an empty container, and then PUT to that.
+      # an empty container, and then update that.
 
       # POST to create a new resource
       headers = { 'Content-Type' => 'application/n-triples' }

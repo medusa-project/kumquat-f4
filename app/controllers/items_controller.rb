@@ -12,14 +12,6 @@ class ItemsController < ApplicationController
 
   before_action :set_browse_context, only: :index
 
-  ##
-  # Responds to GET /items/:web_id/bytestream
-  #
-  def bytestream
-    item = Item.find_by_web_id(params[:item_web_id])
-    redirect_to item.children.first.fedora_url # TODO: improve logic
-  end
-
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]

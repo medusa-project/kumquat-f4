@@ -1,26 +1,25 @@
-# Getting Started
+# Getting Started (OS X)
 
-Kumquat has four main application dependencies:
+Kumquat has five main application dependencies:
 
 1. PostgreSQL
 2. Fedora
 3. fcrepo-message-consumer
 4. Solr
+5. Loris
 
-The instructions below should help you get these set up as quickly as possible.
+## Installing
 
-## PostgreSQL
+### PostgreSQL
 
 TODO: write this
 
-## Fedora
+### Fedora
 
 [https://wiki.duraspace.org/display/FEDORA41/Deploying+Fedora+4+Complete+Guide]
 (https://wiki.duraspace.org/display/FEDORA41/Deploying+Fedora+4+Complete+Guide)
 
-## fcrepo-message-consumer
-
-### Install
+### fcrepo-message-consumer
 
 `git clone git@github.com:fcrepo4/fcrepo-message-consumer.git`
 
@@ -55,59 +54,109 @@ Edit `fcrepo-message-consumer/fcrepo-message-consumer-webapp/src/main/resources/
       <constructor-arg name="fedoraPassword" value="${fcrepo.password:}" />
     </bean>
 
-### Start
-
-`mvn clean install -DskipTests`
-
-`cd fcrepo-message-consumer-webapp`
-
-`mvn -Djetty.port=9999 jetty:run`
-
-## Solr
-
-### Install
+### Solr
 
 `wget http://mirror.cogentco.com/pub/apache/lucene/solr/4.10.3/solr-4.10.3.tgz`
 
 `tar -xzf solr-4.10.3.tgz`
 
-### Configure
+### Loris
 
-Edit `solr-4.10.3/example/solr/collection1/conf/solrconfig.xml`:
+The following instructions will set up Loris using the version of Apache
+included in OS X. There is also an alternative Docker option which is not
+covered here; see the
+[https://github.com/pulibrary/loris/blob/development/docker/README.md](Loris website).
+Basically, the the Docker way is easier but uses more RAM.
 
-Uncomment the following XML block:
+#### Create a user and group
 
-    <schemaFactory class="ManagedIndexSchemaFactory">
-      <bool name="mutable">true</bool>
-      <str name="managedSchemaResourceName">managed-schema</str>
-    </schemaFactory>
+`sudo dscl . create /Users/loris`
 
-Comment out the following XML block:
+`sudo dscl . create /Users/loris UserShell /bin/bash`
 
-    <!-- <schemaFactory class="ClassicIndexSchemaFactory"/> -->
+`sudo dscl . create /Users/loris RealName "Loris User"`
 
-### Start
+`sudo dscl . create /Users/loris UniqueID 300`
 
-`cd solr-4.6.0/example`
+`sudo dscl . create /Users/loris PrimaryGroupID 300`
 
-`java -jar start.jar`
+`sudo dscl . create /Groups/loris gid 300`
 
-Verify that Solr is running at [http://localhost:8983/solr]
-(http://localhost:8983/solr).
+`sudo dscl . create /Groups/loris passwd "*"`
 
-## Kumquat
+`sudo dscl . create /Groups/loris GroupMembership loris`
 
-### Install RVM
+#### Install mod_wsgi
+
+`git clone https://github.com/GrahamDumpleton/mod_wsgi.git`
+
+`cd mod_wsgi`
+
+`./configure`
+
+`make`
+
+`sudo make install`
+
+#### Install Python dependencies
+
+`sudo pip install configobj Pillow werkzeug logging requests`
+
+#### Install Loris
+
+`git clone https://github.com/pulibrary/loris.git`
+
+`cd loris`
+
+`sudo ./setup.py install`
+
+`sudo mkdir /var/log/loris /var/cache/loris`
+
+`sudo touch /var/log/loris/loris.log`
+
+`sudo chown -R loris:loris /var/log/loris /var/cache/loris`
+
+`sudo cp etc/loris2.conf /etc/loris2`
+
+#### Configure Apache
+
+Add the following line to `/etc/apache2/httpd.conf`:
+
+`LoadModule wsgi_module libexec/apache2/mod_wsgi.so`
+
+and make sure the `headers_module` and `expires_module` lines are uncommented.
+
+`cd /etc/apache2/other`
+
+Create a file here called `loris.conf` containing:
+
+    ExpiresActive On
+    ExpiresDefault "access plus 5184000 seconds"
+
+    AllowEncodedSlashes On
+
+    WSGIDaemonProcess loris user=loris group=loris processes=10 threads=15 maximum-requests=10000
+    WSGIScriptAlias /loris /var/www/loris2/loris2.wsgi
+    WSGIProcessGroup loris
+
+    SetEnvIf Request_URI ^/loris loris
+    CustomLog ${APACHE_LOG_DIR}/loris-access.log combined env=loris
+
+Verify that the configuration is valid: `apachectl configtest`
+
+### Kumquat
+
+#### Install RVM
 
 `gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3`
 
 `\curl -sSL https://get.rvm.io | bash -s stable`
 
-### Install Bundler
+#### Install Bundler
 
 `gem install bundler`
 
-### Check out the code
+#### Check out the code
 
 `git clone https://YOUR_NETID@code.library.illinois.edu/scm/kq/kumquat.git`
 
@@ -117,11 +166,11 @@ Verify that Solr is running at [http://localhost:8983/solr]
 [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
 branching model.)*
 
-### Install dependent gems
+#### Install dependent gems
 
 `bundle install`
 
-### Configure the app
+#### Configure the app
 
 `cd config`
 
@@ -131,11 +180,45 @@ branching model.)*
 
 Edit these as necessary.
 
-### Create the database
+Also copy `kumquat/config/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`
+
+#### Create the database
 
 `bundle exec rake db:setup`
 
-### Start the app
+
+## Running
+
+### Fedora
+
+`cd fcrepo-4.x.x/f4-base`
+
+`java -jar ../start.jar`
+
+### fcrepo-message-consumer
+
+`mvn clean install -DskipTests`
+
+`cd fcrepo-message-consumer-webapp`
+
+`mvn -Djetty.port=9999 jetty:run`
+
+### Solr
+
+`cd solr-4.6.0/example`
+
+`java -jar start.jar`
+
+Verify that Solr is running at [http://localhost:8983/solr]
+(http://localhost:8983/solr).
+
+### Loris
+
+`apachectl stop`
+
+`apachectl start`
+
+### Kumquat
 
 `rails server`
 

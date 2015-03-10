@@ -95,16 +95,23 @@ module Contentdm
       end
       kq_item.page_index = page_index
       kq_item.save!
-=begin
-      # create a binary resource for the cdm_item's bytestream within the cdm_item
-      # kq_item
+
+      # append bytestream to the Kumquat item
       pathname = cdm_item.pages.any? ? nil : cdm_item.master_file_pathname
       if cdm_item.url
-        Fedora::Bytestream.create(kq_item, nil, nil, cdm_item.url)
+        bs = ::Bytestream.new(owner: kq_item,
+                              external_resource_url: cdm_item.url,
+                              type: Bytestream::Type::MASTER)
+        bs.save
+        kq_item.bytestreams << bs
       elsif pathname and File.exists?(pathname)
-        Fedora::Bytestream.create(kq_item, nil, pathname)
+        bs = ::Bytestream.new(owner: kq_item,
+                              upload_pathname: pathname,
+                              type: Bytestream::Type::MASTER)
+        bs.save
+        kq_item.bytestreams << bs
       end
-=end
+
       cdm_item.pages.each_with_index do |p, i|
         self.import_cdm_item(p, kq_collection, kq_item.fedora_url, kq_item.uuid, i)
       end

@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     resources 'items', param: :web_id, only: :index
   end
   resources :items, param: :web_id, only: [:index, :show] do
-    match '/bytestream', to: 'items#bytestream', via: 'get'
+    resources 'bytestreams', param: :uuid, only: :show
   end
 
   resources :sessions, only: [:new, :create, :destroy]

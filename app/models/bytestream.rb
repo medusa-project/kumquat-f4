@@ -164,6 +164,7 @@ class Bytestream
       File.open(self.upload_pathname) do |file|
         filename = File.basename(self.upload_pathname)
         headers = {
+            'Content-Type' => self.media_type,
             'Content-Disposition' => "attachment; filename=\"#{filename}\"",
             'Slug' => "#{self.type}-bytestream"
         }

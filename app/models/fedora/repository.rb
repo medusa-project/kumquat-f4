@@ -17,15 +17,16 @@ module Fedora
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
-      kq_system_bytestream_type = kumquat:bytestreamType :: xsd:string;
-      kq_system_collection_key = kumquat:collectionKey :: xsd:string;
-      kq_system_height = kumquat:height :: xsd:integer;
-      kq_system_media_type = kumquat:mediaType :: xsd:string;
-      kq_system_page_index = kumquat:pageIndex :: xsd:integer;
-      kq_system_parent_uuid = kumquat:parentUUID :: xsd:string;
-      kq_system_resource_type = kumquat:resourceType :: xsd:string;
-      kq_system_web_id = kumquat:webID :: xsd:string;
-      kq_system_width = kumquat:width :: xsd:integer;
+      #{Solr::Solr::BYTESTREAM_TYPE_KEY} = kumquat:bytestreamType :: xsd:string;
+      #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:collectionKey :: xsd:string;
+      #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:hasMasterBytestream :: xsd:string;
+      #{Solr::Solr::HEIGHT_KEY} = kumquat:height :: xsd:integer;
+      #{Solr::Solr::MEDIA_TYPE_KEY} = kumquat:mediaType :: xsd:string;
+      #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:pageIndex :: xsd:integer;
+      #{Solr::Solr::PARENT_UUID_KEY} = kumquat:parentUUID :: xsd:string;
+      #{Solr::Solr::RESOURCE_TYPE_KEY} = kumquat:resourceType :: xsd:string;
+      #{Solr::Solr::WEB_ID_KEY} = kumquat:webID :: xsd:string;
+      #{Solr::Solr::WIDTH_KEY} = kumquat:width :: xsd:integer;
       dc_contributor = dc:contributor :: xsd:string;
       dc_coverage = dc:coverage :: xsd:string;
       dc_creator = dc:creator :: xsd:string;

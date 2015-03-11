@@ -6,6 +6,7 @@ module Solr
     COLLECTION_KEY_KEY = :kq_system_collection_key
     ENTITY_TYPE_KEY = :kq_system_resource_type
     HEIGHT_KEY = :kq_system_height
+    MASTER_BYTESTREAM_URI_KEY = :kq_system_master_bytestream_uri
     MEDIA_TYPE_KEY = :kq_system_media_type
     PAGE_INDEX_KEY = :kq_system_page_index
     PARENT_UUID_KEY = :kq_system_parent_uuid

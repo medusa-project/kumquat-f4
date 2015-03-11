@@ -77,10 +77,13 @@
     multiValued="false"/>
   <field name="kq_system_height" type="int" indexed="true" stored="true"
     multiValued="false"/>
+  <!-- URI of an item's master bytestream -->
+  <field name="kq_system_master_bytestream_uri" type="string" indexed="true"
+    stored="true" multiValued="false"/>
   <field name="kq_system_media_type" type="string" indexed="true" stored="true"
     multiValued="false"/>
   <!-- ID (Fedora UUID) of the parent item, if present -->
-  <!-- TODO: might be possible to eliminate this -->
+  <!-- TODO: probably possible to eliminate this -->
   <field name="kq_system_parent_uuid" type="string" indexed="true" stored="true"
     required="false" multiValued="false"/>
   <!-- Preserves the order of items in a set -->

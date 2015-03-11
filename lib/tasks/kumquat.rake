@@ -8,8 +8,9 @@ namespace :kumquat do
 
   desc 'Update indexing'
   task :update_indexing => :environment do |task, args|
-    puts 'Creating Fedora indexing transform'
     Fedora::Repository.new.apply_indexing_transform
+    puts "Fedora indexing transform "\
+    "\"#{Fedora::Repository::INDEXING_TRANSFORM_NAME}\" updated"
   end
 
 end

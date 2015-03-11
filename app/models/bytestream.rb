@@ -1,3 +1,8 @@
+##
+# Encapsulates a Fedora binary resource. Bytestreams implement a similar API
+# as ActiveKumquat::Base, but do not descend from that class as they are not
+# indexable, so they cannot be retrieved with finder methods.
+#
 class Bytestream
 
   include ActiveModel::Model
@@ -87,7 +92,7 @@ class Bytestream
         end
       rescue Magick::ImageMagickError => e
         # nothing we can do
-        logger.debug(e)
+        Rails.logger.debug(e.message)
       end
     end
   end
@@ -103,8 +108,12 @@ class Bytestream
     self.media_type = type if type
   end
 
+  def repository_metadata_url
+    "#{self.fedora_url.chomp('/')}/fcr:metadata"
+  end
+
   def save(commit_immediately = true) # TODO: look into Solr soft commits
-    self.valid?
+    raise "Validation error: #{self.errors.messages.first}" unless self.valid?
     if self.destroyed?
       raise RuntimeError, 'Cannot save a destroyed object.'
     elsif self.uuid
@@ -124,20 +133,28 @@ class Bytestream
 
   alias_method :save!, :save
 
+  def to_param
+    self.uuid
+  end
+
   def to_sparql_update
     update = ActiveKumquat::SparqlUpdate.new
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
-    subject = "<#{self.fedora_url.chomp('/')}/fcr:metadata>"
-    update.delete('?s', '<kumquat:mediaType>', '?o').
-        insert(subject, 'kumquat:mediaType', self.media_type)
-    update.delete('?s', '<kumquat:bytestreamType>', '?o').
-        insert(subject, 'kumquat:bytestreamType', self.type)
-    update.delete('?s', '<kumquat:width>', '?o').
-        insert(subject, 'kumquat:width', self.width)
-    update.delete('?s', '<kumquat:height>', '?o').
-        insert(subject, 'kumquat:height', self.height)
-    update.delete('?s', '<kumquat:resourceType>', '?o').
-        insert(subject, 'kumquat:resourceType', ENTITY_TYPE)
+    owner_uri = "<#{self.owner.fedora_url}>"
+    my_uri = "<#{self.fedora_url}>"
+    my_metadata_uri = "<#{self.repository_metadata_url}>"
+    update.delete(my_metadata_uri, '<kumquat:mediaType>', '?o').
+        insert(my_metadata_uri, 'kumquat:mediaType', self.media_type)
+    update.delete(my_metadata_uri, '<kumquat:bytestreamType>', '?o').
+        insert(my_metadata_uri, 'kumquat:bytestreamType', self.type)
+    update.delete(my_metadata_uri, '<kumquat:width>', '?o').
+        insert(my_metadata_uri, 'kumquat:width', self.width)
+    update.delete(my_metadata_uri, '<kumquat:height>', '?o').
+        insert(my_metadata_uri, 'kumquat:height', self.height)
+    update.delete(my_metadata_uri, '<kumquat:resourceType>', '?o').
+        insert(my_metadata_uri, 'kumquat:resourceType', ENTITY_TYPE)
+    update.delete(owner_uri, '<kumquat:hasMasterBytestream>', '?o').
+        insert(owner_uri, 'kumquat:hasMasterBytestream', my_uri, false)
   end
 
   private
@@ -147,8 +164,7 @@ class Bytestream
   #
   def save_existing
     update = self.to_sparql_update
-    @@http.patch("#{self.fedora_url.chomp('/')}/fcr:metadata",
-                 update.to_s,
+    @@http.patch(self.repository_metadata_url, update.to_s,
                  { 'Content-Type' => 'application/sparql-update' })
   end
 

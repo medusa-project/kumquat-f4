@@ -3,7 +3,7 @@ class CommandExecutor
   ##
   # @param doing_user User
   #
-  def initialize(doing_user)
+  def initialize(doing_user = nil)
     @doing_user = doing_user
   end
 
@@ -12,17 +12,19 @@ class CommandExecutor
   # @raise RuntimeError
   #
   def execute(command)
-    # check the user's permissions
-    missing_permissions = command.required_permissions.reject do |p|
-      @doing_user.can?(p)
-    end
-    if missing_permissions.any?
-      list = missing_permissions.map do |p|
-        perm = Permission.find_by_key(p)
-        return perm ? perm.name.downcase : p
+    if @doing_user
+      # check the user's permissions
+      missing_permissions = command.required_permissions.reject do |p|
+        @doing_user.can?(p)
       end
-      raise SecurityError, "#{@doing_user.username} has insufficient "\
-      "privileges for the following actions: #{list.join(', ')}"
+      if missing_permissions.any?
+        list = missing_permissions.map do |p|
+          perm = Permission.find_by_key(p)
+          return perm ? perm.name.downcase : p
+        end
+        raise SecurityError, "#{@doing_user.username} has insufficient "\
+        "privileges for the following actions: #{list.join(', ')}"
+      end
     end
 
     begin

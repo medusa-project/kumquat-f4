@@ -70,10 +70,10 @@ class Bytestream
 
   ##
   # Reads the width and height (if an image) and assigns them to the instance.
-  # Only works on images and videos.
+  # Only works for images.
   #
   def read_dimensions
-    if %w(image/ video/).include?(self.media_type)
+    if self.media_type.start_with?('image/')
       begin
         if self.upload_pathname
           img = Magick::Image.read(self.upload_pathname).first

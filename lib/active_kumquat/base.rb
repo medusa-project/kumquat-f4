@@ -1,7 +1,9 @@
 module ActiveKumquat
 
   ##
-  # Abstract class from which several Kumquat entities inherit.
+  # Abstract class from which several Kumquat entities inherit. This class
+  # supports containers, i.e. Fedora resources whose bodies consist of linked
+  # data; NOT binary resources, for which the Bytestream class exists instead.
   #
   class Base
 
@@ -96,20 +98,21 @@ module ActiveKumquat
     # @param commit_immediately boolean
     #
     def delete(also_tombstone = false, commit_immediately = true)
-      url = self.fedora_url.chomp('/')
-      @@http.delete(url)
-      @@http.delete("#{url}/fcr:tombstone") if also_tombstone
-      @destroyed = true
-      @persisted = false
+      if self.fedora_url
+        url = self.fedora_url.chomp('/')
+        @@http.delete(url)
+        @@http.delete("#{url}/fcr:tombstone") if also_tombstone
+        @destroyed = true
+        @persisted = false
 
-      if commit_immediately
-        # wait for solr to get the delete from fcrepo-message-consumer
-        # TODO: this is horrible
-        # (also doing this in save())
-        sleep 2
-        @@solr.commit
+        if commit_immediately
+          # wait for solr to get the delete from fcrepo-message-consumer
+          # TODO: this is horrible
+          # (also doing this in save())
+          sleep 2
+          @@solr.commit
+        end
       end
-
     end
 
     alias_method :destroy, :delete
@@ -162,7 +165,8 @@ module ActiveKumquat
     # @raise RuntimeError
     #
     def save(commit_immediately = true) # TODO: look into Solr soft commits
-      if @destroyed
+      #raise 'Validation error' unless self.valid? TODO: uncomment this
+      if self.destroyed?
         raise RuntimeError, 'Cannot save a destroyed object.'
       elsif self.uuid
         save_existing

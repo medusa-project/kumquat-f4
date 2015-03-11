@@ -7,6 +7,7 @@ class Collection < ActiveKumquat::Base
   attr_accessor :key
 
   validates :key, length: { minimum: 2, maximum: 20 }
+  validates :title, length: { minimum: 2, maximum: 200 }
 
   def num_items
     @num_items = Item.where(Solr::Solr::COLLECTION_KEY_KEY => self.key).

@@ -6,6 +6,8 @@ class Item < ActiveKumquat::Base
   attr_accessor :page_index
   attr_accessor :parent_uuid
 
+  validates :title, length: { minimum: 2, maximum: 200 }
+
   def initialize(params = {})
     @children = []
     super(params)

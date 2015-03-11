@@ -29,9 +29,8 @@ module ActiveKumquat
     alias_method :id, :uuid
     attr_accessor :web_id
 
-    validates :title, length: { minimum: 2, maximum: 200 }
-    validates :uuid, length: { minimum: 36, maximum: 36 }
     validates_presence_of :web_id
+    validates :uuid, allow_nil: true, length: { minimum: 36, maximum: 36 }
 
     ##
     # @return ActiveKumquat::Entity

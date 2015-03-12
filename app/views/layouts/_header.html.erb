@@ -18,17 +18,7 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <form method="get" action="<%= items_path %>"
-              class="navbar-form navbar-left" role="search">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <%= search_field_tag :q, params[:q], class: 'form-control',
-                                 placeholder: 'Quick Search' %>
-            <span class="input-group-btn">
-              <input type="submit" value="Search" class="btn btn-default">
-            </span>
-          </div>
-        </form>
+        <%= render partial: 'shared/quick_search_field' %>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

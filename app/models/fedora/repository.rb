@@ -4,6 +4,18 @@ module Fedora
 
     INDEXING_TRANSFORM_NAME = 'kumquat'
 
+    class LocalTriples
+      COLLECTION_KEY = 'collectionKey'
+      HEIGHT = 'height'
+      MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
+      MEDIA_TYPE = 'mediaType'
+      PAGE_INDEX = 'pageIndex'
+      PARENT_UUID = 'parentUUID'
+      RESOURCE_TYPE = 'resourceType'
+      WEB_ID = 'webID'
+      WIDTH = 'width'
+    end
+
     ##
     # Creates or updates the Fedora indexing transform used by the application.
     #
@@ -17,16 +29,15 @@ module Fedora
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
-      #{Solr::Solr::BYTESTREAM_TYPE_KEY} = kumquat:bytestreamType :: xsd:string;
-      #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:collectionKey :: xsd:string;
-      #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:hasMasterBytestream :: xsd:string;
-      #{Solr::Solr::HEIGHT_KEY} = kumquat:height :: xsd:integer;
-      #{Solr::Solr::MEDIA_TYPE_KEY} = kumquat:mediaType :: xsd:string;
-      #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:pageIndex :: xsd:integer;
-      #{Solr::Solr::PARENT_UUID_KEY} = kumquat:parentUUID :: xsd:string;
-      #{Solr::Solr::RESOURCE_TYPE_KEY} = kumquat:resourceType :: xsd:string;
-      #{Solr::Solr::WEB_ID_KEY} = kumquat:webID :: xsd:string;
-      #{Solr::Solr::WIDTH_KEY} = kumquat:width :: xsd:integer;
+      #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{LocalTriples::COLLECTION_KEY} :: xsd:string;
+      #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:#{LocalTriples::MASTER_BYTESTREAM_URI} :: xsd:string;
+      #{Solr::Solr::HEIGHT_KEY} = kumquat:#{LocalTriples::HEIGHT} :: xsd:integer;
+      #{Solr::Solr::MEDIA_TYPE_KEY} = kumquat:#{LocalTriples::MEDIA_TYPE} :: xsd:string;
+      #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{LocalTriples::PAGE_INDEX} :: xsd:integer;
+      #{Solr::Solr::PARENT_UUID_KEY} = kumquat:#{LocalTriples::PARENT_UUID} :: xsd:string;
+      #{Solr::Solr::RESOURCE_TYPE_KEY} = kumquat:#{LocalTriples::RESOURCE_TYPE} :: xsd:string;
+      #{Solr::Solr::WEB_ID_KEY} = kumquat:#{LocalTriples::WEB_ID} :: xsd:string;
+      #{Solr::Solr::WIDTH_KEY} = kumquat:#{LocalTriples::WIDTH} :: xsd:integer;
       dc_contributor = dc:contributor :: xsd:string;
       dc_coverage = dc:coverage :: xsd:string;
       dc_creator = dc:creator :: xsd:string;

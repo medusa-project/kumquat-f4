@@ -69,9 +69,6 @@
   <!-- Automatically populated by fcrepo-message-consumer -->
   <field name="uuid" type="string" indexed="true" stored="true" required="true"
     multiValued="false"/>
-  <!-- Preserves the order of items in a set -->
-  <field name="kq_system_bytestream_type" type="string" indexed="true" stored="true"
-    multiValued="false"/>
   <!-- TODO: might be possible to eliminate this -->
   <field name="kq_system_collection_key" type="string" indexed="true" stored="true"
     multiValued="false"/>

@@ -2,7 +2,6 @@ module Solr
 
   class Solr
 
-    BYTESTREAM_TYPE_KEY = :kq_system_bytestream_type
     COLLECTION_KEY_KEY = :kq_system_collection_key
     ENTITY_TYPE_KEY = :kq_system_resource_type
     HEIGHT_KEY = :kq_system_height

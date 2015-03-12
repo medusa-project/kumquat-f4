@@ -77,7 +77,19 @@ module ItemsHelper
       if struct[:objects].any?
         dl += "<dt>#{struct[:label]}</dt>"
         struct[:objects].each do |object|
-          dl += "<dd>#{object}</dd>"
+          if struct[:predicate].end_with?('/subject')
+            components = object.strip.split(';')
+            if components.length > 1
+              value = '<ul>'
+              value += components.map{ |c| "<li>#{c.strip}</li>" }.join
+              value += '</ul>'
+            else
+              value = object.strip
+            end
+          else
+            value = object.strip
+          end
+          dl += "<dd>#{value}</dd>"
         end
       end
     end

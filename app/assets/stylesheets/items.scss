@@ -29,6 +29,24 @@ body#items_index div#kq-page-content {
   }
 
   .kq-facets {
+    .kq-clear {
+      color: red;
+    }
+    .kq-selected-term {
+      font-weight: bold;
+    }
+    .kq-count {
+      font-size: 0.9em;
+    }
+    .kq-count:before {
+      content: '(';
+    }
+    .kq-count:after {
+      content: ')';
+    }
+  }
+
+  .kq-list-facets {
     ul:first-child {
       list-style-type: none;
       margin-left:0px;
@@ -45,23 +63,18 @@ body#items_index div#kq-page-content {
           .kq-term {
             margin-left:0px;
             padding-left:0px;
-            .kq-clear {
-              color: red;
-            }
-            .kq-selected-term {
-              font-weight: bold;
-            }
-            .kq-count {
-              font-size:0.9em;
-            }
-            .kq-count:before {
-              content: '(';
-            }
-            .kq-count:after {
-              content: ')';
-            }
           }
         }
+      }
+    }
+  }
+
+  .kq-panel-facets {
+    .panel-body {
+      ul {
+        margin-bottom:0em;
+        margin-left: 1em;
+        padding-left: 0px;
       }
     }
   }

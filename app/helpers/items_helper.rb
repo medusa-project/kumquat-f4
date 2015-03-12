@@ -3,6 +3,45 @@ module ItemsHelper
   ##
   # @param items ActiveKumquat::ResultSet
   #
+  def facets_as_panels(items)
+    term_limit = Kumquat::Application.kumquat_config[:facet_term_limit]
+    panels = ''
+    items.facet_fields.each do |facet|
+      panel = '<div class="panel panel-default">'
+      next unless facet.terms.select{ |t| t.count > 0 }.any?
+      panel += "<div class=\"panel-heading\">
+        <h3 class=\"panel-title\">#{facet.label}</h3>
+      </div>
+      <div class=\"panel-body\">
+        <ul>"
+      facet.terms.each_with_index do |term, i|
+        break if i >= term_limit
+        next if term.count < 1
+        term_params = params.deep_dup
+        clear_link = nil
+        if term_params[:fq] and term_params[:fq].include?(term.facet_query)
+          term_params = term.removed_from_params(params)
+          clear_link = link_to(term_params, class: 'kq-clear') do
+            content_tag(:i, nil, class: 'fa fa-remove')
+          end
+          term_html = "<span class=\"kq-selected-term\">#{term.name}</span>"
+        else
+          term_html = link_to(term.name, term.added_to_params(params))
+        end
+        panel += "<li class=\"kq-term\">
+          <span class=\"kq-term-name\">#{term_html}</span>
+          <span class=\"kq-count\">#{term.count}</span>
+          #{clear_link}
+        </li>"
+      end
+      panels += panel + '</ul></div></div>'
+    end
+    raw(panels)
+  end
+
+  ##
+  # @param items ActiveKumquat::ResultSet
+  #
   def facets_as_ul(items)
     term_limit = Kumquat::Application.kumquat_config[:facet_term_limit]
     ul = '<ul>'

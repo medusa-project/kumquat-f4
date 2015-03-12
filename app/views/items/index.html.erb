@@ -11,10 +11,8 @@
 <% end %>
 
 <div class="row">
-  <div class="col-sm-3 kq-facets">
-    <div class="well well-sm">
-      <%= facets_as_ul(@items) %>
-    </div>
+  <div class="col-sm-3 kq-facets kq-panel-facets">
+    <%= facets_as_panels(@items) %>
   </div>
 
   <div class="col-sm-9">

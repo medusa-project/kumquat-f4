@@ -10,39 +10,49 @@
   </h1>
 <% end %>
 
-<% if @items.total_length > 0 %>
-  <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-    <%= @items.total_length %> items</p>
-<% else %>
-  <p>No items.</p>
-<% end %>
+<div class="row">
+  <div class="col-sm-3 kq-facets">
+    <div class="well well-sm">
+      <%= facets_as_ul(@items) %>
+    </div>
+  </div>
 
-<ol start="<%= @start + 1 %>">
-  <% @items.each do |item| %>
-    <li>
-      <div>
-        <%= link_to item do %>
-          <%= image_tag(item.image_url(nil, 100), height: 100) %>
-        <% end %>
-        <span class="title">
-          <%= link_to item.title, item %>
-          <% if item.children.any? %>
-            <span class="label label-info kq-page-count">
-              <%= pluralize(item.children.length, 'page') %>
+  <div class="col-sm-9">
+    <% if @items.total_length > 0 %>
+      <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+        <%= @items.total_length %> items</p>
+    <% else %>
+      <p>No items.</p>
+    <% end %>
+
+    <ol start="<%= @start + 1 %>">
+      <% @items.each do |item| %>
+        <li>
+          <div>
+            <%= link_to item do %>
+              <%= image_tag(item.image_url(nil, 100), height: 100) %>
+            <% end %>
+            <span class="title">
+              <%= link_to item.title, item %>
+              <% if item.children.any? %>
+                <span class="label label-info kq-page-count">
+                  <%= pluralize(item.children.length, 'page') %>
+                </span>
+              <% end %>
             </span>
-          <% end %>
-        </span>
-        <br>
-        <span class="description">
-          <%= truncate(item.triple('description').to_s, length: 400) %>
-        </span>
-      </div>
-    </li>
-  <% end %>
-</ol>
+            <br>
+            <span class="description">
+              <%= truncate(item.triple('description').to_s, length: 400) %>
+            </span>
+          </div>
+        </li>
+      <% end %>
+    </ol>
 
-<div class="clearfix">
-  <%= paginate(@items, @limit, @current_page) %>
+    <div class="text-center">
+      <%= paginate(@items, @limit, @current_page) %>
+    </div>
+  </div>
 </div>
 
 <% if Rails.env.development? %>

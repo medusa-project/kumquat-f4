@@ -556,9 +556,6 @@
   <copyField source="dcterm_language" dest="kq_language_facet"/>
   <copyField source="dc_publisher" dest="kq_publisher_facet"/>
   <copyField source="dcterm_publisher" dest="kq_publisher_facet"/>
-  <copyField source="dc_rights" dest="kq_rights_facet"/>
-  <copyField source="dcterm_rights" dest="kq_rights_facet"/>
-  <copyField source="dcterm_rightsHolder" dest="kq_rightsHolder_facet"/>
   <copyField source="dc_source" dest="kq_source_facet"/>
   <copyField source="dcterm_source" dest="kq_source_facet"/>
   <copyField source="dc_subject" dest="kq_subject_facet"/>

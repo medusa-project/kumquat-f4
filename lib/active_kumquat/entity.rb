@@ -12,6 +12,7 @@ module ActiveKumquat
 
     def initialize(caller)
       @caller = caller
+      @facet_queries = []
       @limit = nil
       @loaded = false
       @order = nil
@@ -24,6 +25,21 @@ module ActiveKumquat
       @start = 0
       @limit = 0
       self.to_a.total_length
+    end
+
+    ##
+    # @param fq array or string
+    # @return ActiveKumquat::Entity
+    #
+    def facet(fq)
+      if fq.blank?
+        # noop
+      elsif fq.respond_to?(:each)
+        @facet_queries += fq.reject{ |v| v.blank? }
+      elsif fq.respond_to?('to_s')
+        @facet_queries << fq.to_s
+      end
+      self
     end
 
     def first
@@ -111,8 +127,14 @@ module ActiveKumquat
                                        df: 'kq_searchall',
                                        start: @start,
                                        sort: @order,
-                                       rows: @limit })
+                                       rows: @limit,
+                                       facet: true,
+                                       'facet.mincount' => 1,
+                                       'facet.field' => Solr::Solr::FACET_FIELDS,
+                                       fq: @facet_queries })
         @solr_request = solr_response.request
+        @results.facet_fields = solr_facet_fields_to_objects(
+            solr_response['facet_counts']['facet_fields'])
         solr_response['response']['docs'].each do |doc|
           entity = @caller.new(solr_json: doc, repository_url: doc['id'])
 
@@ -126,6 +148,23 @@ module ActiveKumquat
         @results.total_length = solr_response['response']['numFound'].to_i
         @loaded = true
       end
+    end
+
+    def solr_facet_fields_to_objects(fields)
+      facets = []
+      fields.each do |field, terms|
+        facet = Solr::Facet.new
+        facet.field = field
+        (0..terms.length - 1).step(2) do |i|
+          term = Solr::Facet::Term.new
+          term.name = terms[i]
+          term.count = terms[i + 1]
+          term.facet = facet
+          facet.terms << term
+        end
+        facets << facet
+      end
+      facets
     end
 
   end

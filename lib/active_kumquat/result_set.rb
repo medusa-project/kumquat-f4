@@ -3,6 +3,8 @@ module ActiveKumquat
   class ResultSet
     include Enumerable
 
+    attr_accessor :facet_fields
+
     ##
     # The total length of the result set, if the result set is paged; otherwise
     # the same as length().

@@ -29,6 +29,11 @@ class ItemsController < ApplicationController
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
     @items = Item.all.where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").
         where(params[:q])
+    if params[:fq].respond_to?(:each)
+      params[:fq].each { |fq| @items = @items.facet(fq) }
+    else
+      @items = @items.facet(params[:fq])
+    end
     if params[:collection_web_id]
       @collection = Collection.find_by_web_id(params[:collection_web_id])
       @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.web_id)

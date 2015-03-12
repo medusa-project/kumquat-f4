@@ -2,6 +2,12 @@ module Solr
 
   class Solr
 
+    # each of these requires a localized label (solr_field_*)
+    FACET_FIELDS = [:kq_contributor_facet, :kq_coverage_facet,
+                    :kq_creator_facet, :kq_date_facet, :kq_format_facet,
+                    :kq_language_facet, :kq_publisher_facet, :kq_source_facet,
+                    :kq_subject_facet, :kq_type_facet]
+
     COLLECTION_KEY_KEY = :kq_system_collection_key
     ENTITY_TYPE_KEY = :kq_system_resource_type
     HEIGHT_KEY = :kq_system_height

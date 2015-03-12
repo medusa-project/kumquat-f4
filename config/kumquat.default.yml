@@ -4,6 +4,7 @@ development:
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
+  :facet_term_limit: 10
   :results_per_page: 20
 
 test:
@@ -12,6 +13,7 @@ test:
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
+  :facet_term_limit: 10
   :results_per_page: 20
 
 production:
@@ -20,4 +22,5 @@ production:
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
+  :facet_term_limit: 10
   :results_per_page: 20

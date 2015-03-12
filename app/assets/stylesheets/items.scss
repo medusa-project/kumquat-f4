@@ -27,6 +27,44 @@ body#items_index div#kq-page-content {
       }
     }
   }
+
+  .kq-facets {
+    ul:first-child {
+      list-style-type: none;
+      margin-left:0px;
+      padding-left:0px;
+      .kq-field {
+        .kq-field-name {
+          font-size: 1.1em;
+          font-weight: bold;
+        }
+        .kq-terms {
+          margin-bottom:0.5em;
+          margin-left:1.5em;
+          padding-left:0em;
+          .kq-term {
+            margin-left:0px;
+            padding-left:0px;
+            .kq-clear {
+              color: red;
+            }
+            .kq-selected-term {
+              font-weight: bold;
+            }
+            .kq-count {
+              font-size:0.9em;
+            }
+            .kq-count:before {
+              content: '(';
+            }
+            .kq-count:after {
+              content: ')';
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 body#items_show {

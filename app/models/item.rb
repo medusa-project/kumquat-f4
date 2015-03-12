@@ -1,5 +1,6 @@
 class Item < ActiveKumquat::Base
 
+  include BytestreamOwner
   include ImageServing
 
   ENTITY_TYPE = ActiveKumquat::Base::Type::ITEM

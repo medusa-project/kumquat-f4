@@ -43,6 +43,11 @@
   <% end %>
 </h1>
 
+<% if @item.is_image? %>
+  <%= render partial: 'shared/open_seadragon_viewer',
+             locals: { bytestream_owner: @item } %>
+<% end %>
+
 <% if @item.parent or @item.children.any? %>
   <div class="panel panel-default">
     <div class="panel-heading">

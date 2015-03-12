@@ -12,6 +12,18 @@ class ItemsController < ApplicationController
 
   before_action :set_browse_context, only: :index
 
+  def master_bytestream
+    @item = Item.find_by_web_id(params[:web_id])
+    render text: '404 Not Found', status: 404 unless @item
+
+    bs = @item.bytestreams.select{ |b| b.type == Bytestream::Type::MASTER }.first
+    if bs and bs.fedora_url
+      redirect_to bs.fedora_url
+    else
+      render text: '404 Not Found', status: 404
+    end
+  end
+
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]

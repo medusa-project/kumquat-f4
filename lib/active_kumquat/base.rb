@@ -135,10 +135,14 @@ module ActiveKumquat
     #
     def populate_from_graph(graph)
       graph.each_triple do |subject, predicate, object|
-        if predicate == "#{Kumquat::Application::NAMESPACE_URI}webID"
-          self.web_id = object.to_s
-        elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
+        if predicate == 'http://fedora.info/definitions/v4/repository#uuid'
           self.uuid = object.to_s
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}webID"
+          self.web_id = object.to_s
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}hasMasterBytestream"
+          bs = Bytestream.new(owner: self, fedora_url: object.to_s)
+          bs.reload!
+          self.bytestreams << bs
         elsif predicate.to_s.include?('http://purl.org/dc/') and
             !object.to_s.include?('/fedora.info/')
           self.triples << Triple.new(predicate: predicate.to_s, object: object.to_s)

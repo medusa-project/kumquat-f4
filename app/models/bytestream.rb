@@ -74,11 +74,34 @@ class Bytestream
   end
 
   ##
+  # Populates the instance with data from an RDF graph.
+  #
+  # @param graph RDF::Graph
+  #
+  def populate_from_graph(graph)
+    graph.each_triple do |subject, predicate, object|
+      if predicate == "#{Kumquat::Application::NAMESPACE_URI}mediaType"
+        self.media_type = object.to_s
+      elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}height"
+        self.height = object.to_s.to_i
+      elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}bytestreamType"
+        self.type = object.to_s
+      elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}width"
+        self.width = object.to_s.to_i
+      elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
+        self.uuid = object.to_s
+      end
+    end
+    @fedora_graph = graph
+    @persisted = true
+  end
+
+  ##
   # Reads the width and height (if an image) and assigns them to the instance.
   # Only works for images.
   #
   def read_dimensions
-    if self.media_type.start_with?('image/')
+    if self.media_type and self.media_type.start_with?('image/')
       begin
         if self.upload_pathname
           img = Magick::Image.read(self.upload_pathname).first
@@ -106,6 +129,14 @@ class Bytestream
       type = MimeMagic.by_extension(self.external_resource_url).to_s
     end
     self.media_type = type if type
+  end
+
+  def reload!
+    response = @@http.get(self.repository_metadata_url, nil,
+                          { 'Accept' => 'application/n-triples' })
+    graph = RDF::Graph.new
+    graph.from_ntriples(response.body)
+    self.populate_from_graph(graph)
   end
 
   def repository_metadata_url

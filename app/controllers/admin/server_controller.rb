@@ -13,7 +13,7 @@ module Admin
       http = HTTPClient.new
       begin
         response = http.get(Kumquat::Application.kumquat_config[:iiif_url])
-        if response.body.include?('Internet Imaging Protocol Server')
+        if response.status == 200
           render text: 'online'
         else
           render text: 'offline', status: 503
@@ -65,7 +65,7 @@ module Admin
       rescue => e
         flash['error'] = "#{e}"
       else
-        flash['success'] = 'Index updated.'
+        flash['success'] = 'Pending updates committed.'
       end
       redirect_to :back
     end

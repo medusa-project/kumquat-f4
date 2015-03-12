@@ -44,7 +44,9 @@ module Admin
     def index
       @start = params[:start] ? params[:start].to_i : 0
       @limit = Kumquat::Application.kumquat_config[:results_per_page]
-      @collections = Collection.order(:dc_title).start(@start).limit(@limit)
+      #@collections = Collection.order(:dc_title).start(@start).limit(@limit)
+      # TODO: re-enable sorting
+      @collections = Collection.start(@start).limit(@limit)
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @num_shown = [@limit, @collections.total_length].min
     end

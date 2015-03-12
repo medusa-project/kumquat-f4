@@ -12,7 +12,7 @@ module Admin
     def image_server_status
       http = HTTPClient.new
       begin
-        response = http.get(Kumquat::Application.kumquat_config[:loris_url])
+        response = http.get(Kumquat::Application.kumquat_config[:iiif_url])
         if response.body.include?('Internet Imaging Protocol Server')
           render text: 'online'
         else

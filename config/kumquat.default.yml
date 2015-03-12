@@ -1,6 +1,6 @@
 development:
   :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
-  :loris_url: http://localhost:8081/
+  :iiif_url: http://localhost:8081/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
@@ -8,7 +8,7 @@ development:
 
 test:
   :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
-  :loris_url: http://localhost:8081/
+  :iiif_url: http://localhost:8081/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
@@ -16,7 +16,7 @@ test:
 
 production:
   :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
-  :loris_url: http://localhost:8081/
+  :iiif_url: http://localhost:8081/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization

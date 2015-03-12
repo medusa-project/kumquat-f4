@@ -22,7 +22,7 @@
     <li>
       <div>
         <%= link_to item do %>
-          <%= image_tag('', width: 100, height: 100) %>
+          <%= image_tag(item.image_url(nil, 100), height: 100) %>
         <% end %>
         <span class="title">
           <%= link_to item.title, item %>

@@ -1,5 +1,7 @@
 class Item < ActiveKumquat::Base
 
+  include ImageServing
+
   ENTITY_TYPE = ActiveKumquat::Base::Type::ITEM
 
   attr_accessor :collection

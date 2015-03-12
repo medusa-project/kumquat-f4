@@ -1,6 +1,15 @@
 <% provide(:title, 'Items') %>
 <% provide(:body_id, 'items_index') %>
 
+<% case session[:browse_context] %>
+<% when ItemsController::BrowseContext::BROWSING_COLLECTION %>
+  <ol class="breadcrumb">
+    <li><%= link_to 'Home', root_path %></li>
+    <li><%= link_to 'Collections', collections_path %></li>
+    <li class="active"><%= truncate(@collection.title, length: 50) %></li>
+  </ol>
+<% end %>
+
 <% if @collection %>
   <% provide(:active_nav, 'collections') %>
   <h1><%= @collection.title %>
@@ -15,7 +24,7 @@
     <%= facets_as_panels(@items) %>
   </div>
 
-  <div class="col-sm-9">
+  <div class="col-sm-9 kq-results">
     <% if @items.total_length > 0 %>
       <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
         <%= @items.total_length %> items</p>

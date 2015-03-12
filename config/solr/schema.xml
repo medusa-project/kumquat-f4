@@ -75,7 +75,7 @@
   <field name="kq_system_height" type="int" indexed="true" stored="true"
     multiValued="false"/>
   <!-- URI of an item's master bytestream -->
-  <field name="kq_system_master_bytestream_uri" type="string" indexed="true"
+  <field name="kq_system_master_bytestream_uri" type="string" indexed="false"
     stored="true" multiValued="false"/>
   <field name="kq_system_media_type" type="string" indexed="true" stored="true"
     multiValued="false"/>

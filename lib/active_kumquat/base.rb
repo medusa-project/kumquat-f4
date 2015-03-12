@@ -24,7 +24,7 @@ module ActiveKumquat
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
     attr_accessor :fedora_graph # RDF::Graph
-    attr_accessor :fedora_url
+    attr_accessor :repository_url
     attr_accessor :requested_slug # requested F4 last path component for new entities
     attr_accessor :solr_json
     attr_accessor :uuid
@@ -98,8 +98,8 @@ module ActiveKumquat
     # @param commit_immediately boolean
     #
     def delete(also_tombstone = false, commit_immediately = true)
-      if self.fedora_url
-        url = self.fedora_url.chomp('/')
+      if self.repository_url
+        url = self.repository_url.chomp('/')
         @@http.delete(url)
         @@http.delete("#{url}/fcr:tombstone") if also_tombstone
         @destroyed = true
@@ -140,7 +140,7 @@ module ActiveKumquat
         elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}webID"
           self.web_id = object.to_s
         elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}hasMasterBytestream"
-          bs = Bytestream.new(owner: self, fedora_url: object.to_s)
+          bs = Bytestream.new(owner: self, repository_url: object.to_s)
           bs.reload!
           self.bytestreams << bs
         elsif predicate.to_s.include?('http://purl.org/dc/') and
@@ -153,7 +153,7 @@ module ActiveKumquat
     end
 
     def reload!
-      response = @@http.get(self.fedora_url, nil,
+      response = @@http.get(self.repository_url, nil,
                             { 'Accept' => 'application/n-triples' })
       graph = RDF::Graph.new
       graph.from_ntriples(response.body)
@@ -255,7 +255,7 @@ module ActiveKumquat
     # Updates an existing item.
     #
     def save_existing
-      @@http.patch(self.fedora_url, self.to_sparql_update.to_s,
+      @@http.patch(self.repository_url, self.to_sparql_update.to_s,
                    { 'Content-Type' => 'application/sparql-update' })
     end
 
@@ -272,7 +272,7 @@ module ActiveKumquat
       headers = { 'Content-Type' => 'application/n-triples' }
       headers['slug'] = self.requested_slug if self.requested_slug
       response = @@http.post(self.container_url, nil, headers)
-      self.fedora_url = response.header['Location'].first
+      self.repository_url = response.header['Location'].first
       self.requested_slug = nil
 
       save_existing

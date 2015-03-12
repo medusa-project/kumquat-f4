@@ -10,10 +10,10 @@ class Bytestream
   ENTITY_TYPE = ActiveKumquat::Base::Type::BYTESTREAM
 
   attr_accessor :external_resource_url # string
-  attr_accessor :fedora_url # string
   attr_accessor :height # integer
   attr_accessor :media_type # string
   attr_accessor :owner # ActiveKumquat::Base subclass
+  attr_accessor :repository_url # string
   attr_accessor :type # Bytestream::Type
   attr_accessor :upload_pathname # string
   attr_accessor :uuid # string
@@ -45,8 +45,8 @@ class Bytestream
   # @param commit_immediately boolean
   #
   def delete(also_tombstone = false, commit_immediately = true)
-    if self.fedora_url
-      url = self.fedora_url.chomp('/')
+    if self.repository_url
+      url = self.repository_url.chomp('/')
       @@http.delete(url)
       @@http.delete("#{url}/fcr:tombstone") if also_tombstone
       @destroyed = true
@@ -140,7 +140,7 @@ class Bytestream
   end
 
   def repository_metadata_url
-    "#{self.fedora_url.chomp('/')}/fcr:metadata"
+    "#{self.repository_url.chomp('/')}/fcr:metadata"
   end
 
   def save(commit_immediately = true) # TODO: look into Solr soft commits
@@ -171,8 +171,8 @@ class Bytestream
   def to_sparql_update
     update = ActiveKumquat::SparqlUpdate.new
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
-    owner_uri = "<#{self.owner.fedora_url}>"
-    my_uri = "<#{self.fedora_url}>"
+    owner_uri = "<#{self.owner.repository_url}>"
+    my_uri = "<#{self.repository_url}>"
     my_metadata_uri = "<#{self.repository_metadata_url}>"
     update.delete(my_metadata_uri, '<kumquat:mediaType>', '?o').
         insert(my_metadata_uri, 'kumquat:mediaType', self.media_type)
@@ -205,7 +205,7 @@ class Bytestream
   def save_new
     raise 'Validation error' unless self.valid?
     raise 'Owner must have a Fedora container URL before a bytestream can be '\
-      'added.' unless self.owner.fedora_url
+      'added.' unless self.owner.repository_url
     response = nil
     if self.upload_pathname
       File.open(self.upload_pathname) do |file|
@@ -215,16 +215,16 @@ class Bytestream
             'Content-Disposition' => "attachment; filename=\"#{filename}\"",
             'Slug' => "#{self.type}-bytestream"
         }
-        response = @@http.post(self.owner.fedora_url, file, headers)
+        response = @@http.post(self.owner.repository_url, file, headers)
       end
     elsif self.external_resource_url
-      response = @@http.post(self.owner.fedora_url, nil,
+      response = @@http.post(self.owner.repository_url, nil,
                              { 'Content-Type' => 'text/plain' })
       headers = { 'Content-Type' => "message/external-body; "\
         "access-type=URL; URL=\"#{self.external_resource_url}\"" }
       @@http.put(response.header['Location'].first, nil, headers)
     end
-    self.fedora_url = response.header['Location'].first
+    self.repository_url = response.header['Location'].first
     save_existing
   end
 

@@ -34,9 +34,9 @@ class BaseTest < ActiveSupport::TestCase
   test 'delete should delete' do
     assert_raise HTTPClient::BadResponseError do
       @model.delete
-      response = @@http.get(@model.fedora_url)
+      response = @@http.get(@model.repository_url)
       assert_equal 410, response.status
-      response = @@http.get("#{@model.fedora_url.chomp('/')}/fcr:tombstone")
+      response = @@http.get("#{@model.repository_url.chomp('/')}/fcr:tombstone")
       assert_equal 200, response.status
     end
   end
@@ -44,9 +44,9 @@ class BaseTest < ActiveSupport::TestCase
   test 'delete also_tombstone parameter should work' do
     assert_raise HTTPClient::BadResponseError do
       @model.delete(true)
-      response = @@http.get(@model.fedora_url)
+      response = @@http.get(@model.repository_url)
       assert_equal 404, response.status
-      response = @@http.get("#{@model.fedora_url.chomp('/')}/fcr:tombstone")
+      response = @@http.get("#{@model.repository_url.chomp('/')}/fcr:tombstone")
       assert_equal 404, response.status
     end
   end

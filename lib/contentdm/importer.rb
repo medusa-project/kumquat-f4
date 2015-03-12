@@ -64,8 +64,10 @@ module Contentdm
                           cdm_collection.alias + '.xml')) do |file|
         doc = Nokogiri::XML(file)
         doc.xpath('//record').each do |record|
-          cdm_item = Contentdm::Item.from_cdm_xml(@source_path, cdm_collection, record)
-          self.import_cdm_item(cdm_item, kq_collection, kq_collection.fedora_url)
+          cdm_item = Contentdm::Item.from_cdm_xml(@source_path, cdm_collection,
+                                                  record)
+          self.import_cdm_item(cdm_item, kq_collection,
+                               kq_collection.repository_url)
         end
       end
     end
@@ -113,7 +115,8 @@ module Contentdm
       end
 
       cdm_item.pages.each_with_index do |p, i|
-        self.import_cdm_item(p, kq_collection, kq_item.fedora_url, kq_item.uuid, i)
+        self.import_cdm_item(p, kq_collection, kq_item.repository_url,
+                             kq_item.uuid, i)
       end
 
       @solr.commit

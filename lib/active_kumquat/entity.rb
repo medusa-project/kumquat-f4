@@ -114,7 +114,7 @@ module ActiveKumquat
                                        rows: @limit })
         @solr_request = solr_response.request
         solr_response['response']['docs'].each do |doc|
-          entity = @caller.new(solr_json: doc, fedora_url: doc['id'])
+          entity = @caller.new(solr_json: doc, repository_url: doc['id'])
 
           f4_response = @@http.get(doc['id'], nil,
                                 { 'Accept' => 'application/n-triples' })

@@ -17,8 +17,8 @@ class ItemsController < ApplicationController
     render text: '404 Not Found', status: 404 unless @item
 
     bs = @item.bytestreams.select{ |b| b.type == Bytestream::Type::MASTER }.first
-    if bs and bs.fedora_url
-      redirect_to bs.fedora_url
+    if bs and bs.repository_url
+      redirect_to bs.repository_url
     else
       render text: '404 Not Found', status: 404
     end

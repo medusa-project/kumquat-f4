@@ -55,14 +55,14 @@ module ItemsHelper
 
   ##
   # @param describable Describable
-  # @param options :show_uris (true or false)
+  # @param options :predicates_as_uris (true or false)
   #
   def triples_to_dl(describable, options = {})
     # process triples into an array of hashes, collapsing identical subjects
     triples = describable.triples.sort.map do |t|
       {
           predicate: t.predicate,
-          label: options[:show_uris] ? t.predicate : t.label,
+          label: options[:predicates_as_uris] ? t.predicate : t.label,
           objects: []
       }
     end

@@ -28,8 +28,12 @@
     </div>
 
     <div class="col-sm-9 kq-results">
-      <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-        <%= @items.total_length %> items</p>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+            <%= @items.total_length %> items
+        </div>
+      </div>
 
       <ol start="<%= @start + 1 %>">
         <% @items.each do |item| %>

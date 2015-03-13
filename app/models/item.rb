@@ -42,8 +42,13 @@ class Item < ActiveKumquat::Base
   #
   def parent
     unless @parent
-      uuid = self.solr_json[Solr::Solr::PARENT_UUID_KEY.to_s]
-      @parent = Item.find_by_uuid(uuid) if uuid
+      self.fedora_graph.each_statement do |s|
+        if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
+            Fedora::Repository::LocalTriples::PARENT_UUID
+          @parent = Item.find_by_uuid(s.object.to_s)
+          break
+        end
+      end
     end
     @parent
   end
@@ -78,8 +83,9 @@ class Item < ActiveKumquat::Base
   private
 
   def collection_key
-    if self.solr_json
-      self.solr_json[Solr::Solr::COLLECTION_KEY_KEY.to_s]
+    self.fedora_graph.each_statement do |s|
+      return s.object.to_s if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
+          Fedora::Repository::LocalTriples::COLLECTION_KEY
     end
     nil
   end

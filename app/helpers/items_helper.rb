@@ -174,4 +174,66 @@ module ItemsHelper
     raw(dl)
   end
 
+  ##
+  # @param item Item
+  #
+  def viewer_for(item)
+    if item.is_pdf?
+      return pdf_viewer_for(item)
+    elsif item.is_image?
+      return image_viewer_for(item)
+    elsif item.is_audio?
+      return audio_player_for(item)
+    elsif item.is_video?
+      return video_viewer_for(item)
+    end
+    raw("<!-- No viewer available for media type #{item.media_type} -->\n")
+  end
+
+  private
+
+  def audio_player_for(item)
+    # TODO: write audio_player_for
+  end
+
+  def image_viewer_for(item)
+    html = "<div id=\"kq-image-viewer\"></div>
+    #{javascript_include_tag('/openseadragon/openseadragon.min.js')}
+    <script type=\"text/javascript\">
+    var viewer = OpenSeadragon({
+        id: \"kq-image-viewer\",
+        preserveViewport: true,
+        prefixUrl: \"/openseadragon/images/\",
+        tileSources: [{
+            \"@context\": \"http://library.stanford.edu/iiif/image-api/1.1/context.json\",
+            \"@id\": \"#{j(item.image_iiif_url)}\",
+            \"formats\": [ \"jpg\", \"png\", \"gif\", \"webp\" ],
+            \"height\": #{j(item.master_image.height.to_s)},
+            \"profile\": \"http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2\",
+            \"qualities\": [ \"default\", \"bitonal\", \"gray\", \"color\" ],
+            \"scale_factors\": [1, 2, 4, 8, 16],
+            \"tile_height\": 256,
+            \"tile_width\": 256,
+            \"width\": #{j(item.master_image.width.to_s)}
+        }]
+    });
+    </script>"
+    raw(html)
+  end
+
+  def pdf_viewer_for(item)
+    viewer_url = asset_path('/pdfjs/web/viewer.html?file=' +
+        item_master_bytestream_path(item))
+    tag = link_to(viewer_url, target: '_blank') do
+      #image_tag(item_image_path(item, size: 256))
+    end
+    tag += link_to('Open in PDF Viewer', viewer_url, target: '_blank',
+                   class: 'btn btn-default')
+    raw(tag)
+  end
+
+  def video_viewer_for(item)
+    # TODO: write video_viewer_for
+  end
+
 end

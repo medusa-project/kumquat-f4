@@ -151,23 +151,22 @@ module ItemsHelper
     triples.each do |struct|
       next if struct[:predicate].include?('http://fedora.info/definitions/')
       next if struct[:predicate].include?(Kumquat::Application::NAMESPACE_URI)
-      if struct[:objects].any?
-        dl += "<dt>#{struct[:label]}</dt>"
-        struct[:objects].each do |object|
-          if struct[:predicate].end_with?('/subject')
-            components = object.strip.split(';')
-            if components.length > 1
-              value = '<ul>'
-              value += components.map{ |c| "<li>#{c.strip}</li>" }.join
-              value += '</ul>'
-            else
-              value = object.strip
-            end
+      next unless struct[:objects].select{ |o| !o.strip.blank? }.any?
+      dl += "<dt>#{struct[:label]}</dt>"
+      struct[:objects].each do |object|
+        if struct[:predicate].end_with?('/subject')
+          components = object.strip.split(';')
+          if components.length > 1
+            value = '<ul>'
+            value += components.map{ |c| "<li>#{c.strip}</li>" }.join
+            value += '</ul>'
           else
             value = object.strip
           end
-          dl += "<dd>#{value}</dd>"
+        else
+          value = object.strip
         end
+        dl += "<dd>#{value}</dd>"
       end
     end
     dl += '</dl>'
@@ -193,7 +192,12 @@ module ItemsHelper
   private
 
   def audio_player_for(item)
-    # TODO: write audio_player_for
+    tag = "<audio controls>
+      <source src=\"#{item_master_bytestream_url(item)}\"
+              type=\"#{item.master_bytestream.media_type}\">
+        Your browser does not support the audio tag.
+    </audio>"
+    raw(tag)
   end
 
   def image_viewer_for(item)

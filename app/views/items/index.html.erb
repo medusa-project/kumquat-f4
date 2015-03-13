@@ -17,6 +17,8 @@
       <br><small><%= @collection.subtitle %></small>
     <% end %>
   </h1>
+<% else %>
+  <% provide(:active_nav, 'items') %>
 <% end %>
 
 <div class="row">

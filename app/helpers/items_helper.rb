@@ -20,13 +20,13 @@ module ItemsHelper
         term_params = params.deep_dup
         clear_link = nil
         if term_params[:fq] and term_params[:fq].include?(term.facet_query)
-          term_params = term.removed_from_params(params)
+          term_params = term.removed_from_params(term_params)
           clear_link = link_to(term_params, class: 'kq-clear') do
             content_tag(:i, nil, class: 'fa fa-remove')
           end
           term_html = "<span class=\"kq-selected-term\">#{term.name}</span>"
         else
-          term_html = link_to(term.name, term.added_to_params(params))
+          term_html = link_to(term.name, term.added_to_params(term_params))
         end
         panel += "<li class=\"kq-term\">
           <span class=\"kq-term-name\">#{term_html}</span>
@@ -56,13 +56,13 @@ module ItemsHelper
         term_params = params.deep_dup
         clear_link = nil
         if term_params[:fq] and term_params[:fq].include?(term.facet_query)
-          term_params = term.removed_from_params(params)
+          term_params = term.removed_from_params(term_params)
           clear_link = link_to(term_params, class: 'kq-clear') do
             content_tag(:i, nil, class: 'fa fa-remove')
           end
           term_html = "<span class=\"kq-selected-term\">#{term.name}</span>"
         else
-          term_html = link_to(term.name, term.added_to_params(params))
+          term_html = link_to(term.name, term.added_to_params(term_params))
         end
         ul += "<li class=\"kq-term\">
           <span class=\"kq-term-name\">#{term_html}</span>

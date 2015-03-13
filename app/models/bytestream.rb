@@ -79,7 +79,7 @@ class Bytestream
   #
   def populate_from_graph(graph)
     graph.each_triple do |subject, predicate, object|
-      if predicate == "#{Kumquat::Application::NAMESPACE_URI}mediaType"
+      if predicate == 'http://purl.org/dc/terms/MediaType'
         self.media_type = object.to_s
       elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}height"
         self.height = object.to_s.to_i
@@ -169,12 +169,13 @@ class Bytestream
 
   def to_sparql_update
     update = ActiveKumquat::SparqlUpdate.new
-    update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+    update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI).
+        prefix('dcterms', 'http://purl.org/dc/terms/')
     owner_uri = "<#{self.owner.repository_url}>"
     my_uri = "<#{self.repository_url}>"
     my_metadata_uri = "<#{self.repository_metadata_url}>"
-    update.delete(my_metadata_uri, '<kumquat:mediaType>', '?o').
-        insert(my_metadata_uri, 'kumquat:mediaType', self.media_type)
+    update.delete(my_metadata_uri, '<dcterms:MediaType>', '?o').
+        insert(my_metadata_uri, 'dcterms:MediaType', self.media_type)
     update.delete(my_metadata_uri, '<kumquat:bytestreamType>', '?o').
         insert(my_metadata_uri, 'kumquat:bytestreamType', self.type)
     update.delete(my_metadata_uri, '<kumquat:width>', '?o').
@@ -183,8 +184,17 @@ class Bytestream
         insert(my_metadata_uri, 'kumquat:height', self.height)
     update.delete(my_metadata_uri, '<kumquat:resourceType>', '?o').
         insert(my_metadata_uri, 'kumquat:resourceType', ENTITY_TYPE)
+
+    # also update the owning entity with some useful properties since we can't
+    # easily query for them (TODO: use a triple store)
     update.delete(owner_uri, '<kumquat:hasMasterBytestream>', '?o').
         insert(owner_uri, 'kumquat:hasMasterBytestream', my_uri, false)
+    update.delete(owner_uri, '<kumquat:height>', '?o').
+        insert(owner_uri, 'kumquat:height', self.height)
+    update.delete(owner_uri, '<dcterms:MediaType>', '?o').
+        insert(owner_uri, 'dcterms:MediaType', self.media_type)
+    update.delete(owner_uri, '<kumquat:width>', '?o').
+        insert(owner_uri, 'kumquat:width', self.width)
   end
 
   private

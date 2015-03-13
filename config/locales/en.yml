@@ -101,6 +101,7 @@ en:
   uri_http_purl_org_dc_terms_language: Language
   uri_http_purl_org_dc_terms_license: License
   uri_http_purl_org_dc_terms_mediator: Mediator
+  uri_http_purl_org_dc_terms_MediaType: Media Type
   uri_http_purl_org_dc_terms_medium: Medium
   uri_http_purl_org_dc_terms_modified: Date Modified
   uri_http_purl_org_dc_terms_provenance: Provenance

@@ -8,7 +8,6 @@ module Fedora
       COLLECTION_KEY = 'collectionKey'
       HEIGHT = 'height'
       MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
-      MEDIA_TYPE = 'mediaType'
       PAGE_INDEX = 'pageIndex'
       PARENT_UUID = 'parentUUID'
       RESOURCE_TYPE = 'resourceType'
@@ -32,7 +31,7 @@ module Fedora
       #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{LocalTriples::COLLECTION_KEY} :: xsd:string;
       #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:#{LocalTriples::MASTER_BYTESTREAM_URI} :: xsd:string;
       #{Solr::Solr::HEIGHT_KEY} = kumquat:#{LocalTriples::HEIGHT} :: xsd:integer;
-      #{Solr::Solr::MEDIA_TYPE_KEY} = kumquat:#{LocalTriples::MEDIA_TYPE} :: xsd:string;
+      #{Solr::Solr::MEDIA_TYPE_KEY} = dcterms:MediaType :: xsd:string;
       #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{LocalTriples::PAGE_INDEX} :: xsd:integer;
       #{Solr::Solr::PARENT_UUID_KEY} = kumquat:#{LocalTriples::PARENT_UUID} :: xsd:string;
       #{Solr::Solr::RESOURCE_TYPE_KEY} = kumquat:#{LocalTriples::RESOURCE_TYPE} :: xsd:string;

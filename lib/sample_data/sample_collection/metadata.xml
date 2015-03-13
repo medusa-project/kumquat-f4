@@ -38,6 +38,18 @@
         <dc:type>Sound</dc:type>
     </rdf:Description>
 
+    <!-- bike.png -->
+    <rdf:Description rdf:about="http://example.net/items/bike.png">
+        <dc:description>A bicycle in a parking space.</dc:description>
+        <local:filename>bike.png</local:filename>
+        <dcterms:extent>318 Kbytes</dcterms:extent>
+        <dc:format>image/png</dc:format>
+        <dc:subject>Bicycles</dc:subject>
+        <dc:subject>Parking spaces</dc:subject>
+        <dc:title>Sample PNG image item</dc:title>
+        <dc:type>Image</dc:type>
+    </rdf:Description>
+
     <!-- hello_world -->
     <rdf:Description rdf:about="http://example.net/items/hello_world">
         <dc:date>2015-03-12</dc:date>

@@ -92,8 +92,16 @@ module Contentdm
         if DCElement::URIS.map{ |e| URI(e).path.split('/').last }.
             include?(child_node.name)
           unless child_node.content.empty?
-            elements << DCElement.new(name: child_node.name,
-                                      value: child_node.content)
+            content = child_node.content
+            if child_node.name.start_with?('subje')
+              content.split(';').reject{ |t| t.strip.blank? }.each do |term|
+                elements << DCElement.new(name: child_node.name,
+                                          value: term.strip)
+              end
+            else
+              elements << DCElement.new(name: child_node.name,
+                                        value: content)
+            end
           end
         elsif child_node.name == 'unmapped'
           elements << LocalElement.new(value: child_node.content)

@@ -27,7 +27,7 @@ module Contentdm
     end
 
     def value=(value_)
-      @value = value_.strip.squeeze(' ').gsub('\t', '')
+      @value = value_.strip.chomp(';').squeeze(' ').gsub('\t', '')
     end
 
   end

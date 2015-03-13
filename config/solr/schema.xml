@@ -77,6 +77,7 @@
   <!-- URI of an item's master bytestream -->
   <field name="kq_system_master_bytestream_uri" type="string" indexed="false"
     stored="true" multiValued="false"/>
+  <!-- copyField destination for dcterm_MediaType -->
   <field name="kq_system_media_type" type="string" indexed="true" stored="true"
     multiValued="false"/>
   <!-- ID (Fedora UUID) of the parent item, if present -->
@@ -200,6 +201,8 @@
     multiValued="true"/>
   <field name="dcterm_mediator" type="text_general" indexed="true" stored="true"
     multiValued="true"/>
+  <field name="dcterm_MediaType" type="string" indexed="true" stored="true"
+    multiValued="true"/>
   <field name="dcterm_medium" type="text_general" indexed="true" stored="true"
     multiValued="true"/>
   <field name="dcterm_modified" type="text_general" indexed="true" stored="true"
@@ -311,6 +314,8 @@
   <field name="kq_license" type="text_general" indexed="true" stored="true"
     multiValued="true"/>
   <field name="kq_mediator" type="text_general" indexed="true" stored="true"
+    multiValued="true"/>
+  <field name="kq_media_type" type="string" indexed="true" stored="true"
     multiValued="true"/>
   <field name="kq_medium" type="text_general" indexed="true" stored="true"
     multiValued="true"/>
@@ -488,6 +493,8 @@
   <copyField source="dcterm_language" dest="kq_language"/>
   <copyField source="dcterm_license" dest="kq_license"/>
   <copyField source="dcterm_mediator" dest="kq_mediator"/>
+  <copyField source="dcterm_MediaType" dest="kq_media_type"/>
+  <copyField source="dcterm_MediaType" dest="kq_system_media_type"/>
   <copyField source="dcterm_medium" dest="kq_medium"/>
   <copyField source="dcterm_modified" dest="kq_modified"/>
   <copyField source="dcterm_provenance" dest="kq_provenance"/>

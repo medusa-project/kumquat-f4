@@ -266,10 +266,8 @@ module ActiveKumquat
     def save_new
       # As of version 4.1, Fedora doesn't like to accept triples via POST for
       # some reason; it just returns 201 Created regardless of the Content-Type
-      # header and body content. PUT works, though. So we will POST to create
-      # an empty container, and then update that.
-
-      # POST to create a new resource
+      # header and body content. So we will POST to create an empty container,
+      # and then update that.
       headers = { 'Content-Type' => 'application/n-triples' }
       headers['slug'] = self.requested_slug if self.requested_slug
       response = @@http.post(self.container_url, nil, headers)

@@ -48,6 +48,10 @@ class Item < ActiveKumquat::Base
     @parent
   end
 
+  def to_s
+    self.title || self.web_id
+  end
+
   ##
   # Overrides parent
   #

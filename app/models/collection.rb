@@ -27,6 +27,10 @@ class Collection < ActiveKumquat::Base
     end
   end
 
+  def to_s
+    self.title || self.key
+  end
+
   ##
   # Overrides parent
   #

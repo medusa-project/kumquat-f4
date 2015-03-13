@@ -14,10 +14,10 @@
 
     <!-- 800379272_de0817d41a.tiff -->
     <rdf:Description rdf:about="http://example.net/items/800379272_de0817d41a.tiff">
-        <dc:description>A crane lifting the moon.</dc:description>
+        <dc:description>The Death Star under construction.</dc:description>
         <local:filename>800379272_de0817d41a.tiff</local:filename>
         <dcterms:extent>248 Kbytes</dcterms:extent>
-        <dc:format>image/jp2</dc:format>
+        <dc:format>image/tiff</dc:format>
         <dc:subject>Cranes</dc:subject>
         <dc:subject>Moons</dc:subject>
         <dc:title>Sample LZW-compressed TIFF image item</dc:title>
@@ -64,30 +64,30 @@
             University of Illinois at Urbana-Champaign campus.</dc:description>
         <local:filename>IMG_1118.jp2</local:filename>
         <kumquat:fullText>Harold E. "Red" Grange
-            "the Galloping Ghost"
-            "77"
-            Born: June 13, 1903 in Forksville, Pa.
-            Died: January 28, 1991 in Lake Wales, Fla.
-            
-            Red Grange is considered to be one of college
-            football's greatest stars, lettering at the
-            University of Illinois as a halfback from 1923-25
-            and earning All-America honors all three seasons.
-            His most memorable performance came October 18,
-            1924 vs. Michigan here at Memorial Stadium in the
-            Dedication Game.
-            
-            Upon seeing Grange's performance, legendary
-            sportswriter Grantland Rice penned this immortal
-            verse:
-            
-            A streak of fire, a breath of flame,
-            Eluding all who reach and clutch,
-            A gray Ghost thrown into the game
-            That rival hands may never touch;
-            A rubber, bounding, blasting soul
-            Whose destination is the goal..
-            Red Grange of Illinois.</kumquat:fullText>
+"the Galloping Ghost"
+"77"
+Born: June 13, 1903 in Forksville, Pa.
+Died: January 28, 1991 in Lake Wales, Fla.
+
+Red Grange is considered to be one of college
+football's greatest stars, lettering at the
+University of Illinois as a halfback from 1923-25
+and earning All-America honors all three seasons.
+His most memorable performance came October 18,
+1924 vs. Michigan here at Memorial Stadium in the
+Dedication Game.
+
+Upon seeing Grange's performance, legendary
+sportswriter Grantland Rice penned this immortal
+verse:
+
+A streak of fire, a breath of flame,
+Eluding all who reach and clutch,
+A gray Ghost thrown into the game
+That rival hands may never touch;
+A rubber, bounding, blasting soul
+Whose destination is the goal..
+Red Grange of Illinois.</kumquat:fullText>
         <dcterms:extent>912 Kbytes</dcterms:extent>
         <dc:format>image/jp2</dc:format>
         <dc:identifier>IMG_1118.jp2</dc:identifier>

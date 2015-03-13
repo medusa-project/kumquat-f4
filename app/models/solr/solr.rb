@@ -10,6 +10,7 @@ module Solr
 
     COLLECTION_KEY_KEY = :kq_system_collection_key
     ENTITY_TYPE_KEY = :kq_system_resource_type
+    FULL_TEXT_KEY = :kq_system_full_text
     HEIGHT_KEY = :kq_system_height
     MASTER_BYTESTREAM_URI_KEY = :kq_system_master_bytestream_uri
     MEDIA_TYPE_KEY = :kq_system_media_type

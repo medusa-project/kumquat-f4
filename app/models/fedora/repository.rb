@@ -6,6 +6,7 @@ module Fedora
 
     class LocalTriples
       COLLECTION_KEY = 'collectionKey'
+      FULL_TEXT = 'fullText'
       HEIGHT = 'height'
       MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
       PAGE_INDEX = 'pageIndex'
@@ -29,6 +30,7 @@ module Fedora
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
       #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{LocalTriples::COLLECTION_KEY} :: xsd:string;
+      #{Solr::Solr::FULL_TEXT_KEY} = kumquat:#{LocalTriples::FULL_TEXT} :: xsd:string;
       #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:#{LocalTriples::MASTER_BYTESTREAM_URI} :: xsd:string;
       #{Solr::Solr::HEIGHT_KEY} = kumquat:#{LocalTriples::HEIGHT} :: xsd:integer;
       #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{LocalTriples::PAGE_INDEX} :: xsd:integer;

@@ -72,6 +72,8 @@
   <!-- TODO: might be possible to eliminate this -->
   <field name="kq_system_collection_key" type="string" indexed="true" stored="true"
     multiValued="false"/>
+  <field name="kq_system_full_text" type="text_general" indexed="true"
+    stored="true" multiValued="false"/>
   <field name="kq_system_height" type="int" indexed="true" stored="true"
     multiValued="false"/>
   <!-- URI of an item's master bytestream -->
@@ -514,6 +516,7 @@
   <copyField source="dcterm_valid" dest="kq_valid"/>
 
   <!-- Copy a bunch of different fields into one for easy searching -->
+  <copyField source="kq_system_full_text" dest="kq_searchall"/>
   <copyField source="dc_contributor" dest="kq_searchall"/>
   <copyField source="dc_coverage" dest="kq_searchall"/>
   <copyField source="dc_creator" dest="kq_searchall"/>

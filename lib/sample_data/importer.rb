@@ -55,9 +55,13 @@ module SampleData
                                collection: kq_collection)
           reader.each_statement do |statement|
             if statement.subject.to_s == subject
-              kq_item.triples << Triple.new(
-                  predicate: statement.predicate.to_s,
-                  object: statement.object.to_s)
+              if statement.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
+                  Fedora::Repository::LocalTriples::FULL_TEXT
+                kq_item.full_text = statement.object.to_s
+              else
+                kq_item.triples << Triple.new(predicate: statement.predicate.to_s,
+                                              object: statement.object.to_s)
+              end
             end
           end
           puts "#{kq_item.triple('http://purl.org/dc/elements/1.1/title').object}"

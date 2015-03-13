@@ -38,8 +38,16 @@ module ActiveKumquat
     # @return self
     #
     def insert(subject, predicate, object, quote_object = true)
-      object = quote_object ? "\"#{object.to_s.gsub('"', '\"')}\"" : object
-      @inserts << { subject: subject, predicate: predicate, object: object }
+      object_s = object.to_s
+      if quote_object
+        value = "\"#{object_s.gsub('"', '\"')}\""
+        if object_s.lines.length > 1
+          value = "\"\"#{value}\"\""
+        end
+      else
+        value = object_s
+      end
+      @inserts << { subject: subject, predicate: predicate, object: value }
       self
     end
 

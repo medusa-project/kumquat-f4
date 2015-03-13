@@ -6,6 +6,7 @@ class Item < ActiveKumquat::Base
   ENTITY_TYPE = ActiveKumquat::Base::Type::ITEM
 
   attr_accessor :collection
+  attr_accessor :full_text
   attr_accessor :page_index
   attr_accessor :parent_uuid
 
@@ -33,7 +34,7 @@ class Item < ActiveKumquat::Base
   # @return Collection
   #
   def collection
-    @collection = Collection.find_by_web_id(collection_key) unless @collection
+    @collection = Collection.find_by_web_id(@collection_key) unless @collection
     @collection
   end
 
@@ -60,34 +61,57 @@ class Item < ActiveKumquat::Base
   ##
   # Overrides parent
   #
+  # @param graph RDF::Graph
+  #
+  def populate_from_graph(graph)
+    super(graph)
+
+    ns_uri = Kumquat::Application::NAMESPACE_URI
+    local_triples = Fedora::Repository::LocalTriples
+
+    graph.each_triple do |subject, predicate, object|
+      case predicate
+        when ns_uri + local_triples::COLLECTION_KEY
+          @collection_key = object.to_s
+        when ns_uri + local_triples::FULL_TEXT
+         self.full_text = object.to_s
+        when ns_uri + local_triples::PAGE_INDEX
+          self.page_index = object.to_s
+        when ns_uri + local_triples::PARENT_UUID
+          self.parent_uuid = object.to_s
+      end
+    end
+  end
+
+  ##
+  # Overrides parent
+  #
   # @return ActiveKumquat::SparqlUpdate
   #
   def to_sparql_update
     update = super
+
+    local_triples = Fedora::Repository::LocalTriples
+
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
     # collection key
-    update.delete('<>', '<kumquat:collectionKey>', '?o', false).
-        insert(nil, 'kumquat:collectionKey', self.collection.key)
+    update.delete('<>', "<kumquat:#{local_triples::COLLECTION_KEY}>", '?o', false).
+        insert(nil, "kumquat:#{local_triples::COLLECTION_KEY}", self.collection.key)
+    # full text
+    update.delete('<>', "<kumquat:#{local_triples::FULL_TEXT}>", '?o', false).
+        insert(nil, "kumquat:#{local_triples::FULL_TEXT}", self.full_text) unless
+        self.full_text.blank?
     # page index
-    update.delete('<>', '<kumquat:pageIndex>', '?o', false)
-    update.insert(nil, 'kumquat:pageIndex', self.page_index) if self.page_index
+    update.delete('<>', "<kumquat:#{local_triples::PAGE_INDEX}>", '?o', false)
+    update.insert(nil, "kumquat:#{local_triples::PAGE_INDEX}", self.page_index) unless
+        self.page_index.blank?
     # parent uuid
-    update.delete('<>', '<kumquat:parentUUID>', '?o', false)
-    update.insert(nil, 'kumquat:parentUUID', self.parent_uuid) if
-        self.parent_uuid
+    update.delete('<>', "<kumquat:#{local_triples::PARENT_UUID}>", '?o', false)
+    update.insert(nil, "kumquat:#{local_triples::PARENT_UUID}", self.parent_uuid) unless
+        self.parent_uuid.blank?
     # resource type
-    update.delete('<>', '<kumquat:resourceType>', '?o', false).
-        insert(nil, 'kumquat:resourceType', ENTITY_TYPE)
-  end
-
-  private
-
-  def collection_key
-    self.fedora_graph.each_statement do |s|
-      return s.object.to_s if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
-          Fedora::Repository::LocalTriples::COLLECTION_KEY
-    end
-    nil
+    update.delete('<>', "<kumquat:#{local_triples::RESOURCE_TYPE}>", '?o', false).
+        insert(nil, "kumquat:#{local_triples::RESOURCE_TYPE}", ENTITY_TYPE)
   end
 
 end

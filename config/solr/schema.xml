@@ -551,7 +551,7 @@
   <!-- Create a string version of various fields for faceting -->
   <copyField source="dc_contributor" dest="kq_contributor_facet"/>
   <copyField source="dcterm_contributor" dest="kq_contributor_facet"/>
-  <copyField source="kq_coverage" dest="kq_coverage_facet"/>
+  <copyField source="dc_coverage" dest="kq_coverage_facet"/>
   <copyField source="dcterm_coverage" dest="kq_coverage_facet"/>
   <copyField source="dc_creator" dest="kq_creator_facet"/>
   <copyField source="dcterm_creator" dest="kq_creator_facet"/>

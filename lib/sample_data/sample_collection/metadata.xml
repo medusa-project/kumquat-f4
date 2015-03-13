@@ -12,8 +12,20 @@
         <dc:title>Sample Collection</dc:title>
     </rdf:Description>
 
+    <!-- 800379272_de0817d41a.tiff -->
+    <rdf:Description rdf:about="http://example.net/items/800379272_de0817d41a.tiff">
+        <dc:description>A crane lifting the moon.</dc:description>
+        <local:filename>800379272_de0817d41a.tiff</local:filename>
+        <dcterms:extent>248 Kbytes</dcterms:extent>
+        <dc:format>image/jp2</dc:format>
+        <dc:subject>Cranes</dc:subject>
+        <dc:subject>Moons</dc:subject>
+        <dc:title>Sample LZW-compressed TIFF image item</dc:title>
+        <dc:type>Image</dc:type>
+    </rdf:Description>
+
     <!-- beep-piano.aif -->
-    <rdf:Description rdf:about="http://example.net/items/1">
+    <rdf:Description rdf:about="http://example.net/items/beep-piano.aif">
         <dc:description>A short beep.</dc:description>
         <dcterms:extent>22 Kbytes</dcterms:extent>
         <local:filename>beep-piano.aif</local:filename>
@@ -27,7 +39,7 @@
     </rdf:Description>
 
     <!-- hello_world -->
-    <rdf:Description rdf:about="http://example.net/items/2">
+    <rdf:Description rdf:about="http://example.net/items/hello_world">
         <dc:date>2015-03-12</dc:date>
         <dc:description>"Hello world!", written in C and compiled with GCC for
             Darwin 14.1 x86_64.</dc:description>
@@ -43,7 +55,7 @@
     </rdf:Description>
 
     <!-- IMG_1118.jp2 -->
-    <rdf:Description rdf:about="http://example.net/items/3">
+    <rdf:Description rdf:about="http://example.net/items/IMG_1118.jp2">
         <dc:coverage>Memorial Stadium, University of Illinois at
             Urbana-Champaign</dc:coverage>
         <dc:creator/>
@@ -92,7 +104,7 @@
     </rdf:Description>
 
     <!-- magna_carta.txt -->
-    <rdf:Description rdf:about="http://example.net/items/4">
+    <rdf:Description rdf:about="http://example.net/items/magna_carta.txt">
         <dc:creator>Stephen Langton</dc:creator>
         <dc:date>1215-06-19</dc:date>
         <dc:description>The Magna Carta, in UTF-8 with no byte order
@@ -109,7 +121,7 @@
     </rdf:Description>
 
     <!-- NEXTSTEP.pdf -->
-    <rdf:Description rdf:about="http://example.net/items/5">
+    <rdf:Description rdf:about="http://example.net/items/NEXTSTEP.pdf">
         <dc:creator>NeXT Computer, Inc.</dc:creator>
         <dc:date>1995</dc:date>
         <dc:description>A flyer advertising the NEXTSTEP operating
@@ -124,7 +136,7 @@
     </rdf:Description>
 
     <!-- P1000245.jpg -->
-    <rdf:Description rdf:about="http://example.net/items/6">
+    <rdf:Description rdf:about="http://example.net/items/P1000245.jpg">
         <dc:coverage>Memorial Stadium, University of Illinois at
             Urbana-Champaign</dc:coverage>
         <dc:date>2014-05-21</dc:date>
@@ -141,7 +153,7 @@
     </rdf:Description>
 
     <!-- retro_click.wav -->
-    <rdf:Description rdf:about="http://example.net/items/7">
+    <rdf:Description rdf:about="http://example.net/items/retro_click.wav">
         <dc:description>A short click.</dc:description>
         <dcterms:extent>4 Kbytes</dcterms:extent>
         <local:filename>retro_click.wav</local:filename>

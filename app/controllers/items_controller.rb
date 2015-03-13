@@ -13,10 +13,10 @@ class ItemsController < ApplicationController
   before_action :set_browse_context, only: :index
 
   def master_bytestream
-    @item = Item.find_by_web_id(params[:web_id])
+    @item = Item.find_by_web_id(params[:item_web_id])
     render text: '404 Not Found', status: 404 unless @item
 
-    bs = @item.bytestreams.select{ |b| b.type == Bytestream::Type::MASTER }.first
+    bs = @item.master_bytestream
     if bs and bs.repository_url
       redirect_to bs.repository_url
     else

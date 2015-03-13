@@ -10,12 +10,12 @@
       <%= link_to collection do %>
         <%= image_tag('', width: 100, height: 100) %>
       <% end %>
-      <span class="title">
+      <span class="kq-title">
         <%= link_to collection.title, collection %>
         <small><%= pluralize(collection.num_items, 'item') %></small>
       </span>
       <br>
-      <span class="description">
+      <span class="kq-description">
         <%= truncate(collection.triple('description').to_s, length: 400) %>
       </span>
     </li>

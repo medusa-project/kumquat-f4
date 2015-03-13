@@ -57,17 +57,17 @@ class Item < ActiveKumquat::Base
     update = super
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
     # collection key
-    update.delete('?s', '<kumquat:collectionKey>', '?o').
+    update.delete('<>', '<kumquat:collectionKey>', '?o', false).
         insert(nil, 'kumquat:collectionKey', self.collection.key)
     # page index
-    update.delete('?s', '<kumquat:pageIndex>', '?o')
+    update.delete('<>', '<kumquat:pageIndex>', '?o', false)
     update.insert(nil, 'kumquat:pageIndex', self.page_index) if self.page_index
     # parent uuid
-    update.delete('?s', '<kumquat:parentUUID>', '?o')
+    update.delete('<>', '<kumquat:parentUUID>', '?o', false)
     update.insert(nil, 'kumquat:parentUUID', self.parent_uuid) if
         self.parent_uuid
     # resource type
-    update.delete('?s', '<kumquat:resourceType>', '?o').
+    update.delete('<>', '<kumquat:resourceType>', '?o', false).
         insert(nil, 'kumquat:resourceType', ENTITY_TYPE)
   end
 

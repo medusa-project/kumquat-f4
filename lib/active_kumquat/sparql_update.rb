@@ -10,7 +10,7 @@ module ActiveKumquat
     def initialize
       @deletes = []
       @inserts = []
-      @prefixes = []
+      @prefixes = Set.new
     end
 
     ##
@@ -56,7 +56,7 @@ module ActiveKumquat
 
     def to_s
       s = ''
-      @prefixes.uniq.each do |hash|
+      @prefixes.each do |hash|
         s += "PREFIX #{hash[:prefix]}: <#{hash[:uri]}>\n"
       end
 

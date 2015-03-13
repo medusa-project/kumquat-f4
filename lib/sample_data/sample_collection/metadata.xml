@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!-- Metadata describing the Kumquat sample data. -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:kumquat="http://example.org/"
+    xmlns:local="http://example.net/">
+
+    <!-- collection metadata -->
+    <rdf:Description rdf:about="http://example.net/collections/sample">
+        <dc:description>A collection full of sample items.</dc:description>
+        <dc:title>Sample Collection</dc:title>
+    </rdf:Description>
+
+    <!-- beep-piano.aif -->
+    <rdf:Description rdf:about="http://example.net/items/1">
+        <dc:description>A short beep.</dc:description>
+        <dcterms:extent>22 Kbytes</dcterms:extent>
+        <local:filename>beep-piano.aif</local:filename>
+        <dc:format>audio/aiff</dc:format>
+        <dc:identifier>beep-piano.aif</dc:identifier>
+        <dc:subject>Pianos</dc:subject>
+        <dc:subject>Beeps</dc:subject>
+        <dc:subject>Annoying noises</dc:subject>
+        <dc:title>Sample AIFF audio item</dc:title>
+        <dc:type>Sound</dc:type>
+    </rdf:Description>
+
+    <!-- hello_world -->
+    <rdf:Description rdf:about="http://example.net/items/2">
+        <dc:date>2015-03-12</dc:date>
+        <dc:description>"Hello world!", written in C and compiled with GCC for
+            Darwin 14.1 x86_64.</dc:description>
+        <dcterms:extent>8 Kbytes</dcterms:extent>
+        <local:filename>hello_world</local:filename>
+        <dc:format>application/octet-stream</dc:format>
+        <dc:identifier>hello_world</dc:identifier>
+        <dc:language>English</dc:language>
+        <dc:rights>Public domain</dc:rights>
+        <dc:subject>Computer software</dc:subject>
+        <dc:title>Sample binary executable item</dc:title>
+        <dc:type>Dataset</dc:type>
+    </rdf:Description>
+
+    <!-- IMG_1118.jp2 -->
+    <rdf:Description rdf:about="http://example.net/items/3">
+        <dc:coverage>Memorial Stadium, University of Illinois at
+            Urbana-Champaign</dc:coverage>
+        <dc:creator/>
+        <dc:date>2014-06-12</dc:date>
+        <dc:description>A plaque of Red Grange in Memorial Stadium on the
+            University of Illinois at Urbana-Champaign campus.</dc:description>
+        <local:filename>IMG_1118.jp2</local:filename>
+        <kumquat:fullText>Harold E. "Red" Grange
+            "the Galloping Ghost"
+            "77"
+            Born: June 13, 1903 in Forksville, Pa.
+            Died: January 28, 1991 in Lake Wales, Fla.
+            
+            Red Grange is considered to be one of college
+            football's greatest stars, lettering at the
+            University of Illinois as a halfback from 1923-25
+            and earning All-America honors all three seasons.
+            His most memorable performance came October 18,
+            1924 vs. Michigan here at Memorial Stadium in the
+            Dedication Game.
+            
+            Upon seeing Grange's performance, legendary
+            sportswriter Grantland Rice penned this immortal
+            verse:
+            
+            A streak of fire, a breath of flame,
+            Eluding all who reach and clutch,
+            A gray Ghost thrown into the game
+            That rival hands may never touch;
+            A rubber, bounding, blasting soul
+            Whose destination is the goal..
+            Red Grange of Illinois.</kumquat:fullText>
+        <dcterms:extent>912 Kbytes</dcterms:extent>
+        <dc:format>image/jp2</dc:format>
+        <dc:identifier>IMG_1118.jp2</dc:identifier>
+        <dc:language>English</dc:language>
+        <dc:publisher/>
+        <dc:relation/>
+        <dc:rights>Creative Commons Attribution-NoDerivatives 4.0
+            International</dc:rights>
+        <dc:source/>
+        <dc:subject>Plaques</dc:subject>
+        <dc:subject>Football</dc:subject>
+        <dc:title>Sample JPEG2000 image item</dc:title>
+        <dc:type>Image</dc:type>
+    </rdf:Description>
+
+    <!-- magna_carta.txt -->
+    <rdf:Description rdf:about="http://example.net/items/4">
+        <dc:creator>Stephen Langton</dc:creator>
+        <dc:date>1215-06-19</dc:date>
+        <dc:description>The Magna Carta, in UTF-8 with no byte order
+            mark.</dc:description>
+        <dcterms:extent>4583 words</dcterms:extent>
+        <local:filename>magna carta.txt</local:filename>
+        <dc:format>text/plain</dc:format>
+        <dc:language>English</dc:language>
+        <dc:publisher>England</dc:publisher>
+        <dc:rights>Public domain</dc:rights>
+        <dc:subject>Important historical documents</dc:subject>
+        <dc:title>Sample plain text item</dc:title>
+        <dc:type>Text</dc:type>
+    </rdf:Description>
+
+    <!-- NEXTSTEP.pdf -->
+    <rdf:Description rdf:about="http://example.net/items/5">
+        <dc:creator>NeXT Computer, Inc.</dc:creator>
+        <dc:date>1995</dc:date>
+        <dc:description>A flyer advertising the NEXTSTEP operating
+            system.</dc:description>
+        <dcterms:extent>312 Kbytes</dcterms:extent>
+        <local:filename>NEXTSTEP.pdf</local:filename>
+        <dc:format>application/pdf</dc:format>
+        <dc:language>English</dc:language>
+        <dc:publisher>NeXT Computer, Inc.</dc:publisher>
+        <dc:title>Sample PDF item</dc:title>
+        <dc:type>Text</dc:type>
+    </rdf:Description>
+
+    <!-- P1000245.jpg -->
+    <rdf:Description rdf:about="http://example.net/items/6">
+        <dc:coverage>Memorial Stadium, University of Illinois at
+            Urbana-Champaign</dc:coverage>
+        <dc:date>2014-05-21</dc:date>
+        <dc:description>Bleachers and playing field in Memorial
+            Stadium.</dc:description>
+        <dcterms:extent>1.7 Mbytes</dcterms:extent>
+        <local:filename>P1000245.jpg</local:filename>
+        <dc:format>image/jpeg</dc:format>
+        <dc:rights>Creative Commons Attribution-NoDerivatives 4.0
+            International</dc:rights>
+        <dc:subject>Football stadiums</dc:subject>
+        <dc:title>Sample JPEG image item</dc:title>
+        <dc:type>Image</dc:type>
+    </rdf:Description>
+
+    <!-- retro_click.wav -->
+    <rdf:Description rdf:about="http://example.net/items/7">
+        <dc:description>A short click.</dc:description>
+        <dcterms:extent>4 Kbytes</dcterms:extent>
+        <local:filename>retro_click.wav</local:filename>
+        <dc:format>audio/wave</dc:format>
+        <dc:identifier>retro_click.wav</dc:identifier>
+        <dc:subject>Clicks</dc:subject>
+        <dc:subject>Annoying noises</dc:subject>
+        <dc:title>Sample wave audio item</dc:title>
+        <dc:type>Sound</dc:type>
+    </rdf:Description>
+
+</rdf:RDF>

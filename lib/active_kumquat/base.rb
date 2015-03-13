@@ -208,18 +208,19 @@ module ActiveKumquat
       update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
 
       _web_id = self.web_id.blank? ? generate_web_id : self.web_id
-      update.delete('?s', '<kumquat:webID>', '?o', false).
+      update.delete('<>', '<kumquat:webID>', '?o', false).
           insert(nil, 'kumquat:webID', _web_id)
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
-          delete('?s', '<indexing:hasIndexingTransformation>', '?o', false).
+          delete('<>', '<indexing:hasIndexingTransformation>', '?o', false).
           insert(nil, 'indexing:hasIndexingTransformation',
                  Fedora::Repository::INDEXING_TRANSFORM_NAME)
       update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
-          delete('?s', '<rdf:type>', 'indexing:Indexable', false).
+          delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)
       self.triples.each do |triple|
-        update.delete('?s', "<#{triple.predicate}>", '?o', false).
-            insert(nil, "<#{triple.predicate}>", triple.object)
+        update.delete('<>', "<#{triple.predicate}>", '?o', false).
+            insert(nil, "<#{triple.predicate}>",
+                   triple.object.to_s.gsub("\n", ' ')) # TODO: preserve newlines
       end
       update
     end

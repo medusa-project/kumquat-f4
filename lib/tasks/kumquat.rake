@@ -2,8 +2,12 @@ namespace :kumquat do
 
   desc 'Import content from CONTENTdm'
   task :cdm_import, [:source_path] => :environment do |task, args|
-    importer = Contentdm::Importer.new(args[:source_path])
-    importer.import
+    Contentdm::Importer.new(args[:source_path]).import
+  end
+
+  desc 'Import the sample collection'
+  task :sample_import, [:source_path] => :environment do |task, args|
+    SampleData::Importer.new.import
   end
 
   desc 'Update indexing'

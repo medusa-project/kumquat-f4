@@ -19,7 +19,6 @@ class Bytestream
   attr_accessor :uuid # string
   attr_accessor :width # integer
 
-  validates_presence_of :media_type
   validates_presence_of :owner
 
   class Type

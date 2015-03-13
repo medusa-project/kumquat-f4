@@ -50,6 +50,19 @@
         <dc:type>Image</dc:type>
     </rdf:Description>
 
+    <!-- escher_lego.webp -->
+    <rdf:Description rdf:about="http://example.net/items/escher_lego.webp">
+        <dc:description>An M.C. Escher painting brought to life in Lego.</dc:description>
+        <dcterms:extent>38 Kbytes</dcterms:extent>
+        <local:filename>escher_lego.webp</local:filename>
+        <dc:format>image/webp</dc:format>
+        <dc:identifier>escher_lego.webp</dc:identifier>
+        <dc:subject>Escher, M.C.</dc:subject>
+        <dc:subject>Lego</dc:subject>
+        <dc:title>Sample WebP image item</dc:title>
+        <dc:type>Image</dc:type>
+    </rdf:Description>
+
     <!-- hello_world -->
     <rdf:Description rdf:about="http://example.net/items/hello_world">
         <dc:date>2015-03-12</dc:date>

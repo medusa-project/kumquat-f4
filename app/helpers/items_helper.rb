@@ -187,7 +187,7 @@ module ItemsHelper
     elsif item.is_video?
       return video_viewer_for(item)
     end
-    raw("<!-- No viewer available for media type #{item.media_type} -->\n")
+    nil
   end
 
   private

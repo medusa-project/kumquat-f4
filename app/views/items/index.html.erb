@@ -21,48 +21,48 @@
   <% provide(:active_nav, 'items') %>
 <% end %>
 
-<div class="row">
-  <div class="col-sm-3 kq-facets kq-panel-facets">
-    <%= facets_as_panels(@items) %>
-  </div>
+<% if @items.total_length > 0 %>
+  <div class="row">
+    <div class="col-sm-3 kq-facets kq-panel-facets">
+      <%= facets_as_panels(@items) %>
+    </div>
 
-  <div class="col-sm-9 kq-results">
-    <% if @items.total_length > 0 %>
+    <div class="col-sm-9 kq-results">
       <p>Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
         <%= @items.total_length %> items</p>
-    <% else %>
-      <p>No items.</p>
-    <% end %>
 
-    <ol start="<%= @start + 1 %>">
-      <% @items.each do |item| %>
-        <li>
-          <div>
-            <%= link_to item do %>
-              <%= image_tag(item.image_url(nil, 100), height: 100) %>
-            <% end %>
-            <span class="title">
-              <%= link_to item.title, item %>
-              <% if item.children.any? %>
-                <span class="label label-info kq-page-count">
-                  <%= pluralize(item.children.length, 'page') %>
-                </span>
+      <ol start="<%= @start + 1 %>">
+        <% @items.each do |item| %>
+          <li>
+            <div>
+              <%= link_to item do %>
+                <%= image_tag(item.image_url(nil, 100), height: 100) %>
               <% end %>
-            </span>
-            <br>
-            <span class="description">
-              <%= truncate(item.triple('description').to_s, length: 400) %>
-            </span>
-          </div>
-        </li>
-      <% end %>
-    </ol>
+              <span class="title">
+                <%= link_to item.title, item %>
+                <% if item.children.any? %>
+                  <span class="label label-info kq-page-count">
+                    <%= pluralize(item.children.length, 'page') %>
+                  </span>
+                <% end %>
+              </span>
+              <br>
+              <span class="description">
+                <%= truncate(item.triple('description').to_s, length: 400) %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+      </ol>
 
-    <div class="text-center">
-      <%= paginate(@items, @limit, @current_page) %>
+      <div class="text-center">
+        <%= paginate(@items, @limit, @current_page) %>
+      </div>
     </div>
   </div>
-</div>
+<% else %>
+  <p>No items.</p>
+<% end %>
 
 <% if Rails.env.development? %>
   <%= render partial: 'shared/code_panel',

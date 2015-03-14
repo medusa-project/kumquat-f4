@@ -8,8 +8,11 @@ module ActiveKumquat
   class Base
 
     extend ActiveKumquat::Querying
+    extend ActiveModel::Callbacks
     include ActiveModel::Model
     include Describable
+
+    define_model_callbacks :delete, :save, :update, only: [:after, :before]
 
     class Type
       BYTESTREAM = 'bytestream'
@@ -51,18 +54,20 @@ module ActiveKumquat
     #
     def delete(also_tombstone = false, commit_immediately = true)
       if self.repository_url
-        url = self.repository_url.chomp('/')
-        @@http.delete(url)
-        @@http.delete("#{url}/fcr:tombstone") if also_tombstone
-        @destroyed = true
-        @persisted = false
+        run_callbacks :delete do
+          url = self.repository_url.chomp('/')
+          @@http.delete(url)
+          @@http.delete("#{url}/fcr:tombstone") if also_tombstone
+          @destroyed = true
+          @persisted = false
 
-        if commit_immediately
-          # wait for solr to get the delete from fcrepo-message-consumer
-          # TODO: this is horrible
-          # (also doing this in save())
-          sleep 2
-          @@solr.commit
+          if commit_immediately
+            # wait for solr to get the delete from fcrepo-message-consumer
+            # TODO: this is horrible
+            # (also doing this in save())
+            sleep 2
+            @@solr.commit
+          end
         end
       end
     end
@@ -124,21 +129,24 @@ module ActiveKumquat
       #raise 'Validation error' unless self.valid? TODO: uncomment this
       if self.destroyed?
         raise RuntimeError, 'Cannot save a destroyed object.'
-      elsif self.uuid
-        save_existing
-      elsif self.container_url
-        save_new
-      else
-        raise RuntimeError, 'UUID and container URL are both nil. One or the
-        other is required.'
       end
-      @persisted = true
-      if commit_immediately
-        # wait for solr to get the add from fcrepo-message-consumer
-        # TODO: this is horrible (also doing it in delete())
-        sleep 2
-        @@solr.commit
-        self.reload!
+      run_callbacks :save do
+        if self.uuid
+          save_existing
+        elsif self.container_url
+          save_new
+        else
+          raise RuntimeError, 'UUID and container URL are both nil. One or the
+          other is required.'
+        end
+        @persisted = true
+        if commit_immediately
+          # wait for solr to get the add from fcrepo-message-consumer
+          # TODO: this is horrible (also doing it in delete())
+          sleep 2
+          @@solr.commit
+          self.reload!
+        end
       end
     end
 
@@ -178,8 +186,10 @@ module ActiveKumquat
     end
 
     def update(params)
-      params.except(:id, :uuid).each do |k, v|
-        send("#{k}=", v) if respond_to?("#{k}=")
+      run_callbacks :update do
+        params.except(:id, :uuid).each do |k, v|
+          send("#{k}=", v) if respond_to?("#{k}=")
+        end
       end
     end
 

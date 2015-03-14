@@ -14,7 +14,7 @@ class ItemsController < ApplicationController
 
   def master_bytestream
     @item = Item.find_by_web_id(params[:item_web_id])
-    render text: '404 Not Found', status: 404 unless @item
+    raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     bs = @item.master_bytestream
     if bs and bs.repository_url
@@ -36,6 +36,7 @@ class ItemsController < ApplicationController
     end
     if params[:collection_web_id]
       @collection = Collection.find_by_web_id(params[:collection_web_id])
+      raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
       @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.web_id)
     end
     #@items = @items.order(:kq_title).start(@start).limit(@limit)
@@ -47,7 +48,7 @@ class ItemsController < ApplicationController
 
   def show
     @item = Item.find_by_web_id(params[:web_id])
-    render text: '404 Not Found', status: 404 unless @item
+    raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
   end
 
   private

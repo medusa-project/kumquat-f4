@@ -18,7 +18,7 @@ class CollectionsController < ApplicationController
 
   def show
     @collection = Collection.find_by_web_id(params[:web_id])
-    render text: '404 Not Found', status: 404 unless @collection
+    raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
   end
 
 end

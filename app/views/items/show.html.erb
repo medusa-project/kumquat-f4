@@ -1,4 +1,5 @@
 <% provide :title, @item.title %>
+<% provide :body_id, 'items_show' %>
 
 <% case session[:browse_context] %>
   <% when ItemsController::BrowseContext::SEARCHING %>

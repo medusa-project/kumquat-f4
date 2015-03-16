@@ -75,6 +75,13 @@ module SampleData
           bs.save
           kq_item.bytestreams << bs
 
+          if bs.media_type.start_with?('text/')
+            File.open(bs.upload_pathname) do |file|
+              kq_item.full_text = file.read
+              kq_item.save!
+            end
+          end
+
           kq_item.generate_derivatives
         end
       end

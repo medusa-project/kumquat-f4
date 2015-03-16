@@ -207,7 +207,7 @@ class Bytestream
         insert(my_metadata_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
     update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::CLASS}>", '?o').
         insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
-               "<kumquat:#{kq_objects::BYTESTREAM}>", false)
+               "<#{kq_uri}#{kq_objects::BYTESTREAM}>", false)
 
     # also update the owning entity with some useful properties since we can't
     # easily query for them without a triple store

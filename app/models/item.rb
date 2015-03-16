@@ -114,7 +114,7 @@ class Item < ActiveKumquat::Base
     # resource type
     update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
         insert(nil, "kumquat:#{kq_predicates::CLASS}",
-               "<kumquat:#{kq_objects::ITEM}>", false)
+               "<#{kq_uri}#{kq_objects::ITEM}>", false)
   end
 
 end

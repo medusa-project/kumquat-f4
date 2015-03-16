@@ -78,7 +78,7 @@ class Collection < ActiveKumquat::Base
     # resource type
     update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
         insert(nil, "kumquat:#{kq_predicates::CLASS}",
-               "<kumquat:#{kq_objects::COLLECTION}>", false)
+               "<#{kq_uri}#{kq_objects::COLLECTION}>", false)
   end
 
 end

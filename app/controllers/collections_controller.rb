@@ -19,6 +19,11 @@ class CollectionsController < ApplicationController
   def show
     @collection = Collection.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
+
+    # get a random item to show
+    @item = Item.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key).
+        where(Solr::Solr::MEDIA_TYPE_KEY => 'image/*').
+        facet(false).order("random_#{SecureRandom.hex}").first
   end
 
 end

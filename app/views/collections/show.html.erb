@@ -16,7 +16,7 @@
 </h1>
 
 <div class="row">
-  <div class="col-sm-7">
+  <div class="col-sm-6">
     <% if @collection.triple('http://purl.org/dc/elements/1.1/description') %>
       <p>
         <%= @collection.triple('http://purl.org/dc/elements/1.1/description') %>
@@ -27,25 +27,10 @@
                   class: 'btn btn-lg btn-default') %>
     </div>
   </div>
-  <div class="col-sm-5">
-    <%= image_tag('', width: 300, height: 400, alt: 'Representative image') %>
+  <div class="col-sm-6">
+    <div class="text-center">
+      <%= thumbnail_tag(@item) %>
+      <%= link_to @item.title, @item %>
+    </div>
   </div>
 </div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h2 class="panel-title">Metadata</h2>
-  </div>
-  <div class="panel-body">
-    <%= triples_to_dl(@collection) %>
-  </div>
-</div>
-
-<% if Rails.env.development? %>
-  <%= render partial: 'shared/code_panel',
-             locals: { title: 'Solr JSON',
-                       body: JSON.pretty_generate(@collection.solr_json) } %>
-  <%= render partial: 'shared/code_panel',
-             locals: { title: 'Fedora RDF',
-                       body: @collection.fedora_graph.dump(:ttl) } %>
-<% end %>

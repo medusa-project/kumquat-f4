@@ -23,5 +23,10 @@ body#collections_index div#kq-page-content {
 }
 
 body#collections_show {
-
+  .kq-thumbnail {
+    img {
+      border: 6px solid #404040;
+      max-width: 100%;
+    }
+  }
 }

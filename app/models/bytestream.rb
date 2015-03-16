@@ -68,6 +68,26 @@ class Bytestream
     @destroyed
   end
 
+  def is_audio?
+    self.media_type and self.media_type.start_with?('audio/')
+  end
+
+  def is_image?
+    self.media_type and self.media_type.start_with?('image/')
+  end
+
+  def is_pdf?
+    self.media_type and self.media_type == 'application/pdf'
+  end
+
+  def is_text?
+    self.media_type and self.media_type.start_with?('text/')
+  end
+
+  def is_video?
+    self.media_type and self.media_type.start_with?('video/')
+  end
+
   def persisted?
     @persisted and !@destroyed
   end

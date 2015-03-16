@@ -130,6 +130,30 @@ module ItemsHelper
     raw(html)
   end
 
+  def thumbnail_tag(item)
+    html = "<div class=\"kq-thumbnail\">"
+    thumb_path = item.image_path
+    if File.exist?(thumb_path)
+      html += image_tag(item.public_image_path(root_path))
+    else
+      icon = 'fa-cube'
+      if item.is_audio?
+        icon = 'fa-volume-up'
+      elsif item.is_image?
+        icon = 'fa-picture-o'
+      elsif item.is_pdf? or item.is_text?
+        icon = 'fa-file-text-o'
+      elsif item.is_video?
+        icon = 'fa-film'
+      elsif item.kind_of?(Collection)
+        icon = 'fa-cubes'
+      end
+      html += "<i class=\"fa #{icon}\"></i>"
+    end
+    html += '</div>'
+    raw(html)
+  end
+
   ##
   # @param describable Describable
   # @param options :predicates_as_uris (true or false)
@@ -183,6 +207,10 @@ module ItemsHelper
       return image_viewer_for(item)
     elsif item.is_audio?
       return audio_player_for(item)
+    elsif item.is_text?
+      # We don't provide a viewer for text as this is handled separately in
+      # show-item view by reading the item's full_text property. Full text and
+      # a viewer are not mutually exclusive.
     elsif item.is_video?
       return video_viewer_for(item)
     end

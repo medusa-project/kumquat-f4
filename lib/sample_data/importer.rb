@@ -11,6 +11,7 @@ module SampleData
     def initialize
       @source_path = File.join(Rails.root, 'lib', 'sample_data',
                                'sample_collection')
+      @metadata_pathname = File.join(@source_path, 'metadata.xml')
       @root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
       @http = HTTPClient.new
       @solr = Solr::Solr.new
@@ -19,13 +20,11 @@ module SampleData
     def import
       puts 'Ingesting Sample Collection'
 
-      # delete its old container
-      url = "#{@root_container_url}/#{COLLECTION_KEY}"
-      @http.delete(url) rescue nil
-      @http.delete("#{url}/fcr:tombstone") rescue nil
+      # delete any old collections that may be lying around from
+      # previous/failed imports
+      Collection.delete_with_key(COLLECTION_KEY) rescue nil
 
-      metadata_pathname = File.join(@source_path, 'metadata.xml')
-      RDF::RDFXML::Reader.open(metadata_pathname) do |reader|
+      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
         # import the collection itself
         kq_collection = nil
         reader.each_subject do |subject|
@@ -75,6 +74,8 @@ module SampleData
                                 type: Bytestream::Type::MASTER)
           bs.save
           kq_item.bytestreams << bs
+
+          kq_item.generate_derivatives
         end
       end
       @solr.commit

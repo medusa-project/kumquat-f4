@@ -42,10 +42,9 @@ module Contentdm
     def import_cdm_collection(cdm_collection)
       puts "Ingesting #{cdm_collection.name} (#{cdm_collection.alias})"
 
-      # delete its old container
-      url = "#{@root_container_url}/#{cdm_collection.alias}"
-      @http.delete(url) rescue nil
-      @http.delete("#{url}/fcr:tombstone") rescue nil
+      # delete any old collections that may be lying around from
+      # previous/failed imports
+      Collection.delete_with_key(cdm_collection.alias) rescue nil
 
       # copy the cdm collection's properties into a new kq collection
       kq_collection = ::Collection.new(container_url: @root_container_url,
@@ -113,6 +112,8 @@ module Contentdm
         bs.save
         kq_item.bytestreams << bs
       end
+
+      kq_item.generate_derivatives
 
       cdm_item.pages.each_with_index do |p, i|
         self.import_cdm_item(p, kq_collection, kq_item.repository_url,

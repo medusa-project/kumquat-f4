@@ -2,22 +2,27 @@ module BytestreamOwner
 
   def is_audio?
     bs = self.master_bytestream
-    bs and bs.media_type and bs.media_type.start_with?('audio/')
+    bs and bs.is_audio?
   end
 
   def is_image?
     bs = self.master_bytestream
-    bs and bs.media_type and bs.media_type.start_with?('image/')
+    bs and bs.is_image?
   end
 
   def is_pdf?
     bs = self.master_bytestream
-    bs and bs.media_type and bs.media_type == 'application/pdf'
+    bs and bs.is_pdf?
+  end
+
+  def is_text?
+    bs = self.master_bytestream
+    bs and bs.is_text?
   end
 
   def is_video?
     bs = self.master_bytestream
-    bs and bs.media_type and bs.media_type.start_with?('video/')
+    bs and bs.is_video?
   end
 
   def master_bytestream
@@ -26,6 +31,11 @@ module BytestreamOwner
 
   def master_image
     self.is_image? ? self.master_bytestream : nil
+  end
+
+  def media_type
+    bs = self.master_bytestream
+    bs ? bs.media_type : nil
   end
 
 end

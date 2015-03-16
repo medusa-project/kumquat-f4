@@ -9,14 +9,25 @@ body#items_index div#kq-page-content {
     li {
       margin-bottom: 1em;
       margin-left:2em;
-      div {
+      div:first-child {
         display: inline-block;
-        width: 100%;
         vertical-align: middle;
+        width: 100%;
       }
-      img {
-        float: left;
-        margin-right: 1em;
+      a.kq-thumbnail-link {
+        color: #a0a0a0;
+      }
+      div.kq-thumbnail {
+        float:left;
+        font-size:75px;
+        margin-right: 20px;
+        text-align: center;
+        height: 100px;
+        width: 100px;
+        img {
+          max-height: 100px;
+          max-width: 100px;
+        }
       }
       .kq-title {
         font-size: 1.4em;

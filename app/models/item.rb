@@ -1,6 +1,7 @@
 class Item < ActiveKumquat::Base
 
   include BytestreamOwner
+  include DerivativeManagement
   include ImageServing
 
   ENTITY_TYPE = ActiveKumquat::Base::Type::ITEM

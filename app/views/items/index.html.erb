@@ -39,8 +39,8 @@
         <% @items.each do |item| %>
           <li>
             <div>
-              <%= link_to item do %>
-                <%= image_tag(item.image_url(nil, 100), height: 100) %>
+              <%= link_to item, class: 'kq-thumbnail-link' do %>
+                <%= thumbnail_tag(item) %>
               <% end %>
               <span class="kq-title">
                 <%= link_to item.title, item %>

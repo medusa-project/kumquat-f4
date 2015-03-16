@@ -18,3 +18,5 @@
 
 config/database.yml
 config/kumquat.yml
+
+public/derivatives

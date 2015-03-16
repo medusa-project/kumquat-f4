@@ -50,7 +50,7 @@ class Collection < ActiveKumquat::Base
     super(graph)
     graph.each_triple do |subject, predicate, object|
       if predicate == Kumquat::Application::NAMESPACE_URI +
-          Fedora::Repository::LocalPredicates::COLLECTION_KEY
+          Kumquat::Application::RDFPredicates::COLLECTION_KEY
         self.key = object.to_s
       end
     end
@@ -66,19 +66,19 @@ class Collection < ActiveKumquat::Base
   # @return ActiveKumquat::SparqlUpdate
   #
   def to_sparql_update
-    local_predicates = Fedora::Repository::LocalPredicates
-    local_objects = Fedora::Repository::LocalObjects
-    k_uri = Kumquat::Application::NAMESPACE_URI
+    kq_uri = Kumquat::Application::NAMESPACE_URI
+    kq_predicates = Kumquat::Application::RDFPredicates
+    kq_objects = Kumquat::Application::RDFObjects
 
     update = super
-    update.prefix('kumquat', k_uri)
+    update.prefix('kumquat', kq_uri)
     # key
-    update.delete('<>', "<kumquat:#{local_predicates::COLLECTION_KEY}>", '?o', false).
-        insert(nil, "kumquat:#{local_predicates::COLLECTION_KEY}", self.key)
+    update.delete('<>', "<kumquat:#{kq_predicates::COLLECTION_KEY}>", '?o', false).
+        insert(nil, "kumquat:#{kq_predicates::COLLECTION_KEY}", self.key)
     # resource type
-    update.delete('<>', "<kumquat:#{local_predicates::CLASS}>", '?o', false).
-        insert(nil, "kumquat:#{local_predicates::CLASS}",
-               "<#{k_uri}#{local_objects::COLLECTION}>", false)
+    update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
+        insert(nil, "kumquat:#{kq_predicates::CLASS}",
+               "<kumquat:#{kq_objects::COLLECTION}>", false)
   end
 
 end

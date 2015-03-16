@@ -55,7 +55,7 @@ module SampleData
           reader.each_statement do |statement|
             if statement.subject.to_s == subject
               if statement.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
-                  Fedora::Repository::LocalPredicates::FULL_TEXT
+                  Kumquat::Application::RDFPredicates::FULL_TEXT
                 kq_item.full_text = statement.object.to_s
               else
                 kq_item.triples << Triple.new(predicate: statement.predicate.to_s,

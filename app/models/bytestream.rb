@@ -188,37 +188,37 @@ class Bytestream
   end
 
   def to_sparql_update
-    k_uri = Kumquat::Application::NAMESPACE_URI
-    local_predicates = Fedora::Repository::LocalPredicates
-    local_objects = Fedora::Repository::LocalObjects
+    kq_uri = Kumquat::Application::NAMESPACE_URI
+    kq_predicates = Kumquat::Application::RDFPredicates
+    kq_objects = Kumquat::Application::RDFObjects
 
     update = ActiveKumquat::SparqlUpdate.new
-    update.prefix('kumquat', k_uri).prefix('dcterms', 'http://purl.org/dc/terms/')
+    update.prefix('kumquat', kq_uri).prefix('dcterms', 'http://purl.org/dc/terms/')
     owner_uri = "<#{self.owner.repository_url}>"
     my_uri = "<#{self.repository_url}>"
     my_metadata_uri = "<#{self.repository_metadata_url}>"
     update.delete(my_metadata_uri, '<dcterms:MediaType>', '?o').
         insert(my_metadata_uri, 'dcterms:MediaType', self.media_type)
-    update.delete(my_metadata_uri, "<kumquat:#{local_predicates::BYTESTREAM_TYPE}>", '?o').
-        insert(my_metadata_uri, "kumquat:#{local_predicates::BYTESTREAM_TYPE}", self.type)
-    update.delete(my_metadata_uri, "<kumquat:#{local_predicates::WIDTH}>", '?o').
-        insert(my_metadata_uri, "kumquat:#{local_predicates::WIDTH}", self.width)
-    update.delete(my_metadata_uri, "<kumquat:#{local_predicates::HEIGHT}>", '?o').
-        insert(my_metadata_uri, "kumquat:#{local_predicates::HEIGHT}", self.height)
-    update.delete(my_metadata_uri, "<kumquat:#{local_predicates::CLASS}>", '?o').
-        insert(my_metadata_uri, "kumquat:#{local_predicates::CLASS}",
-               "<#{k_uri}#{local_objects::BYTESTREAM}>", false)
+    update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_TYPE}>", '?o').
+        insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}", self.type)
+    update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
+        insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
+    update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
+        insert(my_metadata_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
+    update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::CLASS}>", '?o').
+        insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
+               "<kumquat:#{kq_objects::BYTESTREAM}>", false)
 
     # also update the owning entity with some useful properties since we can't
     # easily query for them without a triple store
-    update.delete(owner_uri, "<kumquat:#{local_predicates::MASTER_BYTESTREAM_URI}>", '?o').
-        insert(owner_uri, "kumquat:#{local_predicates::MASTER_BYTESTREAM_URI}", my_uri, false)
-    update.delete(owner_uri, "<kumquat:#{local_predicates::HEIGHT}>", '?o').
-        insert(owner_uri, "kumquat:#{local_predicates::HEIGHT}", self.height)
+    update.delete(owner_uri, "<kumquat:#{kq_predicates::MASTER_BYTESTREAM_URI}>", '?o').
+        insert(owner_uri, "kumquat:#{kq_predicates::MASTER_BYTESTREAM_URI}", my_uri, false)
+    update.delete(owner_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
+        insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
     update.delete(owner_uri, '<dcterms:MediaType>', '?o').
         insert(owner_uri, 'dcterms:MediaType', self.media_type)
-    update.delete(owner_uri, "<kumquat:#{local_predicates::WIDTH}>", '?o').
-        insert(owner_uri, "kumquat:#{local_predicates::WIDTH}", self.width)
+    update.delete(owner_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
+        insert(owner_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
   end
 
   private

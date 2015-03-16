@@ -91,12 +91,3 @@
     <%= triples_to_dl(@item) %>
   </div>
 </div>
-
-<% if Rails.env.development? %>
-  <%= render partial: 'shared/code_panel',
-             locals: { title: 'Solr JSON',
-                       body: JSON.pretty_generate(@item.solr_json) } %>
-  <%= render partial: 'shared/code_panel',
-             locals: { title: 'Fedora RDF',
-                       body: @item.fedora_graph.dump(:ttl) } %>
-<% end %>

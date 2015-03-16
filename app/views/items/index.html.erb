@@ -67,11 +67,3 @@
 <% else %>
   <p>No items.</p>
 <% end %>
-
-<% if Rails.env.development? %>
-  <%= render partial: 'shared/code_panel',
-             locals: { title: 'Solr Query',
-                       body: link_to(@items.solr_request[:uri],
-                                     @items.solr_request[:uri].to_s,
-                                     target: '_blank') } %>
-<% end %>

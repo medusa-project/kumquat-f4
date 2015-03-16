@@ -17,3 +17,13 @@ h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .b
 
 #kq-image-viewer.fullpage {
 }
+
+dl.kq-triples {
+  .kq-predicate-uri {
+    color: #b0b0b0;
+    font-size: 0.9em;
+  }
+  .kq-predicate-uri-lpc {
+    font-weight: bold;
+  }
+}

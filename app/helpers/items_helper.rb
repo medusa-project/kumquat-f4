@@ -156,14 +156,21 @@ module ItemsHelper
 
   ##
   # @param describable Describable
-  # @param options :predicates_as_uris (true or false)
   #
-  def triples_to_dl(describable, options = {})
+  def triples_to_dl(describable)
     # process triples into an array of hashes, collapsing identical subjects
     triples = describable.triples.sort.map do |t|
+      glue = t.predicate.include?('#') ? '#' : '/'
+      parts = t.predicate.split(glue)
+      last = parts.pop
+      prefix = parts.join(glue) + glue
+      if Triple::PREFIXES.values.include?(prefix)
+        prefix = Triple::PREFIXES.key(prefix).to_s + ':'
+      end
       {
           predicate: t.predicate,
-          label: options[:predicates_as_uris] ? t.predicate : t.label,
+          label: "<span class=\"kq-predicate-uri\">#{prefix}</span>"\
+          "<span class=\"kq-predicate-uri-lpc\">#{last}</span>",
           objects: []
       }
     end
@@ -171,7 +178,7 @@ module ItemsHelper
       triples.select{ |t2| t2[:predicate] == t.predicate }.first[:objects] << t.object
     end
 
-    dl = '<dl>'
+    dl = '<dl class="kq-triples">'
     triples.each do |struct|
       next if struct[:predicate].include?('http://fedora.info/definitions/')
       next if struct[:predicate].include?(Kumquat::Application::NAMESPACE_URI)

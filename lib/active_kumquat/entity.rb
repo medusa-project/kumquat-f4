@@ -12,6 +12,7 @@ module ActiveKumquat
 
     def initialize(caller)
       @caller = caller
+      @facet = true
       @facet_queries = []
       @limit = nil
       @loaded = false
@@ -32,7 +33,9 @@ module ActiveKumquat
     # @return ActiveKumquat::Entity
     #
     def facet(fq)
-      if fq.blank?
+      if fq === false
+        @facet = false
+      elsif fq.blank?
         # noop
       elsif fq.respond_to?(:each)
         @facet_queries += fq.reject{ |v| v.blank? }
@@ -121,20 +124,23 @@ module ActiveKumquat
       unless @loaded
         @where_clauses << "#{Solr::Solr::ENTITY_TYPE_KEY}:#{@caller::ENTITY_TYPE}" if
             @caller.constants.include?(:ENTITY_TYPE)
-        solr_response = @@solr.get('select',
-                                   params: {
-                                       q: @where_clauses.join(' AND '),
-                                       df: 'kq_searchall',
-                                       start: @start,
-                                       sort: @order,
-                                       rows: @limit,
-                                       facet: true,
-                                       'facet.mincount' => 1,
-                                       'facet.field' => Solr::Solr::FACET_FIELDS,
-                                       fq: @facet_queries })
+        params = {
+            q: @where_clauses.join(' AND '),
+            df: 'kq_searchall',
+            start: @start,
+            sort: @order,
+            rows: @limit
+        }
+        if @facet
+          params[:facet] = true
+          params['facet.mincount'] = 1
+          params['facet.field'] = Solr::Solr::FACET_FIELDS
+          params[:fq] = @facet_queries
+        end
+        solr_response = @@solr.get('select', params: params)
         @solr_request = solr_response.request
         @results.facet_fields = solr_facet_fields_to_objects(
-            solr_response['facet_counts']['facet_fields'])
+            solr_response['facet_counts']['facet_fields']) if @facet
         solr_response['response']['docs'].each do |doc|
           entity = @caller.new(solr_json: doc, repository_url: doc['id'])
 

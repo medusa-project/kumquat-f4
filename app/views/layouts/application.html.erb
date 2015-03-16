@@ -55,7 +55,19 @@
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
-            <%= render partial: 'shared/quick_search_field' %>
+            <form method="get" action="<%= items_path %>"
+                  class="navbar-form navbar-right kq-quick-search" role="search">
+              <div class="input-group">
+                <%= search_field_tag :q, params[:q], class: 'form-control',
+                                     placeholder: 'Search Digital Collections' %>
+                <span class="input-group-btn">
+                  <button type="submit" value="Search" class="btn btn-default">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </span>
+              </div>
+            </form>
+
           </ul>
         </div> <!-- /.navbar-collapse -->
       </div> <!-- /.container-fluid -->

@@ -2,7 +2,7 @@ class Array
   attr_accessor :total_length
 end
 
-class ItemsController < ApplicationController
+class ItemsController < WebsiteController
 
   class BrowseContext
     BROWSING_ALL_ITEMS = 0

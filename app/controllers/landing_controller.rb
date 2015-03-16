@@ -1,4 +1,4 @@
-class LandingController < ApplicationController
+class LandingController < WebsiteController
 
   ##
   # Responds to GET /

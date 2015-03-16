@@ -4,7 +4,14 @@ module Admin
 
     layout 'admin/application'
 
+    attr_reader :executor
+
     before_action :signed_in_user, :can_access_control_panel
+
+    def setup
+      super
+      @executor = CommandExecutor.new(current_user)
+    end
 
     private
 

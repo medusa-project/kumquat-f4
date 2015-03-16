@@ -2,7 +2,7 @@ class Array
   attr_accessor :total_length
 end
 
-class CollectionsController < ApplicationController
+class CollectionsController < WebsiteController
 
   def index
     @start = params[:start] ? params[:start].to_i : 0

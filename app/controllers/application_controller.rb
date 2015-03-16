@@ -7,10 +7,7 @@ class ApplicationController < ActionController::Base
 
   before_action :setup
 
-  attr_reader :executor
-
   def setup
-    @executor = CommandExecutor.new(current_user)
   end
 
   def admin_user

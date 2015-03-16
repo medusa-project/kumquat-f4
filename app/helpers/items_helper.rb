@@ -130,6 +130,39 @@ module ItemsHelper
     raw(html)
   end
 
+  ##
+  # @param items ActiveKumquat::Entity
+  # @param start integer
+  #
+  def items_as_list(items, start)
+    html = "<ol start=\"#{start + 1}\">"
+    items.each do |item|
+      html += '<li>'\
+        '<div>'
+      if item.kind_of?(Item)
+        html += link_to(item, class: 'kq-thumbnail-link') do
+          thumbnail_tag(item)
+        end
+      end
+      html += '<span class="kq-title">'
+      html += link_to(item.title, item)
+      if item.kind_of?(Item) and item.children.any?
+        html += '<span class="label label-info kq-page-count">'
+        html += pluralize(item.children.length, 'page')
+        html += '</span>'
+      end
+      html += '</span>'
+      html += '<br>'
+      html += '<span class="kq-description">'
+      html += truncate(item.triple('description').to_s, length: 400)
+      html += '</span>'
+      html += '</div>'
+      html += '</li>'
+    end
+    html += '</ol>'
+    raw(html)
+  end
+
   def thumbnail_tag(item)
     html = "<div class=\"kq-thumbnail\">"
     thumb_path = item.image_path

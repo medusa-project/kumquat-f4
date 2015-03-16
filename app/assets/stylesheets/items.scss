@@ -3,43 +3,6 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body#items_index div#kq-page-content {
-  .kq-results ol {
-    margin-left:0px;
-    padding-left:0px;
-    li {
-      margin-bottom: 1em;
-      margin-left:2em;
-      div:first-child {
-        display: inline-block;
-        vertical-align: middle;
-        width: 100%;
-      }
-      a.kq-thumbnail-link {
-        color: #a0a0a0;
-      }
-      div.kq-thumbnail {
-        float:left;
-        font-size:75px;
-        margin-right: 20px;
-        text-align: center;
-        height: 100px;
-        width: 100px;
-        img {
-          max-height: 100px;
-          max-width: 100px;
-        }
-      }
-      .kq-title {
-        font-size: 1.4em;
-      }
-      .kq-description {
-      }
-      .kq-page-count {
-        font-size:0.5em;
-      }
-    }
-  }
-
   .kq-facets {
     .kq-clear {
       color: red;

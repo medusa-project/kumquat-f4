@@ -39,12 +39,14 @@ module DerivativeManagement
         self.children.any?
     if bytestream
       src = bytestream.upload_pathname
-      if src and self.is_image?
+      if src and (self.is_image? or self.is_pdf?)
         FileUtils.mkdir_p(self.derivative_path)
         STATIC_IMAGE_SIZES.each do |size|
           begin
             input = Magick::Image.read(src).first
             output = input.resize_to_fit(size, size).strip!
+            output.border!(0, 0, 'white') # for PDF
+            output.alpha(Magick::DeactivateAlphaChannel) # for PDF
             output.write(self.image_path(size)) {
               self.quality = 70
               self.interlace = Magick::PlaneInterlace

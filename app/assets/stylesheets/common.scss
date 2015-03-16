@@ -1,18 +1,9 @@
-h1 {
-  font-family: 'Oswald', sans-serif;
-  margin-bottom: 0.5em;
-}
+/**
+ * Styles in use across the the public website.
+ * For sitewide styles, use sitewide.css.
+ */
 
-h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .btn, .kq-title {
-  font-family: 'PT Sans', sans-serif;
-}
-
-dl.kq-triples {
-  .kq-predicate-uri {
-    color: #b0b0b0;
-    font-size: 0.9em;
-  }
-  .kq-predicate-uri-lpc {
-    font-weight: bold;
   }
 }
+
+@import "../../../local/assets/stylesheets/custom";

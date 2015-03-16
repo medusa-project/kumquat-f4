@@ -5,3 +5,14 @@ body {
 nav.navbar {
   background-color:rgba(0, 0, 0, 0.75);
 }
+
+.kq-code-panel {
+  .panel-body {
+    pre {
+      overflow: auto;
+      word-wrap: normal;
+      white-space: pre;
+    }
+    overflow-x: scroll;
+  }
+}

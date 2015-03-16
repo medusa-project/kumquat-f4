@@ -14,7 +14,7 @@ module ActiveKumquat
 
     define_model_callbacks :delete, :save, :update, only: [:after, :before]
 
-    class Type
+    class Class
       BYTESTREAM = 'bytestream'
       COLLECTION = 'collection'
       ITEM = 'item'

@@ -2,7 +2,7 @@ class Collection < ActiveKumquat::Base
 
   include Introspection
 
-  ENTITY_TYPE = ActiveKumquat::Base::Type::COLLECTION
+  ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION
 
   attr_accessor :key
 
@@ -49,7 +49,8 @@ class Collection < ActiveKumquat::Base
   def populate_from_graph(graph)
     super(graph)
     graph.each_triple do |subject, predicate, object|
-      if predicate == "#{Kumquat::Application::NAMESPACE_URI}collectionKey"
+      if predicate == Kumquat::Application::NAMESPACE_URI +
+          Fedora::Repository::LocalPredicates::COLLECTION_KEY
         self.key = object.to_s
       end
     end
@@ -65,15 +66,19 @@ class Collection < ActiveKumquat::Base
   # @return ActiveKumquat::SparqlUpdate
   #
   def to_sparql_update
+    local_predicates = Fedora::Repository::LocalPredicates
+    local_objects = Fedora::Repository::LocalObjects
+    k_uri = Kumquat::Application::NAMESPACE_URI
+
     update = super
-    local_triples = Fedora::Repository::LocalTriples
-    update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+    update.prefix('kumquat', k_uri)
     # key
-    update.delete('<>', "<kumquat:#{local_triples::COLLECTION_KEY}>", '?o', false).
-        insert(nil, "kumquat:#{local_triples::COLLECTION_KEY}", self.key)
+    update.delete('<>', "<kumquat:#{local_predicates::COLLECTION_KEY}>", '?o', false).
+        insert(nil, "kumquat:#{local_predicates::COLLECTION_KEY}", self.key)
     # resource type
-    update.delete('<>', "<kumquat:#{local_triples::RESOURCE_TYPE}>", '?o', false).
-        insert(nil, "kumquat:#{local_triples::RESOURCE_TYPE}", ENTITY_TYPE)
+    update.delete('<>', "<kumquat:#{local_predicates::CLASS}>", '?o', false).
+        insert(nil, "kumquat:#{local_predicates::CLASS}",
+               "<#{k_uri}#{local_objects::COLLECTION}>", false)
   end
 
 end

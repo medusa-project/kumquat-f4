@@ -90,7 +90,7 @@
   <field name="kq_system_page_index" type="int" indexed="true" stored="true"
     multiValued="false"/>
   <!-- One of the ActiveKumquat::Base::TYPE constants -->
-  <field name="kq_system_resource_type" type="string" indexed="true" stored="true"
+  <field name="kq_system_class" type="string" indexed="true" stored="true"
     multiValued="false"/>
   <!-- Short, non-sequential, unique alphanumeric string for use in URLs -->
   <field name="kq_system_web_id" type="string" indexed="true" stored="true"

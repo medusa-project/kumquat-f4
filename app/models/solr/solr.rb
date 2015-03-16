@@ -8,15 +8,14 @@ module Solr
                     :kq_language_facet, :kq_publisher_facet, :kq_source_facet,
                     :kq_subject_facet, :kq_type_facet]
 
+    CLASS_KEY = :kq_system_class
     COLLECTION_KEY_KEY = :kq_system_collection_key
-    ENTITY_TYPE_KEY = :kq_system_resource_type
     FULL_TEXT_KEY = :kq_system_full_text
     HEIGHT_KEY = :kq_system_height
     MASTER_BYTESTREAM_URI_KEY = :kq_system_master_bytestream_uri
     MEDIA_TYPE_KEY = :kq_system_media_type
     PAGE_INDEX_KEY = :kq_system_page_index
     PARENT_UUID_KEY = :kq_system_parent_uuid
-    RESOURCE_TYPE_KEY = ENTITY_TYPE_KEY
     WEB_ID_KEY = :kq_system_web_id
     WIDTH_KEY = :kq_system_width
 

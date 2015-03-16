@@ -122,8 +122,8 @@ module ActiveKumquat
 
     def load
       unless @loaded
-        @where_clauses << "#{Solr::Solr::ENTITY_TYPE_KEY}:#{@caller::ENTITY_TYPE}" if
-            @caller.constants.include?(:ENTITY_TYPE)
+        @where_clauses << "#{Solr::Solr::CLASS_KEY}:\"#{Kumquat::Application::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
+            @caller.constants.include?(:ENTITY_CLASS)
         params = {
             q: @where_clauses.join(' AND '),
             df: 'kq_searchall',

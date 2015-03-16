@@ -4,14 +4,30 @@ module Fedora
 
     INDEXING_TRANSFORM_NAME = 'kumquat'
 
-    class LocalTriples
+    ##
+    # "System objects" used by the application in the subject-predicate-object
+    # sense. These will be appended to Kumquat::Application::NAMESPACE_URI.
+    #
+    class LocalObjects
+      BYTESTREAM = 'bytestream'
+      COLLECTION = 'collection'
+      ITEM = 'item'
+    end
+
+    ##
+    # "System predicates" used by the application in the
+    # subject-predicate-object sense. These will be appended to
+    # Kumquat::Application::NAMESPACE_URI.
+    #
+    class LocalPredicates
+      BYTESTREAM_TYPE = 'bytestreamType'
+      CLASS = 'class'
       COLLECTION_KEY = 'collectionKey'
       FULL_TEXT = 'fullText'
       HEIGHT = 'height'
       MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
       PAGE_INDEX = 'pageIndex'
       PARENT_UUID = 'parentUUID'
-      RESOURCE_TYPE = 'resourceType'
       WEB_ID = 'webID'
       WIDTH = 'width'
     end
@@ -29,15 +45,15 @@ module Fedora
 
       id = . :: xsd:string;
       uuid = fcrepo:uuid :: xsd:string;
-      #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{LocalTriples::COLLECTION_KEY} :: xsd:string;
-      #{Solr::Solr::FULL_TEXT_KEY} = kumquat:#{LocalTriples::FULL_TEXT} :: xsd:string;
-      #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:#{LocalTriples::MASTER_BYTESTREAM_URI} :: xsd:string;
-      #{Solr::Solr::HEIGHT_KEY} = kumquat:#{LocalTriples::HEIGHT} :: xsd:integer;
-      #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{LocalTriples::PAGE_INDEX} :: xsd:integer;
-      #{Solr::Solr::PARENT_UUID_KEY} = kumquat:#{LocalTriples::PARENT_UUID} :: xsd:string;
-      #{Solr::Solr::RESOURCE_TYPE_KEY} = kumquat:#{LocalTriples::RESOURCE_TYPE} :: xsd:string;
-      #{Solr::Solr::WEB_ID_KEY} = kumquat:#{LocalTriples::WEB_ID} :: xsd:string;
-      #{Solr::Solr::WIDTH_KEY} = kumquat:#{LocalTriples::WIDTH} :: xsd:integer;
+      #{Solr::Solr::CLASS_KEY} = kumquat:#{LocalPredicates::CLASS} :: xsd:string;
+      #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{LocalPredicates::COLLECTION_KEY} :: xsd:string;
+      #{Solr::Solr::FULL_TEXT_KEY} = kumquat:#{LocalPredicates::FULL_TEXT} :: xsd:string;
+      #{Solr::Solr::HEIGHT_KEY} = kumquat:#{LocalPredicates::HEIGHT} :: xsd:integer;
+      #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:#{LocalPredicates::MASTER_BYTESTREAM_URI} :: xsd:string;
+      #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{LocalPredicates::PAGE_INDEX} :: xsd:integer;
+      #{Solr::Solr::PARENT_UUID_KEY} = kumquat:#{LocalPredicates::PARENT_UUID} :: xsd:string;
+      #{Solr::Solr::WEB_ID_KEY} = kumquat:#{LocalPredicates::WEB_ID} :: xsd:string;
+      #{Solr::Solr::WIDTH_KEY} = kumquat:#{LocalPredicates::WIDTH} :: xsd:integer;
       dc_contributor = dc:contributor :: xsd:string;
       dc_coverage = dc:coverage :: xsd:string;
       dc_creator = dc:creator :: xsd:string;

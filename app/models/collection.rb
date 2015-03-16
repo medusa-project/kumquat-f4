@@ -66,13 +66,14 @@ class Collection < ActiveKumquat::Base
   #
   def to_sparql_update
     update = super
+    local_triples = Fedora::Repository::LocalTriples
     update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
     # key
-    update.delete('<>', '<kumquat:collectionKey>', '?o', false).
-        insert(nil, 'kumquat:collectionKey', self.key)
+    update.delete('<>', "<kumquat:#{local_triples::COLLECTION_KEY}>", '?o', false).
+        insert(nil, "kumquat:#{local_triples::COLLECTION_KEY}", self.key)
     # resource type
-    update.delete('<>', '<kumquat:resourceType>', '?o', false).
-        insert(nil, 'kumquat:resourceType', ENTITY_TYPE)
+    update.delete('<>', "<kumquat:#{local_triples::RESOURCE_TYPE}>", '?o', false).
+        insert(nil, "kumquat:#{local_triples::RESOURCE_TYPE}", ENTITY_TYPE)
   end
 
 end

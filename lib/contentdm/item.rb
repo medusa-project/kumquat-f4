@@ -2,8 +2,6 @@ module Contentdm
 
   class Item < Entity
 
-    WEB_ID_LENGTH = 5
-
     attr_accessor :collection # Collection
     attr_accessor :created # string date, yyyy-mm-dd
     attr_accessor :filename # string

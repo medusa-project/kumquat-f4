@@ -6,6 +6,7 @@ development:
   :page_title: My Great Organization
   :facet_term_limit: 10
   :results_per_page: 20
+  :web_id_length: 5
 
 test:
   :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
@@ -15,6 +16,7 @@ test:
   :page_title: My Great Organization
   :facet_term_limit: 10
   :results_per_page: 20
+  :web_id_length: 5
 
 production:
   :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
@@ -24,3 +26,4 @@ production:
   :page_title: My Great Organization
   :facet_term_limit: 10
   :results_per_page: 20
+  :web_id_length: 5

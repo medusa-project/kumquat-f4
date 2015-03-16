@@ -6,7 +6,7 @@ namespace :kumquat do
   end
 
   desc 'Import the sample collection'
-  task :sample_import, [:source_path] => :environment do |task, args|
+  task :sample_import => :environment do |task, args|
     SampleData::Importer.new.import
   end
 

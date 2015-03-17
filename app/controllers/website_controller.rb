@@ -13,10 +13,24 @@ class WebsiteController < ApplicationController
   private
 
   ##
-  # Allow users to override view templates by adding them to app/local/views.
+  # Allow users to override view templates by adding them to
+  # /local/[theme name]/views.
   #
   def prepend_view_paths
-    prepend_view_path('local/views')
+    key = 'default'
+    if params[:key]
+      key = params[:key]
+    elsif params[:collection_key]
+      key = params[:collection_key]
+    elsif params[:web_id]
+      key = Item.find_by_web_id(params[:web_id]).collection.key
+    end
+
+    themes = Kumquat::Application.kumquat_config[:themes]
+    if themes and themes.any?
+      theme = themes[key.to_sym]
+      prepend_view_path("local/themes/#{theme}/views") if theme
+    end
   end
 
 end

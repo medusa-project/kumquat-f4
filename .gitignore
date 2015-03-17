@@ -19,5 +19,5 @@
 /config/database.yml
 /config/kumquat.yml
 
-/local/*
+/local/themes/*
 /public/derivatives

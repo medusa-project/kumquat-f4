@@ -48,4 +48,5 @@ form.kq-quick-search {
   }
 }
 
-@import "../../../local/assets/stylesheets/custom";
+/* TODO: use a glob (doesn't seem to work with sass-rails 5.0/5.0.1) */
+@import "../../../local/themes/uiuc/assets/stylesheets/custom.scss";

@@ -1,29 +1,35 @@
 development:
-  :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
-  :iiif_url: http://localhost:8081/
+  :fedora_url: http://localhost:8080/fcrepo/rest/
+  :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
   :facet_term_limit: 10
-  :results_per_page: 20
+  :results_per_page: 30
   :web_id_length: 5
+  :themes:
+    :default: 'tiles'
 
 test:
-  :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
-  :iiif_url: http://localhost:8081/
+  :fedora_url: http://localhost:8080/fcrepo/rest/
+  :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
   :facet_term_limit: 10
-  :results_per_page: 20
+  :results_per_page: 30
   :web_id_length: 5
+  :themes:
+    :default: 'tiles'
 
 production:
-  :fedora_url: http://localhost:8080/fcrepo-webapp-4.1.0/rest/
-  :iiif_url: http://localhost:8081/
+  :fedora_url: http://localhost:8080/fcrepo/rest/
+  :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :page_title: My Great Organization
   :facet_term_limit: 10
-  :results_per_page: 20
+  :results_per_page: 30
   :web_id_length: 5
+  :themes:
+    :default: 'tiles'

@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   root 'landing#index'
 
   resources :collections, param: :key, only: [:index, :show] do
-    resources 'items', param: :key, only: :index
+    resources 'items', only: :index
   end
   resources :favorites, param: :web_id, only: [:create, :destroy, :index]
   resources :items, param: :web_id, only: [:index, :show] do

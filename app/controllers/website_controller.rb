@@ -29,7 +29,11 @@ class WebsiteController < ApplicationController
     themes = Kumquat::Application.kumquat_config[:themes]
     if themes and themes.any?
       theme = themes[key.to_sym]
-      prepend_view_path("local/themes/#{theme}/views") if theme
+      if theme
+        prepend_view_path("local/themes/#{theme}/views")
+      elsif themes[:default]
+        prepend_view_path("local/themes/#{themes[:default]}/views")
+      end
     end
   end
 

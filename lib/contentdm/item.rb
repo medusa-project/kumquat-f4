@@ -100,6 +100,10 @@ module Contentdm
                 self.filename)
     end
 
+    def pointer=(p)
+      @pointer = p.to_i
+    end
+
     private
 
     def self.elements_from_xml(node)

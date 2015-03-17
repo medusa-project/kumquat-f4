@@ -9,8 +9,8 @@ module Contentdm
       'uiuc' # TODO: externalize
     end
 
-    def namespace_uri
-      'http://imagesearch.library.illinois.edu/' # TODO: externalize
+    def uri
+      "http://imagesearch.library.illinois.edu/#{self.name}" # TODO: externalize
     end
 
   end

@@ -22,7 +22,7 @@ module Contentdm
       raise 'Subclasses must override namespace_prefix()'
     end
 
-    def namespace_uri
+    def uri
       raise 'Subclasses must override namespace_uri()'
     end
 

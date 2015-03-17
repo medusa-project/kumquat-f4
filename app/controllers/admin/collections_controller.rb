@@ -21,7 +21,7 @@ module Admin
     end
 
     def destroy
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
       command = DeleteCollectionCommand.new(@collection)
@@ -37,7 +37,7 @@ module Admin
     end
 
     def edit
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
     end
 
@@ -56,12 +56,12 @@ module Admin
     end
 
     def show
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
     end
 
     def update
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
       command = UpdateCollectionCommand.new(@collection, sanitized_params)

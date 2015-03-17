@@ -17,7 +17,7 @@ class CollectionsController < WebsiteController
   end
 
   def show
-    @collection = Collection.find_by_web_id(params[:web_id])
+    @collection = Collection.find_by_key(params[:key])
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
 
     # get a random item to show

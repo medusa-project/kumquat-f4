@@ -31,9 +31,7 @@ module ActiveKumquat
     attr_accessor :solr_json
     attr_accessor :uuid
     alias_method :id, :uuid
-    attr_accessor :web_id
 
-    validates_presence_of :web_id
     validates :uuid, allow_nil: true, length: { minimum: 36, maximum: 36 }
 
     def initialize(params = {})
@@ -95,8 +93,6 @@ module ActiveKumquat
       graph.each_triple do |subject, predicate, object|
         if predicate == 'http://fedora.info/definitions/v4/repository#uuid'
           self.uuid = object.to_s
-        elsif predicate == kq_uri + kq_predicates::WEB_ID
-          self.web_id = object.to_s
         elsif predicate == kq_uri + kq_predicates::MASTER_BYTESTREAM_URI
           bs = Bytestream.new(owner: self, repository_url: object.to_s)
           bs.reload!
@@ -163,12 +159,6 @@ module ActiveKumquat
     def to_sparql_update
       update = SparqlUpdate.new
       update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
-
-      kq_predicates = Kumquat::Application::RDFPredicates
-
-      _web_id = self.web_id.blank? ? generate_web_id : self.web_id
-      update.delete('<>', "<kumquat:#{kq_predicates::WEB_ID}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::WEB_ID}", _web_id)
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
           delete('<>', '<indexing:hasIndexingTransformation>', '?o', false).
           insert(nil, 'indexing:hasIndexingTransformation',
@@ -195,23 +185,6 @@ module ActiveKumquat
     def update!(params)
       self.update(params)
       self.save!
-    end
-
-    private
-
-    ##
-    # Generates a guaranteed-unique web ID, of which there are
-    # 36^WEB_ID_LENGTH available.
-    #
-    def generate_web_id
-      length = Kumquat::Application.kumquat_config[:web_id_length]
-      proposed_id = nil
-      while true
-        proposed_id = (36 ** (length - 1) +
-            rand(36 ** length - 36 ** (length - 1))).to_s(36)
-        break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
-      end
-      proposed_id
     end
 
     ##

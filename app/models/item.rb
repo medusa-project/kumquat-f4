@@ -10,8 +10,10 @@ class Item < ActiveKumquat::Base
   attr_accessor :full_text
   attr_accessor :page_index
   attr_accessor :parent_uuid
+  attr_accessor :web_id
 
   validates :title, length: { minimum: 2, maximum: 200 }
+  validates :web_id, length: { minimum: 4, maximum: 7 }
 
   def initialize(params = {})
     @children = []
@@ -35,7 +37,7 @@ class Item < ActiveKumquat::Base
   # @return Collection
   #
   def collection
-    @collection = Collection.find_by_web_id(@collection_key) unless @collection
+    @collection = Collection.find_by_key(@collection_key) unless @collection
     @collection
   end
 
@@ -80,6 +82,8 @@ class Item < ActiveKumquat::Base
           self.page_index = object.to_s
         when kq_uri + kq_predicates::PARENT_UUID
           self.parent_uuid = object.to_s
+        when kq_uri + kq_predicates::WEB_ID
+          self.web_id = object.to_s
       end
     end
   end
@@ -100,6 +104,10 @@ class Item < ActiveKumquat::Base
 
     update = super
     update.prefix('kumquat', kq_uri)
+    # web id
+    _web_id = self.web_id.blank? ? generate_web_id : self.web_id
+    update.delete('<>', "<kumquat:#{kq_predicates::WEB_ID}>", '?o', false).
+        insert(nil, "kumquat:#{kq_predicates::WEB_ID}", _web_id)
     # collection key
     update.delete('<>', "<kumquat:#{kq_predicates::COLLECTION_KEY}>", '?o', false).
         insert(nil, "kumquat:#{kq_predicates::COLLECTION_KEY}", self.collection.key)
@@ -119,6 +127,23 @@ class Item < ActiveKumquat::Base
     update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
         insert(nil, "kumquat:#{kq_predicates::CLASS}",
                "<#{kq_uri}#{kq_objects::ITEM}>", false)
+  end
+
+  private
+
+  ##
+  # Generates a guaranteed-unique web ID, of which there are
+  # 36^WEB_ID_LENGTH available.
+  #
+  def generate_web_id
+    length = Kumquat::Application.kumquat_config[:web_id_length]
+    proposed_id = nil
+    while true
+      proposed_id = (36 ** (length - 1) +
+          rand(36 ** length - 36 ** (length - 1))).to_s(36)
+      break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
+    end
+    proposed_id
   end
 
 end

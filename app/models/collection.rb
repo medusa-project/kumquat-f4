@@ -25,6 +25,14 @@ class Collection < ActiveKumquat::Base
   end
 
   ##
+  # @param key string
+  # @return Entity
+  #
+  def self.find_by_key(key)
+    self.where(Solr::Solr::COLLECTION_KEY_KEY => key).first
+  end
+
+  ##
   # Deletes the static images of all items in the collection.
   #
   # @raise RuntimeError

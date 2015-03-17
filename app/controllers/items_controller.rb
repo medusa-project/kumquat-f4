@@ -31,10 +31,10 @@ class ItemsController < WebsiteController
     else
       @items = @items.facet(params[:fq])
     end
-    if params[:collection_web_id]
-      @collection = Collection.find_by_web_id(params[:collection_web_id])
+    if params[:collection_key]
+      @collection = Collection.find_by_key(params[:collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
-      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.web_id)
+      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
     end
     #@items = @items.order(:kq_title).start(@start).limit(@limit)
     # TODO: find a way to re-enable sorting

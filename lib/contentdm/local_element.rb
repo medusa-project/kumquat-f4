@@ -10,7 +10,8 @@ module Contentdm
     end
 
     def uri
-      "http://imagesearch.library.illinois.edu/#{self.name}" # TODO: externalize
+      name = self.name || 'unmapped'
+      "http://imagesearch.library.illinois.edu/#{name}" # TODO: externalize
     end
 
   end

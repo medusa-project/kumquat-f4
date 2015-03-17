@@ -10,7 +10,12 @@ module ActiveKumquat
 
     attr_reader :solr_request
 
-    def initialize(caller)
+    ##
+    # @param caller The calling entity (ActiveKumquat::Entity subclass), or
+    # nil to initialize an "empty query", i.e. one that will return no
+    # results.
+    #
+    def initialize(caller = nil)
       @caller = caller
       @facet = true
       @facet_queries = []
@@ -121,6 +126,10 @@ module ActiveKumquat
     private
 
     def load
+      unless @caller
+        @loaded = true
+        return @results
+      end
       unless @loaded
         @where_clauses << "#{Solr::Solr::CLASS_KEY}:\"#{Kumquat::Application::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
             @caller.constants.include?(:ENTITY_CLASS)

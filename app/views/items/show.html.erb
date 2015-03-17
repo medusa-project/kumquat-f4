@@ -20,6 +20,15 @@
       <% end %>
       <li class="active"><%= truncate(@item.title, length: 50) %></li>
     </ol>
+  <% when ItemsController::BrowseContext::FAVORITES %>
+    <ol class="breadcrumb">
+      <li><%= link_to 'Home', root_path %></li>
+      <li><%= link_to 'Favorites', favorites_path %></li>
+      <% if @item.parent %>
+          <li><%= link_to @item.parent.title, @item.parent %></li>
+      <% end %>
+      <li class="active"><%= truncate(@item.title, length: 50) %></li>
+    </ol>
   <% else %>
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
@@ -33,6 +42,17 @@
 <% end %>
 
 <div class="btn-group pull-right">
+  <% if is_favorite?(@item) %>
+    <%= link_to favorite_url(@item), class: 'btn btn-danger', method: 'delete' do %>
+      <i class="fa fa-heart-o"></i> Remove From Favorites
+    <% end %>
+  <% else %>
+    <%= link_to favorites_url(web_id: @item.web_id), class: 'btn btn-default',
+                method: 'post' do %>
+      <i class="fa fa-heart"></i> Add To Favorites
+    <% end %>
+  <% end %>
+
   <%= link_to item_master_bytestream_url(@item), class: 'btn btn-default' do %>
     <i class="fa fa-download"></i> Download
   <% end %>

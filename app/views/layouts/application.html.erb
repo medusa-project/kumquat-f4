@@ -52,6 +52,11 @@
                 <li><%= link_to "Sound Recordings (#{@num_audios})", items_path(q: 'kq_system_media_type:audio/*') %></li>
               </ul>
             </li>
+            <li id="favorites-nav">
+              <%= link_to favorites_path do %>
+                My Favorites <span class="badge"><%= num_favorites %></span>
+              <% end %>
+            </li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">

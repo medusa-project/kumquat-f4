@@ -1,13 +1,10 @@
-class Array
-  attr_accessor :total_length
-end
-
 class ItemsController < WebsiteController
 
   class BrowseContext
     BROWSING_ALL_ITEMS = 0
     BROWSING_COLLECTION = 1
     SEARCHING = 2
+    FAVORITES = 3
   end
 
   before_action :set_browse_context, only: :index

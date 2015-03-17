@@ -1,0 +1,24 @@
+<% provide(:title, 'My Favorites') %>
+<% provide(:body_id, 'favorites') %>
+<% provide(:active_nav, 'favorites') %>
+
+<h1>My Favorites</h1>
+
+<% if @items.total_length > 0 %>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+      <%= @items.total_length %> favorites
+    </div>
+  </div>
+
+  <div class="kq-results">
+    <%= items_as_list(@items, @start, show_remove_from_favorites_button: true) %>
+  </div>
+
+  <div class="text-center">
+    <%= paginate(@items, @limit, @current_page) %>
+  </div>
+<% else %>
+  <p>You have no items in your favorites.</p>
+<% end %>

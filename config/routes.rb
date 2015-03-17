@@ -52,11 +52,11 @@ Rails.application.routes.draw do
   resources :collections, param: :web_id, only: [:index, :show] do
     resources 'items', param: :web_id, only: :index
   end
+  resources :favorites, param: :web_id, only: [:create, :destroy, :index]
   resources :items, param: :web_id, only: [:index, :show] do
     match '/master', to: 'items#master_bytestream', via: 'get',
           as: 'master_bytestream'
   end
-
   resources :sessions, only: [:new, :create, :destroy]
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'

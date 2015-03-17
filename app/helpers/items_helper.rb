@@ -77,6 +77,57 @@ module ItemsHelper
     raw(ul)
   end
 
+  def is_favorite?(item)
+    cookies[:favorites].split(FavoritesController::COOKIE_DELIMITER).
+        select{ |f| f == item.web_id }.any?
+  end
+
+  ##
+  # @param items ActiveKumquat::Entity
+  # @param start integer
+  # @param options Hash with available keys: :show_remove_from_favorites_button
+  #
+  def items_as_list(items, start, options = {})
+    html = "<ol start=\"#{start + 1}\">"
+    items.each do |item|
+      html += '<li>'\
+        '<div>'
+      if item.kind_of?(Item)
+        html += link_to(item, class: 'kq-thumbnail-link') do
+          thumbnail_tag(item)
+        end
+      end
+      html += '<span class="kq-title">'
+      html += link_to(item.title, item)
+      if options[:show_remove_from_favorites_button]
+        html += ' ' + link_to(favorite_url(item), class: 'btn btn-xs btn-danger', method: 'delete') do
+          raw('<i class="fa fa-heart-o"></i> Remove')
+        end
+      end
+      if item.kind_of?(Item) and item.children.any?
+        html += '<span class="label label-info kq-page-count">'
+        html += pluralize(item.children.length, 'page')
+        html += '</span>'
+      end
+      html += '</span>'
+      html += '<br>'
+      html += '<span class="kq-description">'
+      html += truncate(item.triple('description').to_s, length: 400)
+      html += '</span>'
+      html += '</div>'
+      html += '</li>'
+    end
+    html += '</ol>'
+    raw(html)
+  end
+
+  ##
+  # @return integer
+  #
+  def num_favorites
+    cookies[:favorites].split(FavoritesController::COOKIE_DELIMITER).length
+  end
+
   ##
   # @param items array
   # @param per_page integer
@@ -127,39 +178,6 @@ module ItemsHelper
         "<li #{current_page == last_page ? 'class="disabled"' : ''}>#{last_link}</li>"
       '</ul>' +
     '</nav>'
-    raw(html)
-  end
-
-  ##
-  # @param items ActiveKumquat::Entity
-  # @param start integer
-  #
-  def items_as_list(items, start)
-    html = "<ol start=\"#{start + 1}\">"
-    items.each do |item|
-      html += '<li>'\
-        '<div>'
-      if item.kind_of?(Item)
-        html += link_to(item, class: 'kq-thumbnail-link') do
-          thumbnail_tag(item)
-        end
-      end
-      html += '<span class="kq-title">'
-      html += link_to(item.title, item)
-      if item.kind_of?(Item) and item.children.any?
-        html += '<span class="label label-info kq-page-count">'
-        html += pluralize(item.children.length, 'page')
-        html += '</span>'
-      end
-      html += '</span>'
-      html += '<br>'
-      html += '<span class="kq-description">'
-      html += truncate(item.triple('description').to_s, length: 400)
-      html += '</span>'
-      html += '</div>'
-      html += '</li>'
-    end
-    html += '</ol>'
     raw(html)
   end
 

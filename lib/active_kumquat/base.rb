@@ -89,12 +89,15 @@ module ActiveKumquat
     # @param graph RDF::Graph
     #
     def populate_from_graph(graph)
+      kq_uri = Kumquat::Application::NAMESPACE_URI
+      kq_predicates = Kumquat::Application::RDFPredicates
+
       graph.each_triple do |subject, predicate, object|
         if predicate == 'http://fedora.info/definitions/v4/repository#uuid'
           self.uuid = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}webID"
+        elsif predicate == kq_uri + kq_predicates::WEB_ID
           self.web_id = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}hasMasterBytestream"
+        elsif predicate == kq_uri + kq_predicates::MASTER_BYTESTREAM_URI
           bs = Bytestream.new(owner: self, repository_url: object.to_s)
           bs.reload!
           self.bytestreams << bs
@@ -161,9 +164,11 @@ module ActiveKumquat
       update = SparqlUpdate.new
       update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
 
+      kq_predicates = Kumquat::Application::RDFPredicates
+
       _web_id = self.web_id.blank? ? generate_web_id : self.web_id
-      update.delete('<>', '<kumquat:webID>', '?o', false).
-          insert(nil, 'kumquat:webID', _web_id)
+      update.delete('<>', "<kumquat:#{kq_predicates::WEB_ID}>", '?o', false).
+          insert(nil, "kumquat:#{kq_predicates::WEB_ID}", _web_id)
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
           delete('<>', '<indexing:hasIndexingTransformation>', '?o', false).
           insert(nil, 'indexing:hasIndexingTransformation',

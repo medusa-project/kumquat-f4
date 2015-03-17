@@ -84,6 +84,10 @@ class Item < ActiveKumquat::Base
     end
   end
 
+  def to_param
+    self.web_id
+  end
+
   ##
   # Overrides parent
   #

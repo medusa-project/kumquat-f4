@@ -150,10 +150,6 @@ module ActiveKumquat
 
     alias_method :save!, :save
 
-    def to_param
-      self.web_id
-    end
-
     ##
     # Generates a SparqlUpdate with the instance's current properties.
     # Subclasses should override and add their own statements into the return

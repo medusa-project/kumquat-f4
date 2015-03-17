@@ -182,6 +182,7 @@ module ItemsHelper
   end
 
   def thumbnail_tag(item)
+    return unless item
     html = "<div class=\"kq-thumbnail\">"
     thumb_path = item.image_path
     if File.exist?(thumb_path)

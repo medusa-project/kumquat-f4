@@ -28,9 +28,11 @@
     </div>
   </div>
   <div class="col-sm-6">
-    <div class="text-center">
-      <%= thumbnail_tag(@item) %>
-      <%= link_to @item.title, @item %>
-    </div>
+    <% if @item %>
+      <div class="text-center">
+        <%= thumbnail_tag(@item) %>
+        <%= link_to @item.title, @item %>
+      </div>
+    <% end %>
   </div>
 </div>

@@ -30,7 +30,7 @@ module Contentdm
     # @return Collection
     #
     def self.with_alias(alias_, source_path)
-      collection = Collection.new
+      collection = Collection.new(source_path)
       collection.alias = alias_.gsub('/', '')
 
       # Extract the collection's Dublin Core properties from the colldesc.txt
@@ -69,12 +69,32 @@ module Contentdm
       collection
     end
 
+    def initialize(source_path)
+      super
+      @num_items = 0
+    end
+
     ##
     # @return The value of the collection's DC title element
     #
     def name
       element = self.elements.select{ |e| e.name == 'title' }.first
       element ? element.value : nil
+    end
+
+    ##
+    # @return integer
+    #
+    def num_items
+      if @num_items < 1
+        File.open(File.join(File.expand_path(@source_path),
+                            self.alias + '.xml')) do |file|
+          doc = Nokogiri::XML(file)
+          @num_items += doc.xpath('//record').length
+          @num_items += doc.xpath('//structure/page').length
+        end
+      end
+      @num_items
     end
 
   end

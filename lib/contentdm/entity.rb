@@ -4,7 +4,8 @@ module Contentdm
 
     attr_accessor :elements # array of Elements
 
-    def initialize
+    def initialize(source_path)
+      @source_path = source_path
       self.elements = []
     end
 

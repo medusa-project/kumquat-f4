@@ -1,0 +1,2 @@
+/test	Test Collection		/usr/local/Collections/test
+/test2	Test Collection 2		/usr/local/Collections/test2

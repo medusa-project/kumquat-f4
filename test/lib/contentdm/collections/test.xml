@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<metadata>
+  <record>
+    <title>Sample Text File</title>
+    <identifier>dfadfasfd</identifier>
+    <coverage>2005</coverage>
+    <coverage></coverage>
+    <date>August 2005</date>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <creator>Somebody</creator>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <description>Who knows</description>
+    <relation></relation>
+    <publisher></publisher>
+    <format>text</format>
+    <identifier>sadfsadf</identifier>
+    <date></date>
+    <language>eng</language>
+    <rights></rights>
+    <fullResolution></fullResolution>
+    <cdmid>1</cdmid>
+    <cdmaccess></cdmaccess>
+    <cdmcreated>2008-10-07</cdmcreated>
+    <cdmmodified>2008-10-07</cdmmodified>
+    <cdmoclc></cdmoclc>
+    <cdmfile>2.txt</cdmfile>
+    <cdmpath>/test/image/2.txt</cdmpath>
+  </record>
+  <record>
+    <title>Sample Text File 2</title>
+    <identifier>dfadfasfd</identifier>
+    <coverage>2005</coverage>
+    <coverage></coverage>
+    <date>August 2005</date>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <creator>Somebody</creator>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <description>Who knows</description>
+    <relation></relation>
+    <publisher></publisher>
+    <format>text</format>
+    <identifier>sadfsadf</identifier>
+    <date></date>
+    <language>eng</language>
+    <rights></rights>
+    <fullResolution></fullResolution>
+    <cdmid>2</cdmid>
+    <cdmaccess></cdmaccess>
+    <cdmcreated>2008-10-07</cdmcreated>
+    <cdmmodified>2008-10-07</cdmmodified>
+    <cdmoclc></cdmoclc>
+    <cdmfile>3.txt</cdmfile>
+    <cdmpath>/test/image/3.txt</cdmpath>
+  </record>
+ </metadata>
+ 

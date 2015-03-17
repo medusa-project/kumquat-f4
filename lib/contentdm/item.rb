@@ -14,6 +14,24 @@ module Contentdm
     attr_accessor :url # CONTENTdm redirect-to-URL
 
     ##
+    # @param source_path string
+    # @param collection Collection
+    # @param index Index within a collection
+    #
+    def self.at_index(source_path, collection, index)
+      File.open(File.join(File.expand_path(source_path),
+                          collection.alias + '.xml')) do |file|
+        doc = Nokogiri::XML(file)
+        %w(//record //structure/page).each do |query|
+          doc.xpath(query).each_with_index do |node, i|
+            return Item.from_cdm_xml(source_path, collection, node) if i == index
+          end
+        end
+      end
+      nil
+    end
+
+    ##
     # Builds an item from its CONTENTdm XML representation.
     #
     # @param source_path string
@@ -23,7 +41,7 @@ module Contentdm
     #
     def self.from_cdm_xml(source_path, collection, node)
       source_path = File.expand_path(source_path)
-      item = Item.new
+      item = Item.new(source_path)
       item.collection = collection
       item.pointer = node.xpath('cdmid').first.content
       item.filename = node.xpath('cdmfile').first.content
@@ -42,7 +60,7 @@ module Contentdm
         File.open(cpd_pathname) do |file|
           cpd_doc = Nokogiri::XML(file)
           page_nodes.each do |page_elem|
-            page = Item.new
+            page = Item.new(source_path)
             page.collection = collection
             page.pointer = page_elem.xpath('pageptr').first.content
             page.elements = elements_from_xml(node)
@@ -72,7 +90,7 @@ module Contentdm
       item
     end
 
-    def initialize
+    def initialize(source_path)
       super
       self.pages = []
     end

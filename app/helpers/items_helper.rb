@@ -83,7 +83,8 @@ module ItemsHelper
   end
 
   def is_favorite?(item)
-    cookies[:favorites].split(FavoritesController::COOKIE_DELIMITER).
+    cookies[:favorites] and cookies[:favorites].
+        split(FavoritesController::COOKIE_DELIMITER).
         select{ |f| f == item.web_id }.any?
   end
 
@@ -130,7 +131,8 @@ module ItemsHelper
   # @return integer
   #
   def num_favorites
-    cookies[:favorites].split(FavoritesController::COOKIE_DELIMITER).length
+    cookies[:favorites] ?
+        cookies[:favorites].split(FavoritesController::COOKIE_DELIMITER).length : 0
   end
 
   ##

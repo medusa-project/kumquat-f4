@@ -117,7 +117,7 @@ module ItemsHelper
       html += '</span>'
       html += '<br>'
       html += '<span class="kq-description">'
-      html += truncate(item.any_object('description').to_s, length: 400)
+      html += truncate(item.description.to_s, length: 400)
       html += '</span>'
       html += '</div>'
       html += '</li>'

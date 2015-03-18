@@ -27,7 +27,7 @@
       </span>
       <br>
       <span class="description">
-        <%= truncate(collection.any_object('description').to_s, length: 400) %>
+        <%= truncate(collection.description.to_s, length: 400) %>
       </span>
     </li>
   <% end %>

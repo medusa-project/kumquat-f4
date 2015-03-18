@@ -33,12 +33,14 @@ module Contentdm
       collection = Collection.new(source_path)
       collection.alias = alias_.gsub('/', '')
 
-      # Extract the collection's Dublin Core properties from the colldesc.txt
-      # file, which despite its name is actually a pseudo-XML file with no root
-      # element.
       desc_pathname = File.join(File.expand_path(source_path),
                                 collection.alias, 'index', 'etc', 'colldesc.txt')
+      about_pathname = File.join(File.expand_path(source_path),
+                                 collection.alias, 'index', 'etc', 'about.txt')
       catalog_pathname = File.join(File.expand_path(source_path), 'catalog.txt')
+      # If it exists, extract the collection's Dublin Core properties from the
+      # colldesc.txt file, which despite its name is actually a pseudo-XML file
+      # with no root element.
       if File.exists?(desc_pathname)
         File.open(desc_pathname) do |file|
           string = "<?xml version=\"1.0\"?><xml>#{file.readlines}</xml>"
@@ -49,9 +51,17 @@ module Contentdm
             collection.elements << element unless element.value.empty?
           end
         end
+      # colldesc.txt might not exist, so check for about.txt instead.
+      elsif File.exists?(about_pathname)
+        File.open(about_pathname) do |file|
+          element = DCElement.new(name: 'description',
+                                  value: file.read.squish.strip)
+          collection.elements << element unless element.value.empty?
+        end
       elsif File.exists?(catalog_pathname)
-        # Not all collections have a colldesc.txt file, so use the catalog.txt
-        # file (which contains only the collection's name) as a fallback.
+        # Not all collections have either a colldesc.txt or an about.txt file,
+        # so use the catalog.txt file (which contains only the collection's
+        # name) as a fallback.
         File.open(catalog_pathname) do |file|
           file.each_line do |line|
             parts = line.gsub(/\t+/, "\t").split("\t")

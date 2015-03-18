@@ -14,7 +14,8 @@ namespace :kumquat do
 
   desc 'Import the sample collection'
   task :sample_import => :environment do
-    SampleData::Importer.new.import
+    delegate = SampleData::ImportDelegate.new
+    Import::Importer.new(delegate).import
   end
 
   desc 'Update index transform'

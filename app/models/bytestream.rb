@@ -111,7 +111,6 @@ class Bytestream
         self.uuid = object.to_s
       end
     end
-    @fedora_graph = graph
     @persisted = true
   end
 

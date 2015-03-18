@@ -1,5 +1,10 @@
 module ItemsHelper
 
+  PREFIXES = { # TODO: externalize this
+      dc: 'http://purl.org/dc/elements/1.1/',
+      dcterms: 'http://purl.org/dc/terms/'
+  }
+
   ##
   # @param items ActiveKumquat::ResultSet
   #
@@ -112,7 +117,7 @@ module ItemsHelper
       html += '</span>'
       html += '<br>'
       html += '<span class="kq-description">'
-      html += truncate(item.triple('description').to_s, length: 400)
+      html += truncate(item.any_object('description').to_s, length: 400)
       html += '</span>'
       html += '</div>'
       html += '</li>'
@@ -210,24 +215,48 @@ module ItemsHelper
   # @param describable Describable
   #
   def triples_to_dl(describable)
+    # Predicates whose URIs start with the following will be excluded from
+    # display. This is more or less all repository-managed administrative
+    # metadata that nobody cares about.
+    exclude_predicates = [
+        'http://fedora.info/definitions/',
+        'http://www.jcp.org/jcr',
+        'http://www.w3.org/1999/02/22-rdf-syntax-ns',
+        'http://www.w3.org/2000/01/rdf-schema',
+        'http://www.w3.org/ns/ldp'
+    ]
     # process triples into an array of hashes, collapsing identical subjects
-    triples = describable.triples.sort.map do |t|
-      glue = t.predicate.include?('#') ? '#' : '/'
-      parts = t.predicate.split(glue)
+    triples = []
+    describable.rdf_graph.each_statement do |statement|
+      # exclude certain predicates from display
+      skip_statement = false
+      exclude_predicates.each do |ex_p|
+        if statement.predicate.to_s.start_with?(ex_p)
+          skip_statement = true
+          break
+        end
+      end
+      next if skip_statement
+
+      # see if we can replace the full predicate URI with a prefix
+      glue = statement.predicate.to_s.include?('#') ? '#' : '/'
+      parts = statement.predicate.to_s.split(glue)
       last = parts.pop
       prefix = parts.join(glue) + glue
-      if Triple::PREFIXES.values.include?(prefix)
-        prefix = Triple::PREFIXES.key(prefix).to_s + ':'
+      if PREFIXES.values.include?(prefix)
+        prefix = PREFIXES.key(prefix).to_s + ':'
       end
-      {
-          predicate: t.predicate,
+      triples << {
+          predicate: statement.predicate.to_s,
           label: "<span class=\"kq-predicate-uri\">#{prefix}</span>"\
           "<span class=\"kq-predicate-uri-lpc\">#{last}</span>",
           objects: []
       }
     end
-    describable.triples.each do |t|
-      triples.select{ |t2| t2[:predicate] == t.predicate }.first[:objects] << t.object
+    describable.rdf_graph.each_statement do |statement|
+      triple = triples.
+          select{ |t2| t2[:predicate] == statement.predicate.to_s }.first
+      triple[:objects] << statement.object.to_s if triple
     end
 
     dl = '<dl class="kq-triples">'

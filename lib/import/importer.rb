@@ -29,11 +29,8 @@ module Import
           collection.container_url = @import_delegate.root_container_url
           collection.requested_slug = @import_delegate.
               slug_of_collection_of_item_at_index(index)
-          metadata = @import_delegate.metadata_of_collection_of_item_at_index(index)
-          metadata.each_statement do |statement|
-            collection.triples << Triple.new(predicate: statement.predicate.to_s,
-                                             object: statement.object.to_s)
-          end
+          collection.rdf_graph = @import_delegate.
+              metadata_of_collection_of_item_at_index(index)
           puts collection.title if collection.title
           collection.save!
           @collections[key] = collection
@@ -44,11 +41,7 @@ module Import
                         container_url: collection.repository_url,
                         full_text: @import_delegate.full_text_of_item_at_index(index),
                         requested_slug: @import_delegate.slug_of_item_at_index(index))
-        graph = @import_delegate.metadata_of_item_at_index(index)
-        graph.each_statement do |statement|
-          item.triples << Triple.new(predicate: statement.predicate.to_s,
-                                     object: statement.object.to_s)
-        end
+        item.rdf_graph = @import_delegate.metadata_of_item_at_index(index)
         item.save! # save it in order to populate its UUID
         puts item.repository_url
 

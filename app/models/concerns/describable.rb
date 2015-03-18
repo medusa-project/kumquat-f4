@@ -2,54 +2,76 @@ module Describable
 
   extend ActiveSupport::Concern
 
-  included do
-    attr_accessor :triples
-  end
-
   ##
   # Deletes all statements with the given predicate.
   #
-  def delete_predicate(graph, predicate)
+  def delete_predicate(predicate)
     delete_statements = RDF::Graph.new
-    graph.each_statement do |statement|
+    self.rdf_graph.each_statement do |statement|
       delete_statements << statement if statement.predicate.to_s == predicate
     end
-    graph.delete(delete_statements)
+    self.rdf_graph.delete(delete_statements)
   end
 
   ##
-  # @param graph RDF::Graph
   # @param statement RDF::Statement
   #
-  def replace_statement(graph, statement)
+  def replace_statement(statement)
     g2 = RDF::Graph.new
     g2 << statement
-    graph.delete(g2)
-    graph << g2.statements.first
+    self.rdf_graph.delete(g2)
+    self.rdf_graph << g2.statements.first
   end
 
   def subtitle
-    t = self.triple('http://purl.org/dc/terms/alternative')
-    t ? t.object : nil
+    self.rdf_graph.each_statement do |statement|
+      return statement.object.to_s if
+          statement.predicate.to_s == 'http://purl.org/dc/terms/alternative'
+    end
+    nil
   end
 
   def title
-    t = self.triple('http://purl.org/dc/elements/1.1/title') ||
-        self.triple('http://purl.org/dc/terms/title')
-    t ? t.object : nil
+    self.rdf_graph.each_statement do |statement|
+      return statement.object.to_s if
+          statement.predicate.to_s == 'http://purl.org/dc/elements/1.1/title' or
+              statement.predicate.to_s == 'http://purl.org/dc/terms/title'
+    end
+    nil
   end
 
   def title=(title)
-    self.triples.reject!{ |t| t.predicate.end_with?('/title') }
-    self.triples << Triple.new(predicate: 'http://purl.org/dc/elements/1.1/title',
-                               object: title) unless title.blank?
+    self.delete_predicate('http://purl.org/dc/elements/1.1/title')
+    self.delete_predicate('http://purl.org/dc/terms/title')
+    self.rdf_graph << RDF::Statement.new(
+        subject: RDF::URI(),
+        predicate: RDF::URI('http://purl.org/dc/elements/1.1/title'),
+        object: title)  unless title.blank?
   end
 
   ##
-  # Returns a single triple matching the predicate.
+  # Returns any object corresponding to the given predicate.
   #
-  def triple(predicate)
-    self.triples.select{ |e| e.predicate.end_with?(predicate) }.first
+  # @param predicate string or RDF::URI
+  # @return string, RDF::URI, or nil
+  #
+  def any_object(predicate)
+    self.rdf_graph.each_statement do |statement|
+      return statement.object if statement.predicate.to_s.end_with?(predicate)
+    end
+    nil
+  end
+
+  ##
+  # @param predicate string or RDF::URI
+  # @return RDF::Graph
+  #
+  def statements_with_predicate(predicate)
+    out_graph = RDF::Graph.new
+    self.rdf_graph.each_statement do |statement|
+      out_graph << statement if statement.predicate.to_s.end_with?(predicate)
+    end
+    out_graph
   end
 
 end

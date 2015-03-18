@@ -25,7 +25,7 @@ module ActiveKumquat
 
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
-    attr_accessor :fedora_graph # RDF::Graph
+    attr_accessor :rdf_graph
     attr_accessor :repository_url
     attr_accessor :requested_slug # requested F4 last path component for new entities
     attr_accessor :solr_json
@@ -38,7 +38,7 @@ module ActiveKumquat
       @bytestreams = Set.new
       @destroyed = false
       @persisted = false
-      @triples = []
+      @rdf_graph = RDF::Graph.new
       params.except(:id, :uuid).each do |k, v|
         send("#{k}=", v) if respond_to?("#{k}=")
       end
@@ -90,19 +90,16 @@ module ActiveKumquat
       kq_uri = Kumquat::Application::NAMESPACE_URI
       kq_predicates = Kumquat::Application::RDFPredicates
 
-      graph.each_triple do |subject, predicate, object|
-        if predicate == 'http://fedora.info/definitions/v4/repository#uuid'
-          self.uuid = object.to_s
-        elsif predicate == kq_uri + kq_predicates::MASTER_BYTESTREAM_URI
-          bs = Bytestream.new(owner: self, repository_url: object.to_s)
+      graph.each_statement do |statement|
+        if statement.predicate == RDF::URI('http://fedora.info/definitions/v4/repository#uuid')
+          self.uuid = statement.object.to_s
+        elsif statement.predicate == RDF::URI(kq_uri + kq_predicates::MASTER_BYTESTREAM_URI)
+          bs = Bytestream.new(owner: self, repository_url: statement.object.to_s)
           bs.reload!
           self.bytestreams << bs
-        elsif predicate.to_s.include?('http://purl.org/dc/') and
-            !object.to_s.include?('/fedora.info/')
-          self.triples << Triple.new(predicate: predicate.to_s, object: object.to_s)
         end
+        self.rdf_graph << statement
       end
-      @fedora_graph = graph
       @persisted = true
     end
 
@@ -166,10 +163,10 @@ module ActiveKumquat
       update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
           delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)
-      self.triples.each do |triple|
-        update.delete('<>', "<#{triple.predicate}>", '?o', false).
-            insert(nil, "<#{triple.predicate}>",
-                   triple.object.to_s.gsub("\n", ' ')) # TODO: preserve newlines
+      self.rdf_graph.each_statement do |statement|
+        update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
+            insert(nil, "<#{statement.predicate.to_s}>",
+                   statement.object.to_s.gsub("\n", ' ')) # TODO: preserve newlines
       end
       update
     end

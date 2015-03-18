@@ -46,7 +46,7 @@ class Item < ActiveKumquat::Base
   #
   def parent
     unless @parent
-      self.fedora_graph.each_statement do |s|
+      self.rdf_graph.each_statement do |s|
         if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
             Kumquat::Application::RDFPredicates::PARENT_UUID
           @parent = Item.find_by_uuid(s.object.to_s)

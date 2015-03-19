@@ -172,7 +172,7 @@ module ActiveKumquat
 
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
             insert(nil, "<#{statement.predicate.to_s}>",
-                   statement.object.to_s.gsub("\n", ' ')) # TODO: preserve newlines
+                   statement.object.to_s)
       end
       update
     end

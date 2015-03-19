@@ -221,8 +221,8 @@ module ItemsHelper
     triples = []
     describable.rdf_graph.each_statement do |statement|
       # Predicates whose URIs start with any of
-      # Fedora::Repository::MANAGED_PREDICATES will be excluded from display
-      next if Fedora::Repository::MANAGED_PREDICATES.
+      # Repository::Fedora::MANAGED_PREDICATES will be excluded from display
+      next if Repository::Fedora::MANAGED_PREDICATES.
           select{ |p| statement.predicate.to_s.start_with?(p) }.any?
 
       # see if we can replace the full predicate URI with a prefix

@@ -20,9 +20,9 @@ namespace :kumquat do
 
   desc 'Update index transform'
   task :update_index_transform => :environment do
-    Fedora::Repository.new.apply_indexing_transform
+    Repository::Fedora.new.apply_indexing_transform
     puts "Fedora indexing transform "\
-    "\"#{Fedora::Repository::INDEXING_TRANSFORM_NAME}\" updated"
+    "\"#{Repository::Fedora::INDEXING_TRANSFORM_NAME}\" updated"
   end
 
 end

@@ -159,7 +159,7 @@ module ActiveKumquat
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
           delete('<>', '<indexing:hasIndexingTransformation>', '?o', false).
           insert(nil, 'indexing:hasIndexingTransformation',
-                 Fedora::Repository::INDEXING_TRANSFORM_NAME)
+                 Repository::Fedora::INDEXING_TRANSFORM_NAME)
       update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
           delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)
@@ -167,7 +167,7 @@ module ActiveKumquat
       self.rdf_graph.each_statement do |statement|
         # exclude repository-managed predicates from the update (because F4
         # doesn't like it)
-        next if Fedora::Repository::MANAGED_PREDICATES.
+        next if Repository::Fedora::MANAGED_PREDICATES.
             select{ |p| statement.predicate.to_s.start_with?(p) }.any?
 
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).

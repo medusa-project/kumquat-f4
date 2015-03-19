@@ -1,6 +1,6 @@
-module Fedora
+module Repository
 
-  class Repository
+  class Fedora
 
     INDEXING_TRANSFORM_NAME = 'kumquat'
     # Predicate URIs that start with any of these are repository-managed.

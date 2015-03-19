@@ -163,7 +163,13 @@ module ActiveKumquat
       update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
           delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)
+
       self.rdf_graph.each_statement do |statement|
+        # exclude repository-managed predicates from the update (because F4
+        # doesn't like it)
+        next if Fedora::Repository::MANAGED_PREDICATES.
+            select{ |p| statement.predicate.to_s.start_with?(p) }.any?
+
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
             insert(nil, "<#{statement.predicate.to_s}>",
                    statement.object.to_s.gsub("\n", ' ')) # TODO: preserve newlines

@@ -63,7 +63,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :web_id
+    resources :collections, param: :key, as: :repository_collections
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',

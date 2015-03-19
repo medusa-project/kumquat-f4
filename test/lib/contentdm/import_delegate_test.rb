@@ -61,4 +61,8 @@ class ImportDelegateTest < ActiveSupport::TestCase
     assert_equal '1', @delegate.slug_of_item_at_index(2)
   end
 
+  test 'web_id_of_item_at_index should return a correct web ID' do
+    assert_equal 'test2-1', @delegate.web_id_of_item_at_index(2)
+  end
+
 end

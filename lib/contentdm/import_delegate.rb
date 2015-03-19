@@ -64,6 +64,11 @@ module Contentdm
       cdm_item_at_index(index).pointer.to_s
     end
 
+    def web_id_of_item_at_index(index)
+      collection_key_of_item_at_index(index) + '-' +
+          cdm_item_at_index(index).pointer.to_s
+    end
+
     private
 
     def cdm_item_at_index(index)

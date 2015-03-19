@@ -25,12 +25,11 @@ module Import
           collection = Collection.find_by_key(key)
         end
         unless collection
-          collection = Collection.new(key: key)
-          collection.container_url = @import_delegate.root_container_url
-          collection.requested_slug = @import_delegate.
-              slug_of_collection_of_item_at_index(index)
-          collection.rdf_graph = @import_delegate.
-              metadata_of_collection_of_item_at_index(index)
+          collection = Collection.new(
+              key: key,
+              container_url: @import_delegate.root_container_url,
+              requested_slug: @import_delegate.slug_of_collection_of_item_at_index(index),
+              rdf_graph: @import_delegate.metadata_of_collection_of_item_at_index(index))
           puts collection.title if collection.title
           collection.save!
           @collections[key] = collection
@@ -40,8 +39,9 @@ module Import
         item = Item.new(collection: collection,
                         container_url: collection.repository_url,
                         full_text: @import_delegate.full_text_of_item_at_index(index),
-                        requested_slug: @import_delegate.slug_of_item_at_index(index))
-        item.rdf_graph = @import_delegate.metadata_of_item_at_index(index)
+                        requested_slug: @import_delegate.slug_of_item_at_index(index),
+                        web_id: @import_delegate.web_id_of_item_at_index(index),
+                        rdf_graph: @import_delegate.metadata_of_item_at_index(index))
         item.save! # save it in order to populate its UUID
         puts item.repository_url
 

@@ -157,7 +157,7 @@ module Import
     ##
     # Should return a URL slug that the repository should use for the given
     # item resource. Can also return nil, in which case the item resource
-    # ill receive an opaque URL/URI.
+    # will receive an opaque URL/URI.
     #
     # Note that this is only a request; the repository is not guaranteed to
     # actually assign the slug.
@@ -168,6 +168,21 @@ module Import
     # @return string
     #
     def slug_of_item_at_index(index)
+    end
+
+    ##
+    # Should return a "web id" that the will be used in the item's URL. Can
+    # also return nil, in which case the item will receive a random
+    # alphanumeric web ID.
+    #
+    # The importer will raise an error if this method returns a non-unique ID.
+    #
+    # This method is optional.
+    #
+    # @param index integer
+    # @return string
+    #
+    def web_id_of_item_at_index(index)
     end
 
   end

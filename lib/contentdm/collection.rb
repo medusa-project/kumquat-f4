@@ -47,7 +47,7 @@ module Contentdm
           doc = Nokogiri::XML(string)
           doc.xpath('/xml/*').each do |node|
             element = DCElement.new(
-                name: TAG_DC_MAP[node.name[0..2]], value: node.text)
+                name: TAG_DC_MAP[node.name[0..2]], value: node.text.gsub('\"', '"'))
             collection.elements << element unless element.value.empty?
           end
         end

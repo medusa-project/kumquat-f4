@@ -175,7 +175,8 @@ module Import
     # also return nil, in which case the item will receive a random
     # alphanumeric web ID.
     #
-    # The importer will raise an error if this method returns a non-unique ID.
+    # Note that this is only a request; the repository is not guaranteed to
+    # actually assign the web ID.
     #
     # This method is optional.
     #

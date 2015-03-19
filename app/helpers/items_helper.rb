@@ -217,28 +217,13 @@ module ItemsHelper
   # @param describable Describable
   #
   def triples_to_dl(describable)
-    # Predicates whose URIs start with the following will be excluded from
-    # display. This is more or less all repository-managed administrative
-    # metadata that nobody cares about.
-    exclude_predicates = [
-        'http://fedora.info/definitions/',
-        'http://www.jcp.org/jcr',
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns',
-        'http://www.w3.org/2000/01/rdf-schema',
-        'http://www.w3.org/ns/ldp'
-    ]
     # process triples into an array of hashes, collapsing identical subjects
     triples = []
     describable.rdf_graph.each_statement do |statement|
-      # exclude certain predicates from display
-      skip_statement = false
-      exclude_predicates.each do |ex_p|
-        if statement.predicate.to_s.start_with?(ex_p)
-          skip_statement = true
-          break
-        end
-      end
-      next if skip_statement
+      # Predicates whose URIs start with any of
+      # Fedora::Repository::MANAGED_PREDICATES will be excluded from display
+      next if Fedora::Repository::MANAGED_PREDICATES.
+          select{ |p| statement.predicate.to_s.start_with?(p) }.any?
 
       # see if we can replace the full predicate URI with a prefix
       glue = statement.predicate.to_s.include?('#') ? '#' : '/'

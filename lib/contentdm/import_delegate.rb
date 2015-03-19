@@ -10,7 +10,7 @@ module Contentdm
       # delete any old collections that may be lying around from
       # previous/failed imports
       collections.each do |cdm_collection|
-        ::Collection.delete_with_key(cdm_collection.alias) rescue nil
+        Repository::Collection.delete_with_key(cdm_collection.alias) rescue nil
       end
     end
 

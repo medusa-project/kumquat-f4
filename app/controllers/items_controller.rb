@@ -10,7 +10,7 @@ class ItemsController < WebsiteController
   before_action :set_browse_context, only: :index
 
   def master_bytestream
-    @item = Item.find_by_web_id(params[:item_web_id])
+    @item = Repository::Item.find_by_web_id(params[:item_web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     bs = @item.master_bytestream
@@ -24,7 +24,8 @@ class ItemsController < WebsiteController
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
-    @items = Item.all.where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").
+    @items = Repository::Item.all.
+        where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").
         where(params[:q])
     if params[:fq].respond_to?(:each)
       params[:fq].each { |fq| @items = @items.facet(fq) }
@@ -32,7 +33,7 @@ class ItemsController < WebsiteController
       @items = @items.facet(params[:fq])
     end
     if params[:collection_key]
-      @collection = Collection.find_by_key(params[:collection_key])
+      @collection = Repository::Collection.find_by_key(params[:collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
       @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
     end
@@ -44,7 +45,7 @@ class ItemsController < WebsiteController
   end
 
   def show
-    @item = Item.find_by_web_id(params[:web_id])
+    @item = Repository::Item.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
   end
 

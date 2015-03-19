@@ -94,7 +94,8 @@ module ActiveKumquat
         if statement.predicate == RDF::URI('http://fedora.info/definitions/v4/repository#uuid')
           self.uuid = statement.object.to_s
         elsif statement.predicate == RDF::URI(kq_uri + kq_predicates::MASTER_BYTESTREAM_URI)
-          bs = Bytestream.new(owner: self, repository_url: statement.object.to_s)
+          bs = Repository::Bytestream.new(owner: self,
+                                          repository_url: statement.object.to_s)
           bs.reload!
           self.bytestreams << bs
         end

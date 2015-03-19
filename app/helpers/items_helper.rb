@@ -98,7 +98,7 @@ module ItemsHelper
     items.each do |item|
       html += '<li>'\
         '<div>'
-      if item.kind_of?(Item)
+      if item.kind_of?(Repository::Item)
         html += link_to(item, class: 'kq-thumbnail-link') do
           thumbnail_tag(item)
         end
@@ -110,7 +110,7 @@ module ItemsHelper
           raw('<i class="fa fa-heart-o"></i> Remove')
         end
       end
-      if item.kind_of?(Item) and item.children.any?
+      if item.kind_of?(Repository::Item) and item.children.any?
         html += '<span class="label label-info kq-page-count">'
         html += pluralize(item.children.length, 'page')
         html += '</span>'
@@ -204,7 +204,7 @@ module ItemsHelper
         icon = 'fa-file-text-o'
       elsif item.is_video?
         icon = 'fa-film'
-      elsif item.kind_of?(Collection)
+      elsif item.kind_of?(Repository::Collection)
         icon = 'fa-cubes'
       end
       html += "<i class=\"fa #{icon}\"></i>"
@@ -273,7 +273,7 @@ module ItemsHelper
   end
 
   ##
-  # @param item Item
+  # @param item Repository::Item
   #
   def viewer_for(item)
     if item.is_pdf?
@@ -296,7 +296,7 @@ module ItemsHelper
 
   def audio_player_for(item)
     tag = "<audio controls>
-      <source src=\"#{item_master_bytestream_url(item)}\"
+      <source src=\"#{repository_item_master_bytestream_url(item)}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the audio tag.
     </audio>"
@@ -330,7 +330,7 @@ module ItemsHelper
 
   def pdf_viewer_for(item)
     viewer_url = asset_path('/pdfjs/web/viewer.html?file=' +
-        item_master_bytestream_path(item))
+        repository_item_master_bytestream_path(item))
     tag = link_to(viewer_url, target: '_blank') do
       #image_tag(item_image_path(item, size: 256))
     end

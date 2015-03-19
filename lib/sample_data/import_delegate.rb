@@ -13,7 +13,7 @@ module SampleData
 
       # delete any old collections that may be lying around from
       # previous/failed imports
-      ::Collection.delete_with_key(COLLECTION_KEY) rescue nil
+      Repository::Collection.delete_with_key(COLLECTION_KEY) rescue nil
     end
 
     def total_number_of_items

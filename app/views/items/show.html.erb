@@ -14,7 +14,7 @@
   <% when ItemsController::BrowseContext::BROWSING_ALL_ITEMS %>
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
-      <li><%= link_to 'All Items', items_path %></li>
+      <li><%= link_to 'All Items', repository_items_path %></li>
       <% if @item.parent %>
         <li><%= link_to @item.parent.title, @item.parent %></li>
       <% end %>
@@ -32,7 +32,7 @@
   <% else %>
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
-      <li><%= link_to 'Collections', collections_path %></li>
+      <li><%= link_to 'Collections', repository_collections_path %></li>
       <li><%= link_to @item.collection.title, @item.collection %></li>
       <% if @item.parent %>
         <li><%= link_to @item.parent.title, @item.parent %></li>
@@ -53,7 +53,7 @@
     <% end %>
   <% end %>
 
-  <%= link_to item_master_bytestream_url(@item), class: 'btn btn-default' do %>
+  <%= link_to repository_item_master_bytestream_url(@item), class: 'btn btn-default' do %>
     <i class="fa fa-download"></i> Download
   <% end %>
 </div>

@@ -7,7 +7,7 @@ class FavoritesController < WebsiteController
   before_action :set_browse_context, only: :index
 
   def create
-    @item = Item.find_by_web_id(params[:web_id])
+    @item = Repository::Item.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     favorites = cookies[:favorites] || ''
@@ -20,7 +20,7 @@ class FavoritesController < WebsiteController
   end
 
   def destroy
-    @item = Item.find_by_web_id(params[:web_id])
+    @item = Repository::Item.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     unless cookies[:favorites].blank?
@@ -36,14 +36,15 @@ class FavoritesController < WebsiteController
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
 
-    @items = Item.none
+    @items = Repository::Item.none
 
     unless cookies[:favorites].blank?
       web_id_length = Kumquat::Application.kumquat_config[:web_id_length]
       web_ids = cookies[:favorites].split(COOKIE_DELIMITER).
           select{ |f| f.length == web_id_length }
       if web_ids.any?
-        @items = Item.where("#{Solr::Solr::WEB_ID_KEY}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")
+        @items = Repository::Item.
+            where("#{Solr::Solr::WEB_ID_KEY}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")
       end
     end
 

@@ -22,10 +22,10 @@ module Import
         if @collections[key]
           collection = @collections[key]
         else
-          collection = Collection.find_by_key(key)
+          collection = Repository::Collection.find_by_key(key)
         end
         unless collection
-          collection = Collection.new(
+          collection = Repository::Collection.new(
               key: key,
               container_url: @import_delegate.root_container_url,
               requested_slug: @import_delegate.slug_of_collection_of_item_at_index(index),
@@ -36,12 +36,13 @@ module Import
         end
 
         # create the item
-        item = Item.new(collection: collection,
-                        container_url: collection.repository_url,
-                        full_text: @import_delegate.full_text_of_item_at_index(index),
-                        requested_slug: @import_delegate.slug_of_item_at_index(index),
-                        web_id: @import_delegate.web_id_of_item_at_index(index),
-                        rdf_graph: @import_delegate.metadata_of_item_at_index(index))
+        item = Repository::Item.new(
+            collection: collection,
+            container_url: collection.repository_url,
+            full_text: @import_delegate.full_text_of_item_at_index(index),
+            requested_slug: @import_delegate.slug_of_item_at_index(index),
+            web_id: @import_delegate.web_id_of_item_at_index(index),
+            rdf_graph: @import_delegate.metadata_of_item_at_index(index))
         item.save! # save it in order to populate its UUID
         puts item.repository_url
 
@@ -57,9 +58,10 @@ module Import
         # append bytestream TODO: support URL items
         pathname = @import_delegate.master_pathname_of_item_at_index(index)
         if pathname and File.exists?(pathname)
-          bs = Bytestream.new(owner: item,
-                              upload_pathname: pathname,
-                              type: Bytestream::Type::MASTER)
+          bs = Repository::Bytestream.new(
+              owner: item,
+              upload_pathname: pathname,
+              type: Repository::Bytestream::Type::MASTER)
           # assign media type
           media_type = @import_delegate.media_type_of_item_at_index(index)
           bs.media_type = media_type if media_type

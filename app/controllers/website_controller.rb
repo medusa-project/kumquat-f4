@@ -4,10 +4,10 @@ class WebsiteController < ApplicationController
 
   def setup
     super
-    @num_items = Item.count
-    @num_audios = Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'audio/*').count
-    @num_images = Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'image/*').count
-    @num_videos = Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'video/*').count
+    @num_items = Repository::Item.count
+    @num_audios = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'audio/*').count
+    @num_images = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'image/*').count
+    @num_videos = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'video/*').count
   end
 
   private
@@ -23,7 +23,7 @@ class WebsiteController < ApplicationController
     elsif params[:collection_key]
       key = params[:collection_key]
     elsif params[:web_id]
-      key = Item.find_by_web_id(params[:web_id]).collection.key
+      key = Repository::Item.find_by_web_id(params[:web_id]).collection.key
     end
 
     themes = Kumquat::Application.kumquat_config[:themes]

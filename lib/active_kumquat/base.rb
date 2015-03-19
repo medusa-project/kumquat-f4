@@ -12,7 +12,7 @@ module ActiveKumquat
     include ActiveModel::Model
     include Describable
 
-    define_model_callbacks :delete, :save, :update, only: [:after, :before]
+    define_model_callbacks :delete, :load, :save, :update, only: [:after, :before]
 
     class Class
       BYTESTREAM = 'bytestream'
@@ -73,6 +73,12 @@ module ActiveKumquat
 
     def destroyed?
       @destroyed
+    end
+
+    def loaded=(loaded)
+      run_callbacks :load do
+        # noop
+      end
     end
 
     def persisted?

@@ -158,6 +158,7 @@ module ActiveKumquat
           graph = RDF::Graph.new
           graph.from_ntriples(f4_response.body)
           entity.populate_from_graph(graph)
+          entity.loaded = true
           @results << entity
         end
         @results.total_length = solr_response['response']['numFound'].to_i

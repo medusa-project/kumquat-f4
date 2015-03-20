@@ -11,8 +11,7 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
 
-    before_delete :delete_derivatives
-    after_delete :delete_db_counterpart
+    after_delete :delete_db_counterpart, :delete_derivatives
 
     ##
     # Convenience method that deletes a collection with the given key.
@@ -116,7 +115,7 @@ module Repository
     #
     def delete_db_counterpart
       db_cp = db_counterpart
-      db_cp.destroy! if db_col
+      db_cp.destroy! if db_cp
     end
 
   end

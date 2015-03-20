@@ -33,6 +33,14 @@ ActiveRecord::Schema.define(version: 20150319153919) do
     t.integer "role_id"
   end
 
+  create_table "rdf_predicates", force: :cascade do |t|
+    t.integer  "collection_id"
+    t.string   "uri"
+    t.string   "label"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string   "key"
     t.string   "name"
@@ -43,14 +51,6 @@ ActiveRecord::Schema.define(version: 20150319153919) do
   create_table "roles_users", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "role_id"
-  end
-
-  create_table "triples", force: :cascade do |t|
-    t.integer  "collection_id"
-    t.string   "predicate"
-    t.string   "label"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
   end
 
   create_table "users", force: :cascade do |t|

@@ -11,7 +11,6 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_load :ensure_db_counterpart
     before_delete :delete_derivatives
     after_delete :delete_db_counterpart
 
@@ -40,8 +39,11 @@ module Repository
     # @return RDB::Collection
     ##
     def db_counterpart
-      @db_counterpart = RDB::Collection.find_by_key(self.key) unless
-          @db_counterpart
+      unless @db_counterpart
+        @db_counterpart = RDB::Collection.find_by_key(self.key)
+        @db_counterpart = RDB::Collection.create!(key: self.key) unless
+            @db_counterpart
+      end
       @db_counterpart
     end
 
@@ -115,14 +117,6 @@ module Repository
     def delete_db_counterpart
       db_cp = db_counterpart
       db_cp.destroy! if db_col
-    end
-
-    ##
-    # Checks the database for a corresponding collection, and creates one if
-    # it does not exist.
-    #
-    def ensure_db_counterpart
-      RDB::Collection.create!(key: self.key) unless db_counterpart
     end
 
   end

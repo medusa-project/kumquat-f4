@@ -42,160 +42,160 @@ Permission.create!(key: 'users.view',
 
 # RDF Predicates
 # http://purl.org/dc/elements/1.1/
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/contributor',
-                          label: 'Contributor')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/coverage',
-                          label: 'Coverage')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/creator',
-                          label: 'Creator')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/date',
-                          label: 'Date')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/description',
-                          label: 'Description')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/format',
-                          label: 'Format')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/identifier',
-                          label: 'Identifier')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/language',
-                          label: 'Language')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/publisher',
-                          label: 'Publisher')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/relation',
-                          label: 'Relation')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/rights',
-                          label: 'Rights')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/source',
-                          label: 'Source')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/subject',
-                          label: 'Subject')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/title',
-                          label: 'Title')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/type',
-                          label: 'Type')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/contributor',
+                         label: 'Contributor')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/coverage',
+                         label: 'Coverage')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/creator',
+                         label: 'Creator')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/date',
+                         label: 'Date')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/description',
+                         label: 'Description')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/format',
+                         label: 'Format')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/identifier',
+                         label: 'Identifier')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/language',
+                         label: 'Language')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/publisher',
+                         label: 'Publisher')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/relation',
+                         label: 'Relation')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/rights',
+                         label: 'Rights')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/source',
+                         label: 'Source')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/subject',
+                         label: 'Subject')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/title',
+                         label: 'Title')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/type',
+                         label: 'Type')
 
 # http://purl.org/dc/terms/
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/abstract',
-                          label: 'Abstract')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accessRights',
-                          label: 'Access Rights')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualMethod',
-                          label: 'Accrual Method')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualPeriodicity',
-                          label: 'Accrual Periodicity')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualPolicy',
-                          label: 'Accrual Policy')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/alternative',
-                          label: 'Alternative Title')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/audience',
-                          label: 'Audience')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/available',
-                          label: 'Date Available')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/bibliographicCitation',
-                          label: 'Bibliographic Citation')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/conformsTo',
-                          label: 'Conforms To')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/contributor',
-                          label: 'Contributor')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/coverage',
-                          label: 'Coverage')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/created',
-                          label: 'Date Created')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/creator',
-                          label: 'Creator')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/date',
-                          label: 'Date')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateAccepted',
-                          label: 'Date Accepted')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateCopyrighted',
-                          label: 'Date Copyrighted')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateSubmitted',
-                          label: 'Date Submitted')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/description',
-                          label: 'Description')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/educationLevel',
-                          label: 'Education Level')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/extent',
-                          label: 'Extent')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/format',
-                          label: 'Format')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasFormat',
-                          label: 'Has Format')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasPart',
-                          label: 'Has Part')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasVersion',
-                          label: 'Has Version')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/identifier',
-                          label: 'Identifier')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/instructionalMethod',
-                          label: 'Instructional Method')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isFormatOf',
-                          label: 'Is Format Of')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isPartOf',
-                          label: 'Is Part Of')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isReferencedBy',
-                          label: 'Is Referenced By')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isReplacedBy',
-                          label: 'Is Replaced By')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isRequiredBy',
-                          label: 'Is Required By')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/issued',
-                          label: 'Date Issued')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isVersionOf',
-                          label: 'Is Version Of')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/language',
-                          label: 'Language')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/license',
-                          label: 'License')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/mediator',
-                          label: 'Mediator')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/medium',
-                          label: 'Medium')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/modified',
-                          label: 'Date Modified')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/provenance',
-                          label: 'Provenance')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/publisher',
-                          label: 'Publisher')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/references',
-                          label: 'References')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/relation',
-                          label: 'Relation')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/replaces',
-                          label: 'Replaces')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/requires',
-                          label: 'Requires')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/rights',
-                          label: 'Rights')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/rightsHolder',
-                          label: 'Rights Holder')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/source',
-                          label: 'Source')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/spatial',
-                          label: 'Spatial Coverage')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/subject',
-                          label: 'Subject')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/tableOfContents',
-                          label: 'Table Of Contents')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/temporal',
-                          label: 'Temporal Coverage')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/title',
-                          label: 'Title')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/type',
-                          label: 'Type')
-RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
-                          label: 'Date Valid')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/abstract',
+                         label: 'Abstract')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accessRights',
+                         label: 'Access Rights')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualMethod',
+                         label: 'Accrual Method')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualPeriodicity',
+                         label: 'Accrual Periodicity')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualPolicy',
+                         label: 'Accrual Policy')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/alternative',
+                         label: 'Alternative Title')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/audience',
+                         label: 'Audience')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/available',
+                         label: 'Date Available')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/bibliographicCitation',
+                         label: 'Bibliographic Citation')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/conformsTo',
+                         label: 'Conforms To')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/contributor',
+                         label: 'Contributor')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/coverage',
+                         label: 'Coverage')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/created',
+                         label: 'Date Created')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/creator',
+                         label: 'Creator')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/date',
+                         label: 'Date')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateAccepted',
+                         label: 'Date Accepted')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateCopyrighted',
+                         label: 'Date Copyrighted')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateSubmitted',
+                         label: 'Date Submitted')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/description',
+                         label: 'Description')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/educationLevel',
+                         label: 'Education Level')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/extent',
+                         label: 'Extent')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/format',
+                         label: 'Format')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasFormat',
+                         label: 'Has Format')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasPart',
+                         label: 'Has Part')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasVersion',
+                         label: 'Has Version')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/identifier',
+                         label: 'Identifier')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/instructionalMethod',
+                         label: 'Instructional Method')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isFormatOf',
+                         label: 'Is Format Of')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isPartOf',
+                         label: 'Is Part Of')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isReferencedBy',
+                         label: 'Is Referenced By')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isReplacedBy',
+                         label: 'Is Replaced By')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isRequiredBy',
+                         label: 'Is Required By')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/issued',
+                         label: 'Date Issued')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isVersionOf',
+                         label: 'Is Version Of')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/language',
+                         label: 'Language')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/license',
+                         label: 'License')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/mediator',
+                         label: 'Mediator')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/medium',
+                         label: 'Medium')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/modified',
+                         label: 'Date Modified')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/provenance',
+                         label: 'Provenance')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/publisher',
+                         label: 'Publisher')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/references',
+                         label: 'References')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/relation',
+                         label: 'Relation')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/replaces',
+                         label: 'Replaces')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/requires',
+                         label: 'Requires')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/rights',
+                         label: 'Rights')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/rightsHolder',
+                         label: 'Rights Holder')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/source',
+                         label: 'Source')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/spatial',
+                         label: 'Spatial Coverage')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/subject',
+                         label: 'Subject')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/tableOfContents',
+                         label: 'Table Of Contents')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/temporal',
+                         label: 'Temporal Coverage')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/title',
+                         label: 'Title')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/type',
+                         label: 'Type')
+DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
+                         label: 'Date Valid')
 
 # URI Prefixes
-RDB::URIPrefix.create!(prefix: 'dc',
-                       uri: 'http://purl.org/dc/elements/1.1/')
-RDB::URIPrefix.create!(prefix: 'dcterms',
-                       uri: 'http://purl.org/dc/terms/')
-RDB::URIPrefix.create!(prefix: 'foaf',
-                       uri: 'http://xmlns.com/foaf/0.1/')
-RDB::URIPrefix.create!(prefix: 'rdfs',
-                       uri: 'http://www.w3.org/2000/01/rdf-schema#')
-RDB::URIPrefix.create!(prefix: 'rdf',
-                       uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+DB::URIPrefix.create!(prefix: 'dc',
+                      uri: 'http://purl.org/dc/elements/1.1/')
+DB::URIPrefix.create!(prefix: 'dcterms',
+                      uri: 'http://purl.org/dc/terms/')
+DB::URIPrefix.create!(prefix: 'foaf',
+                      uri: 'http://xmlns.com/foaf/0.1/')
+DB::URIPrefix.create!(prefix: 'rdfs',
+                      uri: 'http://www.w3.org/2000/01/rdf-schema#')
+DB::URIPrefix.create!(prefix: 'rdf',
+                      uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
 if Rails.env.development?
 

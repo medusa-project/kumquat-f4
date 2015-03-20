@@ -1,8 +1,8 @@
-module RDB
+module DB
 
   class RDFPredicate < ActiveRecord::Base
 
-    belongs_to :collection, class_name: 'RDB::Collection'
+    belongs_to :collection, class_name: 'DB::Collection'
 
     validates :label, length: { minimum: 2, maximum: 100 }
     validates :uri, length: { minimum: 4 }

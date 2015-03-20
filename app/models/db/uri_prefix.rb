@@ -1,4 +1,4 @@
-module RDB
+module DB
 
   class URIPrefix < ActiveRecord::Base
 

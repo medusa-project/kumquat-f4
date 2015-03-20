@@ -6,9 +6,9 @@ module Admin
       begin
         params[:prefixes].each do |id, props|
           if id.to_s.length == 36 # new predicates get UUID ids from the form
-            RDB::URIPrefix.create!(uri: props[:uri], prefix: props[:prefix])
+            DB::URIPrefix.create!(uri: props[:uri], prefix: props[:prefix])
           else
-            p = RDB::URIPrefix.find(id)
+            p = DB::URIPrefix.find(id)
             if props[:_destroy].to_i == 1
               p.destroy!
             elsif p and !props[:uri].blank?
@@ -26,7 +26,7 @@ module Admin
     end
 
     def index
-      @prefixes = RDB::URIPrefix.order(:prefix)
+      @prefixes = DB::URIPrefix.order(:prefix)
     end
 
   end

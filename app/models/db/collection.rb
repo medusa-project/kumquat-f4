@@ -1,8 +1,8 @@
-module RDB
+module DB
 
   class Collection < ActiveRecord::Base
 
-    has_many :rdf_predicates, :class_name => 'RDB::RDFPredicate'
+    has_many :rdf_predicates, :class_name => 'DB::RDFPredicate'
 
     validates :key, length: { minimum: 2, maximum: 20 }
 

@@ -364,8 +364,8 @@ module ItemsHelper
       collection = describable
     end
     label = nil
-    p = RDB::RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
-    p = RDB::RDFPredicate.where(uri: uri, collection: nil) unless p.any?
+    p = DB::RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
+    p = DB::RDFPredicate.where(uri: uri, collection: nil) unless p.any?
     if p.any?
       label = p.first.label # try to use the collection's custom label
       label = p.first.default_label unless label # fall back to the global label

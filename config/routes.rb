@@ -66,7 +66,7 @@ Rails.application.routes.draw do
     resources :collections, param: :key, as: :repository_collections do
       resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     end
-    resources :collections, param: :key, as: :rdb_collections
+    resources :collections, param: :key, as: :db_collections
     resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'

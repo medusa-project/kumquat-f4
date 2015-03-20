@@ -35,12 +35,12 @@ module Repository
     end
 
     ##
-    # @return RDB::Collection
+    # @return DB::Collection
     ##
     def db_counterpart
       unless @db_counterpart
-        @db_counterpart = RDB::Collection.find_by_key(self.key)
-        @db_counterpart = RDB::Collection.create!(key: self.key) unless
+        @db_counterpart = DB::Collection.find_by_key(self.key)
+        @db_counterpart = DB::Collection.create!(key: self.key) unless
             @db_counterpart
       end
       @db_counterpart

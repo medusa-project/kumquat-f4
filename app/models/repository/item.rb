@@ -11,7 +11,7 @@ module Repository
     attr_accessor :collection
     attr_accessor :full_text
     attr_accessor :page_index
-    attr_accessor :parent_uuid
+    attr_accessor :parent_uri
     attr_accessor :web_id
 
     validates :title, length: { minimum: 2, maximum: 200 }
@@ -31,7 +31,7 @@ module Repository
     #
     def children
       @children = Repository::Item.all.
-          where(Solr::Solr::PARENT_UUID_KEY => self.uuid).
+          where(Solr::Solr::PARENT_URI_KEY => "\"#{self.repository_url}\"").
           order(Solr::Solr::PAGE_INDEX_KEY) unless @children.any?
       @children
     end
@@ -52,7 +52,7 @@ module Repository
       unless @parent
         self.rdf_graph.each_statement do |s|
           if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
-              Kumquat::Application::RDFPredicates::PARENT_UUID
+              Kumquat::Application::RDFPredicates::PARENT_URI
             @parent = Repository::Item.find_by_uuid(s.object.to_s)
             break
           end
@@ -84,8 +84,8 @@ module Repository
            self.full_text = object.to_s
           when kq_uri + kq_predicates::PAGE_INDEX
             self.page_index = object.to_s
-          when kq_uri + kq_predicates::PARENT_UUID
-            self.parent_uuid = object.to_s
+          when kq_uri + kq_predicates::PARENT_URI
+            self.parent_uri = object.to_s
           when kq_uri + kq_predicates::WEB_ID
             self.web_id = object.to_s
         end
@@ -123,10 +123,10 @@ module Repository
       update.delete('<>', "<kumquat:#{kq_predicates::PAGE_INDEX}>", '?o', false)
       update.insert(nil, "kumquat:#{kq_predicates::PAGE_INDEX}", self.page_index) unless
           self.page_index.blank?
-      # parent uuid
-      update.delete('<>', "<kumquat:#{kq_predicates::PARENT_UUID}>", '?o', false)
-      update.insert(nil, "kumquat:#{kq_predicates::PARENT_UUID}", self.parent_uuid) unless
-          self.parent_uuid.blank?
+      # parent uri
+      update.delete('<>', "<kumquat:#{kq_predicates::PARENT_URI}>", '?o', false)
+      update.insert(nil, "kumquat:#{kq_predicates::PARENT_URI}",
+                    "<#{self.parent_uri}>", false) unless self.parent_uri.blank?
       # resource type
       update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
           insert(nil, "kumquat:#{kq_predicates::CLASS}",

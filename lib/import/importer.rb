@@ -7,7 +7,7 @@ module Import
     #
     def initialize(import_delegate)
       @import_delegate = import_delegate
-      @import_id_uuid_map = {} # map of import IDs => repository UUIDs
+      @import_id_uri_map = {} # map of import IDs => repository URIs
       @collections = {} # map of collection keys => collections
     end
 
@@ -47,12 +47,12 @@ module Import
         puts item.repository_url
 
         import_id = @import_delegate.import_id_of_item_at_index(index)
-        @import_id_uuid_map[import_id] = item.uuid
+        @import_id_uri_map[import_id] = item.repository_url
 
         parent_import_id = @import_delegate.parent_import_id_of_item_at_index(index)
         if parent_import_id
-          parent_uuid = @import_id_uuid_map[parent_import_id]
-          item.parent_uuid = parent_uuid if parent_uuid
+          parent_uri = @import_id_uri_map[parent_uri]
+          item.parent_uri = parent_uri if parent_uri
         end
 
         # append bytestream TODO: support URL items

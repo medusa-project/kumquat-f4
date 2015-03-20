@@ -25,7 +25,7 @@ class ItemsController < WebsiteController
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
     @items = Repository::Item.all.
-        where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").
+        where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
         where(params[:q])
     if params[:fq].respond_to?(:each)
       params[:fq].each { |fq| @items = @items.facet(fq) }

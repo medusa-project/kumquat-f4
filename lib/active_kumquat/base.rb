@@ -15,9 +15,9 @@ module ActiveKumquat
     define_model_callbacks :delete, :load, :save, :update, only: [:after, :before]
 
     class Class
-      BYTESTREAM = 'bytestream'
-      COLLECTION = 'collection'
-      ITEM = 'item'
+      BYTESTREAM = 'Bytestream'
+      COLLECTION = 'Collection'
+      ITEM = 'Item'
     end
 
     @@http = HTTPClient.new

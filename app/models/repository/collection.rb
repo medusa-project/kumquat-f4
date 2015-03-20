@@ -4,7 +4,7 @@ module Repository
 
     include Introspection
 
-    ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION
+    ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION # TODO: get rid of this
 
     attr_accessor :key
 
@@ -62,7 +62,7 @@ module Repository
     def num_items
       @num_items = Repository::Item.
           where(Solr::Solr::COLLECTION_KEY_KEY => self.key).
-          where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").count unless @num_items
+          where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").count unless @num_items
       @num_items
     end
 

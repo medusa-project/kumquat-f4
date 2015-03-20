@@ -16,9 +16,9 @@ module Kumquat
     # sense. These will be appended to NAMESPACE_URI.
     #
     class RDFObjects
-      BYTESTREAM = 'bytestream'
-      COLLECTION = 'collection'
-      ITEM = 'item'
+      BYTESTREAM = 'Bytestream'
+      COLLECTION = 'Collection'
+      ITEM = 'Item'
     end
 
     ##
@@ -33,7 +33,7 @@ module Kumquat
       HEIGHT = 'height'
       MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
       PAGE_INDEX = 'pageIndex'
-      PARENT_UUID = 'parentUUID'
+      PARENT_URI = 'parentURI'
       WEB_ID = 'webID'
       WIDTH = 'width'
     end

@@ -215,8 +215,9 @@ module ItemsHelper
 
   ##
   # @param describable Describable
+  # @param options :full_label_info boolean
   #
-  def triples_to_dl(describable)
+  def triples_to_dl(describable, options = {})
     # process triples into an array of hashes, collapsing identical subjects
     triples = []
     describable.rdf_graph.each_statement do |statement|
@@ -225,19 +226,30 @@ module ItemsHelper
       next if Repository::Fedora::MANAGED_PREDICATES.
           select{ |p| statement.predicate.to_s.start_with?(p) }.any?
 
-      # see if we can replace the full predicate URI with a prefix
-      glue = statement.predicate.to_s.include?('#') ? '#' : '/'
-      parts = statement.predicate.to_s.split(glue)
-      last = parts.pop
-      prefix = parts.join(glue) + glue
-      if PREFIXES.values.include?(prefix)
-        prefix = PREFIXES.key(prefix).to_s + ':'
+      # assemble a label for the predicate
+      if options[:full_label_info]
+        prefix = statement.predicate.prefix
+        if prefix
+          label = "<span class=\"kq-predicate-uri\">#{prefix}:</span>"\
+          "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.term}</span>"
+        else
+          label = "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.to_s}</span>"
+        end
+        readable = human_label_for_uri(describable, statement.predicate.to_s)
+        label = "#{readable} | #{label}" if readable
+      else
+        label = human_label_for_uri(describable, statement.predicate.to_s)
+        unless label # if there is no label, try to use "prefix:term" format
+          prefix = statement.predicate.prefix
+          if prefix
+            label = "<span class=\"kq-predicate-uri\">#{prefix}:</span>"\
+          "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.term}</span>"
+          end
+        end
+        label = "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.to_s}</span>" unless label
       end
       triples << {
-          predicate: statement.predicate.to_s,
-          label: "<span class=\"kq-predicate-uri\">#{prefix}</span>"\
-          "<span class=\"kq-predicate-uri-lpc\">#{last}</span>",
-          objects: []
+          predicate: statement.predicate.to_s, label: label, objects: []
       }
     end
     describable.rdf_graph.each_statement do |statement|
@@ -341,6 +353,24 @@ module ItemsHelper
 
   def video_viewer_for(item)
     # TODO: write video_viewer_for
+  end
+
+  private
+
+  def human_label_for_uri(describable, uri)
+    if describable.kind_of?(Repository::Item)
+      collection = describable.collection
+    else
+      collection = describable
+    end
+    label = nil
+    p = RDB::RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
+    p = RDB::RDFPredicate.where(uri: uri, collection: nil) unless p.any?
+    if p.any?
+      label = p.first.label # try to use the collection's custom label
+      label = p.first.default_label unless label # fall back to the global label
+    end
+    label
   end
 
 end

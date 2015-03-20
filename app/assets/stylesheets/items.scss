@@ -10,14 +10,9 @@ body#items_index div#kq-page-content {
     .kq-selected-term {
       font-weight: bold;
     }
-    .kq-count {
-      font-size: 0.9em;
-    }
-    .kq-count:before {
-      content: '(';
-    }
-    .kq-count:after {
-      content: ')';
+    .kq-count.badge {
+      background-color: #c0c0c0;
+      font-size: 0.7em;
     }
   }
 

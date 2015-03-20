@@ -35,7 +35,7 @@ module ItemsHelper
         end
         panel += "<li class=\"kq-term\">
           <span class=\"kq-term-name\">#{term_html}</span>
-          <span class=\"kq-count\">#{term.count}</span>
+          <span class=\"kq-count badge\">#{term.count}</span>
           #{clear_link}
         </li>"
       end
@@ -71,7 +71,7 @@ module ItemsHelper
         end
         ul += "<li class=\"kq-term\">
           <span class=\"kq-term-name\">#{term_html}</span>
-          <span class=\"kq-count\">#{term.count}</span>
+          <span class=\"kq-count badge\">#{term.count}</span>
           #{clear_link}
         </li>"
       end

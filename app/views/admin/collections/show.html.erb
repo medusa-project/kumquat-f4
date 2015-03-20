@@ -9,6 +9,9 @@
 </ol>
 
 <div class="btn-group pull-right">
+  <%= link_to @collection, class: 'btn btn-default' do %>
+    <i class="fa fa-globe"></i> Public View
+  <% end %>
   <%= link_to edit_admin_repository_collection_path(@collection), class: 'btn btn-default' do %>
     <i class="fa fa-pencil-square-o"></i> Edit
   <% end %>
@@ -26,23 +29,48 @@
   <% if @collection.subtitle %>
     <br><small><%= @collection.subtitle %></small>
   <% end %>
-  <%= link_to @collection, class: 'btn btn-default btn-sm' do %>
-    <i class="fa fa-globe"></i> Public View
-  <% end %>
 </h1>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h2 class="panel-title">Triples</h2>
-  </div>
-  <div class="panel-body">
-    <%= triples_to_dl(@collection) %>
-  </div>
-</div>
+<div role="tabpanel">
 
-<%= render partial: 'shared/code_panel',
-           locals: { title: 'Solr JSON',
-                     body: JSON.pretty_generate(@collection.solr_json) } %>
-<%= render partial: 'shared/code_panel',
-           locals: { title: 'Fedora RDF',
-                     body: @collection.rdf_graph.dump(:ttl) } %>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a href="#kq-triples" aria-controls="home" role="tab" data-toggle="tab">Public RDF</a>
+    </li>
+    <li role="presentation">
+      <a href="#kq-repository" aria-controls="home" role="tab" data-toggle="tab">Fedora RDF</a>
+    </li>
+    <li role="presentation">
+      <a href="#kq-index" aria-controls="home" role="tab" data-toggle="tab">Solr JSON</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- Triples pane -->
+    <div role="tabpanel" class="tab-pane active" id="kq-triples">
+
+      <div class="clearfix">
+        <div class="btn-group pull-right">
+          <%= link_to admin_repository_collection_rdf_predicates_path(@collection),
+                      class: 'btn btn-default' do %>
+            <i class="fa fa-pencil-square-o"></i> Edit Predicate Labels
+          <% end %>
+        </div>
+      </div>
+      <%= triples_to_dl(@collection) %>
+    </div>
+
+    <!-- Repository pane -->
+    <div role="tabpanel" class="tab-pane" id="kq-repository">
+      <pre><%= @collection.rdf_graph.dump(:ttl) %></pre>
+    </div>
+
+    <!-- Index pane -->
+    <div role="tabpanel" class="tab-pane" id="kq-index">
+      <pre><%= JSON.pretty_generate(@collection.solr_json) %></pre>
+    </div>
+
+  </div> <!-- .tab-content -->
+
+</div> <!-- .tabpanel -->

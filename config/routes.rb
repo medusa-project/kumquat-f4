@@ -63,9 +63,11 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :key, as: :repository_collections
-    resources :rdf_predicates, except: :show
-    resources :rdf_predicates, path: 'rdf-predicates', except: :show
+    resources :collections, param: :key, as: :repository_collections do
+      resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
+    end
+    resources :collections, param: :key, as: :rdb_collections
+    resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',

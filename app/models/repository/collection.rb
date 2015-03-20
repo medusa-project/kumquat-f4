@@ -11,7 +11,9 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
 
+    after_load :ensure_db_counterpart
     before_delete :delete_derivatives
+    after_delete :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.
@@ -32,6 +34,15 @@ module Repository
     #
     def self.find_by_key(key)
       self.where(Solr::Solr::COLLECTION_KEY_KEY => key).first
+    end
+
+    ##
+    # @return RDB::Collection
+    ##
+    def db_counterpart
+      @db_counterpart = RDB::Collection.find_by_key(self.key) unless
+          @db_counterpart
+      @db_counterpart
     end
 
     ##
@@ -94,6 +105,24 @@ module Repository
       update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
           insert(nil, "kumquat:#{kq_predicates::CLASS}",
                  "<#{kq_uri}#{kq_objects::COLLECTION}>", false)
+    end
+
+    private
+
+    ##
+    # Deletes the corresponding database model.
+    #
+    def delete_db_counterpart
+      db_cp = db_counterpart
+      db_cp.destroy! if db_col
+    end
+
+    ##
+    # Checks the database for a corresponding collection, and creates one if
+    # it does not exist.
+    #
+    def ensure_db_counterpart
+      RDB::Collection.create!(key: self.key) unless db_counterpart
     end
 
   end

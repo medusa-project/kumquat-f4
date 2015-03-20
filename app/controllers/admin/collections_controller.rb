@@ -64,7 +64,8 @@ module Admin
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      command = UpdateCollectionCommand.new(@collection, sanitized_params)
+      command = UpdateRepositoryCollectionCommand.new(@collection,
+                                                      sanitized_params)
       begin
         executor.execute(command)
       rescue => e
@@ -72,7 +73,7 @@ module Admin
         render 'edit'
       else
         flash[:success] = "Collection \"#{@collection.title}\" updated."
-        redirect_to admin_collection_url(@collection)
+        redirect_to admin_repository_collection_url(@collection)
       end
     end
 
@@ -89,7 +90,7 @@ module Admin
     end
 
     def sanitized_params
-      params.require(:collection).permit(:key, :title)
+      params.require(:repository_collection).permit(:key, :title)
     end
 
     def update_rbac

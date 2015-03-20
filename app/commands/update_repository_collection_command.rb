@@ -1,4 +1,4 @@
-class UpdateCollectionCommand < Command
+class UpdateRepositoryCollectionCommand < Command
 
   def initialize(collection, collection_params)
     @collection = collection

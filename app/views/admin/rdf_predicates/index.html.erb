@@ -21,20 +21,35 @@
 </div>
 
 <%= form_tag do %>
-  <table class="table table-striped">
+  <table class="table table-striped kq-predicates">
     <thead>
       <th>Predicate URI</th>
       <th>Label</th>
+      <th></th>
     </thead>
     <tbody>
       <% @predicates.each do |predicate| %>
         <tr>
-          <td><%= predicate.uri %></td>
+          <td>
+            <%= hidden_field_tag "predicates[#{predicate.id}][_destroy]", 0,
+                                 class: 'kq-destroy-marker' %>
+            <%= text_field_tag "predicates[#{predicate.id}][uri]",
+                               predicate.uri, class: 'form-control' %>
+          </td>
           <td><%= text_field_tag "predicates[#{predicate.id}][label]",
                                  predicate.label, class: 'form-control' %></td>
+          <td><button type="button"
+                      class="btn btn-sm btn-danger kq-remove-predicate">&minus;</button></td>
         </tr>
       <% end %>
     </tbody>
   </table>
+  <div class="clearfix">
+    <div class="pull-right">
+      <button type="button"
+              class="btn btn-default btn-success kq-add-predicate">Add Predicate</button>
+    </div>
+  </div>
+  <br>
   <%= submit_tag('Save Changes', class: 'btn btn-primary') %>
 <% end %>

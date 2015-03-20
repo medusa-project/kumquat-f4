@@ -4,6 +4,9 @@ module RDB
 
     belongs_to :collection, class_name: 'RDB::Collection'
 
+    validates :label, length: { minimum: 2, maximum: 100 }
+    validates :uri, length: { minimum: 4 }
+
     self.table_name = 'rdf_predicates'
 
     ##

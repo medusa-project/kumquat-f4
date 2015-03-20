@@ -32,8 +32,8 @@ class ItemsController < WebsiteController
     else
       @items = @items.facet(params[:fq])
     end
-    if params[:collection_key]
-      @collection = Repository::Collection.find_by_key(params[:collection_key])
+    if params[:repository_collection_key]
+      @collection = Repository::Collection.find_by_key(params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
       @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
     end
@@ -61,7 +61,7 @@ class ItemsController < WebsiteController
     session[:browse_context_url] = request.url
     if !params[:q].blank?
       session[:browse_context] = BrowseContext::SEARCHING
-    elsif !params[:collection_web_id]
+    elsif !params[:repository_collection_key]
       session[:browse_context] = BrowseContext::BROWSING_ALL_ITEMS
     else
       session[:browse_context] = BrowseContext::BROWSING_COLLECTION

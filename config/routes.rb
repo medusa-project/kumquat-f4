@@ -76,6 +76,7 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
     match '/server/commit', to: 'server#commit',
           via: 'patch', as: 'server_commit'
+    resources :uri_prefixes, path: 'uri-prefixes', only: [:index, :create]
     resources :users, param: :username, only: [:index, :show]
   end
 

@@ -40,7 +40,7 @@ Permission.create!(key: 'users.enable',
 Permission.create!(key: 'users.view',
                    roles: [roles[:admin], roles[:cataloger]])
 
-# Triples
+# RDF Predicates
 # http://purl.org/dc/elements/1.1/
 RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/contributor',
                           label: 'Contributor')
@@ -184,6 +184,18 @@ RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/type',
                           label: 'Type')
 RDB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
                           label: 'Date Valid')
+
+# URI Prefixes
+RDB::URIPrefix.create!(prefix: 'dc',
+                       uri: 'http://purl.org/dc/elements/1.1/')
+RDB::URIPrefix.create!(prefix: 'dcterms',
+                       uri: 'http://purl.org/dc/terms/')
+RDB::URIPrefix.create!(prefix: 'foaf',
+                       uri: 'http://xmlns.com/foaf/0.1/')
+RDB::URIPrefix.create!(prefix: 'rdfs',
+                       uri: 'http://www.w3.org/2000/01/rdf-schema#')
+RDB::URIPrefix.create!(prefix: 'rdf',
+                       uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
 if Rails.env.development?
 

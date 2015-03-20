@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TripleTest < ActiveSupport::TestCase
+class UriPrefixTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

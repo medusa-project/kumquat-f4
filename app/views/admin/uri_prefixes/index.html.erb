@@ -1,0 +1,44 @@
+<% provide :title, 'URI Prefixes' %>
+<% provide :body_id, 'uri_prefixes' %>
+<% provide :active_nav, 'entities' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li class="active">URI Prefixes</li>
+</ol>
+
+<h1>URI Prefixes</h1>
+
+<%= form_tag do %>
+    <table class="table table-striped kq-prefixes">
+      <thead>
+      <th>URI</th>
+      <th>Prefix</th>
+      <th></th>
+      </thead>
+      <tbody>
+      <% @prefixes.each do |prefix| %>
+          <tr>
+            <td>
+              <%= hidden_field_tag "prefixes[#{prefix.id}][_destroy]", 0,
+                                   class: 'kq-destroy-marker' %>
+              <%= text_field_tag "prefixes[#{prefix.id}][uri]",
+                                 prefix.uri, class: 'form-control' %>
+            </td>
+            <td><%= text_field_tag "prefixes[#{prefix.id}][prefix]",
+                                   prefix.prefix, class: 'form-control' %></td>
+            <td><button type="button"
+                        class="btn btn-sm btn-danger kq-remove-prefix">&minus;</button></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="clearfix">
+      <div class="pull-right">
+        <button type="button"
+                class="btn btn-default btn-success kq-add-prefix">Add Prefix</button>
+      </div>
+    </div>
+    <br>
+    <%= submit_tag('Save Changes', class: 'btn btn-primary') %>
+<% end %>

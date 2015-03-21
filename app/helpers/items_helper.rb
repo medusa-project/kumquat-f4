@@ -205,6 +205,8 @@ module ItemsHelper
       elsif item.is_video?
         icon = 'fa-film'
       elsif item.kind_of?(Repository::Collection)
+        icon = 'fa-folder-open-o'
+      elsif item.children.any?
         icon = 'fa-cubes'
       end
       html += "<i class=\"fa #{icon}\"></i>"

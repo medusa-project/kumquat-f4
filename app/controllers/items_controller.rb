@@ -10,7 +10,7 @@ class ItemsController < WebsiteController
   before_action :set_browse_context, only: :index
 
   def master_bytestream
-    @item = Repository::Item.find_by_web_id(params[:item_web_id])
+    @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     bs = @item.master_bytestream

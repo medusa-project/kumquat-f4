@@ -111,7 +111,8 @@ module ItemsHelper
   ##
   # @param items ActiveKumquat::Entity
   # @param start integer
-  # @param options Hash with available keys: :show_remove_from_favorites_button
+  # @param options Hash with available keys:
+  # :show_remove_from_favorites_buttons, :show_collections
   #
   def items_as_list(items, start, options = {})
     html = "<ol start=\"#{start + 1}\">"
@@ -125,12 +126,18 @@ module ItemsHelper
       end
       html += '<span class="kq-title">'
       html += link_to(item.title, item)
-      if options[:show_remove_from_favorites_button]
+      if options[:show_remove_from_favorites_buttons]
         html += ' ' + link_to(favorite_url(item), class: 'btn btn-xs btn-danger', method: 'delete') do
           raw('<i class="fa fa-heart-o"></i> Remove')
         end
       end
       html += '</span>'
+      if options[:show_collections]
+        html += '<br>'
+        html += link_to(item.collection) do
+          raw("#{self.icon_for(item.collection)} #{item.collection.title}")
+        end
+      end
       html += '<br>'
       html += '<span class="kq-description">'
       html += truncate(item.description.to_s, length: 400)

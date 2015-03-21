@@ -13,7 +13,8 @@
   </div>
 
   <div class="kq-results">
-    <%= items_as_list(@items, @start, show_remove_from_favorites_button: true) %>
+    <%= items_as_list(@items, @start, show_remove_from_favorites_buttons: true,
+                      show_collections: true) %>
   </div>
 
   <div class="text-center">

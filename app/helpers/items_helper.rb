@@ -131,6 +131,31 @@ module ItemsHelper
   end
 
   ##
+  # @param item Repository::Item
+  #
+  def pages_as_list(item)
+    return nil unless item.children.any? or item.parent
+    ol = '<ol>'
+    if item.children.any?
+      item.children.each do |child|
+        ol += "<li>#{link_to child.title, child}</li>"
+      end
+    else
+      item.parent.children.each do |child|
+        ol += '<li>'
+        if item == child
+          ol += "<strong>#{child.title}</strong>"
+        else
+          ol += link_to(child.title, child)
+        end
+        ol += '</li>'
+      end
+    end
+    ol += '</ol>'
+    raw(ol)
+  end
+
+  ##
   # @param items array
   # @param per_page integer
   # @param current_page integer

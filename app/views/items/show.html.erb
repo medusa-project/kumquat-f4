@@ -84,23 +84,7 @@
       <h2 class="panel-title">Pages</h2>
     </div>
     <div class="panel-body">
-      <ol>
-        <% if @item.children.any? %>
-          <% @item.children.each do |child| %>
-            <li><%= link_to child.title, child %></li>
-          <% end %>
-        <% else %>
-          <% @item.parent.children.each do |child| %>
-            <li>
-              <% if @item == child %>
-                <strong><%= child.title %></strong>
-              <% else %>
-                <%= link_to child.title, child %>
-              <% end %>
-            </li>
-          <% end %>
-        <% end %>
-      </ol>
+      <%= pages_as_list(@item) %>
     </div>
   </div>
 <% end %>

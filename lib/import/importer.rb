@@ -57,18 +57,20 @@ module Import
 
         # append bytestream TODO: support URL items
         pathname = @import_delegate.master_pathname_of_item_at_index(index)
-        if pathname and File.exists?(pathname)
-          bs = Repository::Bytestream.new(
-              owner: item,
-              upload_pathname: pathname,
-              type: Repository::Bytestream::Type::MASTER)
-          # assign media type
-          media_type = @import_delegate.media_type_of_item_at_index(index)
-          bs.media_type = media_type if media_type
-          bs.save
-          item.bytestreams << bs
-        else
-          Rails.logger.warn "#{pathname} does not exist"
+        if pathname
+          if File.exists?(pathname)
+            bs = Repository::Bytestream.new(
+                owner: item,
+                upload_pathname: pathname,
+                type: Repository::Bytestream::Type::MASTER)
+            # assign media type
+            media_type = @import_delegate.media_type_of_item_at_index(index)
+            bs.media_type = media_type if media_type
+            bs.save
+            item.bytestreams << bs
+          else
+            Rails.logger.warn "#{pathname} does not exist"
+          end
         end
 
         item.generate_derivatives

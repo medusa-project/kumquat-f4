@@ -2,9 +2,8 @@ module SampleData
 
   class ImportDelegate < ::Import::AbstractDelegate
 
-    COLLECTION_KEY = 'kq_sample'
-
     def initialize
+      @collection_key = nil
       @source_path = File.join(Rails.root, 'lib', 'sample_data',
                                'sample_collection')
       @metadata_pathname = File.join(@source_path, 'metadata.xml')
@@ -13,7 +12,7 @@ module SampleData
 
       # delete any old collections that may be lying around from
       # previous/failed imports
-      Repository::Collection.delete_with_key(COLLECTION_KEY) rescue nil
+      Repository::Collection.delete_with_key(collection_key) rescue nil
     end
 
     def total_number_of_items
@@ -27,7 +26,7 @@ module SampleData
     end
 
     def collection_key_of_item_at_index(index)
-      COLLECTION_KEY
+      collection_key
     end
 
     def full_text_of_item_at_index(index)
@@ -45,7 +44,8 @@ module SampleData
     end
 
     def import_id_of_item_at_index(index)
-      "#{COLLECTION_KEY}-#{index}"
+      "#{collection_key}-#{index}"
+    end
     end
 
     def master_pathname_of_item_at_index(index)
@@ -105,7 +105,24 @@ module SampleData
     end
 
     def slug_of_collection_of_item_at_index(index)
-      COLLECTION_KEY
+      collection_key
+    end
+
+    private
+
+    def collection_key
+      unless @collection_key
+        RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+          reader.each_statement do |statement|
+            if statement.subject.to_s == 'http://example.net/collections/sample'
+              if statement.predicate.to_s == 'http://example.net/key'
+                @collection_key = statement.object.to_s
+              end
+            end
+          end
+        end
+      end
+      @collection_key
     end
 
   end

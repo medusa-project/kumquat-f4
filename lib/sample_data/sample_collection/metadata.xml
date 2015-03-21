@@ -10,6 +10,7 @@
     <rdf:Description rdf:about="http://example.net/collections/sample">
         <dc:description>A collection full of sample items.</dc:description>
         <dc:title>Sample Collection</dc:title>
+        <local:key>kq-sample</local:key>
     </rdf:Description>
 
     <!-- 800379272_de0817d41a.tiff -->

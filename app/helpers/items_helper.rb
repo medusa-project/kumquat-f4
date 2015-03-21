@@ -162,24 +162,23 @@ module ItemsHelper
   #
   def pages_as_list(item)
     return nil unless item.children.any? or item.parent
-    ol = '<ol>'
-    if item.children.any?
-      item.children.each do |child|
-        ol += "<li>#{link_to child.title, child}</li>"
-      end
-    else
-      item.parent.children.each do |child|
-        ol += '<li>'
-        if item == child
-          ol += "<strong>#{child.title}</strong>"
-        else
-          ol += link_to(child.title, child)
+    items = item.children.any? ? item.children : item.parent.children
+    html = '<ol>'
+    items.each do |child|
+      html += '<li><div>'
+      if item == child
+        html += thumbnail_tag(child)
+        html += "<strong class=\"kq-text\">#{truncate(child.title, length: 40)}</strong>"
+      else
+        html += link_to(child) do
+          thumbnail_tag(child)
         end
-        ol += '</li>'
+        html += link_to(truncate(child.title, length: 40), child)
       end
+      html += '</div></li>'
     end
-    ol += '</ol>'
-    raw(ol)
+    html += '</ol>'
+    raw(html)
   end
 
   ##

@@ -73,4 +73,33 @@ body#items_show {
   #kq-image-viewer.fullpage {
     max-width: 999999px;
   }
+
+  .kq-horizontal-pages {
+    overflow-x: scroll;
+    ol {
+      margin-left:0px;
+      padding-left:0px;
+      li {
+        display: inline-block;
+        margin-left: 1em;
+        margin-right: 1em;
+        margin-top: -1em;
+        text-align: center;
+        div:first-child {
+          width: 110px;
+          .kq-thumbnail {
+            display: table-cell;
+            font-size:90px;
+            height: 100px;
+            max-height: 100px;
+            vertical-align: top;
+            img {
+              max-height: 100px;
+              max-width: 100px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

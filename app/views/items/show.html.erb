@@ -85,12 +85,13 @@
   </div>
 <% end %>
 
-<% if @item.parent or @item.children.any? %>
+<% pages = @item.parent ? @item.parent.children : @item.children %>
+<% if pages.any? %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Pages</h2>
+      <h2 class="panel-title">Pages (<%= pages.length %>)</h2>
     </div>
-    <div class="panel-body">
+    <div class="panel-body kq-horizontal-pages">
       <%= pages_as_list(@item) %>
     </div>
   </div>

@@ -110,11 +110,6 @@ module ItemsHelper
           raw('<i class="fa fa-heart-o"></i> Remove')
         end
       end
-      if item.kind_of?(Repository::Item) and item.children.any?
-        html += '<span class="label label-info kq-page-count">'
-        html += pluralize(item.children.length, 'page')
-        html += '</span>'
-      end
       html += '</span>'
       html += '<br>'
       html += '<span class="kq-description">'

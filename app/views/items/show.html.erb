@@ -52,9 +52,10 @@
       <i class="fa fa-heart"></i> Add To Favorites
     <% end %>
   <% end %>
-
-  <%= link_to repository_item_master_bytestream_url(@item), class: 'btn btn-default' do %>
-    <i class="fa fa-download"></i> Download
+  <% if @item.master_bytestream %>
+    <%= link_to repository_item_master_bytestream_url(@item), class: 'btn btn-default' do %>
+      <i class="fa fa-download"></i> Download
+    <% end %>
   <% end %>
 </div>
 

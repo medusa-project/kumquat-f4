@@ -35,25 +35,26 @@ module Import
           @collections[key] = collection
         end
 
+        # determine the resource URI under which the item will be created
+        parent_uri = nil
+        parent_import_id = @import_delegate.
+            parent_import_id_of_item_at_index(index)
+        parent_uri ||= @import_id_uri_map[parent_import_id]
+
         # create the item
         item = Repository::Item.new(
             collection: collection,
-            container_url: collection.repository_url,
+            container_url: parent_uri || collection.repository_url,
             full_text: @import_delegate.full_text_of_item_at_index(index),
             requested_slug: @import_delegate.slug_of_item_at_index(index),
             web_id: @import_delegate.web_id_of_item_at_index(index),
+            parent_uri: parent_uri,
             rdf_graph: @import_delegate.metadata_of_item_at_index(index))
-        item.save! # save it in order to populate its UUID
+        item.save! # save it in order to populate its repository URL
         puts item.repository_url
 
         import_id = @import_delegate.import_id_of_item_at_index(index)
         @import_id_uri_map[import_id] = item.repository_url
-
-        parent_import_id = @import_delegate.parent_import_id_of_item_at_index(index)
-        if parent_import_id
-          parent_uri = @import_id_uri_map[parent_uri]
-          item.parent_uri = parent_uri if parent_uri
-        end
 
         # append bytestream TODO: support URL items
         pathname = @import_delegate.master_pathname_of_item_at_index(index)

@@ -30,11 +30,10 @@ module SampleData
     end
 
     def full_text_of_item_at_index(index)
+      subject = subject_at_index(index)
       RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        subjects = reader.subjects.
-            select{ |s| s.start_with?('http://example.net/items') }
         reader.each_statement do |statement|
-          if statement.subject.to_s == subjects[index]
+          if statement.subject.to_s == subject
             return statement.object.to_s if
                 statement.predicate.to_s == 'http://example.org/fullText'
           end
@@ -46,14 +45,26 @@ module SampleData
     def import_id_of_item_at_index(index)
       "#{collection_key}-#{index}"
     end
+
+    def parent_import_id_of_item_at_index(index)
+      subject = subject_at_index(index)
+      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+        reader.each_statement do |statement|
+          if statement.subject.to_s == subject
+            if statement.predicate.to_s == 'http://example.net/hasParent'
+              return import_id_of_item_at_index(index_of_item(statement.object.to_s))
+            end
+          end
+        end
+      end
+      nil
     end
 
     def master_pathname_of_item_at_index(index)
+      subject = subject_at_index(index)
       RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        subjects = reader.subjects.
-            select{ |s| s.start_with?('http://example.net/items') }
         reader.each_statement do |statement|
-          if statement.subject.to_s == subjects[index]
+          if statement.subject.to_s == subject
             if statement.predicate.to_s == 'http://example.net/filename'
               return File.join(@source_path, statement.object.to_s)
             end
@@ -64,11 +75,10 @@ module SampleData
     end
 
     def media_type_of_item_at_index(index)
+      subject = subject_at_index(index)
       RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        subjects = reader.subjects.
-            select{ |s| s.start_with?('http://example.net/items') }
         reader.each_statement do |statement|
-          if statement.subject.to_s == subjects[index]
+          if statement.subject.to_s == subject
             return statement.object.to_s if
                 statement.predicate.to_s == 'http://purl.org/dc/elements/1.1/format'
           end
@@ -90,12 +100,11 @@ module SampleData
     end
 
     def metadata_of_item_at_index(index)
+      subject = subject_at_index(index)
       graph = RDF::Graph.new
       RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        subjects = reader.subjects.
-            select{ |s| s.start_with?('http://example.net/items') }
         reader.each_statement do |statement|
-          if statement.subject.to_s == subjects[index]
+          if statement.subject.to_s == subject
             graph << statement unless
                 statement.predicate.to_s.start_with?('http://example.net/')
           end
@@ -123,6 +132,25 @@ module SampleData
         end
       end
       @collection_key
+    end
+
+    def index_of_item(uri)
+      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+        i = 0
+        reader.each_subject do |subject|
+          next if subject.start_with?('http://example.net/collections')
+          return i if subject == uri
+          i += 1
+        end
+      end
+    end
+
+    def subject_at_index(index)
+      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+        return reader.subjects.
+            select{ |s| s.start_with?('http://example.net/items') }[index]
+      end
+      nil
     end
 
   end

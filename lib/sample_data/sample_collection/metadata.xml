@@ -20,6 +20,36 @@
       <dc:title>Empty item</dc:title>
     </rdf:Description>
 
+    <!-- office-compound-item -->
+    <rdf:Description rdf:about="http://example.net/items/office-compound-item">
+      <dc:description>A compound item consisting of bytestreams in various
+        Microsoft Office 2011 file formats.</dc:description>
+      <local:filename>powerpoint.pptx</local:filename>
+      <dcterms:extent>58 Kbytes</dcterms:extent>
+      <dc:format>application/vnd.openxmlformats-officedocument.presentationml.presentation</dc:format>
+      <dc:title>Sample compound item consisting of Microsoft Office files</dc:title>
+    </rdf:Description>
+
+    <!-- office-compound-item/1 -->
+    <rdf:Description rdf:about="http://example.net/items/office-compound-item/1">
+      <dc:description>A Microsoft Word 2011 file.</dc:description>
+      <local:filename>word.docx</local:filename>
+      <local:hasParent rdf:resource="http://example.net/items/office-compound-item"/>
+      <dcterms:extent>22 Kbytes</dcterms:extent>
+      <dc:format>application/vnd.openxmlformats-officedocument.wordprocessingml.document</dc:format>
+      <dc:title>Sample Microsoft Word 2011 document</dc:title>
+    </rdf:Description>
+
+    <!-- office-compound-item/2 -->
+    <rdf:Description rdf:about="http://example.net/items/office-compound-item/2">
+      <dc:description>A Microsoft Excel 2011 file.</dc:description>
+      <local:filename>excel.xlsx</local:filename>
+      <local:hasParent rdf:resource="http://example.net/items/office-compound-item"/>
+      <dcterms:extent>29 Kbytes</dcterms:extent>
+      <dc:format>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</dc:format>
+      <dc:title>Sample Microsoft Excel 2011 document</dc:title>
+    </rdf:Description>
+
     <!-- 800379272_de0817d41a.tiff -->
     <rdf:Description rdf:about="http://example.net/items/800379272_de0817d41a.tiff">
         <dc:description>The Death Star under construction.</dc:description>

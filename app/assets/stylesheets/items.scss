@@ -4,6 +4,7 @@
 
 body#items_index div#kq-page-content {
   .kq-facets {
+    overflow-x: scroll;
     .kq-clear {
       color: red;
     }
@@ -41,6 +42,7 @@ body#items_index div#kq-page-content {
 
   .kq-panel-facets {
     .panel-body {
+      overflow-x: scroll;
       ul {
         margin-bottom:0em;
         margin-left: 1em;

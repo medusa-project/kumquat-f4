@@ -13,6 +13,13 @@
         <local:key>kq-sample</local:key>
     </rdf:Description>
 
+    <!-- empty -->
+    <rdf:Description rdf:about="http://example.net/items/empty">
+      <dc:description>An item with no attached bytestream.</dc:description>
+      <dcterms:extent>0 bytes</dcterms:extent>
+      <dc:title>Empty item</dc:title>
+    </rdf:Description>
+
     <!-- 800379272_de0817d41a.tiff -->
     <rdf:Description rdf:about="http://example.net/items/800379272_de0817d41a.tiff">
         <dc:description>The Death Star under construction.</dc:description>

@@ -82,6 +82,26 @@ module ItemsHelper
     raw(ul)
   end
 
+  def icon_for(describable)
+    icon = 'fa-cube'
+    if describable.kind_of?(Repository::Item)
+      if describable.is_audio?
+        icon = 'fa-volume-up'
+      elsif describable.is_image?
+        icon = 'fa-picture-o'
+      elsif describable.is_pdf? or describable.is_text?
+        icon = 'fa-file-text-o'
+      elsif describable.is_video?
+        icon = 'fa-film'
+      elsif describable.children.any?
+        icon = 'fa-cubes'
+      end
+    elsif describable.kind_of?(Repository::Collection)
+      icon = 'fa-folder-open-o'
+    end
+    raw("<i class=\"fa #{icon}\"></i>")
+  end
+
   def is_favorite?(item)
     cookies[:favorites] and cookies[:favorites].
         split(FavoritesController::COOKIE_DELIMITER).
@@ -215,21 +235,7 @@ module ItemsHelper
     if File.exist?(thumb_path)
       html += image_tag(item.public_image_path(root_path))
     else
-      icon = 'fa-cube'
-      if item.is_audio?
-        icon = 'fa-volume-up'
-      elsif item.is_image?
-        icon = 'fa-picture-o'
-      elsif item.is_pdf? or item.is_text?
-        icon = 'fa-file-text-o'
-      elsif item.is_video?
-        icon = 'fa-film'
-      elsif item.kind_of?(Repository::Collection)
-        icon = 'fa-folder-open-o'
-      elsif item.children.any?
-        icon = 'fa-cubes'
-      end
-      html += "<i class=\"fa #{icon}\"></i>"
+      html += self.icon_for(item)
     end
     html += '</div>'
     raw(html)

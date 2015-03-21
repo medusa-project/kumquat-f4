@@ -53,6 +53,15 @@ body#items_index div#kq-page-content {
 }
 
 body#items_show {
+  .kq-compound-title {
+    small {
+      vertical-align:middle;
+      a {
+        color: black;
+        text-decoration: none;
+      }
+    }
+  }
   #kq-image-viewer {
     background-color:black;
     height: 500px;

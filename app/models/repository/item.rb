@@ -53,7 +53,7 @@ module Repository
         self.rdf_graph.each_statement do |s|
           if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
               Kumquat::Application::RDFPredicates::PARENT_URI
-            @parent = Repository::Item.find_by_uuid(s.object.to_s)
+            @parent = Repository::Item.find_by_uri(s.object.to_s)
             break
           end
         end

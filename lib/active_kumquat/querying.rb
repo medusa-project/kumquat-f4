@@ -22,7 +22,7 @@ module ActiveKumquat
     # @return Entity
     #
     def find_by_uri(uri)
-      self.where(id: uri).first
+      self.where(id: "\"#{uri}\"").first
     end
 
     ##

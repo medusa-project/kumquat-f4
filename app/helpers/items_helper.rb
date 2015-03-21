@@ -215,14 +215,12 @@ module ItemsHelper
   # @param options :full_label_info boolean
   #
   def triples_to_dl(describable, options = {})
+    exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
+        [Kumquat::Application::NAMESPACE_URI])
+
     # process triples into an array of hashes, collapsing identical subjects
     triples = []
     describable.rdf_graph.each_statement do |statement|
-      # Predicates whose URIs start with any of
-      # Repository::Fedora::MANAGED_PREDICATES will be excluded from display
-      next if Repository::Fedora::MANAGED_PREDICATES.
-          select{ |p| statement.predicate.to_s.start_with?(p) }.any?
-
       # assemble a label for the predicate
       if options[:full_label_info]
         prefix = statement.predicate.prefix
@@ -250,6 +248,9 @@ module ItemsHelper
       }
     end
     describable.rdf_graph.each_statement do |statement|
+      # Exclude certain predicates & objects from display
+      next if exclude_uris.select{ |p| statement.predicate.to_s.start_with?(p) or
+          statement.object.to_s.start_with?(p) }.any?
       triple = triples.
           select{ |t2| t2[:predicate] == statement.predicate.to_s }.first
       triple[:objects] << statement.object.to_s if triple
@@ -257,8 +258,6 @@ module ItemsHelper
 
     dl = '<dl class="kq-triples">'
     triples.each do |struct|
-      next if struct[:predicate].include?('http://fedora.info/definitions/')
-      next if struct[:predicate].include?(Kumquat::Application::NAMESPACE_URI)
       next unless struct[:objects].select{ |o| !o.strip.blank? }.any?
       dl += "<dt>#{struct[:label]}</dt>"
       struct[:objects].each do |object|

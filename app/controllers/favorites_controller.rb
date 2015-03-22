@@ -39,9 +39,7 @@ class FavoritesController < WebsiteController
     @items = Repository::Item.none
 
     unless cookies[:favorites].blank?
-      web_id_length = Kumquat::Application.kumquat_config[:web_id_length]
-      web_ids = cookies[:favorites].split(COOKIE_DELIMITER).
-          select{ |f| f.length == web_id_length }
+      web_ids = cookies[:favorites].split(COOKIE_DELIMITER)
       if web_ids.any?
         @items = Repository::Item.
             where("#{Solr::Solr::WEB_ID_KEY}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")

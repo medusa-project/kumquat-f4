@@ -107,6 +107,20 @@ module Import
     end
 
     ##
+    # Should return the URL of the master bytestream (file) being imported at
+    # the given index. Implement this only if the item's bytestream resides at
+    # a stable URL and is not to be managed by the repository.
+    #
+    # This method will only be called if master_pathname_of_item_at_index
+    # returns nil, and is optional.
+    #
+    # @param index integer
+    # @return string
+    #
+    def master_url_of_item_at_index(index)
+    end
+
+    ##
     # @param index integer
     # @return RDF::Graph
     #

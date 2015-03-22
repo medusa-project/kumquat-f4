@@ -33,7 +33,12 @@ module Contentdm
     end
 
     def master_pathname_of_item_at_index(index)
-      cdm_item_at_index(index).master_file_pathname
+      pathname = cdm_item_at_index(index).master_file_pathname
+      File.extname(pathname) == '.url' ? nil : pathname
+    end
+
+    def master_url_of_item_at_index(index)
+      cdm_item_at_index(index).url
     end
 
     def metadata_of_collection_of_item_at_index(index)

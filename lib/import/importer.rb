@@ -56,7 +56,7 @@ module Import
         import_id = @import_delegate.import_id_of_item_at_index(index)
         @import_id_uri_map[import_id] = item.repository_url
 
-        # append bytestream TODO: support URL items
+        # append bytestream
         pathname = @import_delegate.master_pathname_of_item_at_index(index)
         if pathname
           if File.exists?(pathname)
@@ -71,6 +71,19 @@ module Import
             item.bytestreams << bs
           else
             Rails.logger.warn "#{pathname} does not exist"
+          end
+        else
+          url = @import_delegate.master_url_of_item_at_index(index)
+          if url
+            bs = Repository::Bytestream.new(
+                owner: item,
+                external_resource_url: url,
+                type: Repository::Bytestream::Type::MASTER)
+            # assign media type
+            media_type = @import_delegate.media_type_of_item_at_index(index)
+            bs.media_type = media_type if media_type
+            bs.save
+            item.bytestreams << bs
           end
         end
 

@@ -58,23 +58,23 @@ module Contentdm
                                   value: file.read.squish.strip)
           collection.elements << element unless element.value.empty?
         end
-      elsif File.exists?(catalog_pathname)
+      end
+      unless collection.elements.select{ |e| e.name == 'title' }.any?
         # Not all collections have either a colldesc.txt or an about.txt file,
-        # so use the catalog.txt file (which contains only the collection's
-        # name) as a fallback.
-        File.open(catalog_pathname) do |file|
-          file.each_line do |line|
-            parts = line.gsub(/\t+/, "\t").split("\t")
-            if parts.first == "/#{collection.alias}"
-              element = DCElement.new(name: 'title', value: parts[1].strip)
-              collection.elements << element unless element.value.empty?
-              break
+        # so the collection may not yet have a title at this point. So, get it
+        # from the catalog.txt file.
+        if File.exists?(catalog_pathname)
+          File.open(catalog_pathname) do |file|
+            file.each_line do |line|
+              parts = line.gsub(/\t+/, "\t").split("\t")
+              if parts.first == "/#{collection.alias}"
+                element = DCElement.new(name: 'title', value: parts[1].strip)
+                collection.elements << element unless element.value.empty?
+                break
+              end
             end
           end
         end
-      else
-        collection.elements << DCElement.new(
-            name: 'title', value: "CONTENTdm collection (#{collection.alias})")
       end
       collection
     end

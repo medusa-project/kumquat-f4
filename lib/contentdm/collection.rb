@@ -100,8 +100,9 @@ module Contentdm
         File.open(File.join(File.expand_path(@source_path),
                             self.alias + '.xml')) do |file|
           doc = Nokogiri::XML(file)
-          @num_items += doc.xpath('//record').length
-          @num_items += doc.xpath('//structure/page').length
+          records = doc.xpath('//record')
+          @num_items = records.length
+          @num_items += records.xpath('/structure/page').length
         end
       end
       @num_items

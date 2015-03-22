@@ -23,6 +23,9 @@ body#collections_index div#kq-page-content {
 }
 
 body#collections_show {
+  a.kq-browse {
+    margin-top:1em;
+  }
   .kq-thumbnail {
     img {
       border: 6px solid #404040;

@@ -7,7 +7,7 @@ module DerivativeManagement
   STATIC_IMAGE_SIZES = [256, 512, 1024]
 
   included do
-    before_save :generate_derivatives
+    after_create :generate_derivatives
     after_delete :delete_derivatives
   end
 
@@ -15,6 +15,7 @@ module DerivativeManagement
   # Deletes the static image associated with an item.
   #
   def delete_derivatives
+    Rails.logger.debug("Deleting derivatives for #{self.repository_url}")
     STATIC_IMAGE_SIZES.each do |size|
       path = self.image_path(size)
       if File.exists?(path)
@@ -40,6 +41,7 @@ module DerivativeManagement
     if bytestream
       src = bytestream.upload_pathname
       if src and (self.is_image? or self.is_pdf?)
+        Rails.logger.debug("Generating derivatives for #{self.repository_url}")
         FileUtils.mkdir_p(self.derivative_path)
         STATIC_IMAGE_SIZES.each do |size|
           begin

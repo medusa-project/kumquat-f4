@@ -143,10 +143,9 @@ module Repository
     def read_media_type
       type = nil
       if self.upload_pathname and File.exist?(self.upload_pathname)
-        type = MimeMagic.by_path(self.upload_pathname).to_s ||
-            MimeMagic.by_magic(File.open(self.upload_pathname)).to_s
+        type = MIME::Types.of(self.upload_pathname).first.to_s
       elsif self.external_resource_url
-        type = MimeMagic.by_extension(self.external_resource_url).to_s
+        type = MIME::Types.of(self.external_resource_url).first.to_s
       end
       self.media_type = type if type
     end

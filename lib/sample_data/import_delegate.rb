@@ -105,8 +105,9 @@ module SampleData
       RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
         reader.each_statement do |statement|
           if statement.subject.to_s == subject
-            graph << statement unless
-                statement.predicate.to_s.start_with?('http://example.net/')
+            graph << statement if
+                !statement.predicate.to_s.start_with?('http://example.net/') and
+                    !statement.object.to_s.blank?
           end
         end
       end

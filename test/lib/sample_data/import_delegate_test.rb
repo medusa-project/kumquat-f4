@@ -48,6 +48,13 @@ class ImportDelegateTest < ActiveSupport::TestCase
     assert graph.has_predicate?(RDF::URI('http://purl.org/dc/elements/1.1/title'))
   end
 
+  test 'metadata_of_item_at_index should not return any blank objects' do
+    graph = @delegate.metadata_of_item_at_index(9)
+    graph.each_statement do |st|
+      assert !st.object.to_s.blank?
+    end
+  end
+
   test 'slug_of_collection_of_item_at_index should return the correct slug' do
     assert_equal 'kq-sample', @delegate.slug_of_collection_of_item_at_index(7)
   end

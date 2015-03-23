@@ -33,7 +33,7 @@ module Kumquat
       HEIGHT = 'height'
       MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
       PAGE_INDEX = 'pageIndex'
-      PARENT_URI = 'parentURI'
+      PARENT_URI = 'hasParent'
       WEB_ID = 'webID'
       WIDTH = 'width'
     end

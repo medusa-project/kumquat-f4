@@ -237,9 +237,9 @@ module ItemsHelper
   def thumbnail_tag(item)
     return unless item
     html = "<div class=\"kq-thumbnail\">"
-    thumb_path = item.image_path
+    thumb_path = item.image_path(256)
     if File.exist?(thumb_path)
-      html += image_tag(item.public_image_path(root_path))
+      html += image_tag(item.public_image_path(root_path, 256))
     else
       html += self.icon_for(item)
     end

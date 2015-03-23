@@ -4,7 +4,7 @@ module DerivativeManagement
 
   BALANCED_TREE_LEVELS = 3
   DERIVATIVE_ROOT = File.join(Rails.root, 'public', 'derivatives')
-  STATIC_IMAGE_SIZES = [512]
+  STATIC_IMAGE_SIZES = [256, 512, 1024]
 
   included do
     before_save :generate_derivatives
@@ -80,7 +80,7 @@ module DerivativeManagement
   # @param size int One of STATIC_IMAGE_SIZES
   # @return string
   #
-  def image_path(size = 512)
+  def image_path(size)
     File.join(self.derivative_path, image_filename(size))
   end
 
@@ -91,7 +91,7 @@ module DerivativeManagement
   # @param size int One of STATIC_IMAGE_SIZES
   # @return string
   #
-  def public_image_path(root_path, size = 512)
+  def public_image_path(root_path, size)
     File.join(self.public_derivative_path(root_path), image_filename(size))
   end
 

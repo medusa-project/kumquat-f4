@@ -179,6 +179,7 @@ module ActiveKumquat
             select{ |p| statement.predicate.to_s.start_with?(p) }.any?
         # exclude subclass-managed predicates from the update
         next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::CLASS}"
+        next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::PARENT_URI}"
 
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
             insert(nil, "<#{statement.predicate.to_s}>",

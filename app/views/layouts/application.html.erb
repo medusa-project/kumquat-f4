@@ -64,6 +64,9 @@
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
+            <li id="search-nav">
+              <%= link_to 'Advanced Search', search_path %>
+            </li>
             <form method="get" action="<%= repository_items_path %>"
                   class="navbar-form navbar-right kq-quick-search" role="search">
               <div class="input-group">

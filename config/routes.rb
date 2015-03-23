@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     match '/master', to: 'items#master_bytestream', via: 'get',
           as: :master_bytestream
   end
+  match '/search', to: 'search#index', via: 'get'
   resources :sessions, only: [:new, :create, :destroy]
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'

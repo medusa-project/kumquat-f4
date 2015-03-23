@@ -9,6 +9,10 @@ module DB
 
     self.table_name = 'rdf_predicates'
 
+    def before_destroy
+      raise ActiveRecord::ReadOnlyRecord unless self.deletable
+    end
+
     ##
     # Returns the default label of the predicate; i.e. the label associated
     # with the predicate matching the URI of this instance that is not

@@ -43,147 +43,287 @@ Permission.create!(key: 'users.view',
 # RDF Predicates
 # http://purl.org/dc/elements/1.1/
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/contributor',
-                         label: 'Contributor')
+                         label: 'Contributor',
+                         solr_field: 'kq_contributor',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/coverage',
-                         label: 'Coverage')
+                         label: 'Coverage',
+                         solr_field: 'kq_coverage',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/creator',
-                         label: 'Creator')
+                         label: 'Creator',
+                         solr_field: 'kq_creator',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/date',
-                         label: 'Date')
+                         label: 'Date',
+                         solr_field: 'kq_date',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/description',
-                         label: 'Description')
+                         label: 'Description',
+                         solr_field: 'kq_description',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/format',
-                         label: 'Format')
+                         label: 'Format',
+                         solr_field: 'kq_format',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/identifier',
-                         label: 'Identifier')
+                         label: 'Identifier',
+                         solr_field: 'kq_identifier',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/language',
-                         label: 'Language')
+                         label: 'Language',
+                         solr_field: 'kq_language',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/publisher',
-                         label: 'Publisher')
+                         label: 'Publisher',
+                         solr_field: 'kq_publisher',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/relation',
-                         label: 'Relation')
+                         label: 'Relation',
+                         solr_field: 'kq_relation',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/rights',
-                         label: 'Rights')
+                         label: 'Rights',
+                         solr_field: 'kq_rights',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/source',
-                         label: 'Source')
+                         label: 'Source',
+                         solr_field: 'kq_source',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/subject',
-                         label: 'Subject')
+                         label: 'Subject',
+                         solr_field: 'kq_subject',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/title',
-                         label: 'Title')
+                         label: 'Title',
+                         solr_field: 'kq_title',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/elements/1.1/type',
-                         label: 'Type')
+                         label: 'Type',
+                         solr_field: 'kq_type',
+                         deletable: false)
 
 # http://purl.org/dc/terms/
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/abstract',
-                         label: 'Abstract')
+                         label: 'Abstract',
+                         solr_field: 'kq_abstract',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accessRights',
-                         label: 'Access Rights')
+                         label: 'Access Rights',
+                         solr_field: 'kq_accessRights',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualMethod',
-                         label: 'Accrual Method')
+                         label: 'Accrual Method',
+                         solr_field: 'kq_accrualMethod',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualPeriodicity',
-                         label: 'Accrual Periodicity')
+                         label: 'Accrual Periodicity',
+                         solr_field: 'kq_accrualPeriodicity',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/accrualPolicy',
-                         label: 'Accrual Policy')
+                         label: 'Accrual Policy',
+                         solr_field: 'kq_accrualPolicy',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/alternative',
-                         label: 'Alternative Title')
+                         label: 'Alternative Title',
+                         solr_field: 'kq_alternative',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/audience',
-                         label: 'Audience')
+                         label: 'Audience',
+                         solr_field: 'kq_audience',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/available',
-                         label: 'Date Available')
+                         label: 'Date Available',
+                         solr_field: 'kq_available',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/bibliographicCitation',
-                         label: 'Bibliographic Citation')
+                         label: 'Bibliographic Citation',
+                         solr_field: 'kq_bibliographicCitation',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/conformsTo',
-                         label: 'Conforms To')
+                         label: 'Conforms To',
+                         solr_field: 'kq_conformsTo',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/contributor',
-                         label: 'Contributor')
+                         label: 'Contributor',
+                         solr_field: 'kq_contributor',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/coverage',
-                         label: 'Coverage')
+                         label: 'Coverage',
+                         solr_field: 'kq_coverage',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/created',
-                         label: 'Date Created')
+                         label: 'Date Created',
+                         solr_field: 'kq_created',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/creator',
-                         label: 'Creator')
+                         label: 'Creator',
+                         solr_field: 'kq_creator',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/date',
-                         label: 'Date')
+                         label: 'Date',
+                         solr_field: 'kq_date',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateAccepted',
-                         label: 'Date Accepted')
+                         label: 'Date Accepted',
+                         solr_field: 'kq_dateAccepted',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateCopyrighted',
-                         label: 'Date Copyrighted')
+                         label: 'Date Copyrighted',
+                         solr_field: 'kq_dateCopyrighted',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/dateSubmitted',
-                         label: 'Date Submitted')
+                         label: 'Date Submitted',
+                         solr_field: 'kq_dateSubmitted',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/description',
-                         label: 'Description')
+                         label: 'Description',
+                         solr_field: 'kq_description',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/educationLevel',
-                         label: 'Education Level')
+                         label: 'Education Level',
+                         solr_field: 'kq_educationLevel',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/extent',
-                         label: 'Extent')
+                         label: 'Extent',
+                         solr_field: 'kq_extent',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/format',
-                         label: 'Format')
+                         label: 'Format',
+                         solr_field: 'kq_format',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasFormat',
-                         label: 'Has Format')
+                         label: 'Has Format',
+                         solr_field: 'kq_hasFormat',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasPart',
-                         label: 'Has Part')
+                         label: 'Has Part',
+                         solr_field: 'kq_hasPart',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/hasVersion',
-                         label: 'Has Version')
+                         label: 'Has Version',
+                         solr_field: 'kq_hasVersion',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/identifier',
-                         label: 'Identifier')
+                         label: 'Identifier',
+                         solr_field: 'kq_identifier',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/instructionalMethod',
-                         label: 'Instructional Method')
+                         label: 'Instructional Method',
+                         solr_field: 'kq_instructionalMethod',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isFormatOf',
-                         label: 'Is Format Of')
+                         label: 'Is Format Of',
+                         solr_field: 'kq_isFormatOf',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isPartOf',
-                         label: 'Is Part Of')
+                         label: 'Is Part Of',
+                         solr_field: 'kq_isPartOf',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isReferencedBy',
-                         label: 'Is Referenced By')
+                         label: 'Is Referenced By',
+                         solr_field: 'kq_isReferencedBy',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isReplacedBy',
-                         label: 'Is Replaced By')
+                         label: 'Is Replaced By',
+                         solr_field: 'kq_isReplacedBy',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isRequiredBy',
-                         label: 'Is Required By')
+                         label: 'Is Required By',
+                         solr_field: 'kq_isRequiredBy',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/issued',
-                         label: 'Date Issued')
+                         label: 'Date Issued',
+                         solr_field: 'kq_issued',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/isVersionOf',
-                         label: 'Is Version Of')
+                         label: 'Is Version Of',
+                         solr_field: 'kq_isVersionOf',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/language',
-                         label: 'Language')
+                         label: 'Language',
+                         solr_field: 'kq_language',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/license',
-                         label: 'License')
+                         label: 'License',
+                         solr_field: 'kq_license',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/mediator',
-                         label: 'Mediator')
+                         label: 'Mediator',
+                         solr_field: 'kq_mediator',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/medium',
-                         label: 'Medium')
+                         label: 'Medium',
+                         solr_field: 'kq_medium',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/modified',
-                         label: 'Date Modified')
+                         label: 'Date Modified',
+                         solr_field: 'kq_modified',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/provenance',
-                         label: 'Provenance')
+                         label: 'Provenance',
+                         solr_field: 'kq_provenance',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/publisher',
-                         label: 'Publisher')
+                         label: 'Publisher',
+                         solr_field: 'kq_publisher',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/references',
-                         label: 'References')
+                         label: 'References',
+                         solr_field: 'kq_references',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/relation',
-                         label: 'Relation')
+                         label: 'Relation',
+                         solr_field: 'kq_relation',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/replaces',
-                         label: 'Replaces')
+                         label: 'Replaces',
+                         solr_field: 'kq_replaces',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/requires',
-                         label: 'Requires')
+                         label: 'Requires',
+                         solr_field: 'kq_requires',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/rights',
-                         label: 'Rights')
+                         label: 'Rights',
+                         solr_field: 'kq_rights',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/rightsHolder',
-                         label: 'Rights Holder')
+                         label: 'Rights Holder',
+                         solr_field: 'kq_rightsHolder',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/source',
-                         label: 'Source')
+                         label: 'Source',
+                         solr_field: 'kq_source',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/spatial',
-                         label: 'Spatial Coverage')
+                         label: 'Spatial Coverage',
+                         solr_field: 'kq_spatial',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/subject',
-                         label: 'Subject')
+                         label: 'Subject',
+                         solr_field: 'kq_subject',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/tableOfContents',
-                         label: 'Table Of Contents')
+                         label: 'Table Of Contents',
+                         solr_field: 'kq_tableOfContents',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/temporal',
-                         label: 'Temporal Coverage')
+                         label: 'Temporal Coverage',
+                         solr_field: 'kq_temporal',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/title',
-                         label: 'Title')
+                         label: 'Title',
+                         solr_field: 'kq_title',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/type',
-                         label: 'Type')
+                         label: 'Type',
+                         solr_field: 'kq_type',
+                         deletable: false)
 DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
-                         label: 'Date Valid')
+                         label: 'Date Valid',
+                         solr_field: 'kq_valid',
+                         deletable: false)
 
 # URI Prefixes
 DB::URIPrefix.create!(prefix: 'dc',

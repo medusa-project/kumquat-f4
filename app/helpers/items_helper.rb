@@ -386,7 +386,7 @@ module ItemsHelper
 
   def audio_player_for(item)
     tag = "<audio controls>
-      <source src=\"#{repository_item_master_bytestream_url(item)}\"
+      <source src=\"#{item.master_bytestream.repository_url}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the audio tag.
     </audio>"

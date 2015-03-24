@@ -7,11 +7,12 @@ module ItemsHelper
 
   def download_button(item)
     return nil unless item.master_bytestream
-    html = '<button type="button" class="btn btn-default dropdown-toggle"
-            data-toggle="dropdown" aria-expanded="false">
-         <i class="fa fa-download"></i> Download <span class="caret"></span>
-       </button>'
-    html += '<ul class="dropdown-menu" role="menu">'
+    html = '<div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle"
+           data-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-download"></i> Download <span class="caret"></span>
+      </button>'
+    html += '<ul class="dropdown-menu pull-right" role="menu">'
     html += '<li>'
     html += link_to(download_label_for_bytestream(item.master_bytestream),
                     repository_item_master_bytestream_url(item))
@@ -29,6 +30,7 @@ module ItemsHelper
       end
     end
     html += '</ul>'
+    html += '</div>'
     raw(html)
   end
 
@@ -266,6 +268,56 @@ module ItemsHelper
         "<li #{current_page == last_page ? 'class="disabled"' : ''}>#{last_link}</li>"
       '</ul>' +
     '</nav>'
+    raw(html)
+  end
+
+  def share_button(item)
+    html = '<div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle"
+            data-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-share-alt"></i> Share <span class="caret"></span>
+      </button>'
+    html += '<ul class="dropdown-menu pull-right" role="menu">'
+    # email
+    html += '<li>'
+    html += link_to("mailto:?subject=#{CGI::escape(item.title)}") do
+      raw('<i class="fa fa-envelope"></i> Email')
+    end
+    html += '</li>'
+    html += '<li class="divider"></li>'
+    # facebook
+    html += '<li>'
+    html += link_to("https://www.facebook.com/sharer/sharer.php?u=#{CGI::escape(repository_item_url(item))}") do
+      raw('<i class="fa fa-facebook-square"></i> Facebook')
+    end
+    html += '</li>'
+    # linkedin
+    html += '<li>'
+    html += link_to("http://www.linkedin.com/shareArticle?mini=true&url=#{CGI::escape(repository_item_url(item))}&title=#{CGI::escape(item.title)}&summary=#{CGI::escape(item.description)}") do
+      raw('<i class="fa fa-linkedin-square"></i> LinkedIn')
+    end
+    html += '</li>'
+    # twitter
+    html += '<li>'
+    html += link_to("http://twitter.com/home?status=#{CGI::escape(item.title)}%20#{CGI::escape(repository_item_url(item))}") do
+      raw('<i class="fa fa-twitter-square"></i> Twitter')
+    end
+    html += '</li>'
+    # google+
+    html += '<li>'
+    html += link_to("https://plus.google.com/share?url=#{CGI::escape(item.title)}%20#{CGI::escape(repository_item_url(item))}") do
+      raw('<i class="fa fa-google-plus-square"></i> Google+')
+    end
+    html += '</li>'
+    # pinterest
+    html += '<li>'
+    html += link_to("http://pinterest.com/pin/create/button/?url=#{CGI::escape(repository_item_url(item))}&media=#{CGI::escape(item.derivative_image_url(512).to_s)}&description=#{CGI::escape(item.title)}") do
+      raw('<i class="fa fa-pinterest-square"></i> Pinterest')
+    end
+    html += '</li>'
+
+    html += '</ul>'
+    html += '</div>'
     raw(html)
   end
 

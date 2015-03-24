@@ -228,4 +228,21 @@ Red Grange of Illinois.</kumquat:fullText>
         <dc:type>Sound</dc:type>
     </rdf:Description>
 
+    <!-- IMG_0054.mov -->
+    <rdf:Description rdf:about="http://example.net/items/IMG_0054.mov">
+        <dc:description>Part of the south façade of the Illini Union on the
+            University of Illinois at Urbana-Champaign campus. Filmed on an
+            iPhone 5S.</dc:description>
+        <dcterms:extent>1.1 Mbytes</dcterms:extent>
+        <dcterms:extent>1280x720</dcterms:extent>
+        <local:filename>IMG_0054.mov</local:filename>
+        <dc:format>video/quicktime</dc:format>
+        <dc:identifier>IMG_0054.mov</dc:identifier>
+        <dc:subject>University of Illinois at Urbana-Champaign</dc:subject>
+        <dc:subject>Illini Union</dc:subject>
+        <dc:subject>Buildings</dc:subject>
+        <dc:title>Sample QuickTime H.264/AAC video item</dc:title>
+        <dc:type>Video</dc:type>
+    </rdf:Description>
+
 </rdf:RDF>

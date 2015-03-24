@@ -3,6 +3,7 @@
 Kumquat has several dependencies that need to be installed first:
 
 * ImageMagick
+* ffmpeg
 * PostgreSQL
 * Fedora
 * fcrepo-message-consumer
@@ -20,6 +21,10 @@ These will be covered in sequence.
 The `--with-*` flags are important; if you already have ImageMagick installed,
 make sure you also have the JPEG2000 and PDF delegates by searching for them in
 the output of `$ identify -list format`.
+
+### ffmpeg
+
+`$ brew install ffmpeg`
 
 ### PostgreSQL
 

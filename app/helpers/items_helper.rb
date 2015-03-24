@@ -377,7 +377,7 @@ module ItemsHelper
       # show-item view by reading the item's full_text property. Full text and
       # a viewer are not mutually exclusive.
     elsif item.is_video?
-      return video_viewer_for(item)
+      return video_player_for(item)
     end
     nil
   end
@@ -429,8 +429,13 @@ module ItemsHelper
     raw(tag)
   end
 
-  def video_viewer_for(item)
-    # TODO: write video_viewer_for
+  def video_player_for(item)
+    tag = "<video controls id=\"kq-video-player\">
+      <source src=\"#{item.master_bytestream.repository_url}\"
+              type=\"#{item.master_bytestream.media_type}\">
+        Your browser does not support the video tag.
+    </video>"
+    raw(tag)
   end
 
   private

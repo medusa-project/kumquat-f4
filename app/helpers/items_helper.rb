@@ -13,29 +13,19 @@ module ItemsHelper
        </button>'
     html += '<ul class="dropdown-menu" role="menu">'
     html += '<li>'
-    type = MIME::Types[item.master_bytestream.media_type].first
-    label = type.friendly if type
-    label ||= item.master_bytestream.media_type
-    label = "Master (#{label})"
-    html += link_to(label, repository_item_master_bytestream_url(item))
+    html += link_to(download_label_for_bytestream(item.master_bytestream),
+                    repository_item_master_bytestream_url(item))
     html += '</li>'
     derivatives = item.bytestreams.
         select{ |b| b.type == Repository::Bytestream::Type::DERIVATIVE }
     if derivatives.any?
       html += '<li class="divider"></li>'
       derivatives.each do |bs|
-        type = MIME::Types[bs.media_type].first
-        label = type ? type.friendly : bs.media_type
-        if bs.width and bs.height
-          label += " <small>(#{bs.width}&times;#{bs.height})</small>"
+        html += '<li>'
+        html += link_to(bs.repository_url) do
+          download_label_for_bytestream(bs)
         end
-        if label
-          html += '<li>'
-          html += link_to(bs.repository_url) do
-            raw(label)
-          end
-          html += '</li>'
-        end
+        html += '</li>'
       end
     end
     html += '</ul>'
@@ -439,6 +429,26 @@ module ItemsHelper
   end
 
   private
+
+  def download_label_for_bytestream(bytestream)
+    parts = []
+    if bytestream.type == Repository::Bytestream::Type::MASTER
+      parts << 'Master'
+    end
+    type = MIME::Types[bytestream.media_type].first
+    if type and type.friendly
+      parts << type.friendly
+    else
+      parts << bytestream.media_type
+    end
+    if bytestream.width and bytestream.height
+      parts << "<small>#{bytestream.width}&times;#{bytestream.height}</small>"
+    end
+    if bytestream.byte_size
+      parts << "<small>#{number_to_human_size(bytestream.byte_size)}</small>"
+    end
+    raw(parts.join(' | '))
+  end
 
   def human_label_for_uri(describable, uri)
     if describable.kind_of?(Repository::Item)

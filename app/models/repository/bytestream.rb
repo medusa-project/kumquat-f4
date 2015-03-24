@@ -11,6 +11,7 @@ module Repository
 
     ENTITY_CLASS = ActiveKumquat::Base::Class::BYTESTREAM
 
+    attr_accessor :byte_size # integer
     attr_accessor :external_resource_url # string
     attr_accessor :height # integer
     attr_accessor :media_type # string
@@ -36,7 +37,8 @@ module Repository
       end
       @destroyed = false
       @persisted = false
-      self.read_media_type unless self.media_type
+      self.read_byte_size unless self.byte_size
+      self.guess_media_type unless self.media_type
       self.read_dimensions unless self.width and self.height
     end
 
@@ -69,6 +71,16 @@ module Repository
       @destroyed
     end
 
+    def guess_media_type
+      type = nil
+      if self.upload_pathname and File.exist?(self.upload_pathname)
+        type = MIME::Types.of(self.upload_pathname).first.to_s
+      elsif self.external_resource_url
+        type = MIME::Types.of(self.external_resource_url).first.to_s
+      end
+      self.media_type = type if type
+    end
+
     def is_audio?
       self.media_type and self.media_type.start_with?('audio/')
     end
@@ -99,20 +111,30 @@ module Repository
     # @param graph RDF::Graph
     #
     def populate_from_graph(graph)
+      kq_predicates = Kumquat::Application::RDFPredicates
       graph.each_triple do |subject, predicate, object|
         if predicate == 'http://purl.org/dc/terms/MediaType'
           self.media_type = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}height"
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTE_SIZE}"
+          self.byte_size = object.to_s.to_i
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::HEIGHT}"
           self.height = object.to_s.to_i
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}bytestreamType"
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_TYPE}"
           self.type = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}width"
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::WIDTH}"
           self.width = object.to_s.to_i
         elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
           self.uuid = object.to_s
         end
       end
       @persisted = true
+    end
+
+    ##
+    # Reads the byte size and assigns it to the instance.
+    #
+    def read_byte_size
+      self.byte_size = File.size(self.upload_pathname) if self.upload_pathname
     end
 
     ##
@@ -136,16 +158,6 @@ module Repository
           # nothing we can do; Magick will have already logged this
         end
       end
-    end
-
-    def read_media_type
-      type = nil
-      if self.upload_pathname and File.exist?(self.upload_pathname)
-        type = MIME::Types.of(self.upload_pathname).first.to_s
-      elsif self.external_resource_url
-        type = MIME::Types.of(self.external_resource_url).first.to_s
-      end
-      self.media_type = type if type
     end
 
     def reload!
@@ -197,6 +209,8 @@ module Repository
       my_metadata_uri = "<#{self.repository_metadata_url}>"
       update.delete(my_metadata_uri, '<dcterms:MediaType>', '?o').
           insert(my_metadata_uri, 'dcterms:MediaType', self.media_type)
+      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
+          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_TYPE}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}", self.type)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
@@ -207,11 +221,13 @@ module Repository
           insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
                  "<#{kq_uri}#{kq_objects::BYTESTREAM}>", false)
 
-      # also update the owning entity with some useful properties since we can't
-      # easily query for them without a triple store
+      # also update the owning entity with some useful properties that we can't
+      # easily query for without a triple store
       update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTESTREAM_URI}>", "<#{my_uri}>").
           insert(owner_uri, "kumquat:#{kq_predicates::BYTESTREAM_URI}", my_uri, false)
       if self.type == Type::MASTER
+        update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
+            insert(owner_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
         update.delete(owner_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
             insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
         update.delete(owner_uri, '<dcterms:MediaType>', '?o').

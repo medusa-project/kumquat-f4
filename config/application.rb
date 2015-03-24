@@ -26,6 +26,7 @@ module Kumquat
     # subject-predicate-object sense. These will be appended to NAMESPACE_URI.
     #
     class RDFPredicates
+      BYTE_SIZE = 'byteSize'
       BYTESTREAM_TYPE = 'bytestreamType'
       BYTESTREAM_URI = 'hasBytestream'
       CLASS = 'class'

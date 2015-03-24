@@ -28,6 +28,7 @@ var KQFavoritesView = function() {
         } else {
             $('.kq-no-favorites').hide();
         }
+        $('.kq-remove-from-favorites').show();
     };
 
 };

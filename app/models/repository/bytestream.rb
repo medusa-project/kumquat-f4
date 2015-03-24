@@ -29,7 +29,6 @@ module Repository
     end
 
     @@http = HTTPClient.new
-    @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
     def initialize(params = {})
       params.except(:id, :uuid).each do |k, v|
@@ -58,7 +57,7 @@ module Repository
           # wait for solr to get the delete from fcrepo-message-consumer
           # TODO: this is horrible
           sleep 2
-          @@solr.commit
+          Solr::Solr.client.commit
         end
       end
     end
@@ -176,7 +175,7 @@ module Repository
         # wait for solr to get the add from fcrepo-message-consumer
         # TODO: this is horrible (also doing it in delete())
         sleep 2
-        @@solr.commit
+        Solr::Solr.client.commit
       end
     end
 

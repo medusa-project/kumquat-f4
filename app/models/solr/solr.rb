@@ -18,14 +18,13 @@ module Solr
     WEB_ID_KEY = :kq_system_web_id
     WIDTH_KEY = :kq_system_width
 
-    def initialize
-      @http = HTTPClient.new
-      @url = Kumquat::Application.kumquat_config[:solr_url].chomp('/')
-      @collection = Kumquat::Application.kumquat_config[:solr_collection]
-    end
+    @@client = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
-    def commit
-      @http.get("#{@url}/#{@collection}/update?commit=true")
+    ##
+    # @return RSolr
+    #
+    def self.client
+      @@client
     end
 
   end

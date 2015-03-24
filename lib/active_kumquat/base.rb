@@ -22,7 +22,6 @@ module ActiveKumquat
     end
 
     @@http = HTTPClient.new
-    @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
@@ -63,7 +62,7 @@ module ActiveKumquat
             # TODO: this is horrible
             # (also doing this in save())
             sleep 2
-            @@solr.commit
+            Solr::Solr.client.commit
           end
         end
       end
@@ -146,7 +145,7 @@ module ActiveKumquat
           # wait for solr to get the add from fcrepo-message-consumer
           # TODO: this is horrible (also doing it in delete())
           sleep 2
-          @@solr.commit
+          Solr::Solr.client.commit
           self.reload!
         end
       end

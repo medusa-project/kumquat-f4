@@ -6,7 +6,6 @@ module ActiveKumquat
   class Entity
 
     @@http = HTTPClient.new
-    @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
     attr_reader :solr_request
 
@@ -146,7 +145,7 @@ module ActiveKumquat
           params['facet.field'] = Solr::Solr::FACET_FIELDS
           params[:fq] = @facet_queries
         end
-        solr_response = @@solr.get('select', params: params)
+        solr_response = Solr::Solr.client.get('select', params: params)
         @solr_request = solr_response.request
         @results.facet_fields = solr_facet_fields_to_objects(
             solr_response['facet_counts']['facet_fields']) if @facet

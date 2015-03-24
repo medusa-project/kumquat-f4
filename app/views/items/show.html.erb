@@ -42,16 +42,14 @@
 <% end %>
 
 <div class="btn-group pull-right">
-  <% if is_favorite?(@item) %>
-    <%= link_to favorite_url(@item), class: 'btn btn-danger', method: 'delete' do %>
-      <i class="fa fa-heart-o"></i> Remove From Favorites
-    <% end %>
-  <% else %>
-    <%= link_to favorites_url(web_id: @item.web_id), class: 'btn btn-default',
-                method: 'post' do %>
-      <i class="fa fa-heart"></i> Add To Favorites
-    <% end %>
-  <% end %>
+  <button class="btn btn-danger kq-remove-from-favorites"
+          data-web-id="<%= @item.web_id %>">
+    <i class="fa fa-heart-o"></i> Remove From Favorites
+  </button>
+  <button class="btn btn-default kq-add-to-favorites"
+          data-web-id="<%= @item.web_id %>">
+    <i class="fa fa-heart"></i> Add To Favorites
+  </button>
   <%= download_button(@item) %>
 </div>
 

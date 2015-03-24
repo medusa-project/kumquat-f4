@@ -22,6 +22,9 @@
   <body <%= !yield(:body_id).empty? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
         <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
 
+    <%= hidden_field_tag('kq-root-path', root_path) %>
+    <%= hidden_field_tag('kq-root-url', root_url) %>
+
     <%= render 'layouts/header' %>
 
     <nav class="navbar navbar-default" role="navigation">
@@ -58,7 +61,8 @@
             </li>
             <li id="favorites-nav">
               <%= link_to favorites_path do %>
-                My Favorites <span class="badge"><%= num_favorites %></span>
+                My Favorites
+                  <span class="badge kq-favorites-count"><%= num_favorites %></span>
               <% end %>
             </li>
           </ul>

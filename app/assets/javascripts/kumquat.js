@@ -1,5 +1,10 @@
 var Kumquat = {
 
+    Events: {
+        ITEM_ADDED_TO_FAVORITES: 'KQItemAddedToFavorites',
+        ITEM_REMOVED_FROM_FAVORITES: 'KQItemRemovedFromFavorites'
+    },
+
     Flash: {
 
         FADE_OUT_DELAY: 10000,
@@ -62,7 +67,12 @@ var Kumquat = {
         // make the active nav bar nav active
         $('.navbar-nav li').removeClass('active');
         $('.navbar-nav li#' + $('body').attr('data-nav') + '-nav').addClass('active');
-    }
+    },
+
+    /**
+     * @return An object representing the current view.
+     */
+    view: null
 
 };
 

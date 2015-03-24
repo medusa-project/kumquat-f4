@@ -4,33 +4,7 @@ class FavoritesController < WebsiteController
 
   COOKIE_DELIMITER = ','
 
-  before_action :set_browse_context, only: :index
-
-  def create
-    @item = Repository::Item.find_by_web_id(params[:web_id])
-    raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
-
-    favorites = cookies[:favorites] || ''
-    cookies[:favorites] = favorites.split(COOKIE_DELIMITER).
-        push(@item.web_id).uniq.join(COOKIE_DELIMITER)
-
-    flash['success'] = "\"#{truncate(@item.title, length: 50)}\" has been "\
-    "added to your favorites."
-    redirect_to :back
-  end
-
-  def destroy
-    @item = Repository::Item.find_by_web_id(params[:web_id])
-    raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
-
-    unless cookies[:favorites].blank?
-      cookies[:favorites] = cookies[:favorites].split(COOKIE_DELIMITER).
-          reject{ |f| f == @item.web_id }.join(COOKIE_DELIMITER)
-      flash['success'] = "\"#{truncate(@item.title, length: 50)}\" has been "\
-      "removed from your favorites."
-    end
-    redirect_to :back
-  end
+  before_action :set_browse_context
 
   def index
     @start = params[:start] ? params[:start].to_i : 0

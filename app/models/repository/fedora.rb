@@ -30,7 +30,6 @@ module Repository
       #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{kq_predicates::COLLECTION_KEY} :: xsd:string;
       #{Solr::Solr::FULL_TEXT_KEY} = kumquat:#{kq_predicates::FULL_TEXT} :: xsd:string;
       #{Solr::Solr::HEIGHT_KEY} = kumquat:#{kq_predicates::HEIGHT} :: xsd:integer;
-      #{Solr::Solr::MASTER_BYTESTREAM_URI_KEY} = kumquat:#{kq_predicates::MASTER_BYTESTREAM_URI} :: xsd:string;
       #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{kq_predicates::PAGE_INDEX} :: xsd:integer;
       #{Solr::Solr::PARENT_URI_KEY} = kumquat:#{kq_predicates::PARENT_URI} :: xsd:string;
       #{Solr::Solr::WEB_ID_KEY} = kumquat:#{kq_predicates::WEB_ID} :: xsd:string;

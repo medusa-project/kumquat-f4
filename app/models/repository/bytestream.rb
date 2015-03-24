@@ -121,7 +121,7 @@ module Repository
     # Only works for images.
     #
     def read_dimensions
-      if self.media_type and self.media_type.start_with?('image/')
+      if self.is_image?
         begin
           if self.upload_pathname
             img = Magick::Image.read(self.upload_pathname).first
@@ -134,8 +134,7 @@ module Repository
             self.height = img.rows
           end
         rescue Magick::ImageMagickError => e
-          # nothing we can do
-          Rails.logger.debug(e.message)
+          # nothing we can do; Magick will have already logged this
         end
       end
     end
@@ -211,14 +210,17 @@ module Repository
 
       # also update the owning entity with some useful properties since we can't
       # easily query for them without a triple store
-      update.delete(owner_uri, "<kumquat:#{kq_predicates::MASTER_BYTESTREAM_URI}>", '?o').
-          insert(owner_uri, "kumquat:#{kq_predicates::MASTER_BYTESTREAM_URI}", my_uri, false)
-      update.delete(owner_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
-          insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
-      update.delete(owner_uri, '<dcterms:MediaType>', '?o').
-          insert(owner_uri, 'dcterms:MediaType', self.media_type)
-      update.delete(owner_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
-          insert(owner_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
+      update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTESTREAM_URI}>", "<#{my_uri}>").
+          insert(owner_uri, "kumquat:#{kq_predicates::BYTESTREAM_URI}", my_uri, false)
+      if self.type == Type::MASTER
+        update.delete(owner_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
+            insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
+        update.delete(owner_uri, '<dcterms:MediaType>', '?o').
+            insert(owner_uri, 'dcterms:MediaType', self.media_type)
+        update.delete(owner_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
+            insert(owner_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
+      end
+      update
     end
 
     private
@@ -245,8 +247,7 @@ module Repository
           filename = File.basename(self.upload_pathname)
           headers = {
               'Content-Type' => self.media_type,
-              'Content-Disposition' => "attachment; filename=\"#{filename}\"",
-              'Slug' => "#{self.type}-bytestream"
+              'Content-Disposition' => "attachment; filename=\"#{filename}\""
           }
           response = @@http.post(self.owner.repository_url, file, headers)
         end

@@ -100,7 +100,7 @@ module ActiveKumquat
       graph.each_statement do |statement|
         if statement.predicate == RDF::URI('http://fedora.info/definitions/v4/repository#uuid')
           self.uuid = statement.object.to_s
-        elsif statement.predicate == RDF::URI(kq_uri + kq_predicates::MASTER_BYTESTREAM_URI)
+        elsif statement.predicate.to_s == kq_uri + kq_predicates::BYTESTREAM_URI
           bs = Repository::Bytestream.new(owner: self,
                                           repository_url: statement.object.to_s)
           bs.reload!
@@ -224,7 +224,6 @@ module ActiveKumquat
         response = @@http.post(self.container_url, nil, headers)
         self.repository_url = response.header['Location'].first
         self.requested_slug = nil
-
         save_existing
       end
     end

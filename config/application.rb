@@ -27,11 +27,11 @@ module Kumquat
     #
     class RDFPredicates
       BYTESTREAM_TYPE = 'bytestreamType'
+      BYTESTREAM_URI = 'hasBytestream'
       CLASS = 'class'
       COLLECTION_KEY = 'collectionKey'
       FULL_TEXT = 'fullText'
       HEIGHT = 'height'
-      MASTER_BYTESTREAM_URI = 'hasMasterBytestream'
       PAGE_INDEX = 'pageIndex'
       PARENT_URI = 'hasParent'
       WEB_ID = 'webID'

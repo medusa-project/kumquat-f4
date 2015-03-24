@@ -11,7 +11,7 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_delete :delete_db_counterpart, :delete_derivatives
+    after_delete :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.
@@ -44,19 +44,6 @@ module Repository
             @db_counterpart
       end
       @db_counterpart
-    end
-
-    ##
-    # Deletes the static images of all items in the collection.
-    #
-    # @raise RuntimeError
-    #
-    def delete_derivatives
-      if self.key
-        FileUtils.rm_rf(File.join(DerivativeManagement::DERIVATIVE_ROOT, self.key))
-      else
-        raise 'Cannot delete the static images of a collection with a nil key.'
-      end
     end
 
     def num_items

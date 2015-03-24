@@ -5,6 +5,43 @@ module ItemsHelper
       dcterms: 'http://purl.org/dc/terms/'
   }
 
+  def download_button(item)
+    return nil unless item.master_bytestream
+    html = '<button type="button" class="btn btn-default dropdown-toggle"
+            data-toggle="dropdown" aria-expanded="false">
+         <i class="fa fa-download"></i> Download <span class="caret"></span>
+       </button>'
+    html += '<ul class="dropdown-menu" role="menu">'
+    html += '<li>'
+    type = MIME::Types[item.master_bytestream.media_type].first
+    label = type.friendly if type
+    label ||= item.master_bytestream.media_type
+    label = "Master (#{label})"
+    html += link_to(label, repository_item_master_bytestream_url(item))
+    html += '</li>'
+    derivatives = item.bytestreams.
+        select{ |b| b.type == Repository::Bytestream::Type::DERIVATIVE }
+    if derivatives.any?
+      html += '<li class="divider"></li>'
+      derivatives.each do |bs|
+        type = MIME::Types[bs.media_type].first
+        label = type ? type.friendly : bs.media_type
+        if bs.width and bs.height
+          label += " <small>(#{bs.width}&times;#{bs.height})</small>"
+        end
+        if label
+          html += '<li>'
+          html += link_to(bs.repository_url) do
+            raw(label)
+          end
+          html += '</li>'
+        end
+      end
+    end
+    html += '</ul>'
+    raw(html)
+  end
+
   ##
   # @param items ActiveKumquat::ResultSet
   #
@@ -237,9 +274,9 @@ module ItemsHelper
   def thumbnail_tag(item)
     return unless item
     html = "<div class=\"kq-thumbnail\">"
-    thumb_path = item.image_path(256)
-    if File.exist?(thumb_path)
-      html += image_tag(item.public_image_path(root_path, 256))
+    thumb_url = item.derivative_image_url(256)
+    if thumb_url
+      html += image_tag(thumb_url, alt: 'Thumbnail image')
     else
       html += self.icon_for(item)
     end

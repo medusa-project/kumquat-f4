@@ -16,7 +16,7 @@
 !/log/.keep
 /tmp
 
-config/database.yml
-config/kumquat.yml
+/config/database.yml
+/config/kumquat.yml
 
-public/derivatives
+/local/themes/*

@@ -22,7 +22,7 @@ module ActiveKumquat
     # @return Entity
     #
     def find_by_uri(uri)
-      self.where(id: uri).first
+      self.where(id: "\"#{uri}\"").first
     end
 
     ##
@@ -45,6 +45,10 @@ module ActiveKumquat
       if [:count, :first, :limit, :order, :start, :where].include?(name.to_sym)
         ActiveKumquat::Entity.new(self).send(name, *args, &block)
       end
+    end
+
+    def none
+      ActiveKumquat::Entity.new
     end
 
     def respond_to_missing?(method_name, include_private = false)

@@ -1,0 +1,29 @@
+<% provide :body_id, 'search' %>
+<% provide :active_nav, 'search' %>
+<% provide :title, 'Advanced Search' %>
+
+<h1>Advanced Search</h1>
+
+<%= form_tag(method: :post) do %>
+
+  <div class="well">
+    <div class="form-group form-inline">
+      <%= select_tag :field1, options_for_select(@predicates_for_select),
+                     class: 'form-control' %>
+      <%= text_field_tag :term1, '', class: 'form-control' %>
+    </div>
+    <div class="form-group form-inline">
+      <%= select_tag :field1, options_for_select(@predicates_for_select),
+                     class: 'form-control' %>
+      <%= text_field_tag :term2, '', class: 'form-control' %>
+    </div>
+    <div class="form-group form-inline">
+      <%= select_tag :field1, options_for_select(@predicates_for_select),
+                     class: 'form-control' %>
+      <%= text_field_tag :term3, '', class: 'form-control' %>
+    </div>
+  </div>
+
+  <%= submit_tag 'Search', class: 'btn btn-primary' %>
+
+<% end %>

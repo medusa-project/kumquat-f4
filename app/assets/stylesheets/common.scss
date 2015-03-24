@@ -1,29 +1,59 @@
-h1 {
-  font-family: 'Oswald', sans-serif;
-  margin-bottom: 0.5em;
-}
+/**
+ * Styles in use across the the public website.
+ * For sitewide styles, use sitewide.css.
+ */
 
-h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .btn, .kq-title {
-  font-family: 'PT Sans', sans-serif;
-}
-
-#kq-image-viewer {
-  background-color:black;
-  height: 500px;
-  margin-bottom: 1em;
-  max-width: 1000px;
-  width: 100%;
-}
-
-#kq-image-viewer.fullpage {
-}
-
-dl.kq-triples {
-  .kq-predicate-uri {
-    color: #b0b0b0;
-    font-size: 0.9em;
-  }
-  .kq-predicate-uri-lpc {
-    font-weight: bold;
+form.kq-quick-search {
+  width: 22em;
+  .input-group {
+    width: 100%;
   }
 }
+
+/* used for items#index, collections#index, and favorites#index */
+.kq-results ol {
+  margin-left:0px;
+  padding-left:0px;
+  li {
+    margin-bottom: 1em;
+    margin-left:2em;
+    .kq-add-to-favorites {
+      border:0px;
+      color: #e00000;
+    }
+    .kq-add-to-favorites, .kq-remove-from-favorites {
+      display:none;
+    }
+    div:first-child {
+      display: inline-block;
+      vertical-align: middle;
+      width: 100%;
+    }
+    a.kq-thumbnail-link {
+      color: #a0a0a0;
+    }
+    div.kq-thumbnail {
+      float:left;
+      font-size:75px;
+      margin-right: 20px;
+      text-align: center;
+      height: 100px;
+      width: 100px;
+      img {
+        max-height: 100px;
+        max-width: 100px;
+      }
+    }
+    .kq-title {
+      font-size: 1.4em;
+    }
+    .kq-description {
+    }
+    .kq-page-count {
+      font-size:0.5em;
+    }
+  }
+}
+
+/* TODO: use a glob (doesn't seem to work with sass-rails 5.0/5.0.1) */
+@import "../../../local/themes/uiuc/assets/stylesheets/custom.scss";

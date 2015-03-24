@@ -4,15 +4,18 @@
 
 <ol class="breadcrumb">
   <li><%= link_to 'Home', admin_root_path %></li>
-  <li><%= link_to 'Collections', admin_collections_path %></li>
+  <li><%= link_to 'Collections', admin_repository_collections_path %></li>
   <li class="active"><%= truncate(@collection.title, length: 50) %></li>
 </ol>
 
 <div class="btn-group pull-right">
-  <%= link_to edit_admin_collection_path(@collection), class: 'btn btn-default' do %>
+  <%= link_to @collection, class: 'btn btn-default' do %>
+    <i class="fa fa-globe"></i> Public View
+  <% end %>
+  <%= link_to edit_admin_repository_collection_path(@collection), class: 'btn btn-default' do %>
     <i class="fa fa-pencil-square-o"></i> Edit
   <% end %>
-  <%= link_to admin_collection_path(@collection), method: 'delete',
+  <%= link_to admin_repository_collection_path(@collection), method: 'delete',
               class: 'btn btn-danger',
               data: { confirm: 'Are you sure you want to delete this '\
                       'collection? All of its items will also be deleted.' } do %>
@@ -26,23 +29,48 @@
   <% if @collection.subtitle %>
     <br><small><%= @collection.subtitle %></small>
   <% end %>
-  <%= link_to @collection, class: 'btn btn-default btn-sm' do %>
-    <i class="fa fa-globe"></i> Public View
-  <% end %>
 </h1>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h2 class="panel-title">Triples</h2>
-  </div>
-  <div class="panel-body">
-    <%= triples_to_dl(@collection) %>
-  </div>
-</div>
+<div role="tabpanel">
 
-<%= render partial: 'shared/code_panel',
-           locals: { title: 'Solr JSON',
-                     body: JSON.pretty_generate(@collection.solr_json) } %>
-<%= render partial: 'shared/code_panel',
-           locals: { title: 'Fedora RDF',
-                     body: @collection.fedora_graph.dump(:ttl) } %>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a href="#kq-triples" aria-controls="home" role="tab" data-toggle="tab">Public RDF</a>
+    </li>
+    <li role="presentation">
+      <a href="#kq-repository" aria-controls="home" role="tab" data-toggle="tab">Fedora RDF</a>
+    </li>
+    <li role="presentation">
+      <a href="#kq-index" aria-controls="home" role="tab" data-toggle="tab">Solr JSON</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- Triples pane -->
+    <div role="tabpanel" class="tab-pane active" id="kq-triples">
+
+      <div class="clearfix">
+        <div class="btn-group pull-right">
+          <%= link_to admin_repository_collection_rdf_predicates_path(@collection),
+                      class: 'btn btn-default' do %>
+            <i class="fa fa-pencil-square-o"></i> Edit Predicate Labels
+          <% end %>
+        </div>
+      </div>
+      <%= triples_to_dl(@collection, full_label_info: true) %>
+    </div>
+
+    <!-- Repository pane -->
+    <div role="tabpanel" class="tab-pane" id="kq-repository">
+      <pre><%= @collection.rdf_graph.dump(:ttl) %></pre>
+    </div>
+
+    <!-- Index pane -->
+    <div role="tabpanel" class="tab-pane" id="kq-index">
+      <pre><%= JSON.pretty_generate(@collection.solr_json) %></pre>
+    </div>
+
+  </div> <!-- .tab-content -->
+
+</div> <!-- .tabpanel -->

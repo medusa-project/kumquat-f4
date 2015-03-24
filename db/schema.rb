@@ -11,10 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150226173239) do
+ActiveRecord::Schema.define(version: 20150323183720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "collections", force: :cascade do |t|
+    t.string   "key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "permissions", force: :cascade do |t|
     t.string   "key"
@@ -27,6 +33,16 @@ ActiveRecord::Schema.define(version: 20150226173239) do
     t.integer "role_id"
   end
 
+  create_table "rdf_predicates", force: :cascade do |t|
+    t.integer  "collection_id"
+    t.string   "uri"
+    t.string   "label"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "deletable",     default: true
+    t.string   "solr_field"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string   "key"
     t.string   "name"
@@ -37,6 +53,13 @@ ActiveRecord::Schema.define(version: 20150226173239) do
   create_table "roles_users", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "role_id"
+  end
+
+  create_table "uri_prefixes", force: :cascade do |t|
+    t.string   "uri"
+    t.string   "prefix"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

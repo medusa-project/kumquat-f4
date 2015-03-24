@@ -1,3 +1,25 @@
-<p><%= link_to 'Collections', collections_path %></p>
-<p><%= link_to 'Items', items_path %></p>
-<p><%= link_to 'Control Panel', admin_root_path %></p>
+<% provide :body_id, 'landing' %>
+<% provide :title, 'Home' %>
+
+<h1><%= Kumquat::Application.kumquat_config[:page_title] %></h1>
+
+<div class="row">
+  <div class="col-sm-7">
+    <div class="text-center uiuc-nav-buttons">
+      <%= link_to 'Browse Collections', repository_collections_path,
+                  class: 'btn btn-default btn-lg' %>
+      <%= link_to 'Browse Items', repository_items_path,
+                  class: 'btn btn-default btn-lg' %>
+    </div>
+  </div>
+  <div class="col-sm-5">
+    <% if @random_item %>
+      <div class="text-center">
+        <%= thumbnail_tag(@random_item) %>
+        <%= link_to @random_item.title, @random_item %>
+        <br>
+        <%= link_to @random_item.collection.title, @random_item.collection %>
+      </div>
+    <% end %>
+  </div>
+</div>

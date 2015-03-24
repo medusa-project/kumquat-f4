@@ -4,22 +4,8 @@
 
 <h1>Collections <small><%= @collections.total_length %> total</small></h1>
 
-<ul>
-  <% @collections.each do |collection| %>
-    <li class="clearfix">
-      <%= link_to collection do %>
-        <%= image_tag('', width: 100, height: 100) %>
-      <% end %>
-      <span class="kq-title">
-        <%= link_to collection.title, collection %>
-        <small><%= pluralize(collection.num_items, 'item') %></small>
-      </span>
-      <br>
-      <span class="kq-description">
-        <%= truncate(collection.triple('description').to_s, length: 400) %>
-      </span>
-    </li>
-  <% end %>
-</ul>
+<div class="kq-results">
+  <%= items_as_list(@collections, @start) %>
+</div>
 
 <%= paginate(@collections, @limit, @current_page) %>

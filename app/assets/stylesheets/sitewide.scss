@@ -3,11 +3,12 @@
  */
 
 h1 {
+  font-family: 'Oswald', sans-serif;
   font-size: 2.5em;
+  margin-bottom: 0.5em;
 }
 h1:first-child {
   margin-top: 0em;
-  margin-bottom: 0.5em;
 }
 h2 {
   font-size: 2em;
@@ -25,24 +26,41 @@ h6 {
   font-size: 0.9em;
 }
 
+h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .btn, .kq-title {
+  font-family: 'PT Sans', sans-serif;
+}
+
 dl {
   dd {
     margin: 0em 0em 0.5em 1em;
   }
-}
-
-dl ul {
-  margin-left: 1.5em;
-  padding-left: 0em;
-}
-
-.kq-code-panel {
-  .panel-body {
-    pre {
-      overflow: auto;
-      word-wrap: normal;
-      white-space: pre;
+  dl {
+    ul {
+      margin-left: 1.5em;
+      padding-left: 0em;
     }
-    overflow-x: scroll;
   }
+}
+
+dl.kq-triples {
+  .kq-predicate-uri {
+    color: #b0b0b0;
+    font-size: 0.9em;
+  }
+  .kq-predicate-uri-lpc {
+    font-weight: bold;
+  }
+}
+
+.tab-content {
+  padding-top:1em;
+}
+
+div.alert ul {
+  margin-left:1em;
+  padding-left:0px;
+}
+
+footer {
+  text-align: right;
 }

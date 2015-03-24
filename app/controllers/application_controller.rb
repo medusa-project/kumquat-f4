@@ -5,9 +5,12 @@ class ApplicationController < ActionController::Base
 
   include SessionsHelper
 
+  attr_reader :executor
+
   before_action :setup
 
   def setup
+    @executor = CommandExecutor.new(current_user)
   end
 
   def admin_user

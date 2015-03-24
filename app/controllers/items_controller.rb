@@ -1,19 +1,16 @@
-class Array
-  attr_accessor :total_length
-end
-
 class ItemsController < WebsiteController
 
   class BrowseContext
     BROWSING_ALL_ITEMS = 0
     BROWSING_COLLECTION = 1
     SEARCHING = 2
+    FAVORITES = 3
   end
 
   before_action :set_browse_context, only: :index
 
   def master_bytestream
-    @item = Item.find_by_web_id(params[:item_web_id])
+    @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     bs = @item.master_bytestream
@@ -27,17 +24,18 @@ class ItemsController < WebsiteController
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Kumquat::Application.kumquat_config[:results_per_page]
-    @items = Item.all.where("-#{Solr::Solr::PARENT_UUID_KEY}:[* TO *]").
+    @items = Repository::Item.all.
+        where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
         where(params[:q])
     if params[:fq].respond_to?(:each)
       params[:fq].each { |fq| @items = @items.facet(fq) }
     else
       @items = @items.facet(params[:fq])
     end
-    if params[:collection_web_id]
-      @collection = Collection.find_by_web_id(params[:collection_web_id])
+    if params[:repository_collection_key]
+      @collection = Repository::Collection.find_by_key(params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
-      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.web_id)
+      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
     end
     #@items = @items.order(:kq_title).start(@start).limit(@limit)
     # TODO: find a way to re-enable sorting
@@ -47,7 +45,7 @@ class ItemsController < WebsiteController
   end
 
   def show
-    @item = Item.find_by_web_id(params[:web_id])
+    @item = Repository::Item.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
   end
 
@@ -63,7 +61,7 @@ class ItemsController < WebsiteController
     session[:browse_context_url] = request.url
     if !params[:q].blank?
       session[:browse_context] = BrowseContext::SEARCHING
-    elsif !params[:collection_web_id]
+    elsif !params[:repository_collection_key]
       session[:browse_context] = BrowseContext::BROWSING_ALL_ITEMS
     else
       session[:browse_context] = BrowseContext::BROWSING_COLLECTION

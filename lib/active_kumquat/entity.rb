@@ -6,11 +6,15 @@ module ActiveKumquat
   class Entity
 
     @@http = HTTPClient.new
-    @@solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
 
     attr_reader :solr_request
 
-    def initialize(caller)
+    ##
+    # @param caller The calling entity (ActiveKumquat::Entity subclass), or
+    # nil to initialize an "empty query", i.e. one that will return no
+    # results.
+    #
+    def initialize(caller = nil)
       @caller = caller
       @facet = true
       @facet_queries = []
@@ -121,9 +125,13 @@ module ActiveKumquat
     private
 
     def load
+      unless @caller
+        @loaded = true
+        return @results
+      end
       unless @loaded
-        @where_clauses << "#{Solr::Solr::ENTITY_TYPE_KEY}:#{@caller::ENTITY_TYPE}" if
-            @caller.constants.include?(:ENTITY_TYPE)
+        @where_clauses << "#{Solr::Solr::CLASS_KEY}:\"#{Kumquat::Application::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
+            @caller.constants.include?(:ENTITY_CLASS)
         params = {
             q: @where_clauses.join(' AND '),
             df: 'kq_searchall',
@@ -137,7 +145,7 @@ module ActiveKumquat
           params['facet.field'] = Solr::Solr::FACET_FIELDS
           params[:fq] = @facet_queries
         end
-        solr_response = @@solr.get('select', params: params)
+        solr_response = Solr::Solr.client.get('select', params: params)
         @solr_request = solr_response.request
         @results.facet_fields = solr_facet_fields_to_objects(
             solr_response['facet_counts']['facet_fields']) if @facet
@@ -149,6 +157,7 @@ module ActiveKumquat
           graph = RDF::Graph.new
           graph.from_ntriples(f4_response.body)
           entity.populate_from_graph(graph)
+          entity.loaded = true
           @results << entity
         end
         @results.total_length = solr_response['response']['numFound'].to_i

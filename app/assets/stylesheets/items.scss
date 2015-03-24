@@ -3,58 +3,17 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body#items_index div#kq-page-content {
-  .kq-results ol {
-    margin-left:0px;
-    padding-left:0px;
-    li {
-      margin-bottom: 1em;
-      margin-left:2em;
-      div:first-child {
-        display: inline-block;
-        vertical-align: middle;
-        width: 100%;
-      }
-      a.kq-thumbnail-link {
-        color: #a0a0a0;
-      }
-      div.kq-thumbnail {
-        float:left;
-        font-size:75px;
-        margin-right: 20px;
-        text-align: center;
-        height: 100px;
-        width: 100px;
-        img {
-          max-height: 100px;
-          max-width: 100px;
-        }
-      }
-      .kq-title {
-        font-size: 1.4em;
-      }
-      .kq-description {
-      }
-      .kq-page-count {
-        font-size:0.5em;
-      }
-    }
-  }
-
   .kq-facets {
+    overflow-x: scroll;
     .kq-clear {
       color: red;
     }
     .kq-selected-term {
       font-weight: bold;
     }
-    .kq-count {
-      font-size: 0.9em;
-    }
-    .kq-count:before {
-      content: '(';
-    }
-    .kq-count:after {
-      content: ')';
+    .kq-count.badge {
+      background-color: #c0c0c0;
+      font-size: 0.7em;
     }
   }
 
@@ -83,6 +42,7 @@ body#items_index div#kq-page-content {
 
   .kq-panel-facets {
     .panel-body {
+      overflow-x: scroll;
       ul {
         margin-bottom:0em;
         margin-left: 1em;
@@ -93,5 +53,60 @@ body#items_index div#kq-page-content {
 }
 
 body#items_show {
+  .kq-compound-title {
+    margin-top:-0.3em;
+    small {
+      vertical-align:middle;
+      a {
+        color: black;
+      }
+    }
+  }
+  .kq-remove-from-favorites {
+    display:none;
+  }
+  #kq-image-viewer {
+    background-color:black;
+    height: 500px;
+    margin-bottom: 1em;
+    max-width: 1000px;
+    width: 100%;
+  }
+  #kq-image-viewer.fullpage {
+    max-width: 999999px;
+  }
 
+  #kq-video-player {
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .kq-horizontal-pages {
+    overflow-x: scroll;
+    ol {
+      margin-left:0px;
+      padding-left:0px;
+      li {
+        display: inline-block;
+        margin-left: 1em;
+        margin-right: 1em;
+        margin-top: -1em;
+        text-align: center;
+        div:first-child {
+          width: 110px;
+          .kq-thumbnail {
+            display: table-cell;
+            font-size:90px;
+            height: 100px;
+            max-height: 100px;
+            vertical-align: top;
+            img {
+              max-height: 100px;
+              max-width: 100px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

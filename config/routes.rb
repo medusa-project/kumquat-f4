@@ -49,21 +49,26 @@ Rails.application.routes.draw do
 
   root 'landing#index'
 
-  resources :collections, param: :web_id, only: [:index, :show] do
-    resources 'items', param: :web_id, only: :index
+  resources :collections, param: :key, only: [:index, :show], as: :repository_collections do
+    resources 'items', only: :index
   end
-  resources :items, param: :web_id, only: [:index, :show] do
+  resources :favorites, param: :web_id, only: :index
+  resources :items, param: :web_id, only: [:index, :show], as: :repository_items do
     match '/master', to: 'items#master_bytestream', via: 'get',
-          as: 'master_bytestream'
+          as: :master_bytestream
   end
-
+  match '/search', to: 'search#index', via: 'get'
   resources :sessions, only: [:new, :create, :destroy]
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :web_id
+    resources :collections, param: :key, as: :repository_collections do
+      resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
+    end
+    resources :collections, param: :key, as: :db_collections
+    resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',
@@ -74,6 +79,7 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
     match '/server/commit', to: 'server#commit',
           via: 'patch', as: 'server_commit'
+    resources :uri_prefixes, path: 'uri-prefixes', only: [:index, :create]
     resources :users, param: :username, only: [:index, :show]
   end
 

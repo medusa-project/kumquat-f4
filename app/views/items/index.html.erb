@@ -5,7 +5,7 @@
 <% when ItemsController::BrowseContext::BROWSING_COLLECTION %>
   <ol class="breadcrumb">
     <li><%= link_to 'Home', root_path %></li>
-    <li><%= link_to 'Collections', collections_path %></li>
+    <li><%= link_to 'Collections', repository_collections_path %></li>
     <li class="active"><%= truncate(@collection.title, length: 50) %></li>
   </ol>
 <% end %>
@@ -35,29 +35,9 @@
         </div>
       </div>
 
-      <ol start="<%= @start + 1 %>">
-        <% @items.each do |item| %>
-          <li>
-            <div>
-              <%= link_to item, class: 'kq-thumbnail-link' do %>
-                <%= thumbnail_tag(item) %>
-              <% end %>
-              <span class="kq-title">
-                <%= link_to item.title, item %>
-                <% if item.children.any? %>
-                  <span class="label label-info kq-page-count">
-                    <%= pluralize(item.children.length, 'page') %>
-                  </span>
-                <% end %>
-              </span>
-              <br>
-              <span class="kq-description">
-                <%= truncate(item.triple('description').to_s, length: 400) %>
-              </span>
-            </div>
-          </li>
-        <% end %>
-      </ol>
+      <%= items_as_list(@items, @start, show_collections: !@collection,
+                        show_add_to_favorites_buttons: true,
+                        show_remove_from_favorites_buttons: true) %>
 
       <div class="text-center">
         <%= paginate(@items, @limit, @current_page) %>

@@ -21,7 +21,7 @@ module Admin
     end
 
     def destroy
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
       command = DeleteCollectionCommand.new(@collection)
@@ -37,34 +37,35 @@ module Admin
     end
 
     def edit
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
     end
 
     def index
       @start = params[:start] ? params[:start].to_i : 0
       @limit = Kumquat::Application.kumquat_config[:results_per_page]
-      #@collections = Collection.order(:dc_title).start(@start).limit(@limit)
+      #@collections = Repository::Collection.order(:dc_title).start(@start).limit(@limit)
       # TODO: re-enable sorting
-      @collections = Collection.start(@start).limit(@limit)
+      @collections = Repository::Collection.start(@start).limit(@limit)
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @num_shown = [@limit, @collections.total_length].min
     end
 
     def new
-      @collection = Collection.new
+      @collection = Repository::Collection.new
     end
 
     def show
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
     end
 
     def update
-      @collection = Collection.find_by_web_id(params[:web_id])
+      @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      command = UpdateCollectionCommand.new(@collection, sanitized_params)
+      command = UpdateRepositoryCollectionCommand.new(@collection,
+                                                      sanitized_params)
       begin
         executor.execute(command)
       rescue => e
@@ -72,7 +73,7 @@ module Admin
         render 'edit'
       else
         flash[:success] = "Collection \"#{@collection.title}\" updated."
-        redirect_to admin_collection_url(@collection)
+        redirect_to admin_repository_collection_url(@collection)
       end
     end
 
@@ -89,7 +90,7 @@ module Admin
     end
 
     def sanitized_params
-      params.require(:collection).permit(:key, :title)
+      params.require(:repository_collection).permit(:key, :title)
     end
 
     def update_rbac

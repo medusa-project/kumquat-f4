@@ -76,12 +76,12 @@ module Contentdm
     ]
 
     def namespace_prefix
-      self.namespace_uri.include?('/dc/terms') ? 'dcterms' : 'dc'
+      self.uri.include?('/dc/terms') ? 'dcterms' : 'dc'
     end
 
-    def namespace_uri
+    def uri
       parts = URIS.select{ |u| u.include?(self.name) }.first.split('/')
-      parts[0..(parts.length - 2)].join('/') + '/'
+      parts[0..(parts.length - 2)].join('/') + '/' + self.name
     end
 
   end

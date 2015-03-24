@@ -1,4 +1,5 @@
 <% provide :title, @item.title %>
+<% provide :body_id, 'items_show' %>
 
 <% case session[:browse_context] %>
   <% when ItemsController::BrowseContext::SEARCHING %>
@@ -13,16 +14,25 @@
   <% when ItemsController::BrowseContext::BROWSING_ALL_ITEMS %>
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
-      <li><%= link_to 'All Items', items_path %></li>
+      <li><%= link_to 'All Items', repository_items_path %></li>
       <% if @item.parent %>
         <li><%= link_to @item.parent.title, @item.parent %></li>
+      <% end %>
+      <li class="active"><%= truncate(@item.title, length: 50) %></li>
+    </ol>
+  <% when ItemsController::BrowseContext::FAVORITES %>
+    <ol class="breadcrumb">
+      <li><%= link_to 'Home', root_path %></li>
+      <li><%= link_to 'Favorites', favorites_path %></li>
+      <% if @item.parent %>
+          <li><%= link_to @item.parent.title, @item.parent %></li>
       <% end %>
       <li class="active"><%= truncate(@item.title, length: 50) %></li>
     </ol>
   <% else %>
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
-      <li><%= link_to 'Collections', collections_path %></li>
+      <li><%= link_to 'Collections', repository_collections_path %></li>
       <li><%= link_to @item.collection.title, @item.collection %></li>
       <% if @item.parent %>
         <li><%= link_to @item.parent.title, @item.parent %></li>
@@ -32,16 +42,29 @@
 <% end %>
 
 <div class="btn-group pull-right">
-  <%= link_to item_master_bytestream_url(@item), class: 'btn btn-default' do %>
-    <i class="fa fa-download"></i> Download
-  <% end %>
+  <button class="btn btn-danger kq-remove-from-favorites"
+          data-web-id="<%= @item.web_id %>">
+    <i class="fa fa-heart-o"></i> Remove From Favorites
+  </button>
+  <button class="btn btn-default kq-add-to-favorites"
+          data-web-id="<%= @item.web_id %>">
+    <i class="fa fa-heart"></i> Add To Favorites
+  </button>
+  <%= download_button(@item) %>
 </div>
 
-<h1><%= @item.title %>
-  <% if @item.subtitle %>
-    <br><small><%= @item.subtitle %></small>
-  <% end %>
-</h1>
+<% if @item.parent %>
+  <h1 class="kq-compound-title">
+    <small><%= link_to @item.parent.title, @item.parent %></small>
+    <br>&nbsp;&nbsp;&#8627; <%= @item.title %>
+  </h1>
+<% else %>
+  <h1><%= @item.title %>
+    <% if @item.subtitle %>
+      <br><small><%= @item.subtitle %></small>
+    <% end %>
+  </h1>
+<% end %>
 
 <%= viewer_for(@item) %>
 
@@ -56,36 +79,21 @@
   </div>
 <% end %>
 
-<% if @item.parent or @item.children.any? %>
+<% pages = @item.parent ? @item.parent.children : @item.children %>
+<% if pages.any? %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Pages</h2>
+      <h2 class="panel-title">Pages (<%= pages.length %>)</h2>
     </div>
-    <div class="panel-body">
-      <ol>
-        <% if @item.children.any? %>
-          <% @item.children.each do |child| %>
-            <li><%= link_to child.title, child %></li>
-          <% end %>
-        <% else %>
-          <% @item.parent.children.each do |child| %>
-            <li>
-              <% if @item == child %>
-                <strong><%= child.title %></strong>
-              <% else %>
-                <%= link_to child.title, child %>
-              <% end %>
-            </li>
-          <% end %>
-        <% end %>
-      </ol>
+    <div class="panel-body kq-horizontal-pages">
+      <%= pages_as_list(@item) %>
     </div>
   </div>
 <% end %>
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h2 class="panel-title">Metadata</h2>
+    <h2 class="panel-title">Descriptive Info</h2>
   </div>
   <div class="panel-body">
     <%= triples_to_dl(@item) %>

@@ -11,6 +11,34 @@ module Kumquat
 
     NAMESPACE_URI = 'http://example.org/' # TODO: change this
 
+    ##
+    # "System objects" used by the application in the subject-predicate-object
+    # sense. These will be appended to NAMESPACE_URI.
+    #
+    class RDFObjects
+      BYTESTREAM = 'Bytestream'
+      COLLECTION = 'Collection'
+      ITEM = 'Item'
+    end
+
+    ##
+    # "System predicates" used by the application in the
+    # subject-predicate-object sense. These will be appended to NAMESPACE_URI.
+    #
+    class RDFPredicates
+      BYTE_SIZE = 'byteSize'
+      BYTESTREAM_TYPE = 'bytestreamType'
+      BYTESTREAM_URI = 'hasBytestream'
+      CLASS = 'class'
+      COLLECTION_KEY = 'collectionKey'
+      FULL_TEXT = 'fullText'
+      HEIGHT = 'height'
+      PAGE_INDEX = 'pageIndex'
+      PARENT_URI = 'hasParent'
+      WEB_ID = 'webID'
+      WIDTH = 'width'
+    end
+
     attr_accessor :kumquat_config
 
     # Settings in config/environments/* take precedence over those specified here.

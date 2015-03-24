@@ -26,7 +26,8 @@ module BytestreamOwner
   end
 
   def master_bytestream
-    self.bytestreams.select{ |b| b.type == Bytestream::Type::MASTER }.first
+    self.bytestreams.
+        select{ |b| b.type == Repository::Bytestream::Type::MASTER }.first
   end
 
   def master_image

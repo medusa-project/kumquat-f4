@@ -8,7 +8,7 @@
 </ol>
 
 <div class="btn-group pull-right">
-  <%= link_to new_admin_collection_path, class: 'btn btn-default' do %>
+  <%= link_to new_admin_repository_collection_path, class: 'btn btn-default' do %>
     <i class="fa fa-cubes"></i> New Collection
   <% end %>
 </div>
@@ -22,12 +22,12 @@
         <%= image_tag('', width: 100, height: 100) %>
       <% end %>
       <span class="title">
-      <%= link_to collection.title, admin_collection_path(collection) %>
+      <%= link_to collection.title, admin_repository_collection_path(collection) %>
         <small><%= pluralize(collection.num_items, 'item') %></small>
       </span>
       <br>
       <span class="description">
-        <%= truncate(collection.triple('http://purl.org/dc/elements/1.1/description'), length: 400) %>
+        <%= truncate(collection.description.to_s, length: 400) %>
       </span>
     </li>
   <% end %>

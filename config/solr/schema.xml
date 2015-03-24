@@ -76,21 +76,17 @@
     stored="true" multiValued="false"/>
   <field name="kq_system_height" type="int" indexed="true" stored="true"
     multiValued="false"/>
-  <!-- URI of an item's master bytestream -->
-  <field name="kq_system_master_bytestream_uri" type="string" indexed="false"
-    stored="true" multiValued="false"/>
   <!-- copyField destination for dcterm_MediaType -->
   <field name="kq_system_media_type" type="string" indexed="true" stored="true"
     multiValued="false"/>
-  <!-- ID (Fedora UUID) of the parent item, if present -->
-  <!-- TODO: probably possible to eliminate this -->
-  <field name="kq_system_parent_uuid" type="string" indexed="true" stored="true"
+  <!-- URI of the parent item, if present -->
+  <field name="kq_system_parent_uri" type="string" indexed="true" stored="true"
     required="false" multiValued="false"/>
   <!-- Preserves the order of items in a set -->
   <field name="kq_system_page_index" type="int" indexed="true" stored="true"
     multiValued="false"/>
   <!-- One of the ActiveKumquat::Base::TYPE constants -->
-  <field name="kq_system_resource_type" type="string" indexed="true" stored="true"
+  <field name="kq_system_class" type="string" indexed="true" stored="true"
     multiValued="false"/>
   <!-- Short, non-sequential, unique alphanumeric string for use in URLs -->
   <field name="kq_system_web_id" type="string" indexed="true" stored="true"

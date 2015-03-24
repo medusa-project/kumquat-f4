@@ -37,7 +37,7 @@ var Kumquat = {
             button.after(text);
 
             // append the flash to the DOM
-            $('div.container header, div.container-fluid header').after(flash);
+            $('#kq-page-content').before(flash);
 
             // make it disappear after a delay
             setTimeout(function() {

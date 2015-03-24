@@ -493,7 +493,8 @@ module ItemsHelper
     else
       parts << bytestream.media_type
     end
-    if bytestream.width and bytestream.height
+    if bytestream.width and bytestream.width > 0 and bytestream.height and
+        bytestream.height > 0
       parts << "<small>#{bytestream.width}&times;#{bytestream.height}</small>"
     end
     if bytestream.byte_size

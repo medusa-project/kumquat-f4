@@ -332,6 +332,10 @@ DB::URIPrefix.create!(prefix: 'dcterms',
                       uri: 'http://purl.org/dc/terms/')
 DB::URIPrefix.create!(prefix: 'foaf',
                       uri: 'http://xmlns.com/foaf/0.1/')
+DB::URIPrefix.create!(prefix: 'iana',
+                      uri: 'http://www.iana.org/assignments/relation/')
+DB::URIPrefix.create!(prefix: 'ore',
+                      uri: 'http://www.openarchives.org/ore/terms/')
 DB::URIPrefix.create!(prefix: 'rdfs',
                       uri: 'http://www.w3.org/2000/01/rdf-schema#')
 DB::URIPrefix.create!(prefix: 'rdf',

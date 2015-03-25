@@ -3,6 +3,7 @@ module DB
   class Collection < ActiveRecord::Base
 
     has_many :rdf_predicates, :class_name => 'DB::RDFPredicate'
+    belongs_to :theme, :class_name => 'DB::Theme'
 
     validates :key, length: { minimum: 2, maximum: 20 }
 

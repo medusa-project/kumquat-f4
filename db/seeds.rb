@@ -325,6 +325,9 @@ DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
                          solr_field: 'kq_valid',
                          deletable: false)
 
+# Themes
+DB::Theme.create!(name: 'Default', required: true, default: true)
+
 # URI Prefixes
 DB::URIPrefix.create!(prefix: 'dc',
                       uri: 'http://purl.org/dc/elements/1.1/')
@@ -342,6 +345,9 @@ DB::URIPrefix.create!(prefix: 'rdf',
                       uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
 if Rails.env.development?
+
+  # Themes
+  DB::Theme.create!(name: 'UIUC')
 
   # Users
   users = {}

@@ -7,8 +7,6 @@ development:
   :facet_term_limit: 10
   :results_per_page: 30
   :web_id_length: 5
-  :themes:
-    :default: 'tiles'
 
 test:
   :fedora_url: http://localhost:8080/fcrepo/rest/
@@ -19,8 +17,6 @@ test:
   :facet_term_limit: 10
   :results_per_page: 30
   :web_id_length: 5
-  :themes:
-    :default: 'tiles'
 
 production:
   :fedora_url: http://localhost:8080/fcrepo/rest/
@@ -31,5 +27,3 @@ production:
   :facet_term_limit: 10
   :results_per_page: 30
   :web_id_length: 5
-  :themes:
-    :default: 'tiles'

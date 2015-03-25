@@ -26,15 +26,13 @@ class WebsiteController < ApplicationController
       key = Repository::Item.find_by_web_id(params[:web_id]).collection.key
     end
 
-    themes = Kumquat::Application.kumquat_config[:themes]
-    if themes and themes.any?
-      theme = themes[key.to_sym]
-      if theme
-        prepend_view_path("local/themes/#{theme}/views")
-      elsif themes[:default]
-        prepend_view_path("local/themes/#{themes[:default]}/views")
-      end
-    end
+    theme = nil
+    collection = DB::Collection.find_by_key(key)
+    theme = collection.theme if collection
+    theme ||= DB::Theme.default
+    pathname = nil
+    pathname = File.join(Rails.root, theme.pathname, 'views') if theme
+    prepend_view_path(pathname) if pathname
   end
 
 end

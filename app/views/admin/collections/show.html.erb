@@ -35,6 +35,9 @@
 
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
+      <a href="#kq-configuration" aria-controls="home" role="tab" data-toggle="tab">Configuration</a>
+    </li>
+    <li role="presentation">
       <a href="#kq-triples" aria-controls="home" role="tab" data-toggle="tab">Public RDF</a>
     </li>
     <li role="presentation">
@@ -47,9 +50,16 @@
 
   <div class="tab-content">
 
-    <!-- Triples pane -->
-    <div role="tabpanel" class="tab-pane active" id="kq-triples">
+    <!-- Configuration pane -->
+    <div role="tabpanel" class="tab-pane active" id="kq-configuration">
+      <dl>
+        <dt>Theme</dt>
+        <dd><%= @collection.db_counterpart.theme ? @collection.db_counterpart.theme.name : 'Default' %></dd>
+      </dl>
+    </div>
 
+    <!-- Public RDF pane -->
+    <div role="tabpanel" class="tab-pane" id="kq-triples">
       <div class="clearfix">
         <div class="btn-group pull-right">
           <%= link_to admin_repository_collection_rdf_predicates_path(@collection),

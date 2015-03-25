@@ -25,8 +25,10 @@ module Repository
     validates_presence_of :owner
 
     class Type
-      DERIVATIVE = 'derivative'
-      MASTER = 'master'
+      DERIVATIVE = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::DERIVATIVE_BYTESTREAM
+      MASTER = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::MASTER_BYTESTREAM
     end
 
     @@http = HTTPClient.new
@@ -212,7 +214,8 @@ module Repository
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_TYPE}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}", self.type)
+          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}",
+                 "<#{self.type}>", false)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').

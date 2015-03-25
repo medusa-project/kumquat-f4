@@ -12,6 +12,11 @@
     <%= f.text_field :key, class: 'form-control', maxlength: f.object.class.max_length(:key)  %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :description %>
+    <%= f.text_area :description, class: 'form-control' %>
+  </div>
+
   <%= f.submit(context == :create ? 'Create' : 'Save Changes', class: 'btn btn-primary') %>
 
 <% end %>

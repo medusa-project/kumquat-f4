@@ -8,7 +8,7 @@ var KQSearchView = function() {
     this.init = function() {
         $('button.kq-add-field').on('click', function() {
             // limit to FIELD_LIMIT fields
-            if ($('.kq-field-search .form-group').length >= FIELD_LIMIT) {
+            if ($('.kq-fields .form-group').length >= FIELD_LIMIT) {
                 return;
             }
             var clone = $(this).prev('.form-group').clone(true);
@@ -16,6 +16,15 @@ var KQSearchView = function() {
         });
         $('button.kq-remove-field').on('click', function() {
             $(this).closest('.form-group').remove();
+        });
+
+        $('button.kq-check-all').on('click', function() {
+            $(this).closest('.kq-collections').find('input[type="checkbox"]').
+                prop('checked', true);
+        });
+        $('button.kq-uncheck-all').on('click', function() {
+            $(this).closest('.kq-collections').find('input[type="checkbox"]').
+                prop('checked', false);
         });
     };
 

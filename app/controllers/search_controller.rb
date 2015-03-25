@@ -7,6 +7,8 @@ class SearchController < WebsiteController
     @predicates_for_select = DB::RDFPredicate.order(:label).
         map{ |p| [ p.label, p.solr_field ] }.uniq
     @predicates_for_select.unshift([ 'Any Field', 'kq_searchall' ])
+
+    @collections = Repository::Collection.all
   end
 
   ##
@@ -15,8 +17,9 @@ class SearchController < WebsiteController
   # 302-redirects to it.
   #
   def search
-    # field search
     where_clauses = []
+
+    # fields
     if params[:fields].any?
       params[:fields].each_with_index do |field, index|
         if params[:terms].length > index and !params[:terms][index].blank?
@@ -25,7 +28,15 @@ class SearchController < WebsiteController
       end
     end
 
-    #render text: YAML::dump(params.inspect)
+    # collections
+    keys = []
+    if params[:keys].any?
+      keys = params[:keys].select{ |k| !k.blank? }
+    end
+    if keys.any? and keys.length < Repository::Collection.all.length
+      where_clauses << "#{Solr::Solr::COLLECTION_KEY_KEY}:+(#{keys.join(' ')})"
+    end
+
     redirect_to repository_items_path(q: where_clauses.join(' AND '))
   end
 

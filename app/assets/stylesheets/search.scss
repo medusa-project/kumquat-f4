@@ -1,5 +1,16 @@
 body#search {
-  .kq-field-search .form-group:first-child .kq-remove-field {
+  .panel-body {
+    max-height:50em;
+    overflow-y: scroll;
+  }
+  .kq-fields .form-group:first-child .kq-remove-field {
     display:none;
+  }
+  .kq-collections {
+    ol {
+      list-style:none;
+      margin-left:0px;
+      padding-left:0px;
+    }
   }
 }

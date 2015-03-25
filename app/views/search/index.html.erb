@@ -6,15 +6,48 @@
 
 <%= form_tag do %>
 
-  <div class="well kq-field-search">
-    <div class="form-group form-inline">
-      <%= select_tag 'fields[]', options_for_select(@predicates_for_select),
-                     class: 'form-control' %>
-      <%= text_field_tag 'terms[]', '', class: 'form-control' %>
-      <button type="button" class="btn btn-xs btn-danger kq-remove-field">&minus;</button>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="panel panel-default kq-fields">
+          <div class="panel-heading">
+            <h3 class="panel-title">Fields</h3>
+          </div>
+          <div class="panel-body">
+            <div class="form-group form-inline">
+              <%= select_tag 'fields[]', options_for_select(@predicates_for_select),
+                             class: 'form-control' %>
+              <%= text_field_tag 'terms[]', '', placeholder: 'Search Term', class: 'form-control' %>
+              <button type="button" class="btn btn-xs btn-danger kq-remove-field">&minus;</button>
+            </div>
+            <button type="button" class="btn btn-xs btn-success kq-add-field">&plus; Add Field</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="panel panel-default kq-collections">
+          <div class="panel-heading">
+            <h3 class="panel-title">Collections
+            <button type="button" class="btn btn-xs btn-default kq-check-all">Check All</button>
+            <button type="button" class="btn btn-xs btn-default kq-uncheck-all">Uncheck All</button>
+            </h3>
+          </div>
+          <div class="panel-body">
+            <ol>
+              <% @collections.each do |collection| %>
+                <li>
+                  <div class="checkbox">
+                    <label><%= check_box_tag('keys[]', collection.key, checked: true) %><%= collection.title %></label>
+                  </div>
+                </li>
+              <% end %>
+            </ol>
+          </div>
+        </div>
+      </div>
     </div>
-    <button type="button" class="btn btn-xs btn-success kq-add-field">&plus; Add Field</button>
-  </div>
+
 
   <%= submit_tag 'Search', class: 'btn btn-primary' %>
 

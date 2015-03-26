@@ -104,7 +104,7 @@ module ItemsHelper
   # @param start integer
   # @param options Hash with available keys:
   # :show_remove_from_favorites_buttons, :show_add_to_favorites_buttons,
-  # :show_collections
+  # :show_collections, :show_description, :thumbnail_size
   #
   def items_as_list(items, start, options = {})
     html = "<ol start=\"#{start + 1}\">"
@@ -113,7 +113,8 @@ module ItemsHelper
         '<div>'
       if item.kind_of?(Repository::Item)
         html += link_to(item, class: 'kq-thumbnail-link') do
-          thumbnail_tag(item)
+          thumbnail_tag(item,
+                        options[:thumbnail_size] ? options[:thumbnail_size] : 256)
         end
       end
       html += '<span class="kq-title">'
@@ -137,10 +138,12 @@ module ItemsHelper
           raw("#{self.icon_for(item.collection)} #{item.collection.title}")
         end
       end
-      html += '<br>'
-      html += '<span class="kq-description">'
-      html += truncate(item.description.to_s, length: 400)
-      html += '</span>'
+      if options[:show_description]
+        html += '<br>'
+        html += '<span class="kq-description">'
+        html += truncate(item.description.to_s, length: 400)
+        html += '</span>'
+      end
       html += '</div>'
       html += '</li>'
     end
@@ -166,11 +169,11 @@ module ItemsHelper
     items.each do |child|
       html += '<li><div>'
       if item == child
-        html += thumbnail_tag(child)
+        html += thumbnail_tag(child, 256)
         html += "<strong class=\"kq-text\">#{truncate(child.title, length: 40)}</strong>"
       else
         html += link_to(child) do
-          thumbnail_tag(child)
+          thumbnail_tag(child, 256)
         end
         html += link_to(truncate(child.title, length: 40), child)
       end

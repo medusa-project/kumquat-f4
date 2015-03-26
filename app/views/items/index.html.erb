@@ -34,10 +34,12 @@
             <%= @items.total_length %> items
         </div>
       </div>
-
-      <%= items_as_list(@items, @start, show_collections: !@collection,
-                        show_add_to_favorites_buttons: true,
-                        show_remove_from_favorites_buttons: true) %>
+      <div class="kq-list-results">
+        <%= items_as_list(@items, @start, show_collections: !@collection,
+                          show_add_to_favorites_buttons: true,
+                          show_description: true,
+                          show_remove_from_favorites_buttons: true) %>
+      </div>
 
       <div class="text-center">
         <%= paginate(@items, @limit, @current_page) %>

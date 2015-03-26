@@ -14,14 +14,23 @@
 
 <h1>Themes</h1>
 
+<div class="alert alert-info">
+  <ul>
+    <li>The default theme will be used throughout the public website, but can be
+      overridden on a per-collection basis.</li>
+    <li>Changes made here will not affect the corresponding theme folder on
+      disk.</li>
+  </ul>
+</div>
+
 <table class="table table-striped">
   <thead>
     <tr>
       <th style="width:1%"></th>
       <th style="width:1%"></th>
-      <th style="width:1%">Default</th>
+      <th style="width:1%"></th>
       <th>Theme</th>
-      <th>Path</th>
+      <th>Path (relative to application root)</th>
     </tr>
   </thead>
   <tbody>
@@ -44,7 +53,7 @@
         </td>
         <td class="text-center">
           <% if theme.default %>
-            <span class="text-success">&check;</span>
+            <span class="label label-success">Default</span>
           <% else %>
             <%= link_to 'Set As Default', admin_db_theme_path(theme, db_theme: { default: true }),
                         class: 'btn btn-default btn-xs', method: :patch %>
@@ -52,7 +61,7 @@
         </td>
         <td><%= theme.name %></td>
         <td>
-          <%= File.join(Rails.root, theme.pathname) %>
+          <%= theme.pathname %>
           <% if File.exist?(File.join(Rails.root, theme.pathname)) %>
             <span class="label label-success">OK</span>
           <% else %>

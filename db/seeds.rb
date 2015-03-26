@@ -326,7 +326,7 @@ DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
                          deletable: false)
 
 # Themes
-DB::Theme.create!(name: 'Default', required: true, default: true)
+DB::Theme.create!(name: 'Built-In', required: true, default: true)
 
 # URI Prefixes
 DB::URIPrefix.create!(prefix: 'dc',

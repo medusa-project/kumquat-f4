@@ -12,10 +12,10 @@ module Admin
       begin
         executor.execute(command)
       rescue => e
-        flash[:error] = "#{e}"
+        flash['error'] = "#{e}"
         render 'new'
       else
-        flash[:success] = "Collection \"#{@collection.title}\" created."
+        flash['success'] = "Collection \"#{@collection.title}\" created."
         redirect_to admin_collection_url(@collection)
       end
     end
@@ -28,10 +28,10 @@ module Admin
       begin
         executor.execute(command)
       rescue => e
-        flash[:error] = "#{e}"
+        flash['error'] = "#{e}"
         redirect_to admin_collection_url(@collection)
       else
-        flash[:success] = "Collection \"#{@collection.title}\" deleted."
+        flash['success'] = "Collection \"#{@collection.title}\" deleted."
         redirect_to admin_collections_url
       end
     end
@@ -58,23 +58,36 @@ module Admin
     def show
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
+
+      @theme_options_for_select = [[ 'None (Use Global)', nil ]] +
+          DB::Theme.order(:name).map{ |t| [ t.name, t.id ] }
     end
 
     def update
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      command = UpdateRepositoryCollectionCommand.new(@collection,
-                                                      sanitized_params)
+      if params[:repository_collection]
+        command = UpdateRepositoryCollectionCommand.new(@collection,
+                                                        sanitized_repo_params)
+      else
+        command = UpdateDBCollectionCommand.new(@collection.db_counterpart,
+                                                sanitized_db_params)
+      end
+
       begin
         executor.execute(command)
       rescue => e
-        flash[:error] = "#{e}"
-        render 'edit'
+        response.headers['X-Kumquat-Result'] = 'error'
+        flash['error'] = "#{e}"
+        render 'edit' unless request.xhr?
       else
-        flash[:success] = "Collection \"#{@collection.title}\" updated."
-        redirect_to admin_repository_collection_url(@collection)
+        response.headers['X-Kumquat-Result'] = 'success'
+        flash['success'] = "Collection \"#{@collection.title}\" updated."
+        redirect_to admin_repository_collection_url(@collection) unless request.xhr?
       end
+
+      render 'show' if request.xhr?
     end
 
     private
@@ -89,8 +102,12 @@ module Admin
           current_user.can?(Permission::COLLECTIONS_DELETE)
     end
 
-    def sanitized_params
-      params.require(:repository_collection).permit(:key, :title)
+    def sanitized_db_params
+      params.require(:db_collection).permit(:id, :theme_id)
+    end
+
+    def sanitized_repo_params
+      params.require(:repository_collection).permit(:key, :title, :description)
     end
 
     def update_rbac

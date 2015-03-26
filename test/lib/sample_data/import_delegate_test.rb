@@ -11,52 +11,58 @@ class ImportDelegateTest < ActiveSupport::TestCase
   end
 
   test 'collection_key_of_item_at_index should return the correct key' do
-    assert_equal 'kq-sample', @delegate.collection_key_of_item_at_index(3)
+    assert_equal 'audio-sample', @delegate.collection_key_of_item_at_index(0)
+    assert_equal 'doc-sample', @delegate.collection_key_of_item_at_index(2)
   end
 
   test 'full_text_of_item_at_index should return the full text' do
-    assert @delegate.full_text_of_item_at_index(9).start_with?('Harold')
+    assert @delegate.full_text_of_item_at_index(10).start_with?('Harold')
   end
 
   test 'import_id_of_item_at_index should return the correct import ID' do
     index = 0
-    assert_equal "kq-sample-#{index}", @delegate.import_id_of_item_at_index(index)
+    assert_equal "audio-sample-#{index}",
+                 @delegate.import_id_of_item_at_index(index)
+    index = 2
+    assert_equal "doc-sample-#{index}",
+                 @delegate.import_id_of_item_at_index(index)
   end
 
   test 'parent_import_id_of_item_at_index should return the correct parent import ID' do
-    assert_equal 'kq-sample-1', @delegate.parent_import_id_of_item_at_index(2)
-    assert_nil @delegate.parent_import_id_of_item_at_index(9)
+    assert_equal @delegate.import_id_of_item_at_index(4),
+                 @delegate.parent_import_id_of_item_at_index(5)
+    assert_nil @delegate.parent_import_id_of_item_at_index(0)
   end
 
   test 'master_pathname_of_item_at_index should return the master pathname' do
-    pathname = File.join(Rails.root, 'lib', 'sample_data', 'sample_collection',
+    pathname = File.join(SampleData::ImportDelegate::SOURCE_PATH,
                          '800379272_de0817d41a.tiff')
-    assert_equal pathname, @delegate.master_pathname_of_item_at_index(4)
+    assert_equal pathname, @delegate.master_pathname_of_item_at_index(7)
   end
 
   test 'media_type_of_item_at_index should return the correct media type' do
-    assert_equal 'image/tiff', @delegate.media_type_of_item_at_index(4)
+    assert_equal 'image/tiff', @delegate.media_type_of_item_at_index(7)
   end
 
   test 'metadata_of_collection_of_item_at_index should return some metadata' do
-    graph = @delegate.metadata_of_collection_of_item_at_index(4)
+    graph = @delegate.metadata_of_collection_of_item_at_index(7)
     assert graph.has_predicate?(RDF::URI('http://purl.org/dc/elements/1.1/title'))
   end
 
   test 'metadata_of_item_at_index should return some metadata' do
-    graph = @delegate.metadata_of_item_at_index(4)
+    graph = @delegate.metadata_of_item_at_index(7)
     assert graph.has_predicate?(RDF::URI('http://purl.org/dc/elements/1.1/title'))
   end
 
   test 'metadata_of_item_at_index should not return any blank objects' do
-    graph = @delegate.metadata_of_item_at_index(9)
+    graph = @delegate.metadata_of_item_at_index(10)
     graph.each_statement do |st|
       assert !st.object.to_s.blank?
     end
   end
 
   test 'slug_of_collection_of_item_at_index should return the correct slug' do
-    assert_equal 'kq-sample', @delegate.slug_of_collection_of_item_at_index(7)
+    assert_equal 'audio-sample', @delegate.slug_of_collection_of_item_at_index(0)
   end
 
 end

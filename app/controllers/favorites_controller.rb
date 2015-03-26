@@ -5,6 +5,7 @@ class FavoritesController < WebsiteController
   COOKIE_DELIMITER = ','
 
   before_action :set_browse_context
+  after_action :purge_invalid_favorites, only: :index
 
   def index
     @start = params[:start] ? params[:start].to_i : 0
@@ -26,6 +27,17 @@ class FavoritesController < WebsiteController
   end
 
   private
+
+  ##
+  # Rewrites the favorites cookie if there are any items in the cookie that
+  # no longer exist in the repo.
+  #
+  def purge_invalid_favorites
+    web_ids = cookies[:favorites].split(COOKIE_DELIMITER)
+    if web_ids.length != @items.length
+      cookies[:favorites] = @items.map(&:web_id).join(COOKIE_DELIMITER)
+    end
+  end
 
   ##
   # See ItemsController.set_browse_context for documentation.

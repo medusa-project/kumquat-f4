@@ -286,7 +286,8 @@ module ItemsHelper
   ##
   # @param item Repository::Item
   # @param size integer One of DerivativeManagement::STATIC_IMAGE_SIZES
-  def thumbnail_tag(item, size = 256)
+  #
+  def thumbnail_tag(item, size)
     return unless item
     html = "<div class=\"kq-thumbnail\">"
     thumb_url = item.derivative_image_url(size)

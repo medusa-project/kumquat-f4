@@ -26,7 +26,7 @@
   <div class="col-sm-6">
     <% if @item %>
       <div class="text-center">
-        <%= thumbnail_tag(@item) %>
+        <%= thumbnail_tag(@item, 512) %>
         <%= link_to @item.title, @item %>
       </div>
     <% end %>

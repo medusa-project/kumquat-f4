@@ -15,7 +15,7 @@
   <div class="col-sm-5">
     <% if @random_item %>
       <div class="text-center">
-        <%= thumbnail_tag(@random_item) %>
+        <%= thumbnail_tag(@random_item, 512) %>
         <%= link_to @random_item.title, @random_item %>
         <br>
         <%= link_to @random_item.collection.title, @random_item.collection %>

@@ -2,6 +2,16 @@
 # with its default values. The data can then be loaded with the rake db:seed
 # (or created alongside the db with db:setup).
 
+# Options
+DB::Option.create!(key: DB::Option::Key::ADMINISTRATOR_EMAIL,
+                   value: 'admin@example.org')
+DB::Option.create!(key: DB::Option::Key::COPYRIGHT_STATEMENT,
+                   value: 'Copyright © 2015 My Great Organization. All rights reserved.')
+DB::Option.create!(key: DB::Option::Key::ORGANIZATION_NAME,
+                   value: 'My Great Organization')
+DB::Option.create!(key: DB::Option::Key::WEBSITE_NAME,
+                   value: 'My Great Organization Digital Collections')
+
 # Roles
 roles = {}
 roles[:admin] = Role.create!(key: 'admin', name: 'Administrators')

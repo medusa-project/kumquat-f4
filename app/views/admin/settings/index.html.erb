@@ -1,0 +1,57 @@
+<% provide :title, 'Settings' %>
+<% provide :body_id, 'settings' %>
+<% provide :active_nav, 'server' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li class="active">Settings</li>
+</ol>
+
+<h1>Settings</h1>
+
+<%= form_tag(admin_settings_path, method: 'patch') do %>
+
+  <h3>General</h3>
+
+  <table class="table table-striped">
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::ORGANIZATION_NAME}]",
+                        'Organization Name') %></td>
+      <td>
+        <%= text_field_tag("options[#{DB::Option::Key::ORGANIZATION_NAME}]",
+                           DB::Option::string(DB::Option::Key::ORGANIZATION_NAME),
+                           class: 'form-control') %>
+      </td>
+    </tr>
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::WEBSITE_NAME}]",
+                        'Website Name') %></td>
+      <td>
+        <%= text_field_tag("options[#{DB::Option::Key::WEBSITE_NAME}]",
+                          DB::Option::string(DB::Option::Key::WEBSITE_NAME),
+                          class: 'form-control') %>
+      </td>
+    </tr>
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::ADMINISTRATOR_EMAIL}]",
+                        'Administrator Email') %></td>
+      <td>
+        <%= text_field_tag("options[#{DB::Option::Key::ADMINISTRATOR_EMAIL}]",
+                           DB::Option::string(DB::Option::Key::ADMINISTRATOR_EMAIL),
+                           class: 'form-control') %>
+      </td>
+    </tr>
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::COPYRIGHT_STATEMENT}]",
+                        'Copyright Statement') %></td>
+      <td>
+        <%= text_field_tag("options[#{DB::Option::Key::COPYRIGHT_STATEMENT}]",
+                           DB::Option::string(DB::Option::Key::COPYRIGHT_STATEMENT),
+                           class: 'form-control') %>
+      </td>
+    </tr>
+  </table>
+
+  <%= submit_tag 'Save Changes', class: 'btn btn-primary' %>
+
+<% end %>

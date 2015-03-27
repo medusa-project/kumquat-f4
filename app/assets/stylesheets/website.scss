@@ -3,6 +3,34 @@
  * For sitewide styles, use sitewide.css.
  */
 
+h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.5em;
+  margin-bottom: 0.5em;
+}
+h1:first-child {
+  margin-top: 0em;
+}
+h2 {
+  font-size: 2em;
+}
+h3 {
+  font-size: 1.6em;
+}
+h4 {
+  font-size: 1.3em;
+}
+h5 {
+  font-size: 1.1em;
+}
+h6 {
+  font-size: 0.9em;
+}
+
+h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .btn, .kq-title {
+  font-family: 'PT Sans', sans-serif;
+}
+
 form.kq-quick-search {
   width: 22em;
   .input-group {

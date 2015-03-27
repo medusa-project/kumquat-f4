@@ -26,7 +26,7 @@ module Admin
                 option.save!
               end
             else # it doesn't exist, so create it
-              option = Option.new(key: key, value: params[:options][key])
+              option = DB::Option.new(key: key, value: params[:options][key])
               option.save!
             end
           end

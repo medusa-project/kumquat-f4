@@ -1,7 +1,7 @@
 <% provide :body_id, 'landing' %>
 <% provide :title, 'Home' %>
 
-<h1><%= Kumquat::Application.kumquat_config[:page_title] %></h1>
+<h1><%= DB::Option.string(DB::Option::Key::WEBSITE_NAME) %></h1>
 
 <div class="row">
   <div class="col-sm-7">

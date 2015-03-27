@@ -2,7 +2,7 @@
 <html>
   <head>
     <title><%= yield :title %> |
-      <%= Kumquat::Application.kumquat_config[:page_title] %></title>
+      <%= DB::Option.string(DB::Option::Key::WEBSITE_NAME) %></title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

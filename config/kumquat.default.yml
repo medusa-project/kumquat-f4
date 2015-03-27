@@ -3,7 +3,6 @@ development:
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
-  :page_title: My Great Organization
   :facet_term_limit: 10
   :results_per_page: 30
   :web_id_length: 5
@@ -13,7 +12,6 @@ test:
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
-  :page_title: My Great Organization
   :facet_term_limit: 10
   :results_per_page: 30
   :web_id_length: 5
@@ -23,7 +21,6 @@ production:
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
-  :page_title: My Great Organization
   :facet_term_limit: 10
   :results_per_page: 30
   :web_id_length: 5

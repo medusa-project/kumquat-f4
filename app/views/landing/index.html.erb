@@ -7,7 +7,8 @@
   <div class="col-sm-7">
     <h2>About the collections</h2>
 
-    <%= simple_format(DB::Option.string(DB::Option::Key::WEBSITE_INTRO_TEXT)) %>
+    <%= sanitize(DB::Option.string(DB::Option::Key::WEBSITE_INTRO_TEXT).gsub("\n", '<br>'),
+                 tags: %w(p br), attributes: %w()) %>
 
     <div class="text-center">
       <%= link_to 'Browse Collections', repository_collections_path,

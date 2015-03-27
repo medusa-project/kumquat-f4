@@ -59,12 +59,14 @@
       <td>
         <%= label_tag("options[#{DB::Option::Key::WEBSITE_INTRO_TEXT}]",
                       'Introductory Text') %>
-        <p class="info">Appears on the <%= link_to 'landing page', root_url %>.</p>
+        <p class="info">Appears on the <%= link_to 'landing page', root_url %>.
+          The following HTML tags are supported: <code>&lt;br&gt;</code>
+          <code>&lt;p&gt;</code></p>
       </td>
       <td>
         <%= text_area_tag("options[#{DB::Option::Key::WEBSITE_INTRO_TEXT}]",
                           DB::Option::string(DB::Option::Key::WEBSITE_INTRO_TEXT),
-                          class: 'form-control', rows: 8) %>
+                          class: 'form-control', rows: 12) %>
       </td>
     </tr>
   </table>

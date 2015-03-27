@@ -395,24 +395,23 @@ if Rails.env.uiuc_development?
   option.save!
 
   option = DB::Option.find_by_key(DB::Option::Key::WEBSITE_INTRO_TEXT)
-  option.value = 'The digital collections of the Library of the University of Illinois at
-  Urbana-Champaign are built from the rich special collections of its Rare
-  Book & Manuscript Library; Illinois History and Lincoln Collection,
-  University Archives; Map Library; and Sousa Archives & Center for American
-  Music, among other units.
-
-  The collections include historic photographs; maps; prints and watercolors;
-  bookplates; architectural drawings and blueprints; letters and other archival
-  materials; videos; political cartoons; and advertisements. They cover a wide
-  range of subject areas including Illinois and American history, music,
-  theater history, and the history of the University of Illinois, among others.
-  The Library’s digital collections provide access to some of its most unique
-  holdings for teaching, learning, and research for students, scholars and the
-  general public.
-
-  The Library contributes collaboratively to local, national, and
-  international digital initiatives, such as the Digital Public Library of
-  America and the Biodiversity Heritage Library.'
+  option.value = "The digital collections of the Library of the University of "\
+  "Illinois at Urbana-Champaign are built from the rich special collections "\
+  "of its Rare Book & Manuscript Library; Illinois History and Lincoln "\
+  "Collection, University Archives; Map Library; and Sousa Archives & Center "\
+  "for American Music, among other units.\n\n"\
+  "The collections include historic photographs; maps; prints and "\
+  "watercolors; bookplates; architectural drawings and blueprints; letters "\
+  "and other archival materials; videos; political cartoons; and "\
+  "advertisements. They cover a wide range of subject areas including "\
+  "Illinois and American history, music, theater history, and the history of "\
+  "the University of Illinois, among others. The Library’s digital "\
+  "collections provide access to some of its most unique holdings for "\
+  "teaching, learning, and research for students, scholars and the general "\
+  "public.\n\n"\
+  "The Library contributes collaboratively to local, national, and "\
+  "international digital initiatives, such as the Digital Public Library of "\
+  "America and the Biodiversity Heritage Library."
   option.save!
 
 end

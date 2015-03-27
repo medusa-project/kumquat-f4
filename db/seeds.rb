@@ -377,7 +377,7 @@ end
 if Rails.env.uiuc_development?
 
   # Themes
-  DB::Theme.create!(name: 'UIUC')
+  DB::Theme.create!(name: 'UIUC', default: true)
 
   # Overwrite some default options for internal demo purposes
   option = DB::Option.find_by_key(DB::Option::Key::COPYRIGHT_STATEMENT)

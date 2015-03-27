@@ -38,9 +38,13 @@ module DB
     #
     def ensure_default_uniqueness
       if self.default
-        Theme.all.where('id != ?', self.id).each do |theme|
-          theme.default = false
-          theme.save!
+        if self.id
+          Theme.all.where('id != ?', self.id).each do |theme|
+            theme.default = false
+            theme.save!
+          end
+        else
+          Theme.all.each { |theme| theme.default = false; theme.save! }
         end
       end
     end

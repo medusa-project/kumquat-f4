@@ -10,6 +10,7 @@ module DB
     class Key
       ADMINISTRATOR_EMAIL = 'website.administrator.email'
       COPYRIGHT_STATEMENT = 'website.copyright_statement'
+      WEBSITE_INTRO_TEXT = 'website.intro_text'
       ORGANIZATION_NAME = 'organization.name'
       WEBSITE_NAME = 'website.name'
     end

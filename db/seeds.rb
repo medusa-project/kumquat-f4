@@ -11,6 +11,10 @@ DB::Option.create!(key: DB::Option::Key::ORGANIZATION_NAME,
                    value: 'My Great Organization')
 DB::Option.create!(key: DB::Option::Key::WEBSITE_NAME,
                    value: 'My Great Organization Digital Collections')
+DB::Option.create!(key: DB::Option::Key::WEBSITE_INTRO_TEXT,
+                   value: "Behold our great collections, which are "\
+                   "rich in Vitamin C and guaranteed gluten-free.\n\n"\
+                   "Warning: may contain citrus.")
 
 # Roles
 roles = {}

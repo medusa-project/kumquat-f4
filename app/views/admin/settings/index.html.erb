@@ -24,15 +24,6 @@
       </td>
     </tr>
     <tr>
-      <td><%= label_tag("options[#{DB::Option::Key::WEBSITE_NAME}]",
-                        'Website Name') %></td>
-      <td>
-        <%= text_field_tag("options[#{DB::Option::Key::WEBSITE_NAME}]",
-                          DB::Option::string(DB::Option::Key::WEBSITE_NAME),
-                          class: 'form-control') %>
-      </td>
-    </tr>
-    <tr>
       <td><%= label_tag("options[#{DB::Option::Key::ADMINISTRATOR_EMAIL}]",
                         'Administrator Email') %></td>
       <td>
@@ -48,6 +39,32 @@
         <%= text_field_tag("options[#{DB::Option::Key::COPYRIGHT_STATEMENT}]",
                            DB::Option::string(DB::Option::Key::COPYRIGHT_STATEMENT),
                            class: 'form-control') %>
+      </td>
+    </tr>
+  </table>
+
+  <h2>Website</h2>
+
+  <table class="table table-striped">
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::WEBSITE_NAME}]",
+                        'Name') %></td>
+      <td>
+        <%= text_field_tag("options[#{DB::Option::Key::WEBSITE_NAME}]",
+                           DB::Option::string(DB::Option::Key::WEBSITE_NAME),
+                           class: 'form-control') %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <%= label_tag("options[#{DB::Option::Key::WEBSITE_INTRO_TEXT}]",
+                      'Introductory Text') %>
+        <p class="info">Appears on the <%= link_to 'landing page', root_url %>.</p>
+      </td>
+      <td>
+        <%= text_area_tag("options[#{DB::Option::Key::WEBSITE_INTRO_TEXT}]",
+                          DB::Option::string(DB::Option::Key::WEBSITE_INTRO_TEXT),
+                          class: 'form-control', rows: 8) %>
       </td>
     </tr>
   </table>

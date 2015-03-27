@@ -4,6 +4,27 @@ module Admin
 
     before_action :view_users_rbac, only: [:index, :show]
 
+    def destroy
+      user = User.find_by_username params[:username]
+      raise ActiveRecord::RecordNotFound unless user
+
+      begin
+        user.destroy!
+      rescue => e
+        flash['error'] = "#{e}"
+        redirect_to admin_users_url
+      else
+        if user == current_user
+          flash['success'] = 'Your account has been deleted.'
+          sign_out
+          redirect_to root_url
+        else
+          flash['success'] = "User #{user.username} deleted."
+          redirect_to admin_users_url
+        end
+      end
+    end
+
     ##
     # Responds to PATCH /users/:username/disable
     #

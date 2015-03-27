@@ -7,6 +7,20 @@
   <li class="active"><%= @user.username %></li>
 </ol>
 
+<div class="btn-group pull-right">
+  <% if @user.enabled %>
+    <%= link_to admin_user_disable_path(@user), method: :patch,
+                class: 'btn btn-default btn-warning' do %>
+      <i class="fa fa-times"></i> Disable
+    <% end %>
+  <% else %>
+    <%= link_to admin_user_enable_path(@user), method: :patch,
+                class: 'btn btn-default btn-success' do %>
+      <i class="fa fa-check"></i> Enable
+    <% end %>
+  <% end %>
+</div>
+
 <h1><%= @user.username %></h1>
 
 <div class="row">
@@ -20,6 +34,11 @@
             <li><%= link_to role.name, admin_role_path(role) %></li>
           <% end %>
         </ul>
+      </dd>
+      <dt>Account Status</dt>
+      <dd>
+        <span class="label <%= @user.enabled ? 'label-success' : 'label-danger' %>">
+            <%= @user.enabled ? 'Enabled' : 'Disabled' %></span>
       </dd>
       <dt>Account Created</dt>
       <dd><%= local_time_ago(@user.created_at) %></dd>

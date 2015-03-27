@@ -358,21 +358,28 @@ DB::URIPrefix.create!(prefix: 'rdfs',
 DB::URIPrefix.create!(prefix: 'rdf',
                       uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
+# Admin user
+users = {}
+users[:admin] = User.create!(
+    email: 'admin@example.org',
+    username: 'admin',
+    password: 'kumquats4ever',
+    roles: [roles[:admin]])
+
 if Rails.env.development? or Rails.env.uiuc_development?
 
-  # Users
-  users = {}
-  users[:admin] = User.create!(
-      email: 'admin@example.org',
-      username: 'admin',
-      roles: [roles[:admin]])
+  # Non-admin users
   users[:cataloger] = User.create!(
       email: 'cataloger@example.org',
       username: 'cataloger',
+      password: '4j9aij23#lkj;a',
+      enabled: false,
       roles: [roles[:cataloger]])
   users[:disabled] = User.create!(
       email: 'disabled@example.org',
+      password: '23@nk2A(2;8jf$',
       username: 'disabled',
+      enabled: false,
       roles: [roles[:cataloger]])
 
 end

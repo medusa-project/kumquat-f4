@@ -4,6 +4,15 @@ GIT
   specs:
     httpclient (2.6.0.1)
 
+GIT
+  remote: git@github.com:/wearepistachio/omniauth-password.git
+  revision: 7e0f8d739602d68b63b3f740b5ed2f0a7047fab6
+  specs:
+    omniauth-password (0.0.1)
+      bcrypt-ruby (~> 3.0)
+      omniauth (~> 1.0)
+      rails (~> 4.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -219,6 +228,7 @@ DEPENDENCIES
   local_time
   mime-types
   omniauth
+  omniauth-password!
   passenger
   pg
   rails (= 4.2.0)

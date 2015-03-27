@@ -49,7 +49,8 @@ Rails.application.routes.draw do
 
   root 'landing#index'
 
-  match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post] # used by omniauth
+  match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
+        as: :auth # used by omniauth
   resources :collections, param: :key, only: [:index, :show], as: :repository_collections do
     resources 'items', only: :index
   end

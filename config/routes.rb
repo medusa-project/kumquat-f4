@@ -49,6 +49,7 @@ Rails.application.routes.draw do
 
   root 'landing#index'
 
+  match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post] # used by omniauth
   resources :collections, param: :key, only: [:index, :show], as: :repository_collections do
     resources 'items', only: :index
   end
@@ -59,7 +60,6 @@ Rails.application.routes.draw do
   end
   match '/search', to: 'search#index', via: 'get'
   match '/search', to: 'search#search', via: 'post'
-  resources :sessions, only: [:new, :create, :destroy]
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'
 

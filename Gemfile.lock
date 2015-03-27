@@ -108,6 +108,9 @@ GEM
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
+    passenger (5.0.5)
+      rack
+      rake (>= 0.8.1)
     pg (0.18.1)
     rack (1.6.0)
     rack-test (0.6.3)
@@ -212,6 +215,7 @@ DEPENDENCIES
   local_time
   mime-types
   omniauth
+  passenger
   pg
   rails (= 4.2.0)
   rdf

@@ -107,6 +107,9 @@ module ItemsHelper
   # :show_collections, :show_description, :thumbnail_size
   #
   def items_as_list(items, start, options = {})
+    options[:show_description] = true unless
+        options.keys.include?(:show_description)
+
     html = "<ol start=\"#{start + 1}\">"
     items.each do |item|
       html += '<li>'\

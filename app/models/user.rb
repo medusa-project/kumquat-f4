@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
 
-  validates :username, presence: true, length: { maximum: 255 },
+  validates :email, presence: true, length: { maximum: 255 }
+  validates :username, presence: true, length: { maximum: 30 },
             uniqueness: { case_sensitive: false },
             format: { with: /\A(?=.*[a-z])[a-z\d]+\Z/i,
                       message: 'Only letters and numbers are allowed.' }

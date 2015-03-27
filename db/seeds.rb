@@ -363,12 +363,15 @@ if Rails.env.development? or Rails.env.uiuc_development?
   # Users
   users = {}
   users[:admin] = User.create!(
+      email: 'admin@example.org',
       username: 'admin',
       roles: [roles[:admin]])
   users[:cataloger] = User.create!(
+      email: 'cataloger@example.org',
       username: 'cataloger',
       roles: [roles[:cataloger]])
   users[:disabled] = User.create!(
+      email: 'disabled@example.org',
       username: 'disabled',
       roles: [roles[:cataloger]])
 

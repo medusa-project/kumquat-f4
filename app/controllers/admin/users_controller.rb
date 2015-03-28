@@ -4,6 +4,21 @@ module Admin
 
     before_action :view_users_rbac, only: [:index, :show]
 
+    def create
+      @user = User.new(sanitized_params)
+      params[:user][:role_ids] ||= []
+      params[:user][:role_ids].each { |id| @user.roles << Role.find(id) }
+      begin
+        @user.save!
+      rescue => e
+        flash['error'] = "#{e}"
+        render 'new'
+      else
+        flash['success'] = "User #{@user.username} created."
+        redirect_to admin_users_path
+      end
+    end
+
     def destroy
       user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless user
@@ -44,6 +59,12 @@ module Admin
       end
     end
 
+    def edit
+      @user = User.find_by_username params[:username]
+      raise ActiveRecord::RecordNotFound unless @user
+      @roles = Role.all.order(:name)
+    end
+
     ##
     # Responds to PATCH /users/:username/enable
     #
@@ -68,13 +89,42 @@ module Admin
       @users = User.where('users.username LIKE ?', q).order('username') # TODO: paginate
     end
 
+    def new
+      @user = User.new
+      @roles = Role.all.order(:name)
+    end
+
     def show
       @user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless @user
       @permissions = Permission.order(:key)
     end
 
+    def update
+      @user = User.find_by_username params[:username]
+      raise ActiveRecord::RecordNotFound unless @user
+
+      @user.roles.destroy_all
+      params[:user][:role_ids] ||= []
+      params[:user][:role_ids].each { |id| @user.roles << Role.find(id) }
+      begin
+        @user.save!
+      rescue => e
+        flash['error'] = "#{e}"
+        render 'new'
+      else
+        flash['success'] = "User #{@user.username} updated."
+        redirect_to admin_users_path
+      end
+    end
+
     private
+
+    def sanitized_params
+      params.require(:user).permit(:username, :email, :enabled, :password,
+                                   :password_confirmation,
+                                   :role_ids)
+    end
 
     def view_users_rbac
       redirect_to(admin_root_url) unless

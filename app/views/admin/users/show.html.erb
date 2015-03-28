@@ -19,6 +19,9 @@
       <i class="fa fa-check"></i> Enable
     <% end %>
   <% end %>
+  <%= link_to edit_admin_user_path(@user), class: 'btn btn-default' do %>
+    <i class="fa fa-pencil"></i> Edit
+  <% end %>
   <%= link_to admin_user_path(@user), method: :delete,
               class: 'btn btn-default btn-danger',
               data: { confirm: 'Are you sure you want to delete this user?' } do %>
@@ -78,7 +81,7 @@
               <tr>
                 <td><%= @user.has_permission?(p.key) ?
                                 raw('<span class="text-success">&#x2713;</span>') :
-                                raw('<span class="text-danger">&times;</span>') %></td>
+                                '' %></td>
                 <td><%= p.name %></td>
                 <td><%=raw @user.roles_having_permission(p.key).map {|r|
                   link_to(r.name, admin_role_path(r)) }.join(', ') %></td>

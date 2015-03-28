@@ -20,7 +20,7 @@ DB::Option.create!(key: DB::Option::Key::WEBSITE_INTRO_TEXT,
 roles = {}
 roles[:admin] = Role.create!(key: 'admin', name: 'Administrators')
 roles[:cataloger] = Role.create!(key: 'cataloger', name: 'Catalogers')
-roles[:everybody] = Role.create!(key: 'everybody', name: 'Everybody')
+roles[:anybody] = Role.create!(key: 'anybody', name: 'Anybody')
 
 # Permissions
 Permission.create!(key: 'collections.create',
@@ -46,7 +46,7 @@ Permission.create!(key: 'users.delete',
 Permission.create!(key: 'users.update',
                    roles: [roles[:admin]])
 Permission.create!(key: 'users.update_self',
-                   roles: [roles[:admin], roles[:everybody]])
+                   roles: [roles[:admin], roles[:anybody]])
 Permission.create!(key: 'users.disable',
                    roles: [roles[:admin]])
 Permission.create!(key: 'users.enable',

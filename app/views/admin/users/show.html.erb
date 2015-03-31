@@ -59,6 +59,9 @@
       <li class="active">
         <a href="#permissions" data-toggle="tab">Permissions</a>
       </li>
+      <li>
+        <a href="#roles" data-toggle="tab">Roles</a>
+      </li>
     </ul>
 
     <div class="tab-content">
@@ -85,6 +88,39 @@
                 <td><%= p.name %></td>
                 <td><%=raw @user.roles_having_permission(p.key).map {|r|
                   link_to(r.name, admin_role_path(r)) }.join(', ') %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="roles" class="tab-pane">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 1%"></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% Role.order(:name).each do |role| %>
+              <tr>
+                <td>
+                  <% if @user.roles.include?(role) %>
+                    <%= link_to admin_user_change_roles_path(@user, user: { id: @user.id }, do: :leave, role_id: role.id),
+                                method: :patch,
+                                class: 'btn btn-xs btn-danger' do %>
+                      <i class="fa fa-minus"></i> Leave
+                    <% end %>
+                  <% else %>
+                    <%= link_to admin_user_change_roles_path(@user, user: { id: @user.id }, do: :join, role_id: role.id),
+                                method: :patch,
+                                class: 'btn btn-xs btn-success' do %>
+                      <i class="fa fa-plus"></i> Join
+                    <% end %>
+                  <% end %>
+                </td>
+                <td><%= role.name %></td>
               </tr>
             <% end %>
           </tbody>

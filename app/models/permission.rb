@@ -32,9 +32,9 @@ class Permission < ActiveRecord::Base
   ROLES_DELETE = 'roles.delete'
   ROLES_UPDATE = 'roles.update'
   SETTINGS_UPDATE = 'settings.update'
+  UPDATE_USERS = 'users.update'
   USERS_CREATE = 'users.create'
   USERS_DELETE = 'users.delete'
-  USERS_UPDATE = 'users.update'
   USERS_UPDATE_SELF = 'users.update_self'
   USERS_VIEW = 'users.view'
 

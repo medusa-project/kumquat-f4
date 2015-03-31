@@ -4,6 +4,35 @@ module Admin
 
     before_action :view_users_rbac, only: [:index, :show]
 
+    ##
+    # Responds to PATCH /users/:username/roles. Supply :do => :join/:leave
+    # and :role_id params.
+    #
+    def change_roles
+      @user = User.find_by_username params[:user_username]
+      raise ActiveRecord::RecordNotFound unless @user
+
+      role_ids = @user.roles.map(&:id)
+      if params[:do].to_s == 'join'
+        role_ids << params[:role_id].to_i
+      else
+        role_ids.delete(params[:role_id].to_i)
+      end
+
+      tmp_params = sanitized_params
+      tmp_params[:role_ids] = role_ids
+      command = UpdateUserCommand.new(@user, tmp_params)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+        render 'new'
+      else
+        flash['success'] = "User #{@user.username} updated."
+        redirect_to :back
+      end
+    end
+
     def create
       @user = User.new(sanitized_params)
       params[:user][:role_ids] ||= []

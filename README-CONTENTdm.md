@@ -66,5 +66,4 @@ The resulting F4 node structure looks like this:
    root. To skip certain collections, comment them out with a pound (`#`)
    sign.)
 
-2. Run `bundle exec rake kumquat:cdm_import[/path/to/source/data]`. This task
-   will output status information for each item.
+2. Run `bundle exec rake kumquat:cdm_import[/path/to/source_folder]`.

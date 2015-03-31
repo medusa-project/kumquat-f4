@@ -36,7 +36,7 @@ class CommandExecutor
       else
         message = "#{command.class.to_s} failed: #{e.message}"
       end
-      Rails.logger.info(message)
+      Rails.logger.debug(message)
       raise message
     rescue => e
       message = "#{command.class.to_s} failed: #{e.message}"

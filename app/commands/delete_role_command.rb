@@ -5,6 +5,10 @@ class DeleteRoleCommand < Command
   end
 
   def execute
+    if @role.required
+      raise "The role \"#{@role.name}\" is required by the system and cannot "\
+      "be deleted."
+    end
     @role.destroy!
   end
 

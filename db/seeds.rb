@@ -20,9 +20,9 @@ DB::Option.create!(key: DB::Option::Key::RESULTS_PER_PAGE, value: 30)
 
 # Roles
 roles = {}
-roles[:admin] = Role.create!(key: 'admin', name: 'Administrators')
+roles[:admin] = Role.create!(key: 'admin', name: 'Administrators', required: true)
 roles[:cataloger] = Role.create!(key: 'cataloger', name: 'Catalogers')
-roles[:anybody] = Role.create!(key: 'anybody', name: 'Anybody')
+roles[:anybody] = Role.create!(key: 'anybody', name: 'Anybody', required: true)
 
 # Permissions
 Permission.create!(key: 'collections.create',

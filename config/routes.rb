@@ -47,6 +47,11 @@ Rails.application.routes.draw do
   #   resources :posts, concerns: :toggleable
   #   resources :photos, concerns: :toggleable
 
+  concern :publishable do
+    patch 'publish'
+    patch 'unpublish'
+  end
+
   root 'landing#index'
 
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
@@ -66,7 +71,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :key, as: :repository_collections do
+    resources :collections, param: :key, as: :repository_collections,
+              concerns: :publishable do
       resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     end
     resources :collections, param: :key, as: :db_collections

@@ -11,7 +11,8 @@ class CollectionsController < WebsiteController
     #@collections = Repository::Collection.where(query).order(:kq_title).start(@start).
     #    limit(@limit)
     # TODO: find a way to re-enable sorting
-    @collections = Repository::Collection.where(query).start(@start).limit(@limit)
+    @collections = Repository::Collection.where(query).
+        where(Solr::Solr::PUBLISHED_KEY => true).start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_shown = [@limit, @collections.total_length].min
   end

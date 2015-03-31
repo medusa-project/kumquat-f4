@@ -55,12 +55,56 @@ module Admin
       @collection = Repository::Collection.new
     end
 
+    ##
+    # Responds to PATCH /admin/collections/:key/publish
+    #
+    def publish
+      @collection = Repository::Collection.find_by_key(
+          params[:repository_collection_key])
+      raise ActiveRecord::RecordNotFound unless @collection
+
+      tmp_params = sanitized_repo_params
+      tmp_params[:published] = true
+      command = UpdateRepositoryCollectionCommand.new(@collection, tmp_params)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Collection \"#{@collection.title}\" published."
+      ensure
+        redirect_to :back
+      end
+    end
+
     def show
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
       @theme_options_for_select = [[ 'None (Use Global)', nil ]] +
           DB::Theme.order(:name).map{ |t| [ t.name, t.id ] }
+    end
+
+    ##
+    # Responds to PATCH /admin/collections/:key/unpublish
+    #
+    def unpublish
+      @collection = Repository::Collection.find_by_key(
+          params[:repository_collection_key])
+      raise ActiveRecord::RecordNotFound unless @collection
+
+      tmp_params = sanitized_repo_params
+      tmp_params[:published] = false
+      command = UpdateRepositoryCollectionCommand.new(@collection, tmp_params)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Collection \"#{@collection.title}\" unpublished."
+      ensure
+        redirect_to :back
+      end
     end
 
     def update
@@ -107,7 +151,8 @@ module Admin
     end
 
     def sanitized_repo_params
-      params.require(:repository_collection).permit(:key, :title, :description)
+      params.require(:repository_collection).permit(:description, :key,
+                                                    :published, :title)
     end
 
     def update_rbac

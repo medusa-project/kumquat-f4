@@ -28,6 +28,7 @@ module Import
           collection = Repository::Collection.new(
               key: key,
               container_url: @import_delegate.root_container_url,
+              published: @import_delegate.collection_of_item_at_index_is_published(index),
               requested_slug: @import_delegate.slug_of_collection_of_item_at_index(index),
               rdf_graph: @import_delegate.metadata_of_collection_of_item_at_index(index))
           puts collection.title if collection.title

@@ -37,6 +37,7 @@ module Kumquat
       HEIGHT = 'height'
       PAGE_INDEX = 'pageIndex'
       PARENT_URI = 'hasParent'
+      PUBLISHED = 'published'
       WEB_ID = 'webID'
       WIDTH = 'width'
     end

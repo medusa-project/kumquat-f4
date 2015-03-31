@@ -8,6 +8,17 @@
   <%= link_to @collection, class: 'btn btn-default' do %>
     <i class="fa fa-globe"></i> Public View
   <% end %>
+  <% if @collection.published %>
+    <%= link_to admin_repository_collection_unpublish_path(@collection, repository_collection: { id: @collection.id }),
+                method: :patch, class: 'btn btn-default btn-warning' do %>
+      <i class="fa fa-times"></i> Unpublish
+    <% end %>
+  <% else %>
+    <%= link_to admin_repository_collection_publish_path(@collection, repository_collection: { id: @collection.id }),
+                method: :patch, class: 'btn btn-default btn-success' do %>
+      <i class="fa fa-check"></i> Publish
+    <% end %>
+  <% end %>
   <%= link_to edit_admin_repository_collection_path(@collection), class: 'btn btn-default' do %>
     <i class="fa fa-pencil-square-o"></i> Edit
   <% end %>

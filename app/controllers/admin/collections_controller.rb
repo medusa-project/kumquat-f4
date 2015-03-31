@@ -16,7 +16,7 @@ module Admin
         render 'new'
       else
         flash['success'] = "Collection \"#{@collection.title}\" created."
-        redirect_to admin_collection_url(@collection)
+        redirect_to admin_repository_collection_url(@collection)
       end
     end
 
@@ -29,10 +29,10 @@ module Admin
         executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
-        redirect_to admin_collection_url(@collection)
+        redirect_to admin_repository_collection_url(@collection)
       else
         flash['success'] = "Collection \"#{@collection.title}\" deleted."
-        redirect_to admin_collections_url
+        redirect_to admin_repository_collections_url
       end
     end
 

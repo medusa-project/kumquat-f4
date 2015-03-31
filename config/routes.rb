@@ -79,8 +79,6 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_repository_status'
     match '/server/search-server-status', to: 'server#search_server_status',
           via: 'get', as: 'server_search_server_status'
-    match '/server/commit', to: 'server#commit',
-          via: 'patch', as: 'server_commit'
     match '/settings', to: 'settings#index', via: 'get'
     match '/settings', to: 'settings#update', via: 'patch'
     resources :db_themes, controller: 'themes', path: 'themes', except: :show

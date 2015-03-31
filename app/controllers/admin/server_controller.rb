@@ -56,20 +56,6 @@ module Admin
       end
     end
 
-    ##
-    # Responds to PATCH /admin/server/commit
-    #
-    def commit
-      begin
-        Solr::Solr.new.commit
-      rescue => e
-        flash['error'] = "#{e}"
-      else
-        flash['success'] = 'Pending updates committed.'
-      end
-      redirect_to :back
-    end
-
   end
 
 end

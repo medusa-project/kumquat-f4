@@ -34,17 +34,15 @@ module Admin
     end
 
     def create
-      @user = User.new(sanitized_params)
-      params[:user][:role_ids] ||= []
-      params[:user][:role_ids].each { |id| @user.roles << Role.find(id) }
+      command = CreateUserCommand.new(sanitized_params)
       begin
-        @user.save!
+        executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
         render 'new'
       else
-        flash['success'] = "User #{@user.username} created."
-        redirect_to admin_users_path
+        flash['success'] = "User #{command.object.username} created."
+        redirect_to admin_user_path(command.object)
       end
     end
 

@@ -7,7 +7,7 @@ module Admin
     before_action :update_rbac, only: [:edit, :update]
 
     def create
-      command = CreateCollectionCommand.new(sanitized_params)
+      command = CreateCollectionCommand.new(sanitized_repo_params)
       @collection = command.object
       begin
         executor.execute(command)

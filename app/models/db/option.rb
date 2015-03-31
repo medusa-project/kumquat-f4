@@ -10,6 +10,7 @@ module DB
     class Key
       ADMINISTRATOR_EMAIL = 'website.administrator.email'
       COPYRIGHT_STATEMENT = 'website.copyright_statement'
+      FACET_TERM_LIMIT = 'website.facet_term_limit'
       WEBSITE_INTRO_TEXT = 'website.intro_text'
       ORGANIZATION_NAME = 'organization.name'
       RESULTS_PER_PAGE = 'website.results_per_page'

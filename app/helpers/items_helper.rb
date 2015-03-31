@@ -38,7 +38,7 @@ module ItemsHelper
   # @param items ActiveKumquat::ResultSet
   #
   def facets_as_panels(items)
-    term_limit = Kumquat::Application.kumquat_config[:facet_term_limit]
+    term_limit = DB::Option::integer(DB::Option::Key::FACET_TERM_LIMIT)
     panels = ''
     items.facet_fields.each do |facet|
       panel = '<div class="panel panel-default">'

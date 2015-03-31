@@ -73,9 +73,18 @@
       <td><%= label_tag("options[#{DB::Option::Key::RESULTS_PER_PAGE}]",
                         'Results Per Page') %></td>
       <td>
-        <%= text_field_tag("options[#{DB::Option::Key::RESULTS_PER_PAGE}]",
-                           DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE),
-                           class: 'form-control') %>
+        <%= number_field_tag("options[#{DB::Option::Key::RESULTS_PER_PAGE}]",
+                             DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE),
+                             class: 'form-control') %>
+      </td>
+    </tr>
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::FACET_TERM_LIMIT}]",
+                        'Facet Term Limit') %></td>
+      <td>
+        <%= number_field_tag("options[#{DB::Option::Key::FACET_TERM_LIMIT}]",
+                             DB::Option::integer(DB::Option::Key::FACET_TERM_LIMIT),
+                             class: 'form-control') %>
       </td>
     </tr>
   </table>

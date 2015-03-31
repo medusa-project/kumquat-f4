@@ -7,6 +7,7 @@ DB::Option.create!(key: DB::Option::Key::ADMINISTRATOR_EMAIL,
                    value: 'admin@example.org')
 DB::Option.create!(key: DB::Option::Key::COPYRIGHT_STATEMENT,
                    value: 'Copyright © 2015 My Great Organization. All rights reserved.')
+DB::Option.create!(key: DB::Option::Key::FACET_TERM_LIMIT, value: 10)
 DB::Option.create!(key: DB::Option::Key::ORGANIZATION_NAME,
                    value: 'My Great Organization')
 DB::Option.create!(key: DB::Option::Key::WEBSITE_NAME,

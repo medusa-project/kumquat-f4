@@ -47,9 +47,9 @@ module Admin
       user = User.find_by_username params[:user_username]
       raise ActiveRecord::RecordNotFound unless user
 
+      command = DisableUserCommand.new(user)
       begin
-        user.enabled = false
-        user.save!
+        executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
       else
@@ -72,9 +72,9 @@ module Admin
       user = User.find_by_username params[:user_username]
       raise ActiveRecord::RecordNotFound unless user
 
+      command = EnableUserCommand.new(user)
       begin
-        user.enabled = true
-        user.save!
+        executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
       else

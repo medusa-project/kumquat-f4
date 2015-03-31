@@ -4,7 +4,6 @@ development:
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :facet_term_limit: 10
-  :web_id_length: 5
 
 test:
   :fedora_url: http://localhost:8080/fcrepo/rest/
@@ -12,7 +11,6 @@ test:
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :facet_term_limit: 10
-  :web_id_length: 5
 
 production:
   :fedora_url: http://localhost:8080/fcrepo/rest/
@@ -20,4 +18,3 @@ production:
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
   :facet_term_limit: 10
-  :web_id_length: 5

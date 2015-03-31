@@ -15,43 +15,41 @@
       <%= f.text_field :key, class: 'form-control', disabled: !can_edit_key %>
     </div>
 
-    <div class="row">
+    <section>
+      <h3>Permissions</h3>
 
-      <div class="col-sm-6">
-        <h3>Permissions</h3>
+      <%= can_edit_permissions ?
+                  hidden_field_tag('role[permission_ids][]', nil) : nil %>
 
-        <%= can_edit_permissions ?
-                    hidden_field_tag('role[permission_ids][]', nil) : nil %>
-
-        <div class="form-group">
-          <% Permission.order(:key).each do |permission| %>
-            <div class="checkbox">
-              <%= check_box_tag 'role[permission_ids][]', permission.id,
-                                @role.permission_ids.include?(permission.id),
-                                id: dom_id(permission),
-                                disabled: !can_edit_permissions %>
-              <%= label_tag dom_id(permission), permission.name %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <div class="col-sm-6">
-        <h3>Users</h3>
-
-        <%= hidden_field_tag 'role[user_ids][]', nil %>
-
-        <% @users.each do |user| %>
+      <div class="form-group">
+        <% Permission.order(:key).each do |permission| %>
           <div class="checkbox">
-            <%= check_box_tag 'role[user_ids][]', user.id,
-                              @role.user_ids.include?(user.id),
-                              id: dom_id(user) %>
-            <%= label_tag dom_id(user), user.username %>
+            <%= label_tag do %>
+              <%= check_box_tag :permission_ids, permission.id,
+                                @role.permission_ids.include?(permission.id),
+                                name: 'role[permission_ids][]',
+                                disabled: !can_edit_permissions %>
+              <%= permission.name %>
+            <% end %>
           </div>
         <% end %>
       </div>
+    </section>
 
-    </div>
+    <section>
+      <h3>Users</h3>
+
+      <% @users.each do |user| %>
+        <div class="checkbox">
+          <%= label_tag do %>
+            <%= check_box_tag :user_ids, user.id,
+                              @role.user_ids.include?(user.id),
+                              name: 'role[user_ids][]' %>
+            <%= user.username %>
+          <% end %>
+        </div>
+      <% end %>
+    </section>
 
     <%= f.submit 'Save Changes', class: 'btn btn-primary' %>
 <% end %>

@@ -50,8 +50,9 @@ module Admin
       user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless user
 
+      command = DeleteUserCommand.new(user)
       begin
-        user.destroy!
+        executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
         redirect_to admin_users_url

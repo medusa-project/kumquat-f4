@@ -27,6 +27,7 @@ class Permission < ActiveRecord::Base
   COLLECTIONS_DELETE = 'collections.delete'
   COLLECTIONS_UPDATE = 'collections.update'
   CREATE_USERS = 'users.create'
+  DELETE_USERS = 'users.delete'
   DISABLE_USERS = 'users.disable'
   ENABLE_USERS = 'users.enable'
   ROLES_CREATE = 'roles.create'
@@ -34,7 +35,6 @@ class Permission < ActiveRecord::Base
   ROLES_UPDATE = 'roles.update'
   SETTINGS_UPDATE = 'settings.update'
   UPDATE_USERS = 'users.update'
-  USERS_DELETE = 'users.delete'
   USERS_UPDATE_SELF = 'users.update_self'
   USERS_VIEW = 'users.view'
 

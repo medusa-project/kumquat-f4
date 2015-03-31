@@ -43,7 +43,7 @@ module Admin
 
     def index
       @start = params[:start] ? params[:start].to_i : 0
-      @limit = Kumquat::Application.kumquat_config[:results_per_page]
+      @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
       #@collections = Repository::Collection.order(:dc_title).start(@start).limit(@limit)
       # TODO: re-enable sorting
       @collections = Repository::Collection.start(@start).limit(@limit)

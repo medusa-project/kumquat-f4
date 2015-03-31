@@ -9,7 +9,7 @@ class FavoritesController < WebsiteController
 
   def index
     @start = params[:start] ? params[:start].to_i : 0
-    @limit = Kumquat::Application.kumquat_config[:results_per_page]
+    @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
 
     @items = Repository::Item.none
 

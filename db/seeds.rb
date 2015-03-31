@@ -15,6 +15,7 @@ DB::Option.create!(key: DB::Option::Key::WEBSITE_INTRO_TEXT,
                    value: "Behold our great collections, which are "\
                    "rich in Vitamin C and guaranteed gluten-free.\n\n"\
                    "Warning: may contain citrus.")
+DB::Option.create!(key: DB::Option::Key::RESULTS_PER_PAGE, value: 30)
 
 # Roles
 roles = {}

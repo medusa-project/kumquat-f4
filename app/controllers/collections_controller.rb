@@ -6,7 +6,7 @@ class CollectionsController < WebsiteController
 
   def index
     @start = params[:start] ? params[:start].to_i : 0
-    @limit = Kumquat::Application.kumquat_config[:results_per_page]
+    @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
     query = !params[:q].blank? ? "kq_searchall:#{params[:q]}" : nil
     #@collections = Repository::Collection.where(query).order(:kq_title).start(@start).
     #    limit(@limit)

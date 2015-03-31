@@ -69,6 +69,15 @@
                           class: 'form-control', rows: 12) %>
       </td>
     </tr>
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::RESULTS_PER_PAGE}]",
+                        'Results Per Page') %></td>
+      <td>
+        <%= text_field_tag("options[#{DB::Option::Key::RESULTS_PER_PAGE}]",
+                           DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE),
+                           class: 'form-control') %>
+      </td>
+    </tr>
   </table>
 
   <%= submit_tag 'Save Changes', class: 'btn btn-primary' %>

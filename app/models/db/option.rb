@@ -12,6 +12,7 @@ module DB
       COPYRIGHT_STATEMENT = 'website.copyright_statement'
       WEBSITE_INTRO_TEXT = 'website.intro_text'
       ORGANIZATION_NAME = 'organization.name'
+      RESULTS_PER_PAGE = 'website.results_per_page'
       WEBSITE_NAME = 'website.name'
     end
 

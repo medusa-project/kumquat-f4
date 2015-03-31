@@ -133,17 +133,15 @@ module Admin
       @user = User.find_by_username params[:username]
       raise ActiveRecord::RecordNotFound unless @user
 
-      @user.roles.destroy_all
-      params[:user][:role_ids] ||= []
-      params[:user][:role_ids].each { |id| @user.roles << Role.find(id) }
+      command = UpdateUserCommand.new(@user, sanitized_params)
       begin
-        @user.save!
+        executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
         render 'new'
       else
         flash['success'] = "User #{@user.username} updated."
-        redirect_to admin_users_path
+        redirect_to admin_user_path(@user)
       end
     end
 
@@ -152,7 +150,7 @@ module Admin
     def sanitized_params
       params.require(:user).permit(:username, :email, :enabled, :password,
                                    :password_confirmation,
-                                   :role_ids)
+                                   role_ids: [])
     end
 
     def view_users_rbac

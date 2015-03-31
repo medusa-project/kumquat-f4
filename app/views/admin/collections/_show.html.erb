@@ -52,7 +52,7 @@
         <dt>Theme</dt>
         <dd>
           <%= @collection.db_counterpart.theme ? @collection.db_counterpart.theme.name :
-                      "Global (#{DB::Theme.default.name})" %>
+                      raw("None (has the #{link_to('default theme', admin_db_themes_path)})") %>
           <button type="button" class="btn btn-default btn-xs"
                   data-toggle="modal" data-backdrop="false" data-target="#kq-theme-panel">
             <i class="fa fa-pencil"></i> Edit

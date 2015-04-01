@@ -21,6 +21,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'bcrypt-ruby', '~> 3.1.2' # Use ActiveModel has_secure_password
 gem 'bootstrap-sass', '~> 3.3.3'
+gem 'capistrano-rails', group: :development
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'httpclient', :git => 'git@github.com:/adolski/httpclient.git'
 gem 'jquery-cookie-rails'
@@ -41,9 +42,6 @@ gem 'sprockets-rails'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

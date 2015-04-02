@@ -434,14 +434,7 @@ module ItemsHelper
   end
 
   def pdf_viewer_for(item)
-    viewer_url = asset_path('/pdfjs/web/viewer.html?file=' +
-        repository_item_master_bytestream_path(item))
-    tag = link_to(viewer_url, target: '_blank') do
-      #image_tag(item_image_path(item, size: 256))
-    end
-    tag += link_to('Open in PDF Viewer', viewer_url, target: '_blank',
-                   class: 'btn btn-default')
-    raw(tag)
+    nil
   end
 
   def video_player_for(item)

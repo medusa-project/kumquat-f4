@@ -15,6 +15,8 @@ module Import
       item_count = @import_delegate.total_number_of_items.to_i
       return if item_count < 1 # nothing to do
 
+      Rails.logger.debug("Importing #{item_count} items")
+
       item_count.times do |index|
         # retrieve or create the collection
         key = @import_delegate.collection_key_of_item_at_index(index)

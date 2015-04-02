@@ -8,12 +8,12 @@ class ImportDelegateTest < ActiveSupport::TestCase
   end
 
   test 'cdm_item_at_index should return the correct item' do
-    assert_equal 1, @delegate.send(:cdm_item_at_index, 2).pointer
-    assert_nil @delegate.send(:cdm_item_at_index, 3)
+    assert_equal 1, @delegate.send(:cdm_item_at_index, 4).pointer
+    assert_nil @delegate.send(:cdm_item_at_index, 6)
   end
 
   test 'total_number_of_items should return the correct number of items' do
-    assert_equal 3, @delegate.total_number_of_items
+    assert_equal 5, @delegate.total_number_of_items
   end
 
   test 'collections should return the correct list of collections' do
@@ -23,7 +23,7 @@ class ImportDelegateTest < ActiveSupport::TestCase
   end
 
   test 'collection_key_of_item_at_index should return the correct key' do
-    assert_equal 'test2', @delegate.collection_key_of_item_at_index(2)
+    assert_equal 'test2', @delegate.collection_key_of_item_at_index(4)
   end
 
   test 'import_id_of_item_at_index should return the correct import ID' do
@@ -35,11 +35,12 @@ class ImportDelegateTest < ActiveSupport::TestCase
 
   test 'parent_import_id_of_item_at_index should return the correct parent ID' do
     assert_nil @delegate.parent_import_id_of_item_at_index(0)
-    # TODO: test an item that has a parent
+    assert_equal @delegate.import_id_of_item_at_index(2),
+                 @delegate.parent_import_id_of_item_at_index(3)
   end
 
   test 'master_pathname_of_item_at_index should return the correct pathname' do
-    assert_equal File.join(@source_path, 'test', 'image', '3.txt'),
+    assert_equal File.join(@source_path, 'test', 'image', '2.txt'),
                  @delegate.master_pathname_of_item_at_index(0)
   end
 
@@ -54,15 +55,15 @@ class ImportDelegateTest < ActiveSupport::TestCase
   end
 
   test 'slug_of_collection_of_item_at_index should return a correct slug' do
-    assert_equal 'test2', @delegate.slug_of_collection_of_item_at_index(2)
+    assert_equal 'test2', @delegate.slug_of_collection_of_item_at_index(4)
   end
 
   test 'slug_of_item_at_index should return a correct slug' do
-    assert_equal '1', @delegate.slug_of_item_at_index(2)
+    assert_equal '3', @delegate.slug_of_item_at_index(2)
   end
 
   test 'web_id_of_item_at_index should return a correct web ID' do
-    assert_equal 'test2-1', @delegate.web_id_of_item_at_index(2)
+    assert_equal 'test-3', @delegate.web_id_of_item_at_index(2)
   end
 
 end

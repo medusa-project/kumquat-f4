@@ -102,7 +102,9 @@ module Contentdm
           doc = Nokogiri::XML(file)
           records = doc.xpath('//record')
           @num_items = records.length
-          @num_items += records.xpath('/structure/page').length
+          records.each do |node|
+            @num_items += node.xpath('structure/page').length
+          end
         end
       end
       @num_items

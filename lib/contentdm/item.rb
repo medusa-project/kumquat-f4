@@ -6,7 +6,6 @@ module Contentdm
     attr_accessor :created # string date, yyyy-mm-dd
     attr_accessor :filename # string
     attr_accessor :full_text # string
-    attr_accessor :pages # array of Items
     attr_accessor :parent # Item
     attr_accessor :pointer # integer
     attr_accessor :source_path # string
@@ -22,9 +21,15 @@ module Contentdm
       File.open(File.join(File.expand_path(source_path),
                           collection.alias + '.xml')) do |file|
         doc = Nokogiri::XML(file)
-        %w(//record //structure/page).each do |query|
-          doc.xpath(query).each_with_index do |node, i|
-            return Item.from_cdm_xml(source_path, collection, node) if i == index
+        i = 0
+        doc.xpath('//record').each do |record_node|
+          return Item.from_cdm_xml(source_path, collection, record_node) if
+              i == index
+          i += 1
+          record_node.xpath('structure/page').each do |page_node|
+            return Item.from_cdm_xml(source_path, collection, page_node,
+                                     record_node) if i == index
+            i += 1
           end
         end
       end
@@ -36,44 +41,42 @@ module Contentdm
     #
     # @param source_path string
     # @param collection Collection
-    # @param fragment Nokogiri XML node
+    # @param node Nokogiri XML node
+    # @param parent_node Nokogiri XML node if a compound object page
     # @return Item
     #
-    def self.from_cdm_xml(source_path, collection, node)
+    def self.from_cdm_xml(source_path, collection, node, parent_node = nil)
       source_path = File.expand_path(source_path)
       item = Item.new(source_path)
       item.collection = collection
-      item.pointer = node.xpath('cdmid').first.content
-      item.filename = node.xpath('cdmfile').first.content
-      item.created = node.xpath('cdmcreated').first.content
-      item.updated = node.xpath('cdmmodified').first.content
+
+      ptr = node.xpath('cdmid').first
+      if ptr # it's an item
+        item.pointer = ptr.content
+        item.filename = node.xpath('cdmfile').first.content
+        item.created = node.xpath('cdmcreated').first.content
+        item.updated = node.xpath('cdmmodified').first.content
+      else # it's a compound object page
+        parent_filename = parent_node.xpath('cdmfile').first.content
+        cpd_pathname = File.join(source_path, collection.alias, 'image',
+                                 parent_filename)
+        File.open(cpd_pathname) do |file|
+          cpd_doc = Nokogiri::XML(file)
+          item.pointer = node.xpath('pageptr').first.content
+          item.elements = elements_from_xml(node)
+          item.full_text = node.xpath('pagetext').first.content.strip
+          item.filename = cpd_doc.
+              xpath("//page[pageptr = #{item.pointer}]/pagefile").first.content
+          item.source_path = File.join(source_path, collection.alias,
+                                       'image', item.filename)
+          item.parent = Item.from_cdm_xml(source_path, collection, parent_node)
+        end
+      end
+
       item.source_path = source_path
 
       # populate metadata
       item.elements = elements_from_xml(node)
-
-      # populate pages
-      page_nodes = node.xpath('structure/page')
-      if page_nodes.any?
-        cpd_pathname = File.join(source_path, collection.alias, 'image',
-                                 item.filename)
-        File.open(cpd_pathname) do |file|
-          cpd_doc = Nokogiri::XML(file)
-          page_nodes.each do |page_elem|
-            page = Item.new(source_path)
-            page.collection = collection
-            page.pointer = page_elem.xpath('pageptr').first.content
-            page.elements = elements_from_xml(node)
-            page.full_text = page_elem.xpath('pagetext').first.content.strip
-            page.filename = cpd_doc.
-              xpath("//page[pageptr = #{page.pointer}]/pagefile").first.content
-            page.source_path = File.join(source_path, collection.alias,
-                                         'image', page.filename)
-            page.parent = item
-            item.pages << page
-          end
-        end
-      end
 
       # populate URL
       if File.extname(item.filename) == '.url'
@@ -88,11 +91,6 @@ module Contentdm
       end
 
       item
-    end
-
-    def initialize(source_path)
-      super
-      self.pages = []
     end
 
     def master_file_pathname

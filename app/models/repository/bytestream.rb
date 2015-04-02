@@ -264,9 +264,9 @@ module Repository
         File.open(self.upload_pathname) do |file|
           filename = File.basename(self.upload_pathname)
           headers = {
-              'Content-Type' => self.media_type,
               'Content-Disposition' => "attachment; filename=\"#{filename}\""
           }
+          headers['Content-Type'] = self.media_type unless self.media_type.blank?
           response = @@http.post(self.owner.repository_url, file, headers)
         end
       elsif self.external_resource_url

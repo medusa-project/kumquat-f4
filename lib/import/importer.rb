@@ -67,7 +67,7 @@ module Import
                 type: Repository::Bytestream::Type::MASTER)
             # assign media type
             media_type = @import_delegate.media_type_of_item_at_index(index)
-            bs.media_type = media_type if media_type
+            bs.media_type = media_type unless media_type.blank?
             bs.save
             item.bytestreams << bs
           else
@@ -82,7 +82,7 @@ module Import
                 type: Repository::Bytestream::Type::MASTER)
             # assign media type
             media_type = @import_delegate.media_type_of_item_at_index(index)
-            bs.media_type = media_type if media_type
+            bs.media_type = media_type unless media_type.blank?
             bs.save
             item.bytestreams << bs
           end

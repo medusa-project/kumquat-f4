@@ -15,8 +15,6 @@ module Import
       item_count = @import_delegate.total_number_of_items.to_i
       return if item_count < 1 # nothing to do
 
-      Rails.logger.debug("Importing #{item_count} items")
-
       item_count.times do |index|
         # retrieve or create the collection
         key = @import_delegate.collection_key_of_item_at_index(index)
@@ -54,7 +52,7 @@ module Import
             parent_uri: parent_uri,
             rdf_graph: @import_delegate.metadata_of_item_at_index(index))
         item.save! # save it in order to populate its repository URL
-        Rails.logger.debug "Created #{item.repository_url}"
+        Rails.logger.debug "Created #{item.repository_url} (#{index + 1}/#{item_count})"
 
         import_id = @import_delegate.import_id_of_item_at_index(index)
         @import_id_uri_map[import_id] = item.repository_url

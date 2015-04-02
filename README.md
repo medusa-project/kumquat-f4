@@ -169,7 +169,7 @@ branching model.)*
 
 Edit these as necessary.
 
-Also copy `kumquat/config/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`.
+Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`.
 
 #### Create and seed the database
 

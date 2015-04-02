@@ -21,7 +21,7 @@ class CollectionTest < ActiveSupport::TestCase
   end
 
   test 'num_items should return the correct number of items' do
-    assert_equal 2, @collection.num_items
+    assert_equal 4, @collection.num_items
   end
 
 end

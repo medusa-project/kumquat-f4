@@ -56,6 +56,7 @@ module Contentdm
         item.filename = node.xpath('cdmfile').first.content
         item.created = node.xpath('cdmcreated').first.content
         item.updated = node.xpath('cdmmodified').first.content
+        item.elements = elements_from_xml(node)
       else # it's a compound object page
         parent_filename = parent_node.xpath('cdmfile').first.content
         cpd_pathname = File.join(source_path, collection.alias, 'image',
@@ -64,6 +65,8 @@ module Contentdm
           cpd_doc = Nokogiri::XML(file)
           item.pointer = node.xpath('pageptr').first.content
           item.elements = elements_from_xml(node)
+          item.elements << DCElement.new(name: 'title',
+                                         value: node.xpath('pagetitle').first.content)
           item.full_text = node.xpath('pagetext').first.content.strip
           item.filename = cpd_doc.
               xpath("//page[pageptr = #{item.pointer}]/pagefile").first.content
@@ -74,9 +77,6 @@ module Contentdm
       end
 
       item.source_path = source_path
-
-      # populate metadata
-      item.elements = elements_from_xml(node)
 
       # populate URL
       if File.extname(item.filename) == '.url'

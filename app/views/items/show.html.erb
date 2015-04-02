@@ -100,3 +100,7 @@
     <%= triples_to_dl(@item) %>
   </div>
 </div>
+
+<% if Rails.env.development? %>
+  Repository URL: <%= link_to @item.repository_url, @item.repository_url %>
+<% end %>

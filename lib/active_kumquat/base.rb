@@ -180,6 +180,7 @@ module ActiveKumquat
         # exclude subclass-managed predicates from the update
         next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::CLASS}"
         next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::PARENT_URI}"
+        next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::PUBLISHED}" # TODO: this is messy
 
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
             insert(nil, "<#{statement.predicate.to_s}>",

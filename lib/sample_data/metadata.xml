@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<!--
+Metadata describing the Kumquat sample data. This is an RDF file created
+by hand. RDF offers a simple way to describe relationships between items and
+collections that is both human- and machine-readable; but this is not to assert
+that RDF is the only, or even best, way to import metadata into the
+application.
+
+In this file, items and collections have their own URIs in a namespace
+prefixed by "local". Items are linked to collections by the
+local:partOfCollection predicate, and to bytestreams (files) by the
+local:filename predicate. Compound item pages are linked to their parent by
+the local:hasParent predicate.
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:dcterms="http://purl.org/dc/terms/"
+         xmlns:kumquat="http://example.org/"
+         xmlns:local="http://example.net/"> <!-- TODO: change kumquat namespace -->
+
+  <!-- AUDIO COLLECTION -->
+
+  <rdf:Description rdf:about="http://example.net/collections/audio-sample">
+    <dc:description>A collection full of audio files.</dc:description>
+    <dc:title>Sample Audio Collection</dc:title>
+    <local:key>audio-sample</local:key>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/beep-piano.aif">
+    <local:partOfCollection rdf:resource="http://example.net/collections/audio-sample"/>
+    <dc:description>A short beep.</dc:description>
+    <dcterms:extent>22 Kbytes</dcterms:extent>
+    <local:filename>beep-piano.aif</local:filename>
+    <dcterms:MediaType>audio/aiff</dcterms:MediaType>
+    <dc:identifier>beep-piano.aif</dc:identifier>
+    <dc:subject>Pianos</dc:subject>
+    <dc:subject>Beeps</dc:subject>
+    <dc:subject>Annoying noises</dc:subject>
+    <dc:title>Sample AIFF audio item</dc:title>
+    <dc:type>Sound</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/retro_click.wav">
+    <local:partOfCollection rdf:resource="http://example.net/collections/audio-sample"/>
+    <dc:description>A short click.</dc:description>
+    <dcterms:extent>4 Kbytes</dcterms:extent>
+    <local:filename>retro_click.wav</local:filename>
+    <dcterms:MediaType>audio/wave</dcterms:MediaType>
+    <dc:identifier>retro_click.wav</dc:identifier>
+    <dc:subject>Clicks</dc:subject>
+    <dc:subject>Annoying noises</dc:subject>
+    <dc:title>Sample wave audio item</dc:title>
+    <dc:type>Sound</dc:type>
+  </rdf:Description>
+
+  <!-- DOCUMENT COLLECTION -->
+
+  <rdf:Description rdf:about="http://example.net/collections/doc-sample">
+    <dc:description>A collection full of documents.</dc:description>
+    <dc:title>Sample Document Collection</dc:title>
+    <local:key>doc-sample</local:key>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/magna_carta.txt">
+    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
+    <dc:creator>Stephen Langton</dc:creator>
+    <dc:date>1215-06-19</dc:date>
+    <dc:description>The Magna Carta, in UTF-8 with no byte order
+      mark.</dc:description>
+    <dcterms:extent>4583 words</dcterms:extent>
+    <local:filename>magna carta.txt</local:filename>
+    <dcterms:MediaType>text/plain</dcterms:MediaType>
+    <dc:language>English</dc:language>
+    <dc:publisher>England</dc:publisher>
+    <dc:rights>Public domain</dc:rights>
+    <dc:subject>Important historical documents</dc:subject>
+    <dc:title>Sample plain text item</dc:title>
+    <dc:type>Text</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/NEXTSTEP.pdf">
+    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
+    <dc:creator>NeXT Computer, Inc.</dc:creator>
+    <dc:date>1995</dc:date>
+    <dc:description>A flyer advertising the NEXTSTEP operating
+      system.</dc:description>
+    <dcterms:extent>312 Kbytes</dcterms:extent>
+    <local:filename>NEXTSTEP.pdf</local:filename>
+    <dcterms:MediaType>application/pdf</dcterms:MediaType>
+    <dc:language>English</dc:language>
+    <dc:publisher>NeXT Computer, Inc.</dc:publisher>
+    <dc:title>Sample PDF item</dc:title>
+    <dc:type>Text</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/office-compound-item">
+    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
+    <dc:description>A compound item consisting of bytestreams in various
+      Microsoft Office 2011 file formats.</dc:description>
+    <local:filename>powerpoint.pptx</local:filename>
+    <dcterms:extent>58 Kbytes</dcterms:extent>
+    <dcterms:MediaType>application/vnd.openxmlformats-officedocument.presentationml.presentation</dcterms:MediaType>
+    <dc:title>Sample compound item consisting of Microsoft Office files</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/office-compound-item/1">
+    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
+    <dc:description>A Microsoft Word 2011 file.</dc:description>
+    <local:filename>word.docx</local:filename>
+    <local:hasParent rdf:resource="http://example.net/items/office-compound-item"/>
+    <dcterms:extent>22 Kbytes</dcterms:extent>
+    <dcterms:MediaType>application/vnd.openxmlformats-officedocument.wordprocessingml.document</dcterms:MediaType>
+    <dc:title>Sample Microsoft Word 2011 document</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/office-compound-item/2">
+    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
+    <dc:description>A Microsoft Excel 2011 file.</dc:description>
+    <local:filename>excel.xlsx</local:filename>
+    <local:hasParent rdf:resource="http://example.net/items/office-compound-item"/>
+    <dcterms:extent>29 Kbytes</dcterms:extent>
+    <dcterms:MediaType>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</dcterms:MediaType>
+    <dc:title>Sample Microsoft Excel 2011 document</dc:title>
+  </rdf:Description>
+
+  <!-- IMAGE COLLECTION -->
+
+  <rdf:Description rdf:about="http://example.net/collections/image-sample">
+    <dc:description>A collection full of images.</dc:description>
+    <dc:title>Sample Image Collection</dc:title>
+    <local:key>image-sample</local:key>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/800379272_de0817d41a.tiff">
+    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
+    <dc:description>The Death Star under construction.</dc:description>
+    <local:filename>800379272_de0817d41a.tiff</local:filename>
+    <dcterms:extent>248 Kbytes</dcterms:extent>
+    <dcterms:MediaType>image/tiff</dcterms:MediaType>
+    <dc:subject>Cranes</dc:subject>
+    <dc:subject>Moons</dc:subject>
+    <dc:title>Sample LZW-compressed TIFF image item</dc:title>
+    <dc:type>Image</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/bike.png">
+    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
+    <dc:description>A bicycle in a parking space.</dc:description>
+    <local:filename>bike.png</local:filename>
+    <dcterms:extent>318 Kbytes</dcterms:extent>
+    <dcterms:MediaType>image/png</dcterms:MediaType>
+    <dc:subject>Bicycles</dc:subject>
+    <dc:subject>Parking spaces</dc:subject>
+    <dc:title>Sample PNG image item</dc:title>
+    <dc:type>Image</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/escher_lego.webp">
+    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
+    <dc:description>An M.C. Escher painting brought to life in Lego.</dc:description>
+    <dcterms:extent>38 Kbytes</dcterms:extent>
+    <local:filename>escher_lego.webp</local:filename>
+    <dcterms:MediaType>image/webp</dcterms:MediaType>
+    <dc:identifier>escher_lego.webp</dc:identifier>
+    <dc:subject>Escher, M.C.</dc:subject>
+    <dc:subject>Lego</dc:subject>
+    <dc:title>Sample WebP image item</dc:title>
+    <dc:type>Image</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/IMG_1118.jp2">
+    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
+    <dc:coverage>Memorial Stadium, University of Illinois at
+      Urbana-Champaign</dc:coverage>
+    <dc:creator/>
+    <dc:date>2014-06-12</dc:date>
+    <dc:description>A plaque of Red Grange in Memorial Stadium on the
+      University of Illinois at Urbana-Champaign campus.</dc:description>
+    <local:filename>IMG_1118.jp2</local:filename>
+    <kumquat:fullText>Harold E. "Red" Grange
+"the Galloping Ghost"
+"77"
+Born: June 13, 1903 in Forksville, Pa.
+Died: January 28, 1991 in Lake Wales, Fla.
+
+Red Grange is considered to be one of college
+football's greatest stars, lettering at the
+University of Illinois as a halfback from 1923-25
+and earning All-America honors all three seasons.
+His most memorable performance came October 18,
+1924 vs. Michigan here at Memorial Stadium in the
+Dedication Game.
+
+Upon seeing Grange's performance, legendary
+sportswriter Grantland Rice penned this immortal
+verse:
+
+A streak of fire, a breath of flame,
+Eluding all who reach and clutch,
+A gray Ghost thrown into the game
+That rival hands may never touch;
+A rubber, bounding, blasting soul
+Whose destination is the goal..
+Red Grange of Illinois.</kumquat:fullText>
+    <dcterms:extent>912 Kbytes</dcterms:extent>
+    <dcterms:MediaType>image/jp2</dcterms:MediaType>
+    <dc:identifier>IMG_1118.jp2</dc:identifier>
+    <dc:language>English</dc:language>
+    <dc:publisher/>
+    <dc:relation/>
+    <dc:rights>Creative Commons Attribution-NoDerivatives 4.0
+      International</dc:rights>
+    <dc:source/>
+    <dc:subject>Plaques</dc:subject>
+    <dc:subject>Football</dc:subject>
+    <dc:title>Sample JPEG2000 image item</dc:title>
+    <dc:type>Image</dc:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/P1000245.jpg">
+    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
+    <dc:coverage>Memorial Stadium, University of Illinois at
+      Urbana-Champaign</dc:coverage>
+    <dc:date>2014-05-21</dc:date>
+    <dc:description>Bleachers and playing field in Memorial
+      Stadium.</dc:description>
+    <dcterms:extent>1.7 Mbytes</dcterms:extent>
+    <local:filename>P1000245.jpg</local:filename>
+    <dcterms:MediaType>image/jpeg</dcterms:MediaType>
+    <dc:rights>Creative Commons Attribution-NoDerivatives 4.0
+      International</dc:rights>
+    <dc:subject>Football stadiums</dc:subject>
+    <dc:title>Sample JPEG image item</dc:title>
+    <dc:type>Image</dc:type>
+  </rdf:Description>
+
+  <!-- MISC COLLECTION -->
+
+  <rdf:Description rdf:about="http://example.net/collections/misc-sample">
+    <dc:description>A collection full of files of various types.</dc:description>
+    <dc:title>Sample Miscellaneous Collection</dc:title>
+    <local:key>misc-sample</local:key>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/empty">
+    <local:partOfCollection rdf:resource="http://example.net/collections/misc-sample"/>
+    <dc:description>An item with no attached bytestream.</dc:description>
+    <dcterms:extent>0 bytes</dcterms:extent>
+    <dc:title>Empty item</dc:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/hello_world">
+    <local:partOfCollection rdf:resource="http://example.net/collections/misc-sample"/>
+    <dc:date>2015-03-12</dc:date>
+    <dc:description>"Hello world!", written in C and compiled with GCC for
+      Darwin 14.1 x86_64.</dc:description>
+    <dcterms:extent>8 Kbytes</dcterms:extent>
+    <local:filename>hello_world</local:filename>
+    <dcterms:MediaType>application/octet-stream</dcterms:MediaType>
+    <dc:identifier>hello_world</dc:identifier>
+    <dc:language>English</dc:language>
+    <dc:rights>Public domain</dc:rights>
+    <dc:subject>Computer software</dc:subject>
+    <dc:title>Sample binary executable item</dc:title>
+    <dc:type>Dataset</dc:type>
+  </rdf:Description>
+
+  <!-- VIDEO COLLECTION -->
+
+  <rdf:Description rdf:about="http://example.net/collections/video-sample">
+    <dc:description>A collection full of videos.</dc:description>
+    <dc:title>Sample Video Collection</dc:title>
+    <local:key>video-sample</local:key>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.net/items/IMG_0054.mov">
+    <local:partOfCollection rdf:resource="http://example.net/collections/video-sample"/>
+    <dc:description>Part of the south façade of the Illini Union on the
+      University of Illinois at Urbana-Champaign campus. Filmed on an
+      iPhone 5S.</dc:description>
+    <dcterms:extent>1.1 Mbytes</dcterms:extent>
+    <dcterms:extent>1280x720</dcterms:extent>
+    <local:filename>IMG_0054.mov</local:filename>
+    <dcterms:MediaType>video/quicktime</dcterms:MediaType>
+    <dc:identifier>IMG_0054.mov</dc:identifier>
+    <dc:subject>University of Illinois at Urbana-Champaign</dc:subject>
+    <dc:subject>Illini Union</dc:subject>
+    <dc:subject>Buildings</dc:subject>
+    <dc:title>Sample QuickTime H.264/AAC video item</dc:title>
+    <dc:type>Video</dc:type>
+  </rdf:Description>
+
+</rdf:RDF>

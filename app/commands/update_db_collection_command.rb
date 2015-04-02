@@ -13,7 +13,7 @@ class UpdateDBCollectionCommand < Command
           @collection.rdf_predicates.build(uri: uri, label: label) unless label.blank?
         end
       else
-        @collection.update(params)
+        @collection.update(@params)
       end
       @collection.save!
     end

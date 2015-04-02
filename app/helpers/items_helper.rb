@@ -7,11 +7,12 @@ module ItemsHelper
 
   def download_button(item)
     return nil unless item.master_bytestream
-    html = '<button type="button" class="btn btn-default dropdown-toggle"
-            data-toggle="dropdown" aria-expanded="false">
-         <i class="fa fa-download"></i> Download <span class="caret"></span>
-       </button>'
-    html += '<ul class="dropdown-menu" role="menu">'
+    html = '<div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle"
+           data-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-download"></i> Download <span class="caret"></span>
+      </button>'
+    html += '<ul class="dropdown-menu pull-right" role="menu">'
     html += '<li>'
     html += link_to(download_label_for_bytestream(item.master_bytestream),
                     repository_item_master_bytestream_url(item))
@@ -29,6 +30,7 @@ module ItemsHelper
       end
     end
     html += '</ul>'
+    html += '</div>'
     raw(html)
   end
 
@@ -36,7 +38,7 @@ module ItemsHelper
   # @param items ActiveKumquat::ResultSet
   #
   def facets_as_panels(items)
-    term_limit = Kumquat::Application.kumquat_config[:facet_term_limit]
+    term_limit = DB::Option::integer(DB::Option::Key::FACET_TERM_LIMIT)
     panels = ''
     items.facet_fields.each do |facet|
       panel = '<div class="panel panel-default">'
@@ -71,44 +73,6 @@ module ItemsHelper
     raw(panels)
   end
 
-  ##
-  # @param items ActiveKumquat::ResultSet
-  #
-  def facets_as_ul(items)
-    term_limit = Kumquat::Application.kumquat_config[:facet_term_limit]
-    ul = '<ul>'
-    items.facet_fields.each do |facet|
-      next unless facet.terms.select{ |t| t.count > 0 }.any?
-      ul += "<li class=\"kq-field\">
-        <span class=\"kq-field-name\">#{facet.label}</span>"
-      ul += '<ul class="kq-terms">'
-      facet.terms.each_with_index do |term, i|
-        break if i >= term_limit
-        next if term.count < 1
-        term_params = params.deep_dup
-        clear_link = nil
-        if term_params[:fq] and term_params[:fq].include?(term.facet_query)
-          term_params = term.removed_from_params(term_params)
-          clear_link = link_to(term_params, class: 'kq-clear') do
-            content_tag(:i, nil, class: 'fa fa-remove')
-          end
-          term_html = "<span class=\"kq-selected-term\">#{term.name}</span>"
-        else
-          term_html = link_to(term.name, term.added_to_params(term_params))
-        end
-        ul += "<li class=\"kq-term\">
-          <span class=\"kq-term-name\">#{term_html}</span>
-          <span class=\"kq-count badge\">#{term.count}</span>
-          #{clear_link}
-        </li>"
-      end
-      ul += '</ul>
-      </li>'
-    end
-    ul += '</ul>'
-    raw(ul)
-  end
-
   def icon_for(describable)
     icon = 'fa-cube'
     if describable.kind_of?(Repository::Item)
@@ -140,16 +104,20 @@ module ItemsHelper
   # @param start integer
   # @param options Hash with available keys:
   # :show_remove_from_favorites_buttons, :show_add_to_favorites_buttons,
-  # :show_collections
+  # :show_collections, :show_description, :thumbnail_size
   #
   def items_as_list(items, start, options = {})
+    options[:show_description] = true unless
+        options.keys.include?(:show_description)
+
     html = "<ol start=\"#{start + 1}\">"
     items.each do |item|
       html += '<li>'\
         '<div>'
       if item.kind_of?(Repository::Item)
         html += link_to(item, class: 'kq-thumbnail-link') do
-          thumbnail_tag(item)
+          thumbnail_tag(item,
+                        options[:thumbnail_size] ? options[:thumbnail_size] : 256)
         end
       end
       html += '<span class="kq-title">'
@@ -173,10 +141,12 @@ module ItemsHelper
           raw("#{self.icon_for(item.collection)} #{item.collection.title}")
         end
       end
-      html += '<br>'
-      html += '<span class="kq-description">'
-      html += truncate(item.description.to_s, length: 400)
-      html += '</span>'
+      if options[:show_description]
+        html += '<br>'
+        html += '<span class="kq-description">'
+        html += truncate(item.description.to_s, length: 400)
+        html += '</span>'
+      end
       html += '</div>'
       html += '</li>'
     end
@@ -202,11 +172,11 @@ module ItemsHelper
     items.each do |child|
       html += '<li><div>'
       if item == child
-        html += thumbnail_tag(child)
+        html += thumbnail_tag(child, 256)
         html += "<strong class=\"kq-text\">#{truncate(child.title, length: 40)}</strong>"
       else
         html += link_to(child) do
-          thumbnail_tag(child)
+          thumbnail_tag(child, 256)
         end
         html += link_to(truncate(child.title, length: 40), child)
       end
@@ -269,10 +239,65 @@ module ItemsHelper
     raw(html)
   end
 
-  def thumbnail_tag(item)
+  def share_button(item)
+    html = '<div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle"
+            data-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-share-alt"></i> Share <span class="caret"></span>
+      </button>'
+    html += '<ul class="dropdown-menu pull-right" role="menu">'
+    description = item.description ? CGI::escape(item.description) : nil
+    # email
+    html += '<li>'
+    html += link_to("mailto:?subject=#{CGI::escape(item.title)}") do
+      raw('<i class="fa fa-envelope"></i> Email')
+    end
+    html += '</li>'
+    html += '<li class="divider"></li>'
+    # facebook
+    html += '<li>'
+    html += link_to("https://www.facebook.com/sharer/sharer.php?u=#{CGI::escape(repository_item_url(item))}") do
+      raw('<i class="fa fa-facebook-square"></i> Facebook')
+    end
+    html += '</li>'
+    # linkedin
+    html += '<li>'
+    html += link_to("http://www.linkedin.com/shareArticle?mini=true&url=#{CGI::escape(repository_item_url(item))}&title=#{CGI::escape(item.title)}&summary=#{description}") do
+      raw('<i class="fa fa-linkedin-square"></i> LinkedIn')
+    end
+    html += '</li>'
+    # twitter
+    html += '<li>'
+    html += link_to("http://twitter.com/home?status=#{CGI::escape(item.title)}%20#{CGI::escape(repository_item_url(item))}") do
+      raw('<i class="fa fa-twitter-square"></i> Twitter')
+    end
+    html += '</li>'
+    # google+
+    html += '<li>'
+    html += link_to("https://plus.google.com/share?url=#{CGI::escape(item.title)}%20#{CGI::escape(repository_item_url(item))}") do
+      raw('<i class="fa fa-google-plus-square"></i> Google+')
+    end
+    html += '</li>'
+    # pinterest
+    html += '<li>'
+    html += link_to("http://pinterest.com/pin/create/button/?url=#{CGI::escape(repository_item_url(item))}&media=#{CGI::escape(item.derivative_image_url(512).to_s)}&description=#{CGI::escape(item.title)}") do
+      raw('<i class="fa fa-pinterest-square"></i> Pinterest')
+    end
+    html += '</li>'
+
+    html += '</ul>'
+    html += '</div>'
+    raw(html)
+  end
+
+  ##
+  # @param item Repository::Item
+  # @param size integer One of DerivativeManagement::STATIC_IMAGE_SIZES
+  #
+  def thumbnail_tag(item, size)
     return unless item
     html = "<div class=\"kq-thumbnail\">"
-    thumb_url = item.derivative_image_url(256)
+    thumb_url = item.derivative_image_url(size)
     if thumb_url
       html += image_tag(thumb_url, alt: 'Thumbnail image')
     else
@@ -409,14 +434,7 @@ module ItemsHelper
   end
 
   def pdf_viewer_for(item)
-    viewer_url = asset_path('/pdfjs/web/viewer.html?file=' +
-        repository_item_master_bytestream_path(item))
-    tag = link_to(viewer_url, target: '_blank') do
-      #image_tag(item_image_path(item, size: 256))
-    end
-    tag += link_to('Open in PDF Viewer', viewer_url, target: '_blank',
-                   class: 'btn btn-default')
-    raw(tag)
+    nil
   end
 
   def video_player_for(item)
@@ -441,7 +459,8 @@ module ItemsHelper
     else
       parts << bytestream.media_type
     end
-    if bytestream.width and bytestream.height
+    if bytestream.width and bytestream.width > 0 and bytestream.height and
+        bytestream.height > 0
       parts << "<small>#{bytestream.width}&times;#{bytestream.height}</small>"
     end
     if bytestream.byte_size

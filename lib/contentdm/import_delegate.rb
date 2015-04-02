@@ -23,6 +23,10 @@ module Contentdm
       cdm_item_at_index(index).collection.alias
     end
 
+    def full_text_of_item_at_index(index)
+      cdm_item_at_index(index).full_text
+    end
+
     def import_id_of_item_at_index(index)
       import_id_for_cdm_item(cdm_item_at_index(index))
     end
@@ -34,7 +38,7 @@ module Contentdm
 
     def master_pathname_of_item_at_index(index)
       pathname = cdm_item_at_index(index).master_file_pathname
-      File.extname(pathname) == '.url' ? nil : pathname
+      %w(.cpd .url).include?(File.extname(pathname)) ? nil : pathname
     end
 
     def master_url_of_item_at_index(index)
@@ -77,14 +81,17 @@ module Contentdm
     private
 
     def cdm_item_at_index(index)
-      offset = 0
+      begin_offset = end_offset = 0
       collection = nil
       collections.each do |col|
-        offset += col.num_items
+        begin_offset = end_offset
         collection = col
-        break if offset > index
+        end_offset += col.num_items
+        break if end_offset > index
       end
-      Item.at_index(@source_path, collection, offset - index - 1)
+      #puts "#{begin_offset} #{end_offset} #{index} #{index - begin_offset}"
+      #puts collection.alias
+      Item.at_index(@source_path, collection, index - begin_offset)
     end
 
     def collections

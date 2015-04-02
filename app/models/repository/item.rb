@@ -7,6 +7,7 @@ module Repository
     include ImageServing
 
     ENTITY_CLASS = ActiveKumquat::Base::Class::ITEM
+    WEB_ID_LENGTH = 5
 
     attr_accessor :collection
     attr_accessor :full_text
@@ -140,11 +141,10 @@ module Repository
     # 36^WEB_ID_LENGTH available.
     #
     def generate_web_id
-      length = Kumquat::Application.kumquat_config[:web_id_length]
       proposed_id = nil
       while true
-        proposed_id = (36 ** (length - 1) +
-            rand(36 ** length - 36 ** (length - 1))).to_s(36)
+        proposed_id = (36 ** (WEB_ID_LENGTH - 1) +
+            rand(36 ** WEB_ID_LENGTH - 36 ** (WEB_ID_LENGTH - 1))).to_s(36)
         break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
       end
       proposed_id

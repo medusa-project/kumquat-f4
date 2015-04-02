@@ -42,7 +42,8 @@ module DerivativeManagement
   #
   def derivative_image_url(size)
     bs = self.bytestreams.
-        select{ |bs| bs.width == size or bs.height == size }.first
+        select{ |bs| (bs.width == size and bs.height <= size) or
+        (bs.height == size and bs.width <= size) }.first
     bs ? bs.repository_url : nil
   end
 

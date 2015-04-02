@@ -103,5 +103,91 @@
     <cdmfile>3.txt</cdmfile>
     <cdmpath>/test/image/3.txt</cdmpath>
   </record>
+  <record>
+    <title>Sample Compound Object</title>
+    <identifier>adlkjwerlewrljk</identifier>
+    <coverage>2015</coverage>
+    <coverage></coverage>
+    <date>2015</date>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <creator>Somebody</creator>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <contributor></contributor>
+    <contributor></contributor>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <unmapped></unmapped>
+    <description>Who knows</description>
+    <relation></relation>
+    <publisher></publisher>
+    <format>text</format>
+    <fullResolution></fullResolution>
+    <cdmid>3</cdmid>
+    <cdmaccess></cdmaccess>
+    <cdmcreated>2008-10-07</cdmcreated>
+    <cdmmodified>2008-10-07</cdmmodified>
+    <cdmoclc></cdmoclc>
+    <cdmfile>4.cpd</cdmfile>
+    <cdmpath>/test/image/3.cpd</cdmpath>
+    <structure>
+      <page>
+        <pagetitle>First page</pagetitle>
+        <pageptr>4</pageptr>
+        <pagefile>
+          <pagefiletype>thumbnail</pagefiletype>
+          <pagefilelocation>http://example.org/cgi-bin/thumbnail.exe?CISOROOT=/kennedy&amp;CISOPTR=7</pagefilelocation>
+        </pagefile>
+        <pagefile>
+          <pagefiletype>access</pagefiletype>
+          <pagefilelocation>http://example.org/cgi-bin/showfile.exe?CISOROOT=/kennedy&amp;CISOPTR=7</pagefilelocation>
+        </pagefile>
+        <pagefile>
+          <pagefiletype>master</pagefiletype>
+          <pagefilelocation></pagefilelocation>
+        </pagefile>
+        <pagetext>        </pagetext>
+        <pagemetadata>
+          <title>Page 1</title>
+          <alternative></alternative>
+          <creator>Somebody</creator>
+          <publisher></publisher>
+          <date></date>
+          <language></language>
+          <description></description>
+          <subject></subject>
+          <temporal></temporal>
+          <spatial></spatial>
+          <type></type>
+          <unmapped>JPEG</unmapped>
+          <medium></medium>
+          <contributor></contributor>
+          <identifier></identifier>
+          <source></source>
+          <isPartOf></isPartOf>
+          <rights></rights>
+        </pagemetadata>
+      </page>
+    </structure>
+  </record>
  </metadata>
  

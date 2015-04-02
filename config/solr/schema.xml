@@ -85,6 +85,8 @@
   <!-- Preserves the order of items in a set -->
   <field name="kq_system_page_index" type="int" indexed="true" stored="true"
     multiValued="false"/>
+  <field name="kq_system_published" type="boolean" indexed="true" stored="true"
+         multiValued="false"/>
   <!-- One of the ActiveKumquat::Base::TYPE constants -->
   <field name="kq_system_class" type="string" indexed="true" stored="true"
     multiValued="false"/>

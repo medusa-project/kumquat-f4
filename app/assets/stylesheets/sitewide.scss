@@ -2,34 +2,6 @@
  * Styles used throughout the website, both public and admin sides.
  */
 
-h1 {
-  font-family: 'Oswald', sans-serif;
-  font-size: 2.5em;
-  margin-bottom: 0.5em;
-}
-h1:first-child {
-  margin-top: 0em;
-}
-h2 {
-  font-size: 2em;
-}
-h3 {
-  font-size: 1.6em;
-}
-h4 {
-  font-size: 1.3em;
-}
-h5 {
-  font-size: 1.1em;
-}
-h6 {
-  font-size: 0.9em;
-}
-
-h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .btn, .kq-title {
-  font-family: 'PT Sans', sans-serif;
-}
-
 dl {
   dd {
     margin: 0em 0em 0.5em 1em;
@@ -40,6 +12,17 @@ dl {
       padding-left: 0em;
     }
   }
+}
+
+div.alert ul {
+  margin-left:1em;
+  padding-left:0px;
+}
+
+/* make the default bootstrap .alert-info less prominent */
+div.alert-info {
+  background-color: #f4f4ff;
+  border-color: #e4e4ef;
 }
 
 dl.kq-triples {
@@ -54,13 +37,4 @@ dl.kq-triples {
 
 .tab-content {
   padding-top:1em;
-}
-
-div.alert ul {
-  margin-left:1em;
-  padding-left:0px;
-}
-
-footer {
-  text-align: right;
 }

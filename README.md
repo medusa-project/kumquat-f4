@@ -169,9 +169,9 @@ branching model.)*
 
 Edit these as necessary.
 
-Also copy `kumquat/config/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`.
+Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`.
 
-#### Create the database
+#### Create and seed the database
 
 `$ bundle exec rake db:setup`
 
@@ -197,9 +197,6 @@ Also copy `kumquat/config/schema.xml` to `solr-4.10.3/example/solr/collection1/c
 
 `$ java -jar start.jar`
 
-Verify that Solr is running at [http://localhost:8983/solr]
-(http://localhost:8983/solr).
-
 ### Loris
 
 `$ apachectl stop`
@@ -210,7 +207,7 @@ Verify that Solr is running at [http://localhost:8983/solr]
 
 1. Install/update Kumquat's Fedora indexing transform:
 
-  `$ bundle exec rake kumquat:update_indexing`
+  `$ bundle exec rake kumquat:update_index_transform`
 
 2. `$ rails server`
 

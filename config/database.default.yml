@@ -1,9 +1,4 @@
-# PostgreSQL version 9.x
-#   gem install pg
-#
-#   Ensure the PostgreSQL gem is defined in your Gemfile
-#   gem 'pg'
-development:
+development: &development
   adapter: postgresql
   database: kumquat_development
   host: localhost
@@ -11,6 +6,11 @@ development:
   min_messages: warning
   encoding: unicode
   template: template0
+
+# Create a duplicate of the development environment that we (at UIUC) can use
+# to seed some site-specific data for internal demos and such.
+uiuc_development:
+  <<: *development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

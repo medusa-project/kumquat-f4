@@ -4,6 +4,18 @@ body {
 
 nav.navbar {
   background-color:rgba(0, 0, 0, 0.75);
+  li.kq-icon-only {
+    font-size: 20px;
+    margin: 0px;
+    padding: 0px;
+  }
+  .navbar-nav > li > a {
+    color: #c0c0c0;
+    font-family: 'PT Sans', sans-serif;
+    font-size:0.9em;
+    letter-spacing:1.1px;
+    text-transform: uppercase;
+  }
 }
 
 .kq-code-panel {
@@ -15,4 +27,12 @@ nav.navbar {
     }
     overflow-x: scroll;
   }
+}
+
+.label {
+  text-transform: uppercase;
+}
+
+footer {
+  margin-top: 2em;
 }

@@ -18,7 +18,9 @@ module Kumquat
     class RDFObjects
       BYTESTREAM = 'Bytestream'
       COLLECTION = 'Collection'
+      DERIVATIVE_BYTESTREAM = 'Bytestream/Derivative'
       ITEM = 'Item'
+      MASTER_BYTESTREAM = 'Bytestream/Master'
     end
 
     ##
@@ -35,6 +37,7 @@ module Kumquat
       HEIGHT = 'height'
       PAGE_INDEX = 'pageIndex'
       PARENT_URI = 'hasParent'
+      PUBLISHED = 'published'
       WEB_ID = 'webID'
       WIDTH = 'width'
     end

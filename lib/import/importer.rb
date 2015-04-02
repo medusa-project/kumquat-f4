@@ -28,9 +28,10 @@ module Import
           collection = Repository::Collection.new(
               key: key,
               container_url: @import_delegate.root_container_url,
+              published: @import_delegate.collection_of_item_at_index_is_published(index),
               requested_slug: @import_delegate.slug_of_collection_of_item_at_index(index),
               rdf_graph: @import_delegate.metadata_of_collection_of_item_at_index(index))
-          puts collection.title if collection.title
+          Rails.logger.debug collection.title if collection.title
           collection.save!
           @collections[key] = collection
         end
@@ -51,7 +52,7 @@ module Import
             parent_uri: parent_uri,
             rdf_graph: @import_delegate.metadata_of_item_at_index(index))
         item.save! # save it in order to populate its repository URL
-        puts item.repository_url
+        Rails.logger.debug "Created #{item.repository_url} (#{index + 1}/#{item_count})"
 
         import_id = @import_delegate.import_id_of_item_at_index(index)
         @import_id_uri_map[import_id] = item.repository_url
@@ -66,7 +67,7 @@ module Import
                 type: Repository::Bytestream::Type::MASTER)
             # assign media type
             media_type = @import_delegate.media_type_of_item_at_index(index)
-            bs.media_type = media_type if media_type
+            bs.media_type = media_type unless media_type.blank?
             bs.save
             item.bytestreams << bs
           else
@@ -81,7 +82,7 @@ module Import
                 type: Repository::Bytestream::Type::MASTER)
             # assign media type
             media_type = @import_delegate.media_type_of_item_at_index(index)
-            bs.media_type = media_type if media_type
+            bs.media_type = media_type unless media_type.blank?
             bs.save
             item.bytestreams << bs
           end

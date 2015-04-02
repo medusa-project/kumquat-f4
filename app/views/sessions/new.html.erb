@@ -2,8 +2,7 @@
 <% provide(:body_id, 'signin') %>
 
 <% if Rails.env.development? %>
-  <p>DEVELOPMENT: Sign in as any of the following users with password
-    "password": <%= User.all.map(&:username).join(', ') %></p>
+  <p>DEVELOPMENT: Sign in as admin / kumquats4ever</p>
 <% end %>
 
 <div class="panel panel-default signin">
@@ -11,7 +10,7 @@
     <h3 class="panel-title">Sign In</h3>
   </div>
   <div class="panel-body">
-    <%= form_for(:session, url: sessions_path) do |f| %>
+    <%= form_for(:sessions, url: auth_path(:password)) do |f| %>
       <div class="form-group">
         <%= f.label :username %>
         <%= f.text_field :username, class: 'form-control' %>

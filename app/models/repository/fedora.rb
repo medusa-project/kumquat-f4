@@ -32,6 +32,7 @@ module Repository
       #{Solr::Solr::HEIGHT_KEY} = kumquat:#{kq_predicates::HEIGHT} :: xsd:integer;
       #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{kq_predicates::PAGE_INDEX} :: xsd:integer;
       #{Solr::Solr::PARENT_URI_KEY} = kumquat:#{kq_predicates::PARENT_URI} :: xsd:string;
+      #{Solr::Solr::PUBLISHED_KEY} = kumquat:#{kq_predicates::PUBLISHED} :: xsd:boolean;
       #{Solr::Solr::WEB_ID_KEY} = kumquat:#{kq_predicates::WEB_ID} :: xsd:string;
       #{Solr::Solr::WIDTH_KEY} = kumquat:#{kq_predicates::WIDTH} :: xsd:integer;
       dc_contributor = dc:contributor :: xsd:string;

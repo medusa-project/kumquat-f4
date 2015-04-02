@@ -7,6 +7,7 @@ module Repository
     ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION # TODO: get rid of this
 
     attr_accessor :key
+    attr_accessor :published
 
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
@@ -62,6 +63,9 @@ module Repository
         if predicate == Kumquat::Application::NAMESPACE_URI +
             Kumquat::Application::RDFPredicates::COLLECTION_KEY
           self.key = object.to_s
+        elsif predicate == Kumquat::Application::NAMESPACE_URI +
+            Kumquat::Application::RDFPredicates::PUBLISHED
+          self.published = (object.to_s == 'true')
         end
       end
     end
@@ -84,14 +88,17 @@ module Repository
       kq_predicates = Kumquat::Application::RDFPredicates
       kq_objects = Kumquat::Application::RDFObjects
 
-      update = super
-      update.prefix('kumquat', kq_uri)
+      update = super # TODO: define these properties at class level and have the superclass handle them
       # key
-      update.delete('<>', "<kumquat:#{kq_predicates::COLLECTION_KEY}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::COLLECTION_KEY}", self.key)
+      update.delete('<>', "<#{kq_uri}#{kq_predicates::COLLECTION_KEY}>", '?o', false).
+          insert(nil, "<#{kq_uri}#{kq_predicates::COLLECTION_KEY}>", self.key)
+      # published
+      update.delete('<>', "<#{kq_uri}#{kq_predicates::PUBLISHED}>", '?o', false).
+          insert(nil, "<#{kq_uri}#{kq_predicates::PUBLISHED}>",
+                 self.published ? 'true' : 'false')
       # resource type
-      update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::CLASS}",
+      update.delete('<>', "<#{kq_uri}#{kq_predicates::CLASS}>", '?o', false).
+          insert(nil, "<#{kq_uri}#{kq_predicates::CLASS}>",
                  "<#{kq_uri}#{kq_objects::COLLECTION}>", false)
     end
 

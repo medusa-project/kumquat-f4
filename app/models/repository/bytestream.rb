@@ -25,8 +25,10 @@ module Repository
     validates_presence_of :owner
 
     class Type
-      DERIVATIVE = 'derivative'
-      MASTER = 'master'
+      DERIVATIVE = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::DERIVATIVE_BYTESTREAM
+      MASTER = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::MASTER_BYTESTREAM
     end
 
     @@http = HTTPClient.new
@@ -212,7 +214,8 @@ module Repository
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_TYPE}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}", self.type)
+          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}",
+                 "<#{self.type}>", false)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
@@ -261,9 +264,9 @@ module Repository
         File.open(self.upload_pathname) do |file|
           filename = File.basename(self.upload_pathname)
           headers = {
-              'Content-Type' => self.media_type,
               'Content-Disposition' => "attachment; filename=\"#{filename}\""
           }
+          headers['Content-Type'] = self.media_type unless self.media_type.blank?
           response = @@http.post(self.owner.repository_url, file, headers)
         end
       elsif self.external_resource_url

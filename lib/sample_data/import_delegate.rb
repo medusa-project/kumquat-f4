@@ -1,155 +1,184 @@
 module SampleData
 
+  ##
+  # An import delegate for the sample collections.
+  #
   class ImportDelegate < ::Import::AbstractDelegate
 
+    LOCAL_NAMESPACE = 'http://example.net/'
+    SOURCE_PATH = File.join(Rails.root, 'lib', 'sample_data', 'bytestreams')
+
     def initialize
-      @collection_key = nil
-      @source_path = File.join(Rails.root, 'lib', 'sample_data',
-                               'sample_collection')
-      @metadata_pathname = File.join(@source_path, 'metadata.xml')
-      @num_items = 0
+      @metadata_pathname = File.join(File.dirname(__FILE__), 'metadata.xml')
       @root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
+      @collections = [] # array of RDF::Graphs
+      @items = [] # array of RDF::Graphs
 
       # delete any old collections that may be lying around from
       # previous/failed imports
-      Repository::Collection.delete_with_key(collection_key) rescue nil
+      collections.each do |collection|
+        collection.each_statement do |statement|
+          if statement.predicate.to_s == "#{LOCAL_NAMESPACE}key"
+            Repository::Collection.delete_with_key(statement.object.to_s) rescue nil
+          end
+        end
+      end
     end
 
     def total_number_of_items
-      if @num_items < 1
-        RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-          @num_items = reader.subjects.
-              select{ |s| s.start_with?('http://example.net/items') }.length
-        end
-      end
-      @num_items
+      items.length
     end
 
     def collection_key_of_item_at_index(index)
-      collection_key
+      collection_of_item_at_index(index).each_statement do |statement|
+        return statement.object.to_s if
+            statement.predicate.to_s == "#{LOCAL_NAMESPACE}key"
+      end
+      nil
     end
 
     def full_text_of_item_at_index(index)
-      subject = subject_at_index(index)
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        reader.each_statement do |statement|
-          if statement.subject.to_s == subject
-            return statement.object.to_s if
-                statement.predicate.to_s == 'http://example.org/fullText'
-          end
-        end
+      items[index].each_statement do |statement|
+        return statement.object.to_s if
+            statement.predicate.to_s == 'http://example.org/fullText'
       end
       nil
     end
 
     def import_id_of_item_at_index(index)
-      "#{collection_key}-#{index}"
+      "#{collection_key_of_item_at_index(index)}-#{index}"
     end
 
     def parent_import_id_of_item_at_index(index)
-      subject = subject_at_index(index)
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        reader.each_statement do |statement|
-          if statement.subject.to_s == subject
-            if statement.predicate.to_s == 'http://example.net/hasParent'
-              return import_id_of_item_at_index(index_of_item(statement.object.to_s))
-            end
-          end
-        end
-      end
-      nil
+      parent = parent_of_item_at_index(index)
+      parent ? import_id_of_item_at_index(index_of_item(parent)) : nil
     end
 
     def master_pathname_of_item_at_index(index)
-      subject = subject_at_index(index)
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        reader.each_statement do |statement|
-          if statement.subject.to_s == subject
-            if statement.predicate.to_s == 'http://example.net/filename'
-              return File.join(@source_path, statement.object.to_s)
-            end
-          end
-        end
+      items[index].each_statement do |statement|
+        return File.join(SOURCE_PATH, statement.object.to_s) if
+            statement.predicate.to_s == "#{LOCAL_NAMESPACE}filename"
       end
       nil
     end
 
     def media_type_of_item_at_index(index)
-      subject = subject_at_index(index)
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        reader.each_statement do |statement|
-          if statement.subject.to_s == subject
-            return statement.object.to_s if
-                statement.predicate.to_s == 'http://purl.org/dc/elements/1.1/format'
-          end
-        end
+      items[index].each_statement do |statement|
+        return statement.object.to_s if
+            statement.predicate.to_s == 'http://purl.org/dc/terms/MediaType'
       end
       nil
     end
 
     def metadata_of_collection_of_item_at_index(index)
       graph = RDF::Graph.new
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        reader.each_statement do |statement|
-          if statement.subject.to_s == 'http://example.net/collections/sample'
-            graph << statement
-          end
-        end
+      collection_of_item_at_index(index).each_statement do |statement|
+        graph << statement if
+            !statement.predicate.to_s.start_with?(LOCAL_NAMESPACE) and
+                !statement.object.to_s.blank?
       end
       graph
     end
 
     def metadata_of_item_at_index(index)
-      subject = subject_at_index(index)
       graph = RDF::Graph.new
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        reader.each_statement do |statement|
-          if statement.subject.to_s == subject
-            graph << statement if
-                !statement.predicate.to_s.start_with?('http://example.net/') and
-                    !statement.object.to_s.blank?
-          end
-        end
+      items[index].each_statement do |statement|
+        graph << statement if
+            !statement.predicate.to_s.start_with?(LOCAL_NAMESPACE) and
+                !statement.object.to_s.blank?
       end
       graph
     end
 
     def slug_of_collection_of_item_at_index(index)
-      collection_key
+      collection_of_item_at_index(index).each_statement do |statement|
+        return statement.object.to_s if
+            statement.predicate.to_s == "#{LOCAL_NAMESPACE}key"
+      end
+      nil
     end
 
     private
 
-    def collection_key
-      unless @collection_key
+    def collection_of_item_at_index(index)
+      collection_subject = nil
+      items[index].each_statement do |statement|
+        if statement.predicate.to_s == "#{LOCAL_NAMESPACE}partOfCollection"
+          collection_subject = statement.object.to_s
+          break
+        end
+      end
+      if collection_subject
+        collections.each do |collection|
+          if collection.has_subject?(RDF::URI(collection_subject))
+            return collection
+          end
+        end
+      end
+      nil
+    end
+
+    def collections
+      unless @collections.any?
+        subjects = []
+        RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+          subjects = reader.subjects.select do |subject|
+            subject.to_s.start_with?("#{LOCAL_NAMESPACE}collections/")
+          end
+        end
         RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
           reader.each_statement do |statement|
-            if statement.subject.to_s == 'http://example.net/collections/sample'
-              if statement.predicate.to_s == 'http://example.net/key'
-                @collection_key = statement.object.to_s
-              end
+            if statement.subject.to_s.start_with?("#{LOCAL_NAMESPACE}collections/")
+              index = subjects.find_index(statement.subject)
+              @collections[index] = RDF::Graph.new unless
+                  @collections[index].kind_of?(RDF::Graph)
+              @collections[index] << statement
             end
           end
         end
       end
-      @collection_key
+      @collections
     end
 
-    def index_of_item(uri)
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        i = 0
-        reader.each_subject do |subject|
-          next if subject.start_with?('http://example.net/collections')
-          return i if subject == uri
-          i += 1
+    def index_of_item(in_graph)
+      return nil unless in_graph
+      index = 0
+      items.each_with_index do |item_graph, i|
+        index = i
+        break if item_graph.subjects.first == in_graph.subjects.first
+      end
+      index
+    end
+
+    def items
+      unless @items.any?
+        subjects = []
+        RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+          subjects = reader.subjects.select do |subject|
+            subject.to_s.start_with?("#{LOCAL_NAMESPACE}items/")
+          end
+        end
+        RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
+          reader.each_statement do |statement|
+            if statement.subject.to_s.start_with?("#{LOCAL_NAMESPACE}items/")
+              index = subjects.find_index(statement.subject)
+              @items[index] = RDF::Graph.new unless
+                  @items[index].kind_of?(RDF::Graph)
+              @items[index] << statement
+            end
+          end
         end
       end
+      @items
     end
 
-    def subject_at_index(index)
-      RDF::RDFXML::Reader.open(@metadata_pathname) do |reader|
-        return reader.subjects.
-            select{ |s| s.start_with?('http://example.net/items') }[index]
+    def parent_of_item_at_index(index)
+      items[index].each_statement do |statement|
+        if statement.predicate.to_s == "#{LOCAL_NAMESPACE}hasParent"
+          items.each do |graph|
+            return graph if graph.has_subject?(statement.object)
+          end
+        end
       end
       nil
     end

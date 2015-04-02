@@ -7,16 +7,16 @@ module Admin
     before_action :update_rbac, only: [:edit, :update]
 
     def create
-      command = CreateCollectionCommand.new(sanitized_params)
+      command = CreateCollectionCommand.new(sanitized_repo_params)
       @collection = command.object
       begin
         executor.execute(command)
       rescue => e
-        flash[:error] = "#{e}"
+        flash['error'] = "#{e}"
         render 'new'
       else
-        flash[:success] = "Collection \"#{@collection.title}\" created."
-        redirect_to admin_collection_url(@collection)
+        flash['success'] = "Collection \"#{@collection.title}\" created."
+        redirect_to admin_repository_collection_url(@collection)
       end
     end
 
@@ -28,11 +28,11 @@ module Admin
       begin
         executor.execute(command)
       rescue => e
-        flash[:error] = "#{e}"
-        redirect_to admin_collection_url(@collection)
+        flash['error'] = "#{e}"
+        redirect_to admin_repository_collection_url(@collection)
       else
-        flash[:success] = "Collection \"#{@collection.title}\" deleted."
-        redirect_to admin_collections_url
+        flash['success'] = "Collection \"#{@collection.title}\" deleted."
+        redirect_to admin_repository_collections_url
       end
     end
 
@@ -43,7 +43,7 @@ module Admin
 
     def index
       @start = params[:start] ? params[:start].to_i : 0
-      @limit = Kumquat::Application.kumquat_config[:results_per_page]
+      @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
       #@collections = Repository::Collection.order(:dc_title).start(@start).limit(@limit)
       # TODO: re-enable sorting
       @collections = Repository::Collection.start(@start).limit(@limit)
@@ -55,26 +55,83 @@ module Admin
       @collection = Repository::Collection.new
     end
 
+    ##
+    # Responds to PATCH /admin/collections/:key/publish
+    #
+    def publish
+      @collection = Repository::Collection.find_by_key(
+          params[:repository_collection_key])
+      raise ActiveRecord::RecordNotFound unless @collection
+
+      tmp_params = sanitized_repo_params
+      tmp_params[:published] = true
+      command = UpdateRepositoryCollectionCommand.new(@collection, tmp_params)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Collection \"#{@collection.title}\" published."
+      ensure
+        redirect_to :back
+      end
+    end
+
     def show
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
+
+      @theme_options_for_select = [[ 'None (Use Global)', nil ]] +
+          DB::Theme.order(:name).map{ |t| [ t.name, t.id ] }
+    end
+
+    ##
+    # Responds to PATCH /admin/collections/:key/unpublish
+    #
+    def unpublish
+      @collection = Repository::Collection.find_by_key(
+          params[:repository_collection_key])
+      raise ActiveRecord::RecordNotFound unless @collection
+
+      tmp_params = sanitized_repo_params
+      tmp_params[:published] = false
+      command = UpdateRepositoryCollectionCommand.new(@collection, tmp_params)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Collection \"#{@collection.title}\" unpublished."
+      ensure
+        redirect_to :back
+      end
     end
 
     def update
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      command = UpdateRepositoryCollectionCommand.new(@collection,
-                                                      sanitized_params)
+      if params[:repository_collection]
+        command = UpdateRepositoryCollectionCommand.new(@collection,
+                                                        sanitized_repo_params)
+      else
+        command = UpdateDBCollectionCommand.new(@collection.db_counterpart,
+                                                sanitized_db_params)
+      end
+
       begin
         executor.execute(command)
       rescue => e
-        flash[:error] = "#{e}"
-        render 'edit'
+        response.headers['X-Kumquat-Result'] = 'error'
+        flash['error'] = "#{e}"
+        render 'edit' unless request.xhr?
       else
-        flash[:success] = "Collection \"#{@collection.title}\" updated."
-        redirect_to admin_repository_collection_url(@collection)
+        response.headers['X-Kumquat-Result'] = 'success'
+        flash['success'] = "Collection \"#{@collection.title}\" updated."
+        redirect_to admin_repository_collection_url(@collection) unless request.xhr?
       end
+
+      render 'show' if request.xhr?
     end
 
     private
@@ -89,8 +146,13 @@ module Admin
           current_user.can?(Permission::COLLECTIONS_DELETE)
     end
 
-    def sanitized_params
-      params.require(:repository_collection).permit(:key, :title)
+    def sanitized_db_params
+      params.require(:db_collection).permit(:id, :theme_id)
+    end
+
+    def sanitized_repo_params
+      params.require(:repository_collection).permit(:description, :key,
+                                                    :published, :title)
     end
 
     def update_rbac

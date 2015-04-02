@@ -15,6 +15,7 @@ module Solr
     MEDIA_TYPE_KEY = :kq_system_media_type
     PAGE_INDEX_KEY = :kq_system_page_index
     PARENT_URI_KEY = :kq_system_parent_uri
+    PUBLISHED_KEY = :kq_system_published
     WEB_ID_KEY = :kq_system_web_id
     WIDTH_KEY = :kq_system_width
 

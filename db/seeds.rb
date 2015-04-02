@@ -2,11 +2,27 @@
 # with its default values. The data can then be loaded with the rake db:seed
 # (or created alongside the db with db:setup).
 
+# Options
+DB::Option.create!(key: DB::Option::Key::ADMINISTRATOR_EMAIL,
+                   value: 'admin@example.org')
+DB::Option.create!(key: DB::Option::Key::COPYRIGHT_STATEMENT,
+                   value: 'Copyright © 2015 My Great Organization. All rights reserved.')
+DB::Option.create!(key: DB::Option::Key::FACET_TERM_LIMIT, value: 10)
+DB::Option.create!(key: DB::Option::Key::ORGANIZATION_NAME,
+                   value: 'My Great Organization')
+DB::Option.create!(key: DB::Option::Key::WEBSITE_NAME,
+                   value: 'My Great Organization Digital Collections')
+DB::Option.create!(key: DB::Option::Key::WEBSITE_INTRO_TEXT,
+                   value: "Behold our great collections, which are "\
+                   "rich in Vitamin C and guaranteed gluten-free.\n\n"\
+                   "Warning: may contain citrus.")
+DB::Option.create!(key: DB::Option::Key::RESULTS_PER_PAGE, value: 30)
+
 # Roles
 roles = {}
-roles[:admin] = Role.create!(key: 'admin', name: 'Administrators')
+roles[:admin] = Role.create!(key: 'admin', name: 'Administrators', required: true)
 roles[:cataloger] = Role.create!(key: 'cataloger', name: 'Catalogers')
-roles[:everybody] = Role.create!(key: 'everybody', name: 'Everybody')
+roles[:anybody] = Role.create!(key: 'anybody', name: 'Anybody', required: true)
 
 # Permissions
 Permission.create!(key: 'collections.create',
@@ -32,7 +48,7 @@ Permission.create!(key: 'users.delete',
 Permission.create!(key: 'users.update',
                    roles: [roles[:admin]])
 Permission.create!(key: 'users.update_self',
-                   roles: [roles[:admin], roles[:everybody]])
+                   roles: [roles[:admin], roles[:anybody]])
 Permission.create!(key: 'users.disable',
                    roles: [roles[:admin]])
 Permission.create!(key: 'users.enable',
@@ -325,6 +341,9 @@ DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
                          solr_field: 'kq_valid',
                          deletable: false)
 
+# Themes
+DB::Theme.create!(name: 'Built-In', required: true, default: true)
+
 # URI Prefixes
 DB::URIPrefix.create!(prefix: 'dc',
                       uri: 'http://purl.org/dc/elements/1.1/')
@@ -332,23 +351,79 @@ DB::URIPrefix.create!(prefix: 'dcterms',
                       uri: 'http://purl.org/dc/terms/')
 DB::URIPrefix.create!(prefix: 'foaf',
                       uri: 'http://xmlns.com/foaf/0.1/')
+DB::URIPrefix.create!(prefix: 'iana',
+                      uri: 'http://www.iana.org/assignments/relation/')
+DB::URIPrefix.create!(prefix: 'ore',
+                      uri: 'http://www.openarchives.org/ore/terms/')
 DB::URIPrefix.create!(prefix: 'rdfs',
                       uri: 'http://www.w3.org/2000/01/rdf-schema#')
 DB::URIPrefix.create!(prefix: 'rdf',
                       uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
-if Rails.env.development?
+# Admin user
+users = {}
+users[:admin] = User.create!(
+    email: 'admin@example.org',
+    username: 'admin',
+    password: 'kumquats4ever',
+    roles: [roles[:admin]])
 
-  # Users
-  users = {}
-  users[:admin] = User.create!(
-      username: 'admin',
-      roles: [roles[:admin]])
+if Rails.env.development? or Rails.env.uiuc_development?
+
+  # Non-admin users
   users[:cataloger] = User.create!(
+      email: 'cataloger@example.org',
       username: 'cataloger',
+      password: '4j9aij23#lkj;a',
+      enabled: false,
       roles: [roles[:cataloger]])
   users[:disabled] = User.create!(
+      email: 'disabled@example.org',
+      password: '23@nk2A(2;8jf$',
       username: 'disabled',
+      enabled: false,
       roles: [roles[:cataloger]])
+
+end
+
+if Rails.env.uiuc_development?
+
+  # Themes
+  DB::Theme.create!(name: 'UIUC', default: true)
+
+  # Overwrite some default options for internal demo purposes
+  option = DB::Option.find_by_key(DB::Option::Key::COPYRIGHT_STATEMENT)
+  option.value = 'Copyright © 2015 The Board of Trustees at the '\
+  'University of Illinois. All rights reserved.'
+  option.save!
+
+  option = DB::Option.find_by_key(DB::Option::Key::ORGANIZATION_NAME)
+  option.value = 'University of Illinois at Urbana-Champaign Library'
+  option.save!
+
+  option = DB::Option.find_by_key(DB::Option::Key::WEBSITE_NAME)
+  option.value = 'University of Illinois at Urbana-Champaign Library Digital '\
+  'Image Collections'
+  option.save!
+
+  option = DB::Option.find_by_key(DB::Option::Key::WEBSITE_INTRO_TEXT)
+  option.value = "The digital collections of the Library of the University of "\
+  "Illinois at Urbana-Champaign are built from the rich special collections "\
+  "of its Rare Book & Manuscript Library; Illinois History and Lincoln "\
+  "Collection, University Archives; Map Library; and Sousa Archives & Center "\
+  "for American Music, among other units.\n\n"\
+  "The collections include historic photographs; maps; prints and "\
+  "watercolors; bookplates; architectural drawings and blueprints; letters "\
+  "and other archival materials; videos; political cartoons; and "\
+  "advertisements. They cover a wide range of subject areas including "\
+  "Illinois and American history, music, theater history, and the history of "\
+  "the University of Illinois, among others. The Library’s digital "\
+  "collections provide access to some of its most unique holdings for "\
+  "teaching, learning, and research for students, scholars and the general "\
+  "public.\n\n"\
+  "The Library contributes collaboratively to local, national, and "\
+  "international digital initiatives, such as the Digital Public Library of "\
+  "America and the Biodiversity Heritage Library."
+  option.save!
 
 end

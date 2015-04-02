@@ -47,8 +47,15 @@ Rails.application.routes.draw do
   #   resources :posts, concerns: :toggleable
   #   resources :photos, concerns: :toggleable
 
+  concern :publishable do
+    patch 'publish'
+    patch 'unpublish'
+  end
+
   root 'landing#index'
 
+  match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
+        as: :auth # used by omniauth
   resources :collections, param: :key, only: [:index, :show], as: :repository_collections do
     resources 'items', only: :index
   end
@@ -58,13 +65,14 @@ Rails.application.routes.draw do
           as: :master_bytestream
   end
   match '/search', to: 'search#index', via: 'get'
-  resources :sessions, only: [:new, :create, :destroy]
+  match '/search', to: 'search#search', via: 'post'
   match '/signin', to: 'sessions#new', via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :key, as: :repository_collections do
+    resources :collections, param: :key, as: :repository_collections,
+              concerns: :publishable do
       resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     end
     resources :collections, param: :key, as: :db_collections
@@ -77,10 +85,15 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_repository_status'
     match '/server/search-server-status', to: 'server#search_server_status',
           via: 'get', as: 'server_search_server_status'
-    match '/server/commit', to: 'server#commit',
-          via: 'patch', as: 'server_commit'
+    match '/settings', to: 'settings#index', via: 'get'
+    match '/settings', to: 'settings#update', via: 'patch'
+    resources :db_themes, controller: 'themes', path: 'themes', except: :show
     resources :uri_prefixes, path: 'uri-prefixes', only: [:index, :create]
-    resources :users, param: :username, only: [:index, :show]
+    resources :users, param: :username do
+      match '/enable', to: 'users#enable', via: 'patch', as: 'enable'
+      match '/disable', to: 'users#disable', via: 'patch', as: 'disable'
+      match '/roles', to: 'users#change_roles', via: 'patch', as: 'change_roles'
+    end
   end
 
 end

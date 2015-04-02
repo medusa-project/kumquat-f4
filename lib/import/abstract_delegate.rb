@@ -56,6 +56,19 @@ module Import
     end
 
     ##
+    # Should return whether the collection of the item at the given index is
+    # published; true or false.
+    #
+    # This method is optional.
+    #
+    # @param index integer
+    # @return boolean
+    #
+    def collection_of_item_at_index_is_published(index)
+      true
+    end
+
+    ##
     # Should return the full text of the item at the given index, or nil if the
     # item does not have any.
     #

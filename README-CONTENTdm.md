@@ -37,7 +37,7 @@ The resulting F4 node structure looks like this:
 
 ## Notes & caveats
 
-* "Full text" is skipped.
+* CONTENTdm creation and last-update dates are not preserved.
 * Custom Dublin Core "field names" will be lost. For example, a field called
   "Costume Name" mapped to the DC "title" element will become simply "Title."
 * Unmapped elements will be assigned a name of "unmapped".
@@ -66,5 +66,4 @@ The resulting F4 node structure looks like this:
    root. To skip certain collections, comment them out with a pound (`#`)
    sign.)
 
-2. Run `bundle exec rake kumquat:cdm_import[/path/to/source/data]`. This task
-   will output status information for each item.
+2. Run `bundle exec rake kumquat:cdm_import[/path/to/source_folder]`.

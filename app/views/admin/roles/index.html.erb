@@ -9,9 +9,9 @@
 
 <div class="btn-group pull-right">
   <% if current_user.can?(Permission::ROLES_CREATE) %>
-    <!-- Add Role -->
+    <!-- New Role -->
     <%= link_to new_admin_role_path, class: 'btn btn-default' do %>
-      <span class="glyphicon glyphicon-plus"></span> Add Role
+      <span class="glyphicon glyphicon-plus"></span> New Role
     <% end %>
   <% end %>
 </div>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<cpd>
+<type>Document</type>
+  <page>
+    <pagetitle>p. 1</pagetitle>
+    <pagefile>5.txt</pagefile>
+    <pageptr>4</pageptr>
+  </page>
+</cpd>

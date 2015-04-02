@@ -50,6 +50,7 @@
           data-web-id="<%= @item.web_id %>">
     <i class="fa fa-heart"></i> Add To Favorites
   </button>
+  <%= share_button(@item) %>
   <%= download_button(@item) %>
 </div>
 
@@ -99,3 +100,7 @@
     <%= triples_to_dl(@item) %>
   </div>
 </div>
+
+<% if Rails.env.development? %>
+  Repository URL: <%= link_to @item.repository_url, @item.repository_url %>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323183720) do
+ActiveRecord::Schema.define(version: 20150331164541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,14 @@ ActiveRecord::Schema.define(version: 20150323183720) do
     t.string   "key"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "theme_id"
+  end
+
+  create_table "options", force: :cascade do |t|
+    t.string   "key"
+    t.string   "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -46,13 +54,22 @@ ActiveRecord::Schema.define(version: 20150323183720) do
   create_table "roles", force: :cascade do |t|
     t.string   "key"
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "required",   default: false
   end
 
   create_table "roles_users", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "role_id"
+  end
+
+  create_table "themes", force: :cascade do |t|
+    t.string   "name"
+    t.boolean  "required",   default: false
+    t.boolean  "default",    default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "uri_prefixes", force: :cascade do |t|
@@ -64,8 +81,11 @@ ActiveRecord::Schema.define(version: 20150323183720) do
 
   create_table "users", force: :cascade do |t|
     t.string   "username"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.string   "email"
+    t.string   "password_digest"
+    t.boolean  "enabled",         default: true
   end
 
 end

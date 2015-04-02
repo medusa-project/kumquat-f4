@@ -52,7 +52,7 @@ module Import
             parent_uri: parent_uri,
             rdf_graph: @import_delegate.metadata_of_item_at_index(index))
         item.save! # save it in order to populate its repository URL
-        Rails.logger.debug item.repository_url
+        Rails.logger.debug "Created #{item.repository_url}"
 
         import_id = @import_delegate.import_id_of_item_at_index(index)
         @import_id_uri_map[import_id] = item.repository_url

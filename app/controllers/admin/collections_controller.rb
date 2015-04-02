@@ -44,9 +44,9 @@ module Admin
     def index
       @start = params[:start] ? params[:start].to_i : 0
       @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
-      #@collections = Repository::Collection.order(:dc_title).start(@start).limit(@limit)
-      # TODO: re-enable sorting
-      @collections = Repository::Collection.start(@start).limit(@limit)
+      # TODO: find a way to sort by title
+      @collections = Repository::Collection.order(:kq_system_collection_key).
+          start(@start).limit(@limit)
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @num_shown = [@limit, @collections.total_length].min
     end

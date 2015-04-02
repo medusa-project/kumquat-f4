@@ -246,6 +246,7 @@ module ItemsHelper
         <i class="fa fa-share-alt"></i> Share <span class="caret"></span>
       </button>'
     html += '<ul class="dropdown-menu pull-right" role="menu">'
+    description = item.description ? CGI::escape(item.description) : nil
     # email
     html += '<li>'
     html += link_to("mailto:?subject=#{CGI::escape(item.title)}") do
@@ -261,7 +262,7 @@ module ItemsHelper
     html += '</li>'
     # linkedin
     html += '<li>'
-    html += link_to("http://www.linkedin.com/shareArticle?mini=true&url=#{CGI::escape(repository_item_url(item))}&title=#{CGI::escape(item.title)}&summary=#{CGI::escape(item.description)}") do
+    html += link_to("http://www.linkedin.com/shareArticle?mini=true&url=#{CGI::escape(repository_item_url(item))}&title=#{CGI::escape(item.title)}&summary=#{description}") do
       raw('<i class="fa fa-linkedin-square"></i> LinkedIn')
     end
     html += '</li>'

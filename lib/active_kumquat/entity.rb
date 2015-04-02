@@ -145,23 +145,31 @@ module ActiveKumquat
           params['facet.field'] = Solr::Solr::FACET_FIELDS
           params[:fq] = @facet_queries
         end
-        solr_response = Solr::Solr.client.get('select', params: params)
-        @solr_request = solr_response.request
-        @results.facet_fields = solr_facet_fields_to_objects(
-            solr_response['facet_counts']['facet_fields']) if @facet
-        solr_response['response']['docs'].each do |doc|
-          entity = @caller.new(solr_json: doc, repository_url: doc['id'])
+        begin
+          solr_response = Solr::Solr.client.get('select', params: params)
+          @solr_request = solr_response.request
+          @results.facet_fields = solr_facet_fields_to_objects(
+              solr_response['facet_counts']['facet_fields']) if @facet
+          solr_response['response']['docs'].each do |doc|
+            entity = @caller.new(solr_json: doc, repository_url: doc['id'])
 
-          f4_response = @@http.get(doc['id'], nil,
-                                { 'Accept' => 'application/n-triples' })
-          graph = RDF::Graph.new
-          graph.from_ntriples(f4_response.body)
-          entity.populate_from_graph(graph)
-          entity.loaded = true
-          @results << entity
+            f4_response = @@http.get(doc['id'], nil,
+                                  { 'Accept' => 'application/n-triples' })
+            graph = RDF::Graph.new
+            graph.from_ntriples(f4_response.body)
+            entity.populate_from_graph(graph)
+            entity.loaded = true
+            @results << entity
+          end
+          @results.total_length = solr_response['response']['numFound'].to_i
+          @loaded = true
+        rescue Errno::ECONNREFUSED => e
+          raise 'Unable to connect to Solr. Check that it is running and '\
+          'that its URL is set correctly in the config file.'
+        rescue HTTPClient::KeepAliveDisconnected => e
+          raise 'Unable to connect to Fedora. Check that it is running and '\
+          'that its URL is set correctly in the config file.'
         end
-        @results.total_length = solr_response['response']['numFound'].to_i
-        @loaded = true
       end
     end
 

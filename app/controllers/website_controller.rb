@@ -23,7 +23,9 @@ class WebsiteController < ApplicationController
     elsif params[:repository_collection_key]
       key = params[:repository_collection_key]
     elsif params[:web_id]
-      key = Repository::Item.find_by_web_id(params[:web_id]).collection.key
+      item = Repository::Item.find_by_web_id(params[:web_id])
+      raise ActiveRecord::RecordNotFound unless item
+      key = item.collection.key
     end
 
     theme = nil

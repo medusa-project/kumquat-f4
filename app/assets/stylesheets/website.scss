@@ -69,23 +69,23 @@ description on the right.
       display: inline-block;
       vertical-align: middle;
       width: 100%;
-    }
-    div.kq-thumbnail {
-      float:left;
-      font-size:75px;
-      margin-right: 20px;
-      text-align: center;
-      height: 100px;
-      width: 100px;
-      img {
-        max-height: 100px;
-        max-width: 100px;
+      div.kq-thumbnail {
+        float:left;
+        font-size:75px;
+        height: 140px;
+        margin-right: 20px;
+        text-align: center;
+        width: 140px;
+        img {
+          max-height: 140px;
+          max-width: 140px;
+        }
       }
-    }
-    .kq-title {
-      font-size: 1.4em;
-    }
-    .kq-description {
+      .kq-title {
+        font-size: 1.4em;
+      }
+      .kq-description {
+      }
     }
   }
 }

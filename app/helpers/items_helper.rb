@@ -1,10 +1,5 @@
 module ItemsHelper
 
-  PREFIXES = { # TODO: externalize this
-      dc: 'http://purl.org/dc/elements/1.1/',
-      dcterms: 'http://purl.org/dc/terms/'
-  }
-
   def download_button(item)
     return nil unless item.master_bytestream
     html = '<div class="btn-group">

@@ -179,6 +179,8 @@ module ActiveKumquat
         facet = Solr::Facet.new
         facet.field = field
         (0..terms.length - 1).step(2) do |i|
+          # TODO: ugly hack to hide the below F4-managed URL from the DC format facet
+          next if terms[i] == 'http://fedora.info/definitions/v4/repository#jcr/xml'
           term = Solr::Facet::Term.new
           term.name = terms[i]
           term.count = terms[i + 1]

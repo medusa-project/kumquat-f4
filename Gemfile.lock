@@ -1,11 +1,11 @@
 GIT
-  remote: git@github.com:/adolski/httpclient.git
-  revision: 5c2136d04f1d930ac9591c535165fabacd608087
+  remote: git://github.com/adolski/httpclient.git
+  revision: 863acaf930624f1169b9bde660f16b4d9fe0e076
   specs:
     httpclient (2.6.0.1)
 
 GIT
-  remote: git@github.com:/wearepistachio/omniauth-password.git
+  remote: git://github.com/wearepistachio/omniauth-password.git
   revision: 7e0f8d739602d68b63b3f740b5ed2f0a7047fab6
   specs:
     omniauth-password (0.0.1)

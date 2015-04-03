@@ -8,8 +8,6 @@ class User < ActiveRecord::Base
             format: { with: /\A(?=.*[a-z])[a-z\d]+\Z/i,
                       message: 'Only letters and numbers are allowed.' }
 
-  validate :validate_password_confirmation, if: :should_validate_password?
-
   has_secure_password
 
   def to_param
@@ -34,12 +32,6 @@ class User < ActiveRecord::Base
 
   def should_validate_password?
     password.present? or password_confirmation.present?
-  end
-
-  def validate_password_confirmation
-    if self.password != self.password_confirmation
-      errors[:base] << 'Passwords do not match.'
-    end
   end
 
 end

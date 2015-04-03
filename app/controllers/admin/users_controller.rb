@@ -39,6 +39,8 @@ module Admin
         executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
+        @user = User.new
+        @roles = Role.all.order(:name)
         render 'new'
       else
         flash['success'] = "User #{command.object.username} created."

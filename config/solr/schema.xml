@@ -379,7 +379,7 @@
   <dynamicField name="*_en" type="text_en" indexed="true" stored="true"
     multiValued="true"/>
   <dynamicField name="*_b" type="boolean" indexed="true" stored="true"/>
-  <dynamicField name="*_bs" type="boolean" indexed="true" stored="true"
+  <dynamicField name="*_bs" type="booleans" indexed="true" stored="true"
     multiValued="true"/>
   <dynamicField name="*_f" type="float" indexed="true" stored="true"/>
   <dynamicField name="*_fs" type="float" indexed="true" stored="true"
@@ -398,10 +398,15 @@
 
   <!-- some trie-coded dynamic fields for faster range queries -->
   <dynamicField name="*_ti" type="tint" indexed="true" stored="true"/>
+  <dynamicField name="*_tis" type="tints" indexed="true" stored="true"/>
   <dynamicField name="*_tl" type="tlong" indexed="true" stored="true"/>
+  <dynamicField name="*_tls" type="tlongs" indexed="true" stored="true"/>
   <dynamicField name="*_tf" type="tfloat" indexed="true" stored="true"/>
+  <dynamicField name="*_tfs" type="tfloats" indexed="true" stored="true"/>
   <dynamicField name="*_td" type="tdouble" indexed="true" stored="true"/>
+  <dynamicField name="*_tds" type="tdoubles" indexed="true" stored="true"/>
   <dynamicField name="*_tdt" type="tdate" indexed="true" stored="true"/>
+  <dynamicField name="*_tdts" type="tdates" indexed="true" stored="true"/>
 
   <dynamicField name="*_c" type="currency" indexed="true" stored="true"/>
 
@@ -599,6 +604,9 @@
   <!-- boolean type: "true" or "false" -->
   <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
 
+  <fieldType name="booleans" class="solr.BoolField" sortMissingLast="true"
+             multiValued="true"/>
+
   <!-- sortMissingLast and sortMissingFirst attributes are optional attributes are
          currently supported on types that are sorted internally as strings
          and on numeric types.
@@ -649,6 +657,15 @@
   <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8"
     positionIncrementGap="0"/>
 
+  <fieldType name="tints" class="solr.TrieIntField" precisionStep="8"
+    positionIncrementGap="0" multiValued="true"/>
+  <fieldType name="tfloats" class="solr.TrieFloatField" precisionStep="8"
+    positionIncrementGap="0" multiValued="true"/>
+  <fieldType name="tlongs" class="solr.TrieLongField" precisionStep="8"
+    positionIncrementGap="0" multiValued="true"/>
+  <fieldType name="tdoubles" class="solr.TrieDoubleField" precisionStep="8"
+    positionIncrementGap="0" multiValued="true"/>
+
   <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
          is a more restricted form of the canonical representation of dateTime
          http://www.w3.org/TR/xmlschema-2/#dateTime    
@@ -677,6 +694,9 @@
   <!-- A Trie based date field for faster date range queries and date faceting. -->
   <fieldType name="tdate" class="solr.TrieDateField" precisionStep="6"
     positionIncrementGap="0"/>
+
+  <fieldType name="tdates" class="solr.TrieDateField" precisionStep="6"
+             positionIncrementGap="0" multiValued="true"/>
 
 
   <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
@@ -1090,19 +1110,6 @@
       <!-- for any non-CJK -->
       <filter class="solr.LowerCaseFilterFactory"/>
       <filter class="solr.CJKBigramFilterFactory"/>
-    </analyzer>
-  </fieldType>
-
-  <!-- Kurdish -->
-  <fieldType name="text_ckb" class="solr.TextField" positionIncrementGap="100">
-    <analyzer>
-      <tokenizer class="solr.StandardTokenizerFactory"/>
-      <filter class="solr.SoraniNormalizationFilterFactory"/>
-      <!-- for any latin text -->
-      <filter class="solr.LowerCaseFilterFactory"/>
-      <filter class="solr.StopFilterFactory" ignoreCase="true"
-        words="lang/stopwords_ckb.txt"/>
-      <filter class="solr.SoraniStemFilterFactory"/>
     </analyzer>
   </fieldType>
 

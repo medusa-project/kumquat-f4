@@ -374,12 +374,12 @@ if Rails.env.development? or Rails.env.uiuc_development?
   users[:cataloger] = User.create!(
       email: 'cataloger@example.org',
       username: 'cataloger',
-      password: '4j9aij23#lkj;a',
-      enabled: false,
+      password: 'password',
+      enabled: true,
       roles: [roles[:cataloger]])
   users[:disabled] = User.create!(
       email: 'disabled@example.org',
-      password: '23@nk2A(2;8jf$',
+      password: 'password',
       username: 'disabled',
       enabled: false,
       roles: [roles[:cataloger]])

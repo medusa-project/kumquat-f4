@@ -13,8 +13,15 @@
     <%= f.email_field :email, class: 'form-control' %>
   </div>
 
+  <% if context == :edit %>
+    <div class="form-group">
+      <%= f.label :current_password, 'Current Password' %>
+      <%= f.password_field :current_password, class: 'form-control' %>
+    </div>
+  <% end %>
+
   <div class="form-group">
-    <%= f.label :password %>
+    <%= f.label :password, context == :edit ? 'New Password' : 'Password' %>
     <%= f.password_field :password, class: 'form-control' %>
   </div>
 

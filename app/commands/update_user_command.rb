@@ -6,7 +6,13 @@ class UpdateUserCommand < Command
   end
 
   def execute
-    @user.update!(@user_params)
+    if @user_params[:password]
+      unless @user.authenticate(@user_params[:current_password])
+        raise 'Current password is invalid.'
+      end
+    end
+
+    @user.update!(@user_params.except(:current_password))
   end
 
   def object

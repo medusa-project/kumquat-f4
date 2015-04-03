@@ -250,8 +250,8 @@ module Repository
       output = `identify -format "%[fx:w]#{glue}%[fx:h]" #{pathname}`
       parts = output.split(glue)
       if parts.length == 2
-        self.width = parts[0]
-        self.height = parts[1]
+        self.width = parts[0].strip.to_i
+        self.height = parts[1].strip.to_i
       end
     end
 

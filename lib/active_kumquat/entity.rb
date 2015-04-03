@@ -25,7 +25,6 @@ module ActiveKumquat
       @order = nil
       @results = ResultSet.new
       @start = 0
-      @solr_collection = Kumquat::Application.kumquat_config[:solr_collection]
       @where_clauses = [] # will be joined by AND
     end
 
@@ -149,7 +148,7 @@ module ActiveKumquat
           params[:fq] = @facet_queries
         end
         begin
-          solr_response = Solr::Solr.client.get("#{@solr_collection}/select", params: params)
+          solr_response = Solr::Solr.client.get('select', params: params)
           @solr_request = solr_response.request
           @results.facet_fields = solr_facet_fields_to_objects(
               solr_response['facet_counts']['facet_fields']) if @facet

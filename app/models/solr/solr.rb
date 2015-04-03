@@ -19,7 +19,8 @@ module Solr
     WEB_ID_KEY = :kq_system_web_id
     WIDTH_KEY = :kq_system_width
 
-    @@client = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+    @@client = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url] +
+                                 '/' + Kumquat::Application.kumquat_config[:solr_collection])
 
     ##
     # @return RSolr

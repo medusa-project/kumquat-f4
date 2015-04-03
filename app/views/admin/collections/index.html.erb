@@ -30,7 +30,7 @@
         <td><%= collection.key %></td>
         <td><span class="label <%= collection.published ? 'label-success' : 'label-danger' %>">
             <%= collection.published ? 'Published' : 'Unpublished' %></span></td>
-        <td><%= pluralize(collection.num_items, 'item') %></td>
+        <td><%= collection.num_items %></td>
         <td><%= collection.db_counterpart.theme ? collection.db_counterpart.theme.name : '' %></td>
       </tr>
     <% end %>

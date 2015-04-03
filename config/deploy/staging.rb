@@ -21,7 +21,8 @@
 # role :web, %w{user1@primary.com user2@additional.com}, other_property: :other_value
 # role :db,  %w{deploy@example.com}
 
-
+server 'medusatest.library.illinois.edu', user: 'medusa',
+       roles: %w{web app db}, primary: true
 
 # Configuration
 # =============
@@ -31,7 +32,8 @@
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
 
-
+# Default branch is :master
+ask :branch, 'develop'
 
 # Custom SSH Options
 # ==================

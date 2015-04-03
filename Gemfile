@@ -16,7 +16,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'bcrypt', '~> 3.1.7' # Use ActiveModel has_secure_password
 gem 'bootstrap-sass', '~> 3.3.3'
-gem 'capistrano-rails', group: :development
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'httpclient', :git => 'git://github.com/adolski/httpclient.git'
 gem 'jquery-cookie-rails'
@@ -33,6 +32,13 @@ gem 'rsolr'
 gem 'sprockets-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
+
+group :development do
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-passenger'
+  gem 'capistrano-rvm'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -145,19 +145,15 @@ module Repository
     #
     def read_dimensions
       if self.is_image?
-        begin
-          if self.upload_pathname
-            img = Magick::Image.read(self.upload_pathname).first
-            self.width = img.columns
-            self.height = img.rows
-          elsif self.external_resource_url
-            response = @@http.get(self.external_resource_url)
-            img = Magick::Image.read(response.body).first
-            self.width = img.columns
-            self.height = img.rows
-          end
-        rescue Magick::ImageMagickError => e
-          # nothing we can do; Magick will have already logged this
+        if self.upload_pathname
+          read_dimensions_from_pathname(self.upload_pathname)
+        elsif self.external_resource_url
+          response = @@http.get(self.external_resource_url)
+          tempfile = Tempfile.new('tmp')
+          tempfile.write(response.body)
+          tempfile.close
+          read_dimensions_from_pathname(tempfile.path)
+          tempfile.unlink
         end
       end
     end
@@ -242,6 +238,20 @@ module Repository
     end
 
     private
+
+    ##
+    # @param pathname string
+    # @return void
+    #
+    def read_dimensions_from_pathname(pathname)
+      glue = '|'
+      output = `identify -format "%[fx:w]#{glue}%[fx:h]" #{pathname}`
+      parts = output.split(glue)
+      if parts.length == 2
+        self.width = parts[0]
+        self.height = parts[1]
+      end
+    end
 
     ##
     # Updates an existing bytestream.

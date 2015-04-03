@@ -52,21 +52,14 @@ module DerivativeManagement
   def generate_derivatives_for_image(item, src)
     STATIC_IMAGE_SIZES.each do |size|
       tempfile = Tempfile.new("deriv-#{size}")
-      begin
-        # read the source image and write the derivative to a temp file
-        input = Magick::Image.read(src).first
-        output = input.resize_to_fit(size, size).strip!
-        output.border!(0, 0, 'white') # for PDF
-        output.alpha(Magick::DeactivateAlphaChannel) # for PDF
-        output.write(tempfile.path + '.jpg') {
-          self.quality = 70
-          self.interlace = Magick::PlaneInterlace
-        }
-        #system "convert \"#{src}\" -quality 70 -strip "\
-        #  "-interlace Plane -resize #{size}x#{size} #{dest}"
 
+      # read the source image and write the derivative to a temp file
+      system "convert \"#{src}[0]\" -quality 70 -flatten -strip "\
+      "-interlace Plane -alpha off -resize #{size}x#{size} "\
+      "#{tempfile.path}.jpg"
+
+      if File.exist?("#{tempfile.path}.jpg")
         # create a new Bytestream using the temp file as a source
-        # TODO: use a FIFO instead of a temp file
         bs = Repository::Bytestream.new(
             owner: item,
             upload_pathname: tempfile.path + '.jpg',
@@ -74,12 +67,9 @@ module DerivativeManagement
             type: Repository::Bytestream::Type::DERIVATIVE)
         bs.save
         item.bytestreams << bs
-      rescue Magick::ImageMagickError => e
-        # no need to log it since RMagick already does
-      ensure
-        File.delete(tempfile.path + '.jpg') if File.exist?(tempfile.path + '.jpg')
-        tempfile.unlink
       end
+      File.delete(tempfile.path + '.jpg') if File.exist?(tempfile.path + '.jpg')
+      tempfile.unlink
     end
   end
 

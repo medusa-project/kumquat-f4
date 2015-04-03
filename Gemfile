@@ -31,7 +31,6 @@ gem 'pg'
 gem 'rdf'
 gem 'rdf-turtle'
 gem 'rdf-rdfxml'
-gem 'rmagick'
 gem 'rsolr'
 gem 'sprockets-rails'
 

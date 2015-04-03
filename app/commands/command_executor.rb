@@ -12,9 +12,8 @@ class CommandExecutor
   # @raise RuntimeError
   #
   def execute(command)
-    check_permissions(command) if @doing_user
-
     begin
+      check_permissions(command) if @doing_user
       command.execute
     rescue ActiveRecord::RecordInvalid => e
       if command.object.respond_to?('errors')
@@ -44,10 +43,10 @@ class CommandExecutor
     if missing_permissions.any?
       list = missing_permissions.map do |p|
         perm = Permission.find_by_key(p)
-        return perm ? perm.name.downcase : p
+        perm ? perm.name.downcase : p
       end
-      raise SecurityError, "#{@doing_user.username} has insufficient "\
-        "privileges for the following actions: #{list.join(', ')}"
+      raise "#{@doing_user.username} has insufficient privileges for the "\
+      "following actions: #{list.join(', ')}"
     end
   end
 

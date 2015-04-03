@@ -6,6 +6,8 @@ module ActiveKumquat
   class Entity
 
     @@http = HTTPClient.new
+    # workaround for https://medusatest.library.illinois.edu
+    @@http.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     attr_reader :solr_request
 

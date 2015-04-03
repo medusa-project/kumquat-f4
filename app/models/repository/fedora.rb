@@ -107,6 +107,8 @@ module Repository
       dcterm_type = dcterms:type :: xsd:string;
       dcterm_valid = dcterms:valid :: xsd:string;"
       http = HTTPClient.new
+      # workaround for https://medusatest.library.illinois.edu
+      http.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
       url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
       "/fedora:system/fedora:transform/fedora:ldpath/#{INDEXING_TRANSFORM_NAME}/fedora:Container"
       http.put(url, body, { 'Content-Type' => 'application/rdf+ldpath' })

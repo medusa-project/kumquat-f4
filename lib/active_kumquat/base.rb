@@ -22,6 +22,8 @@ module ActiveKumquat
     end
 
     @@http = HTTPClient.new
+    # workaround for https://medusatest.library.illinois.edu
+    @@http.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container

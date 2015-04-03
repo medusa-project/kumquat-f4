@@ -32,6 +32,8 @@ module Repository
     end
 
     @@http = HTTPClient.new
+    # workaround for https://medusatest.library.illinois.edu
+    @@http.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     def initialize(params = {})
       params.except(:id, :uuid).each do |k, v|

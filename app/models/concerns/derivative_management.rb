@@ -2,8 +2,6 @@ module DerivativeManagement
 
   extend ActiveSupport::Concern
 
-  BALANCED_TREE_LEVELS = 3
-  DERIVATIVE_ROOT = File.join(Rails.root, 'public', 'derivatives')
   STATIC_IMAGE_SIZES = [256, 512, 1024]
 
   included do

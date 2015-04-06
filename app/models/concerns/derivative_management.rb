@@ -42,9 +42,7 @@ module DerivativeManagement
     bs = self.bytestreams.
         select{ |bs| (bs.width == size and bs.height <= size) or
         (bs.height == size and bs.width <= size) }.first
-    bs ? bs.repository_url.gsub(Kumquat::Application.kumquat_config[:fedora_url],
-                                Kumquat::Application.kumquat_config[:public_fedora_url]) :
-        nil
+    bs ? bs.public_repository_url : nil
   end
 
   private

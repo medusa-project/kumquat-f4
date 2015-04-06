@@ -132,6 +132,11 @@ module Repository
       @persisted = true
     end
 
+    def public_repository_url
+      self.repository_url.gsub(Kumquat::Application.kumquat_config[:fedora_url],
+                               Kumquat::Application.kumquat_config[:public_fedora_url])
+    end
+
     ##
     # Reads the byte size and assigns it to the instance.
     #

@@ -18,7 +18,7 @@ module ItemsHelper
       html += '<li class="divider"></li>'
       derivatives.each do |bs|
         html += '<li>'
-        html += link_to(bs.repository_url) do
+        html += link_to(bs.public_repository_url) do
           download_label_for_bytestream(bs)
         end
         html += '</li>'

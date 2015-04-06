@@ -9,13 +9,18 @@ class ItemsController < WebsiteController
 
   before_action :set_browse_context, only: :index
 
+  ##
+  # Redirects to an item's master bytestream in the repository.
+  #
+  # Responds to GET /items/:web_id/master
+  #
   def master_bytestream
     @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     bs = @item.master_bytestream
-    if bs and bs.repository_url
-      redirect_to bs.repository_url
+    if bs and bs.public_repository_url
+      redirect_to bs.public_repository_url
     else
       render text: '404 Not Found', status: 404
     end

@@ -29,8 +29,6 @@ module Admin
     #
     def repository_status
       http = HTTPClient.new
-      # workaround for https://medusatest.library.illinois.edu
-      http.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
       begin
         response = http.get(Kumquat::Application.kumquat_config[:fedora_url])
         if response.status == 200

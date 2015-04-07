@@ -218,9 +218,9 @@ module Repository
           insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}",
                  "<#{self.type}>", false)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
+          insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width.to_i)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
+          insert(my_metadata_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height.to_i)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::CLASS}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
                  "<#{kq_uri}#{kq_objects::BYTESTREAM}>", false)
@@ -233,11 +233,11 @@ module Repository
         update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
             insert(owner_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
         update.delete(owner_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
-            insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height)
+            insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height.to_i)
         update.delete(owner_uri, '<dcterms:MediaType>', '?o').
             insert(owner_uri, 'dcterms:MediaType', self.media_type)
         update.delete(owner_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
-            insert(owner_uri, "kumquat:#{kq_predicates::WIDTH}", self.width)
+            insert(owner_uri, "kumquat:#{kq_predicates::WIDTH}", self.width.to_i)
       end
       update
     end

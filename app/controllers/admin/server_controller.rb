@@ -30,7 +30,7 @@ module Admin
     def repository_status
       http = HTTPClient.new
       begin
-        response = http.get(Kumquat::Application.kumquat_config[:public_fedora_url])
+        response = http.get(Kumquat::Application.kumquat_config[:fedora_url])
         if response.status == 200
           render text: 'online'
         else

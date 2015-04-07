@@ -20,3 +20,4 @@
 /config/kumquat.yml
 
 /local/themes/*
+!/local/themes/.keep

@@ -56,7 +56,7 @@ module DerivativeManagement
       "-interlace Plane -alpha off -resize #{size}x#{size} "\
       "#{tempfile.path}.jpg"
 
-      if File.exist?("#{tempfile.path}.jpg")
+      if File.exist?(tempfile.path + '.jpg')
         # create a new Bytestream using the temp file as a source
         bs = Repository::Bytestream.new(
             owner: item,
@@ -78,15 +78,16 @@ module DerivativeManagement
         system "ffmpeg -i \"#{src}\" -vframes 1 -an -vf "\
         "scale=\"min(#{size}\\, iw):-1\" -y \"#{tempfile.path}.jpg\""
 
-        # create a new Bytestream using the temp file as a source
-        # TODO: use a FIFO instead of a temp file
-        bs = Repository::Bytestream.new(
-            owner: item,
-            upload_pathname: tempfile.path + '.jpg',
-            media_type: 'image/jpeg',
-            type: Repository::Bytestream::Type::DERIVATIVE)
-        bs.save
-        item.bytestreams << bs
+        if File.exist?(tempfile.path + '.jpg')
+          # create a new Bytestream using the temp file as a source
+          bs = Repository::Bytestream.new(
+              owner: item,
+              upload_pathname: tempfile.path + '.jpg',
+              media_type: 'image/jpeg',
+              type: Repository::Bytestream::Type::DERIVATIVE)
+          bs.save
+          item.bytestreams << bs
+        end
       ensure
         File.delete(tempfile.path + '.jpg') if File.exist?(tempfile.path + '.jpg')
         tempfile.unlink

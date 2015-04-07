@@ -11,7 +11,9 @@ set :repo_url, 'https://github.com/medusa-project/kumquat.git'
 set :home, '/services/medusa'
 set :deploy_to, "#{fetch(:home)}/kumquat-capistrano"
 set :bin, "#{fetch(:home)}/kumquat-bin"
-set :rails_env, 'production'
+# we have defined a UIUC-specific environment to keep the production
+# environment brand-free for the benefit of other users.
+set :rails_env, 'uiuc_production'
 
 # Default value for :scm is :git
 # set :scm, :git

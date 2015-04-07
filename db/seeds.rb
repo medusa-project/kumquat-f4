@@ -386,7 +386,7 @@ if Rails.env.development? or Rails.env.uiuc_development?
 
 end
 
-if Rails.env.uiuc_development?
+if Rails.env.start_with?('uiuc')
 
   # Themes
   DB::Theme.create!(name: 'UIUC', default: true)

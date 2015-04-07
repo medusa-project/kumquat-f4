@@ -18,6 +18,13 @@ namespace :kumquat do
     Import::Importer.new(delegate).import
   end
 
+  desc 'Set the default theme'
+  task :set_default_theme, [:theme] => :environment do |task, args|
+    theme = DB::Theme.find_by_name(args[:theme])
+    theme.default = true
+    theme.save!
+  end
+
   desc 'Update index transform'
   task :update_index_transform => :environment do
     Repository::Fedora.new.apply_indexing_transform

@@ -44,9 +44,14 @@ TODO: write this
 
 ### Solr
 
-1. `$ curl -O http://mirror.cogentco.com/pub/apache/lucene/solr/4.10.3/solr-4.10.3.tgz`
+Create a core for Kumquat. In its `solrconfig.xml`, use the `ManagedSchemaIndexFactory`:
 
-2. `$ tar xfz solr-4.10.3.tgz`
+    <schemaFactory class="ManagedIndexSchemaFactory">
+      <bool name="mutable">true</bool>
+      <str name="managedSchemaResourceName">managed-schema</str>
+    </schemaFactory>
+
+(Comment out any `ClassicIndexSchemaFactory` that may exist.)
 
 ### Loris
 
@@ -169,8 +174,6 @@ branching model.)*
 
 Edit these as necessary.
 
-Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`.
-
 #### Create and seed the database
 
 `$ bundle exec rake db:setup`
@@ -193,7 +196,7 @@ Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collecti
 
 ### Solr
 
-`$ cd solr-4.10.3/example`
+`$ cd solr-5.0/solr`
 
 `$ java -jar start.jar`
 
@@ -209,6 +212,10 @@ Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collecti
 
   `$ bundle exec rake kumquat:update_index_transform`
 
-2. `$ rails server`
+2. Install/update the Solr schema:
+
+  `$ bundle exec rake kumquat:update_solr_schema`
+
+3. `$ rails server`
 
 Go to [http://localhost:3000/](http://localhost:3000/) in a web browser.

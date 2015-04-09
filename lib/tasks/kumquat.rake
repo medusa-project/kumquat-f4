@@ -25,11 +25,17 @@ namespace :kumquat do
     theme.save!
   end
 
-  desc 'Update index transform'
+  desc 'Update Fedora index transform'
   task :update_index_transform => :environment do
     Repository::Fedora.new.apply_indexing_transform
     puts "Fedora indexing transform "\
     "\"#{Repository::Fedora::INDEXING_TRANSFORM_NAME}\" updated"
+  end
+
+  desc 'Update Solr schema'
+  task :update_solr_schema => :environment do
+    Solr::Solr.new.update_schema
+    puts 'Solr schema updated'
   end
 
 end

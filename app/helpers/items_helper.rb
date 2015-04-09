@@ -244,7 +244,7 @@ module ItemsHelper
     description = item.description ? CGI::escape(item.description) : nil
     # email
     html += '<li>'
-    html += link_to("mailto:?subject=#{CGI::escape(item.title)}") do
+    html += link_to("mailto:?subject=#{item.title}&body=#{repository_item_url(item)}") do
       raw('<i class="fa fa-envelope"></i> Email')
     end
     html += '</li>'

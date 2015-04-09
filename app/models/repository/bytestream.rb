@@ -33,6 +33,18 @@ module Repository
 
     @@http = HTTPClient.new
 
+    ##
+    # Returns a list of image media types for which we can presume to be able
+    # to generate derivatives.
+    #
+    def self.derivable_image_types
+      types = []
+      ['jp2', 'jpg', 'png', 'tif'].each do |ext|
+        types += MIME::Types.of(ext).map{ |type| type.to_s }
+      end
+      types
+    end
+
     def initialize(params = {})
       params.except(:id, :uuid).each do |k, v|
         send("#{k}=", v) if respond_to?("#{k}=")

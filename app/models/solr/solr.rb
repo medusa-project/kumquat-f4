@@ -523,7 +523,6 @@ module Solr
                 type: 'string',
                 stored: true,
                 indexed: true,
-                required: false,
                 multiValued: true,
                 docValues: true
             }
@@ -1554,6 +1553,12 @@ module Solr
       @@client
     end
 
+    def initialize
+      @http = HTTPClient.new
+      @url = Kumquat::Application.kumquat_config[:solr_url].chomp('/') + '/' +
+          Kumquat::Application.kumquat_config[:solr_collection]
+    end
+
     ##
     # Creates the set of fields needed by the application. For this to work,
     # Solr must be using the ManagedIndexSchemaFactory.
@@ -1566,10 +1571,7 @@ module Solr
       # http://wiki.apache.org/solr/SchemaRESTAPI
       # TODO: Solr 5.1 allows updating existing fields in the schema
       # get the current list of fields
-      url = Kumquat::Application.kumquat_config[:solr_url].chomp('/') + '/' +
-          Kumquat::Application.kumquat_config[:solr_collection]
-      http = HTTPClient.new
-      response = http.get("#{url}/schema")
+      response = @http.get("#{@url}/schema")
       struct = JSON.parse(response.body)
 
       # Solr will throw an error if we try to add a field that already exists,
@@ -1587,16 +1589,23 @@ module Solr
             map{ |sf| sf['name'] }.include?(kf[:name])
       end
 
-      struct = {}
-      struct['add-field'] = fields_to_add if fields_to_add.any?
-      struct['add-copy-field'] = copy_fields_to_add if copy_fields_to_add.any?
-      struct['add-dynamic-field'] = dynamic_fields_to_add if dynamic_fields_to_add.any?
-      response = http.post("#{url}/schema", JSON.generate(struct),
-                           { 'Content-Type' => 'application/json' }) if struct.any?
+      post_fields('add-dynamic-field', dynamic_fields_to_add)
+      post_fields('add-field', fields_to_add)
+      post_fields('add-copy-field', copy_fields_to_add)
+    end
 
-      message = JSON.parse(response.body)
-      if message['errors']
-        puts message['errors']
+    private
+
+    def post_fields(key, fields)
+      if fields.any?
+        json = JSON.generate({ key => fields })
+        response = @http.post("#{@url}/schema", json,
+                             { 'Content-Type' => 'application/json' })
+        message = JSON.parse(response.body)
+        if message['errors']
+          puts message['errors']
+          raise 'Failed to update Solr schema'
+        end
       end
     end
 

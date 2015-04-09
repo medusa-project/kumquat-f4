@@ -35,7 +35,6 @@ namespace :kumquat do
   desc 'Update Solr schema'
   task :update_solr_schema => :environment do
     Solr::Solr.new.update_schema
-    puts 'Solr schema updated'
   end
 
 end

@@ -1,20 +1,20 @@
 development:
-  :fedora_url: http://localhost:8080/fcrepo/rest/
-  :public_fedora_url: http://localhost:8080/fcrepo/rest/
+  :fedora_url: http://localhost:8080/fedora/rest/
+  :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
 
 test:
-  :fedora_url: http://localhost:8080/fcrepo/rest/
-  :public_fedora_url: http://localhost:8080/fcrepo/rest/
+  :fedora_url: http://localhost:8080/fedora/rest/
+  :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
 
 production:
-  :fedora_url: http://localhost:8080/fcrepo/rest/
-  :public_fedora_url: http://localhost:8080/fcrepo/rest/
+  :fedora_url: http://localhost:8080/fedora/rest/
+  :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1

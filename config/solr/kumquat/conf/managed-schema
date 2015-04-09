@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Solr managed schema - automatically generated - DO NOT EDIT -->
+<schema name="example" version="1.5">
+  <uniqueKey>id</uniqueKey>
+  <fieldType name="_bbox_coord" class="solr.TrieDoubleField" precisionStep="8" stored="false" docValues="true"/>
+  <fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+    <analyzer>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" replace="all" replacement="" pattern="([^a-z])"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="bbox" class="solr.BBoxField" distanceUnits="kilometers" geo="true" numberType="_bbox_coord"/>
+  <fieldType name="binary" class="solr.BinaryField"/>
+  <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+  <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="ignored" class="solr.StrField" multiValued="true" indexed="false" stored="false"/>
+  <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+  <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType" distanceUnits="kilometers" distErrPct="0.025" geo="true" maxDistErr="0.001"/>
+  <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="point" class="solr.PointType" dimension="2" subFieldSuffix="_d"/>
+  <fieldType name="random" class="solr.RandomSortField" indexed="true"/>
+  <fieldType name="string" class="solr.StrField" sortMissingLast="true"/>
+  <fieldType name="tdate" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0"/>
+  <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0"/>
+  <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.EnglishPossessiveFilterFactory"/>
+      <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+      <filter class="solr.PorterStemFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.SynonymFilterFactory" expand="true" synonyms="synonyms.txt" ignoreCase="true"/>
+      <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.EnglishPossessiveFilterFactory"/>
+      <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+      <filter class="solr.PorterStemFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_en_splitting" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
+    <analyzer type="index">
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+      <filter class="solr.WordDelimiterFilterFactory" generateNumberParts="1" splitOnCaseChange="1" catenateWords="1" generateWordParts="1" catenateAll="0" catenateNumbers="1"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+      <filter class="solr.PorterStemFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.SynonymFilterFactory" expand="true" synonyms="synonyms.txt" ignoreCase="true"/>
+      <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+      <filter class="solr.WordDelimiterFilterFactory" generateNumberParts="1" splitOnCaseChange="1" catenateWords="0" generateWordParts="1" catenateAll="0" catenateNumbers="0"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+      <filter class="solr.PorterStemFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_en_splitting_tight" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
+    <analyzer>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.SynonymFilterFactory" expand="false" synonyms="synonyms.txt" ignoreCase="true"/>
+      <filter class="solr.StopFilterFactory" words="lang/stopwords_en.txt" ignoreCase="true"/>
+      <filter class="solr.WordDelimiterFilterFactory" generateNumberParts="0" catenateWords="1" generateWordParts="0" catenateAll="0" catenateNumbers="1"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+      <filter class="solr.EnglishMinimalStemFilterFactory"/>
+      <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+      <filter class="solr.SynonymFilterFactory" expand="true" synonyms="synonyms.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_general_rev" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.ReversedWildcardFilterFactory" maxFractionAsterisk="0.33" withOriginal="true" maxPosQuestion="2" maxPosAsterisk="3"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.SynonymFilterFactory" expand="true" synonyms="synonyms.txt" ignoreCase="true"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" positionIncrementGap="0"/>
+  <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" positionIncrementGap="0"/>
+  <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" positionIncrementGap="0"/>
+  <field name="_root_" type="string" indexed="true" stored="false"/>
+  <field name="_version_" type="long" indexed="true" stored="true"/>
+  <field name="dc_contributor" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_coverage" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_creator" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_date" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_description" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_format" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_identifier" type="string" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_language" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_publisher" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_relation" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_rights" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_source" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_subject" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_title" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dc_type" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_MediaType" type="string" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_abstract" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_accessRights" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_accrualMethod" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_accrualPeriodicity" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_accrualPolicy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_alternative" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_audience" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_available" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_bibliographicCitation" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_conformsTo" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_contributor" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_coverage" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_created" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_creator" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_date" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_dateAccepted" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_dateCopyrighted" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_dateSubmitted" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_description" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_educationLevel" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_extent" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_format" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_hasFormat" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_hasPart" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_hasVersion" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_identifier" type="string" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_instructionalMethod" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_isFormatOf" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_isPartOf" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_isReferencedBy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_isReplacedBy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_isRequiredBy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_isVersionOf" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_issued" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_language" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_license" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_mediator" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_medium" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_modified" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_provenance" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_publisher" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_references" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_relation" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_replaces" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_requires" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_rights" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_rightsHolder" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_source" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_spatial" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_subject" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_tableOfContents" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_temporal" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_title" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_type" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="dcterm_valid" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+  <field name="kq_abstract" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_accessRights" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_accrualMethod" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_accrualPeriodicity" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_accrualPolicy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_alternative" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_alternativeTitle" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_audience" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_available" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_bibliographicCitation" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_conformsTo" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_contributor" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_coverage" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_created" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_creator" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_date" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_dateAccepted" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_dateCopyrighted" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_dateSubmitted" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_description" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_educationLevel" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_extent" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_format" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_hasFormat" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_hasPart" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_hasVersion" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_identifier" type="string" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_instructionalMethod" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_isFormatOf" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_isPartOf" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_isReferencedBy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_isReplacedBy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_isRequiredBy" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_isVersionOf" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_issued" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_language" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_license" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_media_type" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_mediator" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_medium" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_modified" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_provenance" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_publisher" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_references" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_relation" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_replaces" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_requires" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_rights" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_rightsHolder" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_searchall" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_source" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_spatial" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_subject" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_system_class" type="string" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_collection_key" type="string" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_full_text" type="text_general" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_height" type="int" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_media_type" type="string" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_page_index" type="int" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_parent_uri" type="string" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_published" type="boolean" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_web_id" type="string" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_system_width" type="int" multiValued="false" indexed="true" required="false" stored="true"/>
+  <field name="kq_tableOfContents" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_temporal" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_title" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_type" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="kq_valid" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <field name="uuid" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+  <dynamicField name="*_coordinate" type="tdouble" indexed="true" stored="false"/>
+  <dynamicField name="ignored_*" type="ignored" multiValued="true"/>
+  <dynamicField name="random_*" type="random"/>
+  <dynamicField name="*_facet" type="string" multiValued="true" indexed="true" required="false" stored="true" docValues="true"/>
+  <dynamicField name="attr_*" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_txt" type="text_general" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_dts" type="date" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_tdt" type="tdate" indexed="true" stored="true"/>
+  <dynamicField name="*_is" type="int" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_ss" type="string" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_ls" type="long" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_en" type="text_en" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_bs" type="boolean" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_fs" type="float" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_ds" type="double" multiValued="true" indexed="true" stored="true"/>
+  <dynamicField name="*_dt" type="date" indexed="true" stored="true"/>
+  <dynamicField name="*_ti" type="tint" indexed="true" stored="true"/>
+  <dynamicField name="*_tl" type="tlong" indexed="true" stored="true"/>
+  <dynamicField name="*_tf" type="tfloat" indexed="true" stored="true"/>
+  <dynamicField name="*_td" type="tdouble" indexed="true" stored="true"/>
+  <dynamicField name="*_i" type="int" indexed="true" stored="true"/>
+  <dynamicField name="*_s" type="string" indexed="true" stored="true"/>
+  <dynamicField name="*_l" type="long" indexed="true" stored="true"/>
+  <dynamicField name="*_t" type="text_general" indexed="true" stored="true"/>
+  <dynamicField name="*_b" type="boolean" indexed="true" stored="true"/>
+  <dynamicField name="*_f" type="float" indexed="true" stored="true"/>
+  <dynamicField name="*_d" type="double" indexed="true" stored="true"/>
+  <dynamicField name="*_p" type="location" indexed="true" stored="true"/>
+  <copyField source="dc_contributor" dest="kq_contributor"/>
+  <copyField source="dc_contributor" dest="kq_searchall"/>
+  <copyField source="dc_coverage" dest="kq_coverage"/>
+  <copyField source="dc_coverage" dest="kq_searchall"/>
+  <copyField source="dc_creator" dest="kq_creator"/>
+  <copyField source="dc_creator" dest="kq_searchall"/>
+  <copyField source="dc_date" dest="kq_date"/>
+  <copyField source="dc_description" dest="kq_description"/>
+  <copyField source="dc_description" dest="kq_searchall"/>
+  <copyField source="dc_format" dest="kq_format"/>
+  <copyField source="dc_format" dest="kq_searchall"/>
+  <copyField source="dc_identifier" dest="kq_identifier"/>
+  <copyField source="dc_identifier" dest="kq_searchall"/>
+  <copyField source="dc_language" dest="kq_language"/>
+  <copyField source="dc_language" dest="kq_searchall"/>
+  <copyField source="dc_publisher" dest="kq_publisher"/>
+  <copyField source="dc_publisher" dest="kq_searchall"/>
+  <copyField source="dc_relation" dest="kq_relation"/>
+  <copyField source="dc_relation" dest="kq_searchall"/>
+  <copyField source="dc_rights" dest="kq_rights"/>
+  <copyField source="dc_source" dest="kq_searchall"/>
+  <copyField source="dc_source" dest="kq_source"/>
+  <copyField source="dc_subject" dest="kq_searchall"/>
+  <copyField source="dc_subject" dest="kq_subject"/>
+  <copyField source="dc_title" dest="kq_searchall"/>
+  <copyField source="dc_title" dest="kq_title"/>
+  <copyField source="dc_type" dest="kq_searchall"/>
+  <copyField source="dc_type" dest="kq_type"/>
+  <copyField source="dcterm_MediaType" dest="kq_media_type"/>
+  <copyField source="dcterm_MediaType" dest="kq_system_media_type"/>
+  <copyField source="dcterm_abstract" dest="kq_abstract"/>
+  <copyField source="dcterm_abstract" dest="kq_searchall"/>
+  <copyField source="dcterm_accessRights" dest="kq_accessRights"/>
+  <copyField source="dcterm_accrualMethod" dest="kq_accrualMethod"/>
+  <copyField source="dcterm_accrualPeriodicity" dest="kq_accrualPeriodicity"/>
+  <copyField source="dcterm_accrualPolicy" dest="kq_accrualPolicy"/>
+  <copyField source="dcterm_alternative" dest="kq_alternative"/>
+  <copyField source="dcterm_alternative" dest="kq_searchall"/>
+  <copyField source="dcterm_audience" dest="kq_audience"/>
+  <copyField source="dcterm_available" dest="kq_available"/>
+  <copyField source="dcterm_bibliographicCitation" dest="kq_bibliographicCitation"/>
+  <copyField source="dcterm_conformsTo" dest="kq_conformsTo"/>
+  <copyField source="dcterm_contributor" dest="kq_contributor"/>
+  <copyField source="dcterm_contributor" dest="kq_searchall"/>
+  <copyField source="dcterm_coverage" dest="kq_coverage"/>
+  <copyField source="dcterm_coverage" dest="kq_searchall"/>
+  <copyField source="dcterm_created" dest="kq_created"/>
+  <copyField source="dcterm_creator" dest="kq_creator"/>
+  <copyField source="dcterm_creator" dest="kq_searchall"/>
+  <copyField source="dcterm_date" dest="kq_date"/>
+  <copyField source="dcterm_dateAccepted" dest="kq_dateAccepted"/>
+  <copyField source="dcterm_dateCopyrighted" dest="kq_dateCopyrighted"/>
+  <copyField source="dcterm_dateSubmitted" dest="kq_dateSubmitted"/>
+  <copyField source="dcterm_description" dest="kq_description"/>
+  <copyField source="dcterm_description" dest="kq_searchall"/>
+  <copyField source="dcterm_educationLevel" dest="kq_educationLevel"/>
+  <copyField source="dcterm_extent" dest="kq_extent"/>
+  <copyField source="dcterm_format" dest="kq_format"/>
+  <copyField source="dcterm_format" dest="kq_searchall"/>
+  <copyField source="dcterm_hasFormat" dest="kq_hasFormat"/>
+  <copyField source="dcterm_hasPart" dest="kq_hasPart"/>
+  <copyField source="dcterm_hasVersion" dest="kq_hasVersion"/>
+  <copyField source="dcterm_identifier" dest="kq_identifier"/>
+  <copyField source="dcterm_identifier" dest="kq_searchall"/>
+  <copyField source="dcterm_instructionalMethod" dest="kq_instructionalMethod"/>
+  <copyField source="dcterm_isFormatOf" dest="kq_isFormatOf"/>
+  <copyField source="dcterm_isPartOf" dest="kq_isPartOf"/>
+  <copyField source="dcterm_isReferencedBy" dest="kq_isReferencedBy"/>
+  <copyField source="dcterm_isReplacedBy" dest="kq_isReplacedBy"/>
+  <copyField source="dcterm_isRequiredBy" dest="kq_isRequiredBy"/>
+  <copyField source="dcterm_isVersionOf" dest="kq_language"/>
+  <copyField source="dcterm_issued" dest="kq_issued"/>
+  <copyField source="dcterm_language" dest="kq_language"/>
+  <copyField source="dcterm_language" dest="kq_searchall"/>
+  <copyField source="dcterm_license" dest="kq_license"/>
+  <copyField source="dcterm_mediator" dest="kq_mediator"/>
+  <copyField source="dcterm_mediator" dest="kq_searchall"/>
+  <copyField source="dcterm_medium" dest="kq_medium"/>
+  <copyField source="dcterm_medium" dest="kq_searchall"/>
+  <copyField source="dcterm_modified" dest="kq_modified"/>
+  <copyField source="dcterm_provenance" dest="kq_provenance"/>
+  <copyField source="dcterm_provenance" dest="kq_searchall"/>
+  <copyField source="dcterm_publisher" dest="kq_publisher"/>
+  <copyField source="dcterm_publisher" dest="kq_searchall"/>
+  <copyField source="dcterm_references" dest="kq_references"/>
+  <copyField source="dcterm_relation" dest="kq_relation"/>
+  <copyField source="dcterm_replaces" dest="kq_replaces"/>
+  <copyField source="dcterm_requires" dest="kq_requires"/>
+  <copyField source="dcterm_rights" dest="kq_rights"/>
+  <copyField source="dcterm_rights" dest="kq_searchall"/>
+  <copyField source="dcterm_rightsHolder" dest="kq_rightsHolder"/>
+  <copyField source="dcterm_rightsHolder" dest="kq_searchall"/>
+  <copyField source="dcterm_source" dest="kq_searchall"/>
+  <copyField source="dcterm_source" dest="kq_source"/>
+  <copyField source="dcterm_spatial" dest="kq_spatial"/>
+  <copyField source="dcterm_subject" dest="kq_searchall"/>
+  <copyField source="dcterm_subject" dest="kq_subject"/>
+  <copyField source="dcterm_tableOfContents" dest="kq_searchall"/>
+  <copyField source="dcterm_tableOfContents" dest="kq_tableOfContents"/>
+  <copyField source="dcterm_temporal" dest="kq_temporal"/>
+  <copyField source="dcterm_title" dest="kq_searchall"/>
+  <copyField source="dcterm_title" dest="kq_title"/>
+  <copyField source="dcterm_type" dest="kq_searchall"/>
+  <copyField source="dcterm_type" dest="kq_type"/>
+  <copyField source="dcterm_valid" dest="kq_valid"/>
+  <copyField source="kq_system_full_text" dest="kq_searchall"/>
+  <copyField source="dc_contributor" dest="kq_contributor_facet"/>
+  <copyField source="dcterm_contributor" dest="kq_contributor_facet"/>
+  <copyField source="dc_coverage" dest="kq_coverage_facet"/>
+  <copyField source="dcterm_coverage" dest="kq_coverage_facet"/>
+  <copyField source="dc_creator" dest="kq_creator_facet"/>
+  <copyField source="dcterm_creator" dest="kq_creator_facet"/>
+  <copyField source="dc_date" dest="kq_date_facet"/>
+  <copyField source="dcterm_date" dest="kq_date_facet"/>
+  <copyField source="dc_format" dest="kq_format_facet"/>
+  <copyField source="dcterm_format" dest="kq_format_facet"/>
+  <copyField source="dc_language" dest="kq_language_facet"/>
+  <copyField source="dcterm_language" dest="kq_language_facet"/>
+  <copyField source="dc_publisher" dest="kq_publisher_facet"/>
+  <copyField source="dcterm_publisher" dest="kq_publisher_facet"/>
+  <copyField source="dc_source" dest="kq_source_facet"/>
+  <copyField source="dcterm_source" dest="kq_source_facet"/>
+  <copyField source="dc_subject" dest="kq_subject_facet"/>
+  <copyField source="dcterm_subject" dest="kq_subject_facet"/>
+  <copyField source="dc_type" dest="kq_type_facet"/>
+  <copyField source="dcterm_type" dest="kq_type_facet"/>
+</schema>

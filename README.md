@@ -6,8 +6,8 @@ Kumquat has several dependencies that need to be installed first:
 * ffmpeg
 * PostgreSQL
 * Fedora
-* fcrepo-message-consumer
-* Solr
+* Solr 5
+* fcrepo-camel
 * Loris
 
 These will be covered in sequence.
@@ -35,23 +35,30 @@ TODO: write this
 [https://wiki.duraspace.org/display/FEDORA41/Deploying+Fedora+4+Complete+Guide]
 (https://wiki.duraspace.org/display/FEDORA41/Deploying+Fedora+4+Complete+Guide)
 
-### fcrepo-message-consumer
+### Solr 5
 
-1. `$ git clone git@github.com:fcrepo4/fcrepo-message-consumer.git`
+Download and extract Solr 5.0.0. Create a core for Kumquat by copying
+`config/solr/kumquat` to `solr-5.0.0/server/solr`.
 
-2. Open `fcrepo-message-consumer/fcrepo-message-consumer-webapp/src/main/resources/spring/indexer-core.xml`
-   and uncomment the `<ref bean="solrIndexer"/>` tag.
+### fcrepo-camel
 
-### Solr
+Edit the `applicationContext.xml` file to use the correct Fedora/Solr URLs,
+the correct Solr core name, and the `kumquat` index transform:
 
-Create a core for Kumquat. In its `solrconfig.xml`, use the `ManagedSchemaIndexFactory`:
-
-    <schemaFactory class="ManagedIndexSchemaFactory">
-      <bool name="mutable">true</bool>
-      <str name="managedSchemaResourceName">managed-schema</str>
-    </schemaFactory>
-
-(Comment out any `ClassicIndexSchemaFactory` that may exist.)
+    <camelContext xmlns="http://camel.apache.org/schema/spring"
+                  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <route id="fedora-to-solr">
+            <from uri="activemq:fedora_indexing"/>
+            <to uri="fcrepo:localhost:8080/fedora/rest"/>
+            <filter>
+                <xpath>
+                    /rdf:RDF/rdf:Description/rdf:type[@rdf:resource='http://fedora.info/definitions/v4/indexing#Indexable']
+                </xpath>
+                <to uri="fcrepo:localhost:8080/fedora/rest?transform=kumquat"/>
+                <to uri="http4:localhost:8983/solr/kumquat/update"/>
+            </filter>
+        </route>
+    </camelContext>
 
 ### Loris
 
@@ -186,11 +193,9 @@ Edit these as necessary.
 
 `$ java -jar ../start.jar`
 
-### fcrepo-message-consumer
+### fcrepo-camel
 
-`$ mvn clean install -DskipTests`
-
-`$ cd fcrepo-message-consumer-webapp`
+`$ cd fcrepo-camel-routes`
 
 `$ mvn -Djetty.port=9999 jetty:run`
 

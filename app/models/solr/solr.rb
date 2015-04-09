@@ -523,7 +523,7 @@ module Solr
                 type: 'string',
                 stored: true,
                 indexed: true,
-                required: true,
+                required: false,
                 multiValued: true,
                 docValues: true
             }

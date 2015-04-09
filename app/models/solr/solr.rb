@@ -656,6 +656,13 @@ module Solr
                 multiValued: true
             },
             {
+                name: 'kq_alternative',
+                type: 'text_general',
+                stored: true,
+                indexed: true,
+                multiValued: true
+            },
+            {
                 name: 'kq_alternativeTitle',
                 type: 'text_general',
                 stored: true,
@@ -1572,8 +1579,8 @@ module Solr
       end
       copy_fields_to_add = SCHEMA[:copyFields].reject do |kf|
         struct['schema']['copyFields'].
-            map{ |sf| "#{sf['source']}-#{sf['destination']}" }.
-            include?("#{kf[:source]}-#{kf[:destination]}")
+            map{ |sf| "#{sf['source']}-#{sf['dest']}" }.
+            include?("#{kf[:source]}-#{kf[:dest]}")
       end
       dynamic_fields_to_add = SCHEMA[:dynamicFields].reject do |kf|
         struct['schema']['dynamicFields'].
@@ -1584,8 +1591,13 @@ module Solr
       struct['add-field'] = fields_to_add if fields_to_add.any?
       struct['add-copy-field'] = copy_fields_to_add if copy_fields_to_add.any?
       struct['add-dynamic-field'] = dynamic_fields_to_add if dynamic_fields_to_add.any?
-      http.post("#{url}/schema", JSON.generate(struct),
-                { 'Content-Type' => 'application/json' }) if struct.any?
+      response = http.post("#{url}/schema", JSON.generate(struct),
+                           { 'Content-Type' => 'application/json' }) if struct.any?
+
+      message = JSON.parse(response.body)
+      if message['errors']
+        puts message['errors']
+      end
     end
 
   end

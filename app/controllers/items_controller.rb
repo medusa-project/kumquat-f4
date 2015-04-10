@@ -52,6 +52,13 @@ class ItemsController < WebsiteController
   def show
     @item = Repository::Item.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
+
+    respond_to do |format|
+      format.html {}
+      format.jsonld { render text: @item.rdf_graph.to_jsonld }
+      format.rdf { render text: @item.rdf_graph.to_rdfxml }
+      format.ttl { render text: @item.rdf_graph.to_ttl }
+    end
   end
 
   private

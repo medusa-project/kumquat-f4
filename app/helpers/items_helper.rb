@@ -24,6 +24,16 @@ module ItemsHelper
         html += '</li>'
       end
     end
+    html += '<li class="divider"></li>'
+    html += '<li>'
+    html += link_to('JSON-LD', repository_item_url(item, format: :jsonld))
+    html += '</li>'
+    html += '<li>'
+    html += link_to('RDF/XML', repository_item_url(item, format: :rdf))
+    html += '</li>'
+    html += '<li>'
+    html += link_to('Turtle', repository_item_url(item, format: :ttl))
+    html += '</li>'
     html += '</ul>'
     html += '</div>'
     raw(html)

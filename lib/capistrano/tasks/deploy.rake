@@ -7,7 +7,7 @@ namespace :deploy do
         with :rails_env => fetch(:rails_env) do
           execute "rm -rf #{File.join('local', 'themes', 'uiuc')}"
           execute "git clone git://github.com/medusa-project/kumquat-uiuc-theme.git "\
-          "#{File.join('local', 'themes', 'uiuc')}"
+          "#{File.join(current_path, 'local', 'themes', 'uiuc')}"
           execute :rake, 'kumquat:set_default_theme[UIUC]'
         end
       end

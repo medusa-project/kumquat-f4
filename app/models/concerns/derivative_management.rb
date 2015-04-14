@@ -62,7 +62,8 @@ module DerivativeManagement
             owner: item,
             upload_pathname: tempfile.path + '.jpg',
             media_type: 'image/jpeg',
-            type: Repository::Bytestream::Type::DERIVATIVE)
+            type: Repository::Bytestream::Type::DERIVATIVE,
+            transaction_url: self.transaction_url)
         bs.save
         item.bytestreams << bs
       end
@@ -84,7 +85,8 @@ module DerivativeManagement
               owner: item,
               upload_pathname: tempfile.path + '.jpg',
               media_type: 'image/jpeg',
-              type: Repository::Bytestream::Type::DERIVATIVE)
+              type: Repository::Bytestream::Type::DERIVATIVE,
+              transaction_url: self.transaction_url)
           bs.save
           item.bytestreams << bs
         end

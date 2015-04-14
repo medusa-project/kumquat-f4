@@ -11,6 +11,7 @@ module ActiveKumquat
     extend ActiveModel::Callbacks
     include ActiveModel::Model
     include Describable
+    include Transactions
 
     define_model_callbacks :create, :delete, :load, :save, :update,
                            only: [:after, :before]
@@ -26,13 +27,37 @@ module ActiveKumquat
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
     attr_accessor :rdf_graph
-    attr_accessor :repository_url
+    attr_accessor :repository_url # the entity's repository URL outside of any transaction
     attr_accessor :requested_slug # requested F4 last path component for new entities
     attr_accessor :solr_json
+    attr_accessor :transaction_url
     attr_accessor :uuid
     alias_method :id, :uuid
 
     validates :uuid, allow_nil: true, length: { minimum: 36, maximum: 36 }
+
+    ##
+    # Executes a block within a transaction. Use like:
+    #
+    # ActiveKumquat::Base.transaction do |transaction_url|
+    #   (code to run within the transaction)
+    # end
+    #
+    # See https://wiki.duraspace.org/display/FEDORA41/Transactions
+    #
+    # @param url Transaction base URL
+    #
+    def self.transaction
+      url = create_transaction(@@http)
+      begin
+        yield url
+      rescue => e
+        rollback_transaction(url, @@http)
+        raise e
+      else
+        commit_transaction(url, @@http)
+      end
+    end
 
     def initialize(params = {})
       @bytestreams = Set.new
@@ -49,9 +74,10 @@ module ActiveKumquat
     # @param commit_immediately boolean
     #
     def delete(also_tombstone = false, commit_immediately = true)
-      if self.repository_url
+      url = transactionalized_url(self.repository_url)
+      if url
         run_callbacks :delete do
-          url = self.repository_url.chomp('/')
+          url = url.chomp('/')
           @@http.delete(url)
           @@http.delete("#{url}/fcr:tombstone") if also_tombstone
           @destroyed = true
@@ -101,7 +127,8 @@ module ActiveKumquat
           self.uuid = statement.object.to_s
         elsif statement.predicate.to_s == kq_uri + kq_predicates::BYTESTREAM_URI
           bs = Repository::Bytestream.new(owner: self,
-                                          repository_url: statement.object.to_s)
+                                          repository_url: statement.object.to_s,
+                                          transaction_url: self.transaction_url)
           bs.reload!
           self.bytestreams << bs
         end
@@ -111,7 +138,8 @@ module ActiveKumquat
     end
 
     def reload!
-      response = @@http.get(self.repository_url, nil,
+      url = transactionalized_url(self.repository_url)
+      response = @@http.get(url, nil,
                             { 'Accept' => 'application/n-triples' })
       graph = RDF::Graph.new
       graph.from_ntriples(response.body)
@@ -202,11 +230,14 @@ module ActiveKumquat
       self.save!
     end
 
+    protected
+
     ##
     # Updates an existing item.
     #
     def save_existing
-      @@http.patch(self.repository_url, self.to_sparql_update.to_s,
+      url = transactionalized_url(self.repository_url)
+      @@http.patch(url, self.to_sparql_update.to_s,
                    { 'Content-Type' => 'application/sparql-update' })
     end
 
@@ -215,14 +246,15 @@ module ActiveKumquat
     #
     def save_new
       run_callbacks :create do
+        url = transactionalized_url(self.container_url)
         # As of version 4.1, Fedora doesn't like to accept triples via POST for
         # some reason; it just returns 201 Created regardless of the Content-Type
         # header and body content. So we will POST to create an empty container,
         # and then update that.
         headers = { 'Content-Type' => 'application/n-triples' }
         headers['slug'] = self.requested_slug if self.requested_slug
-        response = @@http.post(self.container_url, nil, headers)
-        self.repository_url = response.header['Location'].first
+        response = @@http.post(url, nil, headers)
+        self.repository_url = detransactionalized_url(response.header['Location'].first)
         self.requested_slug = nil
         save_existing
       end

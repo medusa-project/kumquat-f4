@@ -8,6 +8,7 @@ module Repository
   class Bytestream
 
     include ActiveModel::Model
+    include ActiveKumquat::Transactions
 
     ENTITY_CLASS = ActiveKumquat::Base::Class::BYTESTREAM
 
@@ -17,6 +18,7 @@ module Repository
     attr_accessor :media_type # string
     attr_accessor :owner # ActiveKumquat::Base subclass
     attr_accessor :repository_url # string
+    attr_accessor :transaction_url # string
     attr_accessor :type # Bytestream::Type
     attr_accessor :upload_pathname # string
     attr_accessor :uuid # string
@@ -62,7 +64,7 @@ module Repository
     #
     def delete(also_tombstone = false, commit_immediately = true)
       if self.repository_url
-        url = self.repository_url.chomp('/')
+        url = transactionalized_url(self.repository_url).chomp('/')
         @@http.delete(url)
         @@http.delete("#{url}/fcr:tombstone") if also_tombstone
         @destroyed = true
@@ -176,15 +178,16 @@ module Repository
     end
 
     def reload!
-      response = @@http.get(self.repository_metadata_url, nil,
-                            { 'Accept' => 'application/n-triples' })
+      url = self.repository_metadata_url # already transactionalized
+      response = @@http.get(url, nil, { 'Accept' => 'application/n-triples' })
       graph = RDF::Graph.new
       graph.from_ntriples(response.body)
       self.populate_from_graph(graph)
     end
 
     def repository_metadata_url
-      "#{self.repository_url.chomp('/')}/fcr:metadata"
+      url = transactionalized_url(self.repository_url).chomp('/')
+      "#{url}/fcr:metadata"
     end
 
     def save(commit_immediately = true) # TODO: look into Solr soft commits
@@ -274,8 +277,9 @@ module Repository
     # Updates an existing bytestream.
     #
     def save_existing
+      url = self.repository_metadata_url # already transactionalized
       update = self.to_sparql_update
-      @@http.patch(self.repository_metadata_url, update.to_s,
+      @@http.patch(url, update.to_s,
                    { 'Content-Type' => 'application/sparql-update' })
     end
 
@@ -294,16 +298,19 @@ module Repository
               'Content-Disposition' => "attachment; filename=\"#{filename}\""
           }
           headers['Content-Type'] = self.media_type unless self.media_type.blank?
-          response = @@http.post(self.owner.repository_url, file, headers)
+          url = transactionalized_url(self.owner.repository_url)
+          response = @@http.post(url, file, headers)
         end
       elsif self.external_resource_url
-        response = @@http.post(self.owner.repository_url, nil,
+        url = transactionalized_url(self.owner.repository_url)
+        response = @@http.post(url, nil,
                                { 'Content-Type' => 'text/plain' })
         headers = { 'Content-Type' => "message/external-body; "\
           "access-type=URL; URL=\"#{self.external_resource_url}\"" }
         @@http.put(response.header['Location'].first, nil, headers)
       end
-      self.repository_url = response.header['Location'].first
+      self.repository_url = detransactionalized_url(
+          response.header['Location'].first)
       save_existing
     end
 

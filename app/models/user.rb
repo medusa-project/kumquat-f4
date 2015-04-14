@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
 
-  validates :email, presence: true, length: { maximum: 255 }
+  validates :email, presence: true, uniqueness: true, email: true
   validates :password, length: { minimum: 5 }, if: :should_validate_password?
   validates :username, presence: true, length: { maximum: 30 },
             uniqueness: { case_sensitive: false },

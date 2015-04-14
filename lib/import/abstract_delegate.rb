@@ -154,10 +154,9 @@ module Import
     # Should return the IANA media type
     # (https://www.iana.org/assignments/media-types/media-types.xhtml) of the
     # item at the given index, if known. It's also okay to return nil, in which
-    # case the media type will be guessed. The guessing is pretty reliable for
-    # common file types.
+    # case the media type will be guessed.
     #
-    # This method is optional.
+    # This method is optional, but recommended.
     #
     # @param index integer
     # @return string

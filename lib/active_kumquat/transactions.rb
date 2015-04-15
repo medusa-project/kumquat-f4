@@ -57,7 +57,7 @@ module ActiveKumquat
     # @param url string
     # @return string
     #
-    def detransactionalized_url(url)
+    def nontransactional_url(url)
       if self.transaction_url
         return url.gsub(self.transaction_url.chomp('/'),
                         Kumquat::Application.kumquat_config[:fedora_url].chomp('/'))
@@ -75,7 +75,7 @@ module ActiveKumquat
     # @param url string
     # @return string
     #
-    def transactionalized_url(url)
+    def transactional_url(url)
       f4_url = Kumquat::Application.kumquat_config[:fedora_url].chomp('/')
       if self.transaction_url and !url.start_with?(f4_url + '/tx:')
         return url.gsub(f4_url, self.transaction_url.chomp('/'))

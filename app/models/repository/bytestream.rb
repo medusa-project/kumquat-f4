@@ -64,7 +64,7 @@ module Repository
     #
     def delete(also_tombstone = false, commit_immediately = true)
       if self.repository_url
-        url = transactionalized_url(self.repository_url).chomp('/')
+        url = transactional_url(self.repository_url).chomp('/')
         @@http.delete(url)
         @@http.delete("#{url}/fcr:tombstone") if also_tombstone
         @destroyed = true
@@ -186,7 +186,7 @@ module Repository
     end
 
     def repository_metadata_url
-      url = transactionalized_url(self.repository_url).chomp('/')
+      url = transactional_url(self.repository_url).chomp('/')
       "#{url}/fcr:metadata"
     end
 
@@ -298,18 +298,18 @@ module Repository
               'Content-Disposition' => "attachment; filename=\"#{filename}\""
           }
           headers['Content-Type'] = self.media_type unless self.media_type.blank?
-          url = transactionalized_url(self.owner.repository_url)
+          url = transactional_url(self.owner.repository_url)
           response = @@http.post(url, file, headers)
         end
       elsif self.external_resource_url
-        url = transactionalized_url(self.owner.repository_url)
+        url = transactional_url(self.owner.repository_url)
         response = @@http.post(url, nil,
                                { 'Content-Type' => 'text/plain' })
         headers = { 'Content-Type' => "message/external-body; "\
           "access-type=URL; URL=\"#{self.external_resource_url}\"" }
         @@http.put(response.header['Location'].first, nil, headers)
       end
-      self.repository_url = detransactionalized_url(
+      self.repository_url = nontransactional_url(
           response.header['Location'].first)
       save_existing
     end

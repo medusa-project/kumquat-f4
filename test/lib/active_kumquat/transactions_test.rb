@@ -15,15 +15,15 @@ class TransactionsTest < ActiveSupport::TestCase
     @tx_url = @obj.transaction_url + '/bla/bla/bla'
   end
 
-  test 'detransactionalized_url should work properly' do
-    assert_equal @non_tx_url, @obj.detransactionalized_url(@tx_url)
+  test 'nontransactional_url should work properly' do
+    assert_equal @non_tx_url, @obj.nontransactional_url(@tx_url)
   end
 
-  test 'transactionalized_url should work properly' do
-    assert_equal @tx_url, @obj.transactionalized_url(@non_tx_url)
+  test 'transactional_url should work properly' do
+    assert_equal @tx_url, @obj.transactional_url(@non_tx_url)
 
     # don't transactionalize an already-transactional url
-    assert_equal @tx_url, @obj.transactionalized_url(@tx_url)
+    assert_equal @tx_url, @obj.transactional_url(@tx_url)
   end
 
 end

@@ -74,7 +74,7 @@ module ActiveKumquat
     # @param commit_immediately boolean
     #
     def delete(also_tombstone = false, commit_immediately = true)
-      url = transactionalized_url(self.repository_url)
+      url = transactional_url(self.repository_url)
       if url
         run_callbacks :delete do
           url = url.chomp('/')
@@ -138,7 +138,7 @@ module ActiveKumquat
     end
 
     def reload!
-      url = transactionalized_url(self.repository_url)
+      url = transactional_url(self.repository_url)
       response = @@http.get(url, nil,
                             { 'Accept' => 'application/n-triples' })
       graph = RDF::Graph.new
@@ -236,7 +236,7 @@ module ActiveKumquat
     # Updates an existing item.
     #
     def save_existing
-      url = transactionalized_url(self.repository_url)
+      url = transactional_url(self.repository_url)
       @@http.patch(url, self.to_sparql_update.to_s,
                    { 'Content-Type' => 'application/sparql-update' })
     end
@@ -246,7 +246,7 @@ module ActiveKumquat
     #
     def save_new
       run_callbacks :create do
-        url = transactionalized_url(self.container_url)
+        url = transactional_url(self.container_url)
         # As of version 4.1, Fedora doesn't like to accept triples via POST for
         # some reason; it just returns 201 Created regardless of the Content-Type
         # header and body content. So we will POST to create an empty container,
@@ -254,7 +254,7 @@ module ActiveKumquat
         headers = { 'Content-Type' => 'application/n-triples' }
         headers['slug'] = self.requested_slug if self.requested_slug
         response = @@http.post(url, nil, headers)
-        self.repository_url = detransactionalized_url(response.header['Location'].first)
+        self.repository_url = nontransactional_url(response.header['Location'].first)
         self.requested_slug = nil
         save_existing
       end

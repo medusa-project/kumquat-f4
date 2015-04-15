@@ -1,0 +1,7 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  key: oai_pmh.enabled
+  value: '{"value" : 1}'
+  created_at: <%= Time.now %>
+  updated_at: <%= Time.now %>

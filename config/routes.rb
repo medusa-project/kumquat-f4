@@ -64,6 +64,7 @@ Rails.application.routes.draw do
     match '/master', to: 'items#master_bytestream', via: 'get',
           as: :master_bytestream
   end
+  match '/oai-pmh', to: 'oai_pmh#index', via: %w(get post), as: 'oai_pmh'
   match '/search', to: 'search#index', via: 'get'
   match '/search', to: 'search#search', via: 'post'
   match '/signin', to: 'sessions#new', via: 'get'

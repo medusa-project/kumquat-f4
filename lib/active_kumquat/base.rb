@@ -69,6 +69,15 @@ module ActiveKumquat
       end
     end
 
+    def created_at
+      self.rdf_graph.each_statement do |statement|
+        if statement.predicate.to_s == 'http://fedora.info/definitions/v4/repository#created'
+          return Date.parse(statement.object.to_s)
+        end
+      end
+      nil
+    end
+
     ##
     # @param also_tombstone boolean
     # @param commit_immediately boolean
@@ -228,6 +237,15 @@ module ActiveKumquat
     def update!(params)
       self.update(params)
       self.save!
+    end
+
+    def updated_at
+      self.rdf_graph.each_statement do |statement|
+        if statement.predicate.to_s == 'http://fedora.info/definitions/v4/repository#lastModified'
+          return Date.parse(statement.object.to_s)
+        end
+      end
+      nil
     end
 
     protected

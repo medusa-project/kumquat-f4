@@ -41,6 +41,16 @@
                            class: 'form-control') %>
       </td>
     </tr>
+    <tr>
+      <td><%= label_tag("options[#{DB::Option::Key::OAI_PMH_ENABLED}]",
+                        'Enable OAI-PMH') %></td>
+      <td>
+        <%= hidden_field_tag("options[#{DB::Option::Key::OAI_PMH_ENABLED}]", 0) %>
+        <%= check_box_tag("options[#{DB::Option::Key::OAI_PMH_ENABLED}]", 1,
+                          DB::Option::boolean(DB::Option::Key::OAI_PMH_ENABLED),
+                          class: 'form-control') %>
+      </td>
+    </tr>
   </table>
 
   <h2>Website</h2>

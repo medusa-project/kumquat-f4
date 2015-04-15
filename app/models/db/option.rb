@@ -12,6 +12,7 @@ module DB
       COPYRIGHT_STATEMENT = 'website.copyright_statement'
       FACET_TERM_LIMIT = 'website.facet_term_limit'
       WEBSITE_INTRO_TEXT = 'website.intro_text'
+      OAI_PMH_ENABLED = 'oai_pmh.enabled'
       ORGANIZATION_NAME = 'organization.name'
       RESULTS_PER_PAGE = 'website.results_per_page'
       WEBSITE_NAME = 'website.name'

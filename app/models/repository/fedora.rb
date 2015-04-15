@@ -28,11 +28,13 @@ module Repository
       uuid = fcrepo:uuid :: xsd:string;
       #{Solr::Solr::CLASS_KEY} = kumquat:#{kq_predicates::CLASS} :: xsd:string;
       #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{kq_predicates::COLLECTION_KEY} :: xsd:string;
+      #{Solr::Solr::CREATED_AT_KEY} = fcrepo:created :: xsd:date;
       #{Solr::Solr::FULL_TEXT_KEY} = kumquat:#{kq_predicates::FULL_TEXT} :: xsd:string;
       #{Solr::Solr::HEIGHT_KEY} = kumquat:#{kq_predicates::HEIGHT} :: xsd:integer;
       #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{kq_predicates::PAGE_INDEX} :: xsd:integer;
       #{Solr::Solr::PARENT_URI_KEY} = kumquat:#{kq_predicates::PARENT_URI} :: xsd:string;
       #{Solr::Solr::PUBLISHED_KEY} = kumquat:#{kq_predicates::PUBLISHED} :: xsd:boolean;
+      #{Solr::Solr::UPDATED_AT_KEY} = fcrepo:lastModified :: xsd:date;
       #{Solr::Solr::WEB_ID_KEY} = kumquat:#{kq_predicates::WEB_ID} :: xsd:string;
       #{Solr::Solr::WIDTH_KEY} = kumquat:#{kq_predicates::WIDTH} :: xsd:integer;
       dc_contributor = dc:contributor :: xsd:string;

@@ -554,6 +554,14 @@ module Solr
                 multiValued: false
             },
             {
+                name: 'kq_system_created_at',
+                type: 'date',
+                stored: true,
+                indexed: true,
+                required: false,
+                multiValued: false
+            },
+            {
                 name: 'kq_system_full_text',
                 type: 'text_general',
                 stored: true,
@@ -596,6 +604,14 @@ module Solr
             {
                 name: 'kq_system_published',
                 type: 'boolean',
+                stored: true,
+                indexed: true,
+                required: false,
+                multiValued: false
+            },
+            {
+                name: 'kq_system_updated_at',
+                type: 'date',
                 stored: true,
                 indexed: true,
                 required: false,
@@ -1529,6 +1545,7 @@ module Solr
 
     CLASS_KEY = :kq_system_class
     COLLECTION_KEY_KEY = :kq_system_collection_key
+    CREATED_AT_KEY = :kq_system_created_at
     # each of these requires a localized label (solr_field_*)
     FACET_FIELDS = [:kq_contributor_facet, :kq_coverage_facet,
                     :kq_creator_facet, :kq_date_facet, :kq_format_facet,
@@ -1540,6 +1557,7 @@ module Solr
     PAGE_INDEX_KEY = :kq_system_page_index
     PARENT_URI_KEY = :kq_system_parent_uri
     PUBLISHED_KEY = :kq_system_published
+    UPDATED_AT_KEY = :kq_system_updated_at
     WEB_ID_KEY = :kq_system_web_id
     WIDTH_KEY = :kq_system_width
 

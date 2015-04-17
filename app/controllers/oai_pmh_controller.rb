@@ -52,9 +52,13 @@ class OaiPmhController < ApplicationController
                    description: 'Missing identifier argument.' }
     else
       @item = item_for_oai_pmh_identifier(params[:identifier], @host)
-      @errors << { code: 'idDoesNotExist',
-                   description: 'The value of the identifier argument is '\
-                       'unknown or illegal in this repository.' } unless @item
+      if @item
+        @identifier = oai_pmh_identifier_for(@item, @host)
+      else
+        @errors << { code: 'idDoesNotExist',
+                     description: 'The value of the identifier argument is '\
+                         'unknown or illegal in this repository.' }
+      end
     end
     if params[:metadataPrefix].blank?
       @errors << { code: 'badArgument',
@@ -64,7 +68,6 @@ class OaiPmhController < ApplicationController
                    description: 'The metadata format identified by the '\
                        'metadataPrefix argument is not supported by this item.' }
     end
-    @identifier = oai_pmh_identifier_for(@item, @host)
     'get_record.xml.builder'
   end
 

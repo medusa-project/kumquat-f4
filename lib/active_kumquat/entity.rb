@@ -5,9 +5,12 @@ module ActiveKumquat
   #
   class Entity
 
+    include Transactions
+
     @@http = HTTPClient.new
 
     attr_reader :solr_request
+    attr_accessor :transaction_url
 
     ##
     # @param caller The calling entity (ActiveKumquat::Entity subclass), or
@@ -101,6 +104,11 @@ module ActiveKumquat
       self
     end
 
+    def use_transaction_url(url)
+      self.transaction_url = url
+      self
+    end
+
     ##
     # @param where Hash or string
     # @return ActiveKumquat::Entity
@@ -152,9 +160,10 @@ module ActiveKumquat
               solr_response['facet_counts']['facet_fields']) if @facet
           solr_response['response']['docs'].each do |doc|
             entity = @caller.new(solr_json: doc, repository_url: doc['id'])
-
-            f4_response = @@http.get(doc['id'], nil,
-                                  { 'Accept' => 'application/n-triples' })
+            url = doc['id']
+            url = transactional_url(url) if self.transaction_url.present?
+            f4_response = @@http.get(url, nil,
+                                     { 'Accept' => 'application/n-triples' })
             graph = RDF::Graph.new
             graph.from_ntriples(f4_response.body)
             entity.populate_from_graph(graph)

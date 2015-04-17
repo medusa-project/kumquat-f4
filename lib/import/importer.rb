@@ -23,7 +23,8 @@ module Import
           if @collections[key]
             collection = @collections[key]
           else
-            collection = Repository::Collection.find_by_key(key)
+            collection = Repository::Collection.find_by_key(key,
+                                                            transaction_url)
           end
           unless collection
             collection = Repository::Collection.new(

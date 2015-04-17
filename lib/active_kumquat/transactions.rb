@@ -1,5 +1,8 @@
 module ActiveKumquat
 
+  ##
+  # https://wiki.duraspace.org/display/FEDORA41/Transactions
+  #
   module Transactions
 
     def self.included(mod)
@@ -10,7 +13,6 @@ module ActiveKumquat
 
       ##
       # Creates a transaction.
-      # https://wiki.duraspace.org/display/FEDORA41/Transactions
       #
       # @returns string Transaction base URL
       #
@@ -24,7 +26,6 @@ module ActiveKumquat
 
       ##
       # Commits the transaction with the given ID.
-      # https://wiki.duraspace.org/display/FEDORA41/Transactions
       #
       # @param id string
       # @param http_client HTTPClient
@@ -52,8 +53,6 @@ module ActiveKumquat
     # value of transaction_url. If transaction_url is nil, returns the given
     # URL unchanged.
     #
-    # See https://wiki.duraspace.org/display/FEDORA41/Transactions
-    #
     # @param url string
     # @return string
     #
@@ -69,8 +68,6 @@ module ActiveKumquat
     # Converts the given URL into a transactional URL based on the current
     # value of transaction_url. If transaction_url is nil, returns the given
     # URL unchanged.
-    #
-    # See https://wiki.duraspace.org/display/FEDORA41/Transactions
     #
     # @param url string
     # @return string

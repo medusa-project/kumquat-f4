@@ -18,21 +18,25 @@ module Repository
     # Convenience method that deletes a collection with the given key.
     #
     # @param key
+    # @param transaction_url string
     #
-    def self.delete_with_key(key)
+    def self.delete_with_key(key, transaction_url = nil)
       root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
       col_to_delete = Repository::Collection.new(
           repository_url: "#{root_container_url.chomp('/')}/#{key}",
-          key: key)
+          key: key,
+          transaction_url: transaction_url)
       col_to_delete.delete(true)
     end
 
     ##
     # @param key string
+    # @param transaction_url string
     # @return Entity
     #
-    def self.find_by_key(key)
-      self.where(Solr::Solr::COLLECTION_KEY_KEY => key).first
+    def self.find_by_key(key, transaction_url = nil)
+      self.where(Solr::Solr::COLLECTION_KEY_KEY => key).
+          use_transaction_url(transaction_url).first rescue nil
     end
 
     ##

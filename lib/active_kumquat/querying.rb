@@ -11,34 +11,39 @@ module ActiveKumquat
 
     ##
     # @param id UUID
+    # @param transaction_url string
     # @return Entity
     #
-    def find(id)
-      self.find_by_uuid(id)
+    def find(id, transaction_url = nil)
+      self.find_by_uuid(id, transaction_url)
     end
 
     ##
     # @param uri Fedora resource URI
+    # @param transaction_url string
     # @return Entity
     #
-    def find_by_uri(uri)
-      self.where(id: "\"#{uri}\"").first
+    def find_by_uri(uri, transaction_url = nil)
+      self.where(id: "\"#{uri}\"").use_transaction_url(transaction_url).first
     end
 
     ##
     # @param uuid string
+    # @param transaction_url string
     # @return Entity
     #
-    def find_by_uuid(uuid)
-      self.where(uuid: uuid).first
+    def find_by_uuid(uuid, transaction_url = nil)
+      self.where(uuid: uuid).use_transaction_url(transaction_url).first
     end
 
     ##
     # @param web_id string
+    # @param transaction_url string
     # @return Entity
     #
-    def find_by_web_id(web_id)
-      self.where(Solr::Solr::WEB_ID_KEY => web_id).first
+    def find_by_web_id(web_id, transaction_url = nil)
+      self.where(Solr::Solr::WEB_ID_KEY => web_id).
+          use_transaction_url(transaction_url).first
     end
 
     def method_missing(name, *args, &block)

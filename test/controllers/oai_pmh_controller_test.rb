@@ -11,6 +11,7 @@ class OaiPmhControllerTest < ActionController::TestCase
 
   setup do
     seed_repository
+    @valid_identifier = 'oai:test.host:item-0'
   end
 
   # 2.4
@@ -80,10 +81,9 @@ class OaiPmhControllerTest < ActionController::TestCase
 
   # 4.1 GetRecord
   test 'GetRecord should return a record when correct arguments are passed' do
-    identifier = "oai:localhost:item-0"
     get :index, verb: 'GetRecord', metadataPrefix: 'oai_dc',
-        identifier: identifier
-    assert_select 'GetRecord > record > header > identifier', identifier
+        identifier: @valid_identifier
+    assert_select 'GetRecord > record > header > identifier', @valid_identifier
   end
 
   test 'GetRecord should return errors when certain arguments are missing' do
@@ -112,42 +112,38 @@ class OaiPmhControllerTest < ActionController::TestCase
   # TODO: finish this
 
   # 4.5 ListRecords
-  # TODO: finish this
+  test 'ListRecords should return a list when correct arguments are passed and results are available' do
+    get :index, verb: 'ListRecords', metadataPrefix: 'oai_dc'
+    assert_select 'ListRecords > record > header > identifier',
+                  @valid_identifier
+
+    get :index, verb: 'ListRecords', metadataPrefix: 'oai_dc',
+        from: '2012-01-01', to: '2030-01-01'
+    assert_select 'ListRecords > record > header > identifier',
+                  @valid_identifier
+  end
+
+  test 'ListRecords should return an error when correct arguments are passed and no results are available' do
+    get :index, verb: 'ListRecords', metadataPrefix: 'oai_dc',
+        from: '1985-01-01', until: '1985-01-02'
+    assert_select 'error', 'No matching records.'
+  end
+
+  test 'GetRecord should return errors when certain arguments are missing' do
+    get :index, verb: 'ListRecords'
+    assert_select 'error', 'Missing metadataPrefix argument.'
+  end
+
+  test 'ListRecords should return errors when arguments are invalid' do
+    get :index, verb: 'ListRecords', metadataPrefix: 'cats'
+    assert_select 'error', 'The metadata format identified by the '\
+    'metadataPrefix argument is not supported by this repository.'
+  end
 
   # 4.6 ListSets
   # TODO: finish this
 
   private
-
-  def delete_all_nodes
-    url = Kumquat::Application.kumquat_config[:fedora_url]
-    urls_to_delete = []
-
-    RDF::Reader.open(url) do |reader|
-      reader.each_statement do |statement|
-        if statement.predicate.to_s == 'http://www.w3.org/ns/ldp#contains'
-          unless statement.object.to_s.include?('fedora:system')
-            urls_to_delete << statement.object.to_s
-          end
-        end
-      end
-    end
-
-    http = HTTPClient.new
-    urls_to_delete.each do |url|
-      http.delete(url)
-      http.delete(url + '/fcr:tombstone')
-    end
-  end
-
-  def seed_repository
-    delete_all_nodes
-    importer = Import::Importer.new(TestFixturesImportDelegate.new)
-    importer.import
-    sleep 4 # wait for solr to catch up
-    Solr::Solr.client.commit
-    sleep 2 # wait again for solr to catch up
-  end
 
   def xsd_validate(params)
     get :index, params

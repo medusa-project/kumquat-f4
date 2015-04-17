@@ -3,6 +3,8 @@
 #
 class OaiPmhController < ApplicationController
 
+  include OaiPmhHelper
+
   protect_from_forgery with: :null_session
 
   before_action :check_pmh_enabled
@@ -112,28 +114,6 @@ class OaiPmhController < ApplicationController
         DB::Option::boolean(DB::Option::Key::OAI_PMH_ENABLED)
   end
 
-  ##
-  # @param identifier string
-  # @param host string
-  # @return Repository::Item
-  #
-  def item_for_oai_pmh_identifier(identifier, host)
-    parts = identifier.split(':')
-    web_id = parts.pop
-    return nil if parts.join(':') != "oai:#{host}"
-    Repository::Item.find_by_web_id(web_id)
-  end
-
-  ##
-  # @param item Repository::Item
-  # @param host string
-  # @return string
-  #
-  def oai_pmh_identifier_for(item, host)
-    # see section 2.4: http://www.openarchives.org/OAI/openarchivesprotocol.html
-    "oai:#{host}:#{item.web_id}"
-  end
-
   def preprocessing_for_list_identifiers_or_records
     if params[:metadataPrefix].blank?
       @errors << { code: 'badArgument',
@@ -146,11 +126,12 @@ class OaiPmhController < ApplicationController
     end
 
     @results = Repository::Item.order(kq_system_updated_at: :desc)
-    if params[:from]
-      @results = @results.where("kq_system_updated_at:[#{params[:from]} TO NOW]")
-    end
-    if params[:until]
-      @results = @results.where("kq_system_updated_at:[NOW TO #{params[:from]}]")
+
+    from = to = 'NOW'
+    from = Time.parse(params[:from]).iso8601 + 'Z' if params[:from]
+    to = Time.parse(params[:until]).iso8601 + 'Z' if params[:until]
+    if from != to
+      @results = @results.where(kq_system_updated_at: "[#{from} TO #{to}]")
     end
     if params[:set]
       @results = @results.where(kq_system_collection_key: params[:set])

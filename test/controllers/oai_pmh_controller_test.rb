@@ -21,8 +21,7 @@ class OaiPmhControllerTest < ActionController::TestCase
 
   # 2.5.1
   test 'repository should not support deleted records' do
-    get :index, verb: 'Identify'
-    assert_select 'Identify > deletedRecord', 'no'
+    # this is tested in the test of Identify (4.2)
   end
 
   # 3.1.1
@@ -103,16 +102,74 @@ class OaiPmhControllerTest < ActionController::TestCase
   end
 
   # 4.2 Identify
-  # TODO: finish this
+  test 'Identify should return correct information' do
+    get :index, verb: 'Identify'
+    assert_select 'Identify > repositoryName',
+                  DB::Option::string(DB::Option::Key::WEBSITE_NAME)
+    assert_select 'Identify > baseURL', 'http://test.host/'
+    assert_select 'Identify > protocolVersion', '2.0'
+    items = Repository::Item.order(kq_system_created_at: :desc).limit(1)
+    assert_select 'Identify > earliestDatestamp', items.first.created_at.iso8601
+    assert_select 'Identify > deletedRecord', 'no'
+    assert_select 'Identify > granularity', 'YYYY-MM-DDThh:mm:ssZ'
+    assert_select 'Identify > adminEmail',
+                  DB::Option::string(DB::Option::Key::ADMINISTRATOR_EMAIL)
+    assert_select 'Identify > description',
+                  DB::Option::string(DB::Option::Key::WEBSITE_INTRO_TEXT)
+  end
 
   # 4.3 ListIdentifiers
-  # TODO: finish this
+  test 'ListIdentifiers should return a list when correct arguments are '\
+  'passed and results are available' do
+    get :index, verb: 'ListIdentifiers', metadataPrefix: 'oai_dc'
+    assert_select 'ListIdentifiers > record > header > identifier',
+                  @valid_identifier
+
+    get :index, verb: 'ListIdentifiers', metadataPrefix: 'oai_dc',
+        from: '2012-01-01', to: '2030-01-01'
+    assert_select 'ListIdentifiers > record > header > identifier',
+                  @valid_identifier
+  end
+
+  test 'ListIdentifiers should return an error when correct arguments are '\
+  'passed and no results are available' do
+    get :index, verb: 'ListIdentifiers', metadataPrefix: 'oai_dc',
+        from: '1985-01-01', until: '1985-01-02'
+    assert_select 'error', 'No matching records.'
+  end
+
+  test 'ListIdentifiers should return errors when certain arguments are missing' do
+    get :index, verb: 'ListIdentifiers'
+    assert_select 'error', 'Missing metadataPrefix argument.'
+  end
+
+  test 'ListIdentifiers should return errors when arguments are invalid' do
+    get :index, verb: 'ListIdentifiers', metadataPrefix: 'cats'
+    assert_select 'error', 'The metadata format identified by the '\
+    'metadataPrefix argument is not supported by this repository.'
+  end
 
   # 4.4 ListMetadataFormats
-  # TODO: finish this
+  test 'ListMetadataFormats should accept an optional identifier argument' do
+    get :index, verb: 'ListMetadataFormats', metadataPrefix: 'oai_dc',
+        identifier: @valid_identifier
+    assert_select 'ListMetadataFormats > metadataFormat > metadataPrefix',
+                  'oai_dc'
+
+    get :index, verb: 'ListMetadataFormats', metadataPrefix: 'oai_dc',
+        identifier: 'bogus'
+    assert_select 'error', 'The value of the identifier argument is unknown '\
+    'or illegal in this repository.'
+  end
+
+  test 'ListMetadataFormats should return an error when there are no metadata '\
+  'formats available for a given item' do
+    # this will never happen, as all kumquat items will support oai_dc
+  end
 
   # 4.5 ListRecords
-  test 'ListRecords should return a list when correct arguments are passed and results are available' do
+  test 'ListRecords should return a list when correct arguments are passed '\
+  'and results are available' do
     get :index, verb: 'ListRecords', metadataPrefix: 'oai_dc'
     assert_select 'ListRecords > record > header > identifier',
                   @valid_identifier
@@ -123,13 +180,14 @@ class OaiPmhControllerTest < ActionController::TestCase
                   @valid_identifier
   end
 
-  test 'ListRecords should return an error when correct arguments are passed and no results are available' do
+  test 'ListRecords should return an error when correct arguments are passed '\
+  'and no results are available' do
     get :index, verb: 'ListRecords', metadataPrefix: 'oai_dc',
         from: '1985-01-01', until: '1985-01-02'
     assert_select 'error', 'No matching records.'
   end
 
-  test 'GetRecord should return errors when certain arguments are missing' do
+  test 'ListRecords should return errors when certain arguments are missing' do
     get :index, verb: 'ListRecords'
     assert_select 'error', 'Missing metadataPrefix argument.'
   end
@@ -141,7 +199,11 @@ class OaiPmhControllerTest < ActionController::TestCase
   end
 
   # 4.6 ListSets
-  # TODO: finish this
+  test 'ListSets should return a list when correct arguments are passed and '\
+  'results are available' do
+    get :index, verb: 'ListSets', metadataPrefix: 'oai_dc'
+    assert_select 'ListSets > set > setSpec', 'test'
+  end
 
   private
 

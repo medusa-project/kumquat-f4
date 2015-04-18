@@ -29,7 +29,7 @@ xml.tag!('OAI-PMH',
         xml.tag!('header') do
           xml.tag!('identifier', oai_pmh_identifier_for(item, @host))
           xml.tag!('datestamp', item.updated_at.strftime('%Y-%m-%d'))
-          xml.tag!('setSpec', @item.collection.key)
+          xml.tag!('setSpec', item.collection.key)
         end
       end
     end

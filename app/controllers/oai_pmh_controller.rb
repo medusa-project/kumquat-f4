@@ -102,7 +102,7 @@ class OaiPmhController < ApplicationController
   end
 
   def do_list_sets
-    @collections = Repository::Collection.order(:key)
+    @collections = Repository::Collection.order(:kq_system_collection_key)
     'list_sets.xml.builder'
   end
 

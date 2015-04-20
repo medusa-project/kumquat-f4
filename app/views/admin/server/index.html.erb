@@ -24,6 +24,8 @@
           <dd><%= link_to root_url, root_url %></dd>
           <dt>Control Panel URL</dt>
           <dd><%= link_to admin_root_url, admin_root_url %></dd>
+          <dt>OAI-PMH URL</dt>
+          <dd><%= link_to oai_pmh_url, oai_pmh_url(verb: 'Identify') %></dd>
           <dt>Application Root</dt>
           <dd><%= Rails.root %></dd>
         </dl>

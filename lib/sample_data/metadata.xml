@@ -265,6 +265,13 @@ Red Grange of Illinois.</kumquat:fullText>
     <dc:type>Dataset</dc:type>
   </rdf:Description>
 
+  <rdf:Description rdf:about="http://example.net/items/utf8">
+    <local:partOfCollection rdf:resource="http://example.net/collections/misc-sample"/>
+    <dc:description>An item with non-Roman metadata characters.</dc:description>
+    <dcterms:extent>0 bytes</dcterms:extent>
+    <dc:title>Non-Roman character item 的 ب</dc:title>
+  </rdf:Description>
+
   <!-- VIDEO COLLECTION -->
 
   <rdf:Description rdf:about="http://example.net/collections/video-sample">

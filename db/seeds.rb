@@ -3,21 +3,21 @@
 # (or created alongside the db with db:setup).
 
 # Options
-DB::Option.create!(key: DB::Option::Key::ADMINISTRATOR_EMAIL,
-                   value: 'admin@example.org')
-DB::Option.create!(key: DB::Option::Key::COPYRIGHT_STATEMENT,
-                   value: 'Copyright © 2015 My Great Organization. All rights reserved.')
-DB::Option.create!(key: DB::Option::Key::FACET_TERM_LIMIT, value: 10)
-DB::Option.create!(key: DB::Option::Key::OAI_PMH_ENABLED, value: true)
-DB::Option.create!(key: DB::Option::Key::ORGANIZATION_NAME,
-                   value: 'My Great Organization')
-DB::Option.create!(key: DB::Option::Key::WEBSITE_NAME,
-                   value: 'My Great Organization Digital Collections')
-DB::Option.create!(key: DB::Option::Key::WEBSITE_INTRO_TEXT,
-                   value: "Behold our great collections, which are "\
-                   "rich in Vitamin C and guaranteed gluten-free.\n\n"\
-                   "Warning: may contain citrus.")
-DB::Option.create!(key: DB::Option::Key::RESULTS_PER_PAGE, value: 30)
+Option.create!(key: Option::Key::ADMINISTRATOR_EMAIL,
+               value: 'admin@example.org')
+Option.create!(key: Option::Key::COPYRIGHT_STATEMENT,
+               value: 'Copyright © 2015 My Great Organization. All rights reserved.')
+Option.create!(key: Option::Key::FACET_TERM_LIMIT, value: 10)
+Option.create!(key: Option::Key::OAI_PMH_ENABLED, value: true)
+Option.create!(key: Option::Key::ORGANIZATION_NAME,
+               value: 'My Great Organization')
+Option.create!(key: Option::Key::WEBSITE_NAME,
+               value: 'My Great Organization Digital Collections')
+Option.create!(key: Option::Key::WEBSITE_INTRO_TEXT,
+               value: "Behold our great collections, which are "\
+               "rich in Vitamin C and guaranteed gluten-free.\n\n"\
+               "Warning: may contain citrus.")
+Option.create!(key: Option::Key::RESULTS_PER_PAGE, value: 30)
 
 # Roles
 roles = {}
@@ -393,21 +393,21 @@ if Rails.env.start_with?('uiuc')
   DB::Theme.create!(name: 'UIUC', default: true)
 
   # Overwrite some default options for internal demo purposes
-  option = DB::Option.find_by_key(DB::Option::Key::COPYRIGHT_STATEMENT)
+  option = Option.find_by_key(Option::Key::COPYRIGHT_STATEMENT)
   option.value = 'Copyright © 2015 The Board of Trustees at the '\
   'University of Illinois. All rights reserved.'
   option.save!
 
-  option = DB::Option.find_by_key(DB::Option::Key::ORGANIZATION_NAME)
+  option = Option.find_by_key(Option::Key::ORGANIZATION_NAME)
   option.value = 'University of Illinois at Urbana-Champaign Library'
   option.save!
 
-  option = DB::Option.find_by_key(DB::Option::Key::WEBSITE_NAME)
+  option = Option.find_by_key(Option::Key::WEBSITE_NAME)
   option.value = 'University of Illinois at Urbana-Champaign Library Digital '\
   'Image Collections'
   option.save!
 
-  option = DB::Option.find_by_key(DB::Option::Key::WEBSITE_INTRO_TEXT)
+  option = Option.find_by_key(Option::Key::WEBSITE_INTRO_TEXT)
   option.value = "The digital collections of the Library of the University of "\
   "Illinois at Urbana-Champaign are built from the rich special collections "\
   "of its Rare Book & Manuscript Library; Illinois History and Lincoln "\

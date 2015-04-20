@@ -43,7 +43,7 @@ module Admin
 
     def index
       @start = params[:start] ? params[:start].to_i : 0
-      @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
+      @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
       # TODO: find a way to sort by title
       @collections = Repository::Collection.order(:kq_system_collection_key).
           start(@start).limit(@limit)

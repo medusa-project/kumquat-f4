@@ -26,17 +26,15 @@ xml.tag!('OAI-PMH',
     # 4.2
     xml.tag!('Identify') do
       xml.tag!('repositoryName',
-               DB::Option::string(DB::Option::Key::WEBSITE_NAME))
+               Option::string(Option::Key::WEBSITE_NAME))
       xml.tag!('baseURL', root_url)
       xml.tag!('protocolVersion', '2.0')
       xml.tag!('earliestDatestamp', @earliest_datestamp)
       xml.tag!('deletedRecord', 'no')
       xml.tag!('granularity', 'YYYY-MM-DDThh:mm:ssZ')
-      xml.tag!('adminEmail',
-               DB::Option::string(DB::Option::Key::ADMINISTRATOR_EMAIL))
+      xml.tag!('adminEmail', Option::string(Option::Key::ADMINISTRATOR_EMAIL))
       # this one is optional
-      xml.tag!('description',
-               DB::Option::string(DB::Option::Key::WEBSITE_INTRO_TEXT))
+      xml.tag!('description', Option::string(Option::Key::WEBSITE_INTRO_TEXT))
     end
   end
 

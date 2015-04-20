@@ -105,7 +105,7 @@ class OaiPmhControllerTest < ActionController::TestCase
   test 'Identify should return correct information' do
     get :index, verb: 'Identify'
     assert_select 'Identify > repositoryName',
-                  DB::Option::string(DB::Option::Key::WEBSITE_NAME)
+                  Option::string(Option::Key::WEBSITE_NAME)
     assert_select 'Identify > baseURL', 'http://test.host/'
     assert_select 'Identify > protocolVersion', '2.0'
     items = Repository::Item.order(kq_system_created_at: :desc).limit(1)
@@ -113,9 +113,9 @@ class OaiPmhControllerTest < ActionController::TestCase
     assert_select 'Identify > deletedRecord', 'no'
     assert_select 'Identify > granularity', 'YYYY-MM-DDThh:mm:ssZ'
     assert_select 'Identify > adminEmail',
-                  DB::Option::string(DB::Option::Key::ADMINISTRATOR_EMAIL)
+                  Option::string(Option::Key::ADMINISTRATOR_EMAIL)
     assert_select 'Identify > description',
-                  DB::Option::string(DB::Option::Key::WEBSITE_INTRO_TEXT)
+                  Option::string(Option::Key::WEBSITE_INTRO_TEXT)
   end
 
   # 4.3 ListIdentifiers

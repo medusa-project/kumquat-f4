@@ -28,7 +28,7 @@ class ItemsController < WebsiteController
 
   def index
     @start = params[:start] ? params[:start].to_i : 0
-    @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
+    @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
     @items = Repository::Item.all.
         where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
         where(params[:q])

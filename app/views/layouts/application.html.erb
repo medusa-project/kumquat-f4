@@ -2,12 +2,12 @@
 <html>
   <head>
     <title><%= yield :title %> |
-      <%= DB::Option.string(DB::Option::Key::WEBSITE_NAME) %></title>
+      <%= Option.string(Option::Key::WEBSITE_NAME) %></title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="copyright"
-          content="<%= DB::Option.string(DB::Option::Key::COPYRIGHT_STATEMENT) %>">
+          content="<%= Option.string(Option::Key::COPYRIGHT_STATEMENT) %>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= csrf_meta_tags %>
 

@@ -111,7 +111,7 @@ class OaiPmhController < ApplicationController
   def check_pmh_enabled
     render text: 'This server\'s OAI-PMH endpoint is disabled.',
            status: :service_unavailable unless
-        DB::Option::boolean(DB::Option::Key::OAI_PMH_ENABLED)
+        Option::boolean(Option::Key::OAI_PMH_ENABLED)
   end
 
   def preprocessing_for_list_identifiers_or_records

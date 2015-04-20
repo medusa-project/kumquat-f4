@@ -19,6 +19,17 @@ module Import
   class AbstractDelegate
 
     ##
+    # Will be run within the import transaction before the import begins. The
+    # transaction URL is passed in.
+    #
+    # This method is optional.
+    #
+    # @param transaction_url string
+    #
+    def before_import(transaction_url)
+    end
+
+    ##
     # Should return the root container URL. Can also return nil, in which case
     # :fedora_url from the config file will be used.
     #

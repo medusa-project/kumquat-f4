@@ -16,6 +16,8 @@ module Import
       return if item_count < 1 # nothing to do
 
       ActiveKumquat::Base.transaction do |transaction_url|
+        @import_delegate.before_import(transaction_url)
+
         item_count.times do |index|
           # retrieve or create the collection
           key = @import_delegate.collection_key_of_item_at_index(index)

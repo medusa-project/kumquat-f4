@@ -13,13 +13,16 @@ module SampleData
       @root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
       @collections = [] # array of RDF::Graphs
       @items = [] # array of RDF::Graphs
+    end
 
+    def before_import(transaction_url)
       # delete any old collections that may be lying around from
       # previous/failed imports
       collections.each do |collection|
         collection.each_statement do |statement|
           if statement.predicate.to_s == "#{LOCAL_NAMESPACE}key"
-            Repository::Collection.delete_with_key(statement.object.to_s) rescue nil
+            Repository::Collection.delete_with_key(statement.object.to_s,
+                                                   transaction_url) rescue nil
           end
         end
       end

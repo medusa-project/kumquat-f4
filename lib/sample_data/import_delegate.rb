@@ -21,8 +21,7 @@ module SampleData
       collections.each do |collection|
         collection.each_statement do |statement|
           if statement.predicate.to_s == "#{LOCAL_NAMESPACE}key"
-            Repository::Collection.delete_with_key(statement.object.to_s,
-                                                   transaction_url) rescue nil
+            Repository::Collection.delete_with_key(statement.object.to_s) rescue nil
           end
         end
       end

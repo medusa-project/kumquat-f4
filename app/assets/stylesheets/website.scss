@@ -157,5 +157,5 @@ to get a grid of image tiles, flowing from left to right and downwards.
   }
 }
 
-/* TODO: use a glob (doesn't seem to work with sass-rails 5.0/5.0.1) */
+@import "../../../local/themes/**/*";
 /* @import "../../../local/themes/uiuc/assets/stylesheets/custom.scss"; */

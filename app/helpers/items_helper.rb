@@ -1,6 +1,10 @@
 module ItemsHelper
 
-  def download_button(item)
+  ##
+  # @param item Repository::Item
+  # @param options Hash with available keys: :for_admin (boolean)
+  #
+  def download_button(item, options = {})
     return nil unless item.master_bytestream
     html = '<div class="btn-group">
       <button type="button" class="btn btn-default dropdown-toggle"
@@ -24,16 +28,19 @@ module ItemsHelper
         html += '</li>'
       end
     end
+    if options[:for_admin]
+      json_ld_url = admin_repository_item_url(item, format: :jsonld)
+      rdf_xml_url = admin_repository_item_url(item, format: :rdf)
+      ttl_url = admin_repository_item_url(item, format: :ttl)
+    else
+      json_ld_url = repository_item_url(item, format: :jsonld)
+      rdf_xml_url = repository_item_url(item, format: :rdf)
+      ttl_url = repository_item_url(item, format: :ttl)
+    end
     html += '<li class="divider"></li>'
-    html += '<li>'
-    html += link_to('JSON-LD', repository_item_url(item, format: :jsonld))
-    html += '</li>'
-    html += '<li>'
-    html += link_to('RDF/XML', repository_item_url(item, format: :rdf))
-    html += '</li>'
-    html += '<li>'
-    html += link_to('Turtle', repository_item_url(item, format: :ttl))
-    html += '</li>'
+    html += '<li>' + link_to('JSON-LD', json_ld_url) + '</li>'
+    html += '<li>' + link_to('RDF/XML', rdf_xml_url) + '</li>'
+    html += '<li>' + link_to('Turtle', ttl_url) + '</li>'
     html += '</ul>'
     html += '</div>'
     raw(html)

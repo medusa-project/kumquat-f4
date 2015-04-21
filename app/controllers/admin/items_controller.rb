@@ -2,8 +2,6 @@ module Admin
 
   class ItemsController < ControlPanelController
 
-    include Admin::RDFTransformation
-
     def destroy
       @item = Repository::Item.find_by_web_id(params[:web_id])
       raise ActiveRecord::RecordNotFound unless @item
@@ -40,11 +38,12 @@ module Admin
       @item = Repository::Item.find_by_web_id(params[:web_id])
       raise ActiveRecord::RecordNotFound unless @item
 
+      uri = repository_item_url(@item)
       respond_to do |format|
         format.html { @pages = @item.parent ? @item.parent.children : @item.children}
-        format.jsonld { render text: admin_rdf_graph_for(@item).to_jsonld }
-        format.rdf { render text: admin_rdf_graph_for(@item).to_rdfxml }
-        format.ttl { render text: admin_rdf_graph_for(@item).to_ttl }
+        format.jsonld { render text: @item.admin_rdf_graph(uri).to_jsonld }
+        format.rdf { render text: @item.admin_rdf_graph(uri).to_rdfxml }
+        format.ttl { render text: @item.admin_rdf_graph(uri).to_ttl }
       end
     end
 

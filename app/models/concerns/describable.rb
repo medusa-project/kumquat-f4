@@ -3,6 +3,29 @@ module Describable
   extend ActiveSupport::Concern
   include Rails.application.routes.url_helpers
 
+  ##
+  # Returns the RDF graph of the item suitable for administrative consumption.
+  #
+  # @param subject_uri string
+  # @return RDF::Graph
+  # @see public_rdf_graph
+  # @see rdf_graph
+  #
+  def admin_rdf_graph(subject_uri)
+    graph = RDF::Graph.new
+    self.rdf_graph.each_statement do |statement|
+      if !statement.predicate.to_s.start_with?('http://fedora.info/definitions') and
+          !statement.predicate.to_s.start_with?('http://www.w3.org/1999/02/22-rdf-syntax-ns') and
+          !statement.predicate.to_s.start_with?('http://www.w3.org/2000/01/rdf-schema') and
+          !statement.predicate.to_s.start_with?('http://www.w3.org/ns/ldp')
+        st = statement.dup
+        st.subject = RDF::URI(subject_uri)
+        graph << st
+      end
+    end
+    graph
+  end
+
   def description
     self.rdf_graph.each_statement do |statement|
       return statement.object.to_s if
@@ -17,6 +40,7 @@ module Describable
   #
   # @param subject_uri string
   # @return RDF::Graph
+  # @see admin_rdf_graph
   # @see rdf_graph
   #
   def public_rdf_graph(subject_uri)

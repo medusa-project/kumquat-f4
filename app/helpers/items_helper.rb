@@ -108,8 +108,10 @@ module ItemsHelper
   # @param items ActiveKumquat::Entity
   # @param start integer
   # @param options Hash with available keys:
-  # :show_remove_from_favorites_buttons, :show_add_to_favorites_buttons,
-  # :show_collections, :show_description, :thumbnail_size
+  # :link_to_admin (boolean), :show_remove_from_favorites_buttons (boolean),
+  # :show_add_to_favorites_buttons (boolean),
+  # :show_collections (boolean), :show_description (boolean),
+  # :thumbnail_size (integer)
   #
   def items_as_list(items, start, options = {})
     options[:show_description] = true unless
@@ -117,16 +119,18 @@ module ItemsHelper
 
     html = "<ol start=\"#{start + 1}\">"
     items.each do |item|
+      link_target = options[:link_to_admin] ?
+          admin_repository_item_path(item) : repository_item_path(item)
       html += '<li>'\
         '<div>'
       if item.kind_of?(Repository::Item)
-        html += link_to(item, class: 'kq-thumbnail-link') do
+        html += link_to(link_target, class: 'kq-thumbnail-link') do
           thumbnail_tag(item,
                         options[:thumbnail_size] ? options[:thumbnail_size] : 256)
         end
       end
       html += '<span class="kq-title">'
-      html += link_to(item.title, item)
+      html += link_to(item.title, link_target)
       if options[:show_remove_from_favorites_buttons]
         html += ' <button class="btn btn-xs btn-danger ' +
             'kq-remove-from-favorites" data-web-id="' + item.web_id + '">'
@@ -169,21 +173,24 @@ module ItemsHelper
 
   ##
   # @param item Repository::Item
+  # @param options Hash with available keys: :link_to_admin (boolean)
   #
-  def pages_as_list(item)
+  def pages_as_list(item, options = {})
     return nil unless item.children.any? or item.parent
     items = item.children.any? ? item.children : item.parent.children
     html = '<ol>'
     items.each do |child|
+      link_target = options[:link_to_admin] ?
+          admin_repository_item_path(child) : repository_item_path(child)
       html += '<li><div>'
       if item == child
         html += thumbnail_tag(child, 256)
-        html += "<strong class=\"kq-text\">#{truncate(child.title, length: 40)}</strong>"
+        html += "<strong class=\"kq-text kq-title\">#{truncate(child.title, length: 40)}</strong>"
       else
-        html += link_to(child) do
+        html += link_to(link_target) do
           thumbnail_tag(child, 256)
         end
-        html += link_to(truncate(child.title, length: 40), child)
+        html += link_to(truncate(child.title, length: 40), link_target, class: 'kq-title')
       end
       html += '</div></li>'
     end

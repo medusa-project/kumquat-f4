@@ -1,0 +1,34 @@
+<% provide :title, 'Items' %>
+<% provide :body_id, 'items_index' %>
+<% provide :active_nav, 'items' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li class="active">Items</li>
+</ol>
+<!--
+<div class="btn-group pull-right">
+  <%= link_to new_admin_repository_item_path, class: 'btn btn-default' do %>
+    <i class="fa fa-cube"></i> New Item
+  <% end %>
+</div>
+-->
+<h1>Items <small><%= @items.total_length %> total</small></h1>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
+    <%= @items.total_length %> items
+  </div>
+</div>
+<div class="kq-list-results">
+  <%= items_as_list(@items, @start, link_to_admin: true,
+                    show_collections: true,
+                    show_add_to_favorites_buttons: false,
+                    show_description: false,
+                    show_remove_from_favorites_buttons: false) %>
+</div>
+
+<div class="text-center">
+  <%= paginate(@items, @limit, @current_page) %>
+</div>

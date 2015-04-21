@@ -53,11 +53,12 @@ class ItemsController < WebsiteController
     @item = Repository::Item.find_by_web_id(params[:web_id])
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
 
+    uri = repository_item_url(@item)
     respond_to do |format|
       format.html {}
-      format.jsonld { render text: @item.rdf_graph.to_jsonld }
-      format.rdf { render text: @item.rdf_graph.to_rdfxml }
-      format.ttl { render text: @item.rdf_graph.to_ttl }
+      format.jsonld { render text: @item.public_rdf_graph(uri).to_jsonld }
+      format.rdf { render text: @item.public_rdf_graph(uri).to_rdfxml }
+      format.ttl { render text: @item.public_rdf_graph(uri).to_ttl }
     end
   end
 

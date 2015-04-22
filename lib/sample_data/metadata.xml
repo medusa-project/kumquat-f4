@@ -267,9 +267,17 @@ Red Grange of Illinois.</kumquat:fullText>
 
   <rdf:Description rdf:about="http://example.net/items/utf8">
     <local:partOfCollection rdf:resource="http://example.net/collections/misc-sample"/>
-    <dc:description>An item with non-Roman metadata characters.</dc:description>
+    <dc:description>
+      An item with non-Roman metadata characters. 🍊🍉
+      And here are some embedded URLs: http://example.org/something
+      http://example.org:8080/ https://example.org/something/else.html
+      ftp://example.org/something sftp://example.org/something
+      mailto:user@example.org gopher://example.org/
+      file:///dev/null news://example.org/ feed://example.org/feed.rss
+      foo://example.org/
+    </dc:description>
     <dcterms:extent>0 bytes</dcterms:extent>
-    <dc:title>Non-Roman character item 的 ب</dc:title>
+    <dc:title>Non-Roman character item 的 ب 🎵</dc:title>
   </rdf:Description>
 
   <!-- VIDEO COLLECTION -->

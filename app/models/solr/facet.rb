@@ -6,6 +6,7 @@ module Solr
 
       attr_accessor :count
       attr_accessor :facet
+      attr_accessor :label
       attr_accessor :name
 
       def initialize
@@ -26,7 +27,7 @@ module Solr
       end
 
       def facet_query
-        "#{self.facet.field.chomp('_facet')}:\"#{self.name}\""
+        "#{self.facet.field}:\"#{self.name}\""
       end
 
       ##

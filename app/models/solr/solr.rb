@@ -437,6 +437,10 @@ module Solr
 
             # Create a string version of various fields for faceting
             {
+                source: 'kq_system_collection_key',
+                dest: 'kq_collection_facet'
+            },
+            {
                 source: 'dc_contributor',
                 dest: 'kq_contributor_facet'
             },
@@ -1547,10 +1551,10 @@ module Solr
     COLLECTION_KEY_KEY = :kq_system_collection_key
     CREATED_AT_KEY = :kq_system_created_at
     # each of these requires a localized label (solr_field_*)
-    FACET_FIELDS = [:kq_contributor_facet, :kq_coverage_facet,
-                    :kq_creator_facet, :kq_date_facet, :kq_format_facet,
-                    :kq_language_facet, :kq_publisher_facet, :kq_source_facet,
-                    :kq_subject_facet, :kq_type_facet]
+    FACET_FIELDS = [:kq_collection_facet, :kq_contributor_facet,
+                    :kq_coverage_facet, :kq_creator_facet, :kq_date_facet,
+                    :kq_format_facet, :kq_language_facet, :kq_publisher_facet,
+                    :kq_source_facet, :kq_subject_facet, :kq_type_facet]
     FULL_TEXT_KEY = :kq_system_full_text
     HEIGHT_KEY = :kq_system_height
     MEDIA_TYPE_KEY = :kq_system_media_type

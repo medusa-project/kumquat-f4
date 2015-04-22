@@ -192,6 +192,7 @@ module ActiveKumquat
           next if terms[i] == 'http://fedora.info/definitions/v4/repository#jcr/xml'
           term = Solr::Facet::Term.new
           term.name = terms[i]
+          term.label = terms[i]
           term.count = terms[i + 1]
           term.facet = facet
           facet.terms << term

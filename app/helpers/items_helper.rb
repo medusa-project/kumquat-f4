@@ -53,9 +53,9 @@ module ItemsHelper
     term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
     panels = ''
     items.facet_fields.each do |facet|
-      panel = '<div class="panel panel-default">'
       next unless facet.terms.select{ |t| t.count > 0 }.any?
-      panel += "<div class=\"panel-heading\">
+      panel = "<div class=\"panel panel-default\">
+      <div class=\"panel-heading\">
         <h3 class=\"panel-title\">#{facet.label}</h3>
       </div>
       <div class=\"panel-body\">
@@ -63,19 +63,25 @@ module ItemsHelper
       facet.terms.each_with_index do |term, i|
         break if i >= term_limit
         next if term.count < 1
-        checked = nil
-        if params[:fq] and params[:fq].include?(term.facet_query)
-          checked = 'checked'
-        end
+        checked = (params[:fq] and params[:fq].include?(term.facet_query)) ?
+            'checked' : nil
         checked_params = term.removed_from_params(params.deep_dup)
         unchecked_params = term.added_to_params(params.deep_dup)
+
+        if facet.field == 'kq_collection_facet'
+          collection = Repository::Collection.find_by_key(term.name)
+          term_label = collection.title
+        else
+          term_label = term.label
+        end
+
         panel += "<li class=\"kq-term\">"
         panel += "<div class=\"checkbox\">"
         panel += "<label>"
         panel += "<input type=\"checkbox\" name=\"psap-facet-term\" #{checked} "\
         "data-checked-href=\"#{url_for(unchecked_params)}\" "\
         "data-unchecked-href=\"#{url_for(checked_params)}\">"
-        panel += "<span class=\"kq-term-name\">#{term.name}</span> "
+        panel += "<span class=\"kq-term-name\">#{term_label}</span> "
         panel += "<span class=\"kq-count badge\">#{term.count}</span>"
         panel += "</label>"
         panel += "</div>"

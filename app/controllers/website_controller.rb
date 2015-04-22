@@ -1,6 +1,6 @@
 class WebsiteController < ApplicationController
 
-  before_filter :prepend_view_paths
+  after_action :prepend_view_paths
 
   def setup
     super
@@ -17,24 +17,26 @@ class WebsiteController < ApplicationController
   # /local/[theme name]/views.
   #
   def prepend_view_paths
-    key = 'default'
-    if params[:key]
-      key = params[:key]
-    elsif params[:repository_collection_key]
-      key = params[:repository_collection_key]
-    elsif params[:web_id]
-      item = Repository::Item.find_by_web_id(params[:web_id])
-      raise ActiveRecord::RecordNotFound unless item
-      key = item.collection.key
-    end
+    unless @skip_after_actions
+      key = 'default'
+      if params[:key]
+        key = params[:key]
+      elsif params[:repository_collection_key]
+        key = params[:repository_collection_key]
+      elsif params[:web_id]
+        item = Repository::Item.find_by_web_id(params[:web_id])
+        raise ActiveRecord::RecordNotFound unless item
+        key = item.collection.key
+      end
 
-    theme = nil
-    collection = DB::Collection.find_by_key(key)
-    theme = collection.theme if collection
-    theme ||= DB::Theme.default
-    pathname = nil
-    pathname = File.join(Rails.root, theme.pathname, 'views') if theme
-    prepend_view_path(pathname) if pathname
+      theme = nil
+      collection = DB::Collection.find_by_key(key)
+      theme = collection.theme if collection
+      theme ||= DB::Theme.default
+      pathname = nil
+      pathname = File.join(Rails.root, theme.pathname, 'views') if theme
+      prepend_view_path(pathname) if pathname
+    end
   end
 
 end

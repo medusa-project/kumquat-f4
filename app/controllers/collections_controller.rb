@@ -17,7 +17,13 @@ class CollectionsController < WebsiteController
   end
 
   def show
-    @collection = Repository::Collection.find_by_key(params[:key])
+    begin
+      @collection = Repository::Collection.find_by_key(params[:key])
+    rescue HTTPClient::BadResponseError => e
+      render text: '410 Gone', status: 410 if e.res.code == 410
+      @skip_after_actions = true
+      return
+    end
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
 
     # Get a random image item to show. Limit to certain common media types to

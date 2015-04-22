@@ -50,8 +50,14 @@ class ItemsController < WebsiteController
   end
 
   def show
-    @item = Repository::Item.find_by_web_id(params[:web_id])
-    raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
+    begin
+      @item = Repository::Item.find_by_web_id(params[:web_id])
+    rescue HTTPClient::BadResponseError => e
+      render text: '410 Gone', status: 410 if e.res.code == 410
+      @skip_after_actions = true
+      return
+    end
+    raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     uri = repository_item_url(@item)
     respond_to do |format|

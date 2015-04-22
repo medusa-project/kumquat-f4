@@ -158,25 +158,39 @@ module ActiveKumquat
           @solr_request = solr_response.request
           @results.facet_fields = solr_facet_fields_to_objects(
               solr_response['facet_counts']['facet_fields']) if @facet
-          solr_response['response']['docs'].each do |doc|
-            entity = @caller.new(solr_json: doc, repository_url: doc['id'])
-            url = doc['id']
-            url = transactional_url(url) if self.transaction_url.present?
-            f4_response = @@http.get(url, nil,
-                                     { 'Accept' => 'application/n-triples' })
-            graph = RDF::Graph.new
-            graph.from_ntriples(f4_response.body)
-            entity.populate_from_graph(graph)
-            entity.loaded = true
-            @results << entity
-          end
           @results.total_length = solr_response['response']['numFound'].to_i
+          solr_response['response']['docs'].each do |doc|
+            begin
+              entity = @caller.new(solr_json: doc, repository_url: doc['id'])
+              url = doc['id']
+              url = transactional_url(url) if self.transaction_url.present?
+              f4_response = @@http.get(url, nil,
+                                       { 'Accept' => 'application/n-triples' })
+              graph = RDF::Graph.new
+              graph.from_ntriples(f4_response.body)
+              entity.populate_from_graph(graph)
+              entity.loaded = true
+              @results << entity
+            rescue HTTPClient::BadResponseError => e
+              if e.res.code == 410
+                # This probably means that the item was deleted from the
+                # repository and the delete did not propagate to Solr for some
+                # reason. There is nothing we can do, so swallow it and log it
+                # to avoid disrupting the user experience.
+                Rails.logger.error("Item present in Solr result is missing from "\
+                "repository: #{e.message}")
+                @results.total_length -= 1
+              else
+                raise e
+              end
+            rescue HTTPClient::KeepAliveDisconnected => e
+              raise 'Unable to connect to Fedora. Check that it is running and '\
+            'that its URL is set correctly in the config file.'
+            end
+          end
           @loaded = true
         rescue Errno::ECONNREFUSED => e
           raise 'Unable to connect to Solr. Check that it is running and '\
-          'that its URL is set correctly in the config file.'
-        rescue HTTPClient::KeepAliveDisconnected => e
-          raise 'Unable to connect to Fedora. Check that it is running and '\
           'that its URL is set correctly in the config file.'
         end
       end

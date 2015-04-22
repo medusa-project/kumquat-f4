@@ -384,10 +384,10 @@ module ItemsHelper
             value += components.map{ |c| "<li>#{c.strip}</li>" }.join
             value += '</ul>'
           else
-            value = object.strip
+            value = auto_link(object.strip)
           end
         else
-          value = object.strip
+          value = auto_link(object.strip)
         end
         dl += "<dd>#{value}</dd>"
       end

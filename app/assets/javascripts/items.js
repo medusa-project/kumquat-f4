@@ -55,6 +55,14 @@ var KQItemView = function() {
 var KQItemsView = function() {
 
     this.init = function() {
+        $('[name=psap-facet-term]').on('change', function() {
+            if ($(this).prop('checked')) {
+                window.location = $(this).data('checked-href');
+            } else {
+                window.location = $(this).data('unchecked-href');
+            }
+        });
+
         $(document).on(Kumquat.Events.ITEM_ADDED_TO_FAVORITES, function(event, item) {
             $('.kq-results button.kq-remove-from-favorites[data-web-id="' + item.web_id + '"]').show();
             $('.kq-results button.kq-add-to-favorites[data-web-id="' + item.web_id + '"]').hide();

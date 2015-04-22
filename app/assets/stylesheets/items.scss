@@ -5,11 +5,8 @@
 body#items_index div#kq-page-content {
   .kq-facets {
     overflow-x: scroll;
-    .kq-clear {
-      color: red;
-    }
-    .kq-selected-term {
-      font-weight: bold;
+    div.checkbox {
+      margin:0.2em 0em;
     }
     .kq-count.badge {
       background-color: #c0c0c0;
@@ -21,8 +18,9 @@ body#items_index div#kq-page-content {
     .panel-body {
       overflow-x: scroll;
       ul {
+        list-style:none;
         margin-bottom:0em;
-        margin-left: 1em;
+        margin-left: 0em;
         padding-left: 0px;
       }
     }

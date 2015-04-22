@@ -63,22 +63,23 @@ module ItemsHelper
       facet.terms.each_with_index do |term, i|
         break if i >= term_limit
         next if term.count < 1
-        term_params = params.deep_dup
-        clear_link = nil
-        if term_params[:fq] and term_params[:fq].include?(term.facet_query)
-          term_params = term.removed_from_params(term_params)
-          clear_link = link_to(term_params, class: 'kq-clear') do
-            content_tag(:i, nil, class: 'fa fa-remove')
-          end
-          term_html = "<span class=\"kq-selected-term\">#{term.name}</span>"
-        else
-          term_html = link_to(term.name, term.added_to_params(term_params))
+        checked = nil
+        if params[:fq] and params[:fq].include?(term.facet_query)
+          checked = 'checked'
         end
-        panel += "<li class=\"kq-term\">
-          <span class=\"kq-term-name\">#{term_html}</span>
-          <span class=\"kq-count badge\">#{term.count}</span>
-          #{clear_link}
-        </li>"
+        checked_params = term.removed_from_params(params.deep_dup)
+        unchecked_params = term.added_to_params(params.deep_dup)
+        panel += "<li class=\"kq-term\">"
+        panel += "<div class=\"checkbox\">"
+        panel += "<label>"
+        panel += "<input type=\"checkbox\" name=\"psap-facet-term\" #{checked} "\
+        "data-checked-href=\"#{url_for(unchecked_params)}\" "\
+        "data-unchecked-href=\"#{url_for(checked_params)}\">"
+        panel += "<span class=\"kq-term-name\">#{term.name}</span> "
+        panel += "<span class=\"kq-count badge\">#{term.count}</span>"
+        panel += "</label>"
+        panel += "</div>"
+        panel += "</li>"
       end
       panels += panel + '</ul></div></div>'
     end
@@ -409,7 +410,8 @@ module ItemsHelper
     elsif item.is_text?
       # We don't provide a viewer for text as this is handled separately in
       # show-item view by reading the item's full_text property. Full text and
-      # a viewer are not mutually exclusive.
+      # a viewer are not mutually exclusive -- an image may have full text, an
+      # audio clip may have a transcript, etc.
     elsif item.is_video?
       return video_player_for(item)
     end

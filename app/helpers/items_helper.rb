@@ -92,6 +92,10 @@ module ItemsHelper
     raw(panels)
   end
 
+  ##
+  # @param describable Describable
+  # @return string HTML <i> tag
+  #
   def icon_for(describable)
     icon = 'fa-cube'
     if describable.kind_of?(Repository::Item)
@@ -106,7 +110,8 @@ module ItemsHelper
       elsif describable.children.any?
         icon = 'fa-cubes'
       end
-    elsif describable.kind_of?(Repository::Collection)
+    elsif describable.kind_of?(Repository::Collection) or
+        describable == Repository::Collection
       icon = 'fa-folder-open-o'
     end
     raw("<i class=\"fa #{icon}\"></i>")
@@ -132,42 +137,52 @@ module ItemsHelper
         options.keys.include?(:show_description)
 
     html = "<ol start=\"#{start + 1}\">"
-    items.each do |item|
+    items.each do |entity|
       link_target = options[:link_to_admin] ?
-          admin_repository_item_path(item) : polymorphic_path(item)
+          admin_repository_item_path(entity) : polymorphic_path(entity)
       html += '<li>'\
         '<div>'
-      if item.kind_of?(Repository::Item)
-        html += link_to(link_target, class: 'kq-thumbnail-link') do
-          thumbnail_tag(item,
-                        options[:thumbnail_size] ? options[:thumbnail_size] : 256)
+      html += link_to(link_target, class: 'kq-thumbnail-link') do
+        if entity.kind_of?(Repository::Collection)
+          media_types = "(#{Repository::Bytestream::types_with_image_derivatives.join(' OR ')})"
+          item = Repository::Item.
+              where(Solr::Solr::COLLECTION_KEY_KEY => entity.key).
+              where(Solr::Solr::MEDIA_TYPE_KEY => media_types).
+              facet(false).order("random_#{SecureRandom.hex}").first ||
+              Repository::Collection
+        else
+          item = entity
         end
+        thumbnail_tag(item,
+                      options[:thumbnail_size] ? options[:thumbnail_size] : 256)
       end
       html += '<span class="kq-title">'
-      html += link_to(item.title, link_target)
-      if options[:show_remove_from_favorites_buttons]
+      html += link_to(entity.title, link_target)
+      if options[:show_remove_from_favorites_buttons] and
+          entity.kind_of?(Repository::Item)
         html += ' <button class="btn btn-xs btn-danger ' +
-            'kq-remove-from-favorites" data-web-id="' + item.web_id + '">'
+            'kq-remove-from-favorites" data-web-id="' + entity.web_id + '">'
         html += '<i class="fa fa-heart"></i> Remove'
         html += '</button>'
       end
-      if options[:show_add_to_favorites_buttons]
+      if options[:show_add_to_favorites_buttons] and
+          entity.kind_of?(Repository::Item)
         html += ' <button class="btn btn-default btn-xs ' +
-            'kq-add-to-favorites" data-web-id="' + item.web_id + '">'
+            'kq-add-to-favorites" data-web-id="' + entity.web_id + '">'
         html += '<i class="fa fa-heart-o"></i>'
         html += '</button>'
       end
       html += '</span>'
-      if options[:show_collections]
+      if options[:show_collections] and entity.kind_of?(Repository::Item)
         html += '<br>'
-        html += link_to(item.collection) do
-          raw("#{self.icon_for(item.collection)} #{item.collection.title}")
+        html += link_to(entity.collection) do
+          raw("#{self.icon_for(entity.collection)} #{entity.collection.title}")
         end
       end
       if options[:show_description]
         html += '<br>'
         html += '<span class="kq-description">'
-        html += truncate(item.description.to_s, length: 400)
+        html += truncate(entity.description.to_s, length: 400)
         html += '</span>'
       end
       html += '</div>'
@@ -317,17 +332,21 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
+  # @param entity Repository::Item or some other object suitable for passing to
+  # icon_for
   # @param size integer One of DerivativeManagement::STATIC_IMAGE_SIZES
   #
-  def thumbnail_tag(item, size)
-    return unless item
+  def thumbnail_tag(entity, size)
     html = "<div class=\"kq-thumbnail\">"
-    thumb_url = item.derivative_image_url(size)
-    if thumb_url
-      html += image_tag(thumb_url, alt: 'Thumbnail image')
+    if entity.kind_of?(Repository::Item)
+      thumb_url = entity.derivative_image_url(size)
+      if thumb_url
+        html += image_tag(thumb_url, alt: 'Thumbnail image')
+      else
+        html += self.icon_for(entity)
+      end
     else
-      html += self.icon_for(item)
+      html += self.icon_for(entity)
     end
     html += '</div>'
     raw(html)

@@ -37,14 +37,23 @@ module Repository
 
     ##
     # Returns a list of image media types for which we can presume to be able
-    # to generate derivatives.
+    # to generate derivatives. This will be a subset of
+    # types_with_image_derivatives.
     #
     def self.derivable_image_types
-      types = []
-      ['jp2', 'jpg', 'png', 'tif'].each do |ext|
-        types += MIME::Types.of(ext).map{ |type| type.to_s }
+      %w(gif jp2 jpg png tif).map do |ext| # TODO: there are more than this
+        MIME::Types.of(ext).map{ |type| type.to_s }
       end
-      types
+    end
+
+    ##
+    # Returns a list of media types for which we can expect that image
+    # derivatives will be available. This will be a superset of
+    # derivable_image_types.
+    #
+    def self.types_with_image_derivatives
+      # TODO: there are more than this
+      self.derivable_image_types + %w(video/mpeg video/quicktime video/mp4)
     end
 
     def initialize(params = {})

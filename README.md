@@ -221,6 +221,10 @@ Edit these as necessary.
 
   `$ bundle exec rake kumquat:update_solr_schema`
 
-3. `$ rails server`
+3. Import the sample collections:
+
+  `$ bundle exec rake kumquat:sample_import`
+
+4. `$ rails server`
 
 Go to [http://localhost:3000/](http://localhost:3000/) in a web browser.

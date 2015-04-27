@@ -47,17 +47,44 @@ the correct Solr core name, and the `kumquat` index transform:
 
     <camelContext xmlns="http://camel.apache.org/schema/spring"
                   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-        <route id="fedora-to-solr">
-            <from uri="activemq:fedora_indexing"/>
+
+        <route id="solr-router">
+            <from uri="activemq:topic:fedora"/>
+            <choice>
+                <when>
+                    <simple>${header[org.fcrepo.jms.eventType]} == 'http://fedora.info/definitions/v4/repository#NODE_REMOVED'</simple>
+                    <to uri="direct:remove"/>
+                </when>
+                <otherwise>
+                    <to uri="direct:update"/>
+                </otherwise>
+            </choice>
+        </route>
+
+        <route id="solr-updater">
+            <from uri="direct:update"/>
             <to uri="fcrepo:localhost:8080/fedora/rest"/>
             <filter>
-                <xpath>
-                    /rdf:RDF/rdf:Description/rdf:type[@rdf:resource='http://fedora.info/definitions/v4/indexing#Indexable']
-                </xpath>
+                <xpath>/rdf:RDF/rdf:Description/rdf:type[@rdf:resource='http://fedora.info/definitions/v4/indexing#Indexable']</xpath>
                 <to uri="fcrepo:localhost:8080/fedora/rest?transform=kumquat"/>
                 <to uri="http4:localhost:8983/solr/kumquat/update"/>
             </filter>
         </route>
+
+        <route id="solr-remover">
+            <from uri="direct:remove"/>
+            <transform>
+                <simple>{"delete":{"id":"${header[org.fcrepo.jms.baseURL]}${header[org.fcrepo.jms.identifier]}"}}</simple>
+            </transform>
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <to uri="http4:localhost:8983/solr/kumquat/update"/>
+        </route>
+
     </camelContext>
 
 ### Loris

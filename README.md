@@ -28,7 +28,7 @@ the output of `$ identify -list format`.
 
 ### PostgreSQL
 
-TODO: write this
+`$ brew install postgresql`
 
 ### Fedora
 

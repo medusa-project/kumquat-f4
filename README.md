@@ -159,7 +159,7 @@ website).
 
 #### Check out the code
 
-`$ git clone https://YOUR_NETID@code.library.illinois.edu/scm/kq/kumquat.git`
+`$ git clone https://github.com/medusa-project/kumquat`
 
 `$ cd kumquat`
 

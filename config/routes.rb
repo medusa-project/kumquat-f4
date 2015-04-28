@@ -89,6 +89,7 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
     match '/settings', to: 'settings#index', via: 'get'
     match '/settings', to: 'settings#update', via: 'patch'
+    match '/tasks', to: 'tasks#index', via: 'get'
     resources :db_themes, controller: 'themes', path: 'themes', except: :show
     resources :uri_prefixes, path: 'uri-prefixes', only: [:index, :create]
     resources :users, param: :username do

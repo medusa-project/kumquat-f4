@@ -63,7 +63,7 @@ module Admin
           params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      PublishCollectionJob.perform_later(@collection.id)
+      PublishCollectionJob.perform_later(@collection)
 
       flash['success'] = "Collection \"#{@collection.title}\" queued for "\
       "publishing."
@@ -86,7 +86,7 @@ module Admin
           params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      UnpublishCollectionJob.perform_later(@collection.id)
+      UnpublishCollectionJob.perform_later(@collection)
 
       flash['success'] = "Collection \"#{@collection.title}\" queued for "\
       "unpublishing."

@@ -11,6 +11,7 @@ module ActiveKumquat
     extend ActiveModel::Callbacks
     include ActiveModel::Model
     include Describable
+    include GlobalID::Identification
     include Transactions
 
     define_model_callbacks :create, :delete, :load, :save, :update,

@@ -1,9 +1,10 @@
-class UnpublishCollectionJob < ActiveJob::Base
+class UnpublishCollectionJob < Job
   queue_as :default
 
   def perform(*args)
-    collection = Repository::Collection.find(args[0])
-    command = UnpublishCollectionCommand.new(collection)
+    self.task.status_text = "Unpublish collection \"#{args[0].title}\""
+    self.task.save!
+    command = UnpublishCollectionCommand.new(args[0])
     executor = CommandExecutor.new
     executor.execute(command)
   end

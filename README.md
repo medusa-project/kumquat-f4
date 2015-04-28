@@ -184,6 +184,12 @@ website).
 
 `$ gem install bundler`
 
+#### Install beanstalkd
+
+`$ brew install beanstalkd`
+
+Follow the instructions in the output for starting beanstalkd.
+
 #### Check out the code
 
 `$ git clone https://github.com/medusa-project/kumquat`
@@ -237,6 +243,13 @@ Edit these as necessary.
 `$ apachectl stop`
 
 `$ apachectl start`
+
+### Backburner
+
+Backburner is used to execute background jobs, which are typically invoked in
+the Control Panel.
+
+`$ bundle exec rake backburner:work`
 
 ### Kumquat
 

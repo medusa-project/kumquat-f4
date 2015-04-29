@@ -24,7 +24,7 @@ the output of `$ identify -list format`.
 
 ### ffmpeg
 
-`$ brew install ffmpeg`
+`$ brew install ffmpeg --with-fdk-aac --with-libvpx --with-libvorbis`
 
 ### PostgreSQL
 

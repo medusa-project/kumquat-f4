@@ -24,7 +24,8 @@
 <% if @items.total_length > 0 %>
   <div class="row">
     <div class="col-sm-3 kq-facets kq-panel-facets">
-      <%= facets_as_panels(@items) %>
+      <%= facets_as_panels(@items,
+                           show_collection_facet: session[:browse_context] != ItemsController::BrowseContext::BROWSING_COLLECTION) %>
     </div>
 
     <div class="col-sm-9 kq-results">

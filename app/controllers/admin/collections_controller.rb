@@ -63,11 +63,16 @@ module Admin
           params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      PublishCollectionJob.perform_later(@collection)
-
-      flash['success'] = "Collection \"#{@collection.title}\" queued for "\
-      "publishing."
-      redirect_to :back
+      command = PublishCollectionCommand.new(@collection)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Collection \"#{@collection.title}\" published."
+      ensure
+        redirect_to :back
+      end
     end
 
     def show
@@ -86,11 +91,16 @@ module Admin
           params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound unless @collection
 
-      UnpublishCollectionJob.perform_later(@collection)
-
-      flash['success'] = "Collection \"#{@collection.title}\" queued for "\
-      "unpublishing."
-      redirect_to :back
+      command = UnpublishCollectionCommand.new(@collection)
+      begin
+        executor.execute(command)
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Collection \"#{@collection.title}\" unpublished."
+      ensure
+        redirect_to :back
+      end
     end
 
     def update

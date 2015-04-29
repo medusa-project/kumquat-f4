@@ -23,13 +23,14 @@ class User < ActiveRecord::Base
   end
 
   def has_permission?(key)
+    return true if self.is_admin?
     self.roles_having_permission(key).any?
   end
 
   alias_method :can?, :has_permission?
 
   def is_admin?
-    self.roles.where(key: 'admin').any?
+    self.roles.where(key: 'admin').limit(1).any?
   end
 
   def roles_having_permission(key)

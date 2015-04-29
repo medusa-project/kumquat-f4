@@ -1,6 +1,25 @@
 ##
-# A representation of an asynchronous task (typically a Job) for display to
-# an end user.
+# A representation of an task (typically but not necessarily a Job) for
+# display to an end user.
+#
+# To use:
+#     task = Task.create!(name: 'Do Something',
+#                         status: Task::Status::RUNNING,
+#                         status_text: 'Doing something')
+#     # do stuff...
+#
+#     task.percent_complete = 0.3
+#     task.save!
+#
+#     # do some more stuff...
+#
+#     task.status_text = 'Wrapping up'
+#     task.percent_complete = 0.9
+#     task.save!
+#
+#     # done
+#     task.status = Task::Status::SUCCESS
+#     task.save!
 #
 class Task < ActiveRecord::Base
 

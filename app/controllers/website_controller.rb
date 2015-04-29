@@ -1,6 +1,6 @@
 class WebsiteController < ApplicationController
 
-  after_action :prepend_view_paths
+  before_action :prepend_view_paths
 
   def setup
     super
@@ -13,8 +13,8 @@ class WebsiteController < ApplicationController
   private
 
   ##
-  # Allow users to override view templates by adding them to
-  # /local/[theme name]/views.
+  # Allow view templates to be overridden by adding custom templates to
+  # /local/themes/[theme name]/views.
   #
   def prepend_view_paths
     unless @skip_after_actions

@@ -1,4 +1,24 @@
-body#items_index div#kq-page-content {
+body#items_index {
+  .kq-search {
+    .panel-body {
+      max-height:50em;
+      overflow-y: scroll;
+    }
+    .kq-triples .form-group:first-child .kq-remove-field {
+      display:none;
+    }
+    .kq-triples select {
+      max-width:50%;
+    }
+    .kq-collections {
+      ol {
+        list-style:none;
+        margin-left:0px;
+        padding-left:0px;
+      }
+    }
+  }
+
   .kq-list-results ol {
     margin-left:0px;
     padding-left:0px;

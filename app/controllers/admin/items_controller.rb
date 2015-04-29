@@ -32,6 +32,40 @@ module Admin
       @items = @items.start(@start).limit(@limit)
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @num_results_shown = [@limit, @items.total_length].min
+
+      # these are used by the search form
+      @predicates_for_select = DB::RDFPredicate.order(:uri).
+          map{ |p| [ p.uri, p.solr_field ] }.uniq
+      @predicates_for_select.unshift([ 'Any Triple', 'kq_searchall' ])
+
+      @collections = Repository::Collection.all
+    end
+
+    ##
+    # Responds to POST /search. Translates the input from the advanced search
+    # form into a query string compatible with index(), and 302-redirects to
+    # it.
+    #
+    def search
+      where_clauses = []
+
+      # fields
+      if params[:triples] and params[:triples].any?
+        params[:triples].each_with_index do |field, index|
+          if params[:terms].length > index and !params[:terms][index].blank?
+            where_clauses << "#{field}:#{params[:terms][index]}"
+          end
+        end
+      end
+
+      # collections
+      keys = []
+      keys = params[:keys].select{ |k| !k.blank? } if params[:keys].any?
+      if keys.any? and keys.length < Repository::Collection.all.length
+        where_clauses << "#{Solr::Solr::COLLECTION_KEY_KEY}:(#{keys.join(' ')})"
+      end
+
+      redirect_to admin_repository_items_path(q: where_clauses.join(' AND '))
     end
 
     def show

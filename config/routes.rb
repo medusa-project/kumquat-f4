@@ -78,6 +78,8 @@ Rails.application.routes.draw do
     end
     resources :collections, param: :key, as: :db_collections
     resources :items, param: :web_id, as: :repository_items, concerns: :publishable
+    match '/items/search', to: 'items#search', via: 'post',
+          as: 'repository_items_search'
     resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'

@@ -9,6 +9,7 @@ namespace :deploy do
           execute "git clone git://github.com/medusa-project/kumquat-uiuc-theme.git "\
           "#{File.join(current_path, 'local', 'themes', 'uiuc')}"
           execute :rake, 'kumquat:set_default_theme[UIUC]'
+          execute :rake, 'assets:precompile' # compile theme assets
         end
       end
     end

@@ -20,12 +20,12 @@ var AdminItemsView = function() {
         });
 
         $('button.kq-check-all').on('click', function() {
-            $(this).closest('.kq-collections').find('input[type="checkbox"]').
-                prop('checked', true);
+            $(this).parent().find('.kq-collections').
+                find('input[type="checkbox"]').prop('checked', true);
         });
         $('button.kq-uncheck-all').on('click', function() {
-            $(this).closest('.kq-collections').find('input[type="checkbox"]').
-                prop('checked', false);
+            $(this).parent().find('.kq-collections').
+                find('input[type="checkbox"]').prop('checked', false);
         });
     };
 

@@ -13,65 +13,85 @@
   <% end %>
 </div>
 -->
-<h1>Items <small><%= @items.total_length %> total</small></h1>
+<h1>Items</h1>
 
-<div class="panel panel-default kq-search">
-  <div class="panel-heading">
-    <h3 class="panel-title">Filter</h3>
-  </div>
-  <div class="panel-body">
+<div class="well kq-search">
+
+
     <%= form_tag({controller: 'admin/items', action: 'search'}, {method: :post}) do %>
       <div class="row">
-        <div class="col-sm-6">
-          <div class="panel panel-default kq-triples">
-            <div class="panel-heading">
-              <h4 class="panel-title">Triples</h4>
-            </div>
-            <div class="panel-body">
-              <div class="form-group form-inline">
-                <%= select_tag 'triples[]', options_for_select(@predicates_for_select),
-                               class: 'form-control' %>
-                <%= text_field_tag 'terms[]', '', placeholder: 'Search Term', class: 'form-control' %>
-                <button type="button" class="btn btn-xs btn-danger kq-remove-triple">&minus;</button>
-              </div>
-              <button type="button" class="btn btn-xs btn-success kq-add-triple">&plus; Add Triple</button>
-            </div>
+        <div class="col-sm-5 kq-triples">
+          <div class="form-group form-inline">
+            <%= select_tag 'triples[]', options_for_select(@predicates_for_select),
+                           class: 'form-control' %>
+            <%= text_field_tag 'terms[]', '', placeholder: 'Search Term', class: 'form-control' %>
+            <button type="button" class="btn btn-xs btn-danger kq-remove-triple">&minus;</button>
+          </div>
+          <button type="button" class="btn btn-xs btn-success kq-add-triple">&plus; Add Triple</button>
+        </div>
+
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-xs btn-default kq-check-all">Check All</button>
+          <button type="button" class="btn btn-xs btn-default kq-uncheck-all">Uncheck All</button>
+          <div class="kq-collections">
+            <ol>
+              <% @collections.each do |collection| %>
+                <li>
+                  <div class="checkbox">
+                    <label>
+                      <%= check_box_tag('keys[]', collection.key,
+                                        (params[:keys].present? and params[:keys].include?(collection.key))) %>
+                      <%= collection.title %>
+                    </label>
+                  </div>
+                </li>
+              <% end %>
+            </ol>
           </div>
         </div>
 
-        <div class="col-sm-6">
-          <div class="panel panel-default kq-collections">
-            <div class="panel-heading">
-              <h4 class="panel-title">Collections
-                <button type="button" class="btn btn-xs btn-default kq-check-all">Check All</button>
-                <button type="button" class="btn btn-xs btn-default kq-uncheck-all">Uncheck All</button>
-              </h4>
-            </div>
-            <div class="panel-body">
-              <ol>
-                <% @collections.each do |collection| %>
-                  <li>
-                    <div class="checkbox">
-                      <label><%= check_box_tag('keys[]', collection.key, checked: true) %><%= collection.title %></label>
-                    </div>
-                  </li>
-                <% end %>
-              </ol>
-            </div>
+        <div class="col-sm-3 kq-system">
+          <div class="radio">
+            <%= label_tag do %>
+              <%= radio_button_tag 'published', 'any',
+                                   (params[:published] == 'any' or params[:published].blank?) %>
+              Any
+            <% end %>
+          </div>
+          <div class="radio">
+            <%= label_tag do %>
+              <%= radio_button_tag 'published', '1',
+                                   (params[:published] == '1') %>
+              Published
+            <% end %>
+          </div>
+          <div class="radio">
+            <%= label_tag do %>
+              <%= radio_button_tag 'published', '0',
+                                   (params[:published] == '0') %>
+              Unpublished
+            <% end %>
           </div>
         </div>
       </div>
-      <input type="submit" value="Filter" class="btn btn-primary pull-right">
+
+      <div class="clearfix">
+        <div class="pull-right">
+          <input type="submit" name="clear" value="Clear" class="btn btn-default">
+          <input type="submit" value="Filter" class="btn btn-primary">
+        </div>
+      </div>
     <% end %>
-  </div>
+
 </div>
 
 <div class="panel panel-default">
   <div class="panel-body">
     Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-    <%= @items.total_length %> items
+    <%= @items.total_length %> results
   </div>
 </div>
+
 <div class="kq-list-results">
   <%= items_as_list(@items, @start, link_to_admin: true,
                     show_collections: true,

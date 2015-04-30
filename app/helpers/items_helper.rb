@@ -48,12 +48,15 @@ module ItemsHelper
 
   ##
   # @param items ActiveKumquat::ResultSet
+  # @param options Hash with available keys: :show_collection_facet (boolean)
   #
-  def facets_as_panels(items)
+  def facets_as_panels(items, options = {})
     term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
     panels = ''
     items.facet_fields.each do |facet|
       next unless facet.terms.select{ |t| t.count > 0 }.any?
+      next if facet.field == 'kq_collection_facet' and
+          !options[:show_collection_facet]
       panel = "<div class=\"panel panel-default\">
       <div class=\"panel-heading\">
         <h3 class=\"panel-title\">#{facet.label}</h3>
@@ -334,7 +337,8 @@ module ItemsHelper
   ##
   # @param entity Repository::Item or some other object suitable for passing to
   # icon_for
-  # @param size integer One of DerivativeManagement::STATIC_IMAGE_SIZES
+  # @param size integer One of the sizes in
+  # DerivativeManagement::IMAGE_DERIVATIVES
   #
   def thumbnail_tag(entity, size)
     html = "<div class=\"kq-thumbnail\">"

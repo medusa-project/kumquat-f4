@@ -1,2 +1,0 @@
-This folder is here to support a SASS @import directive that uses globs.
-Just ignore it and leave it be.

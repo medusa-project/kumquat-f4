@@ -13,6 +13,7 @@ module Repository
     attr_accessor :full_text
     attr_accessor :page_index
     attr_accessor :parent_uri
+    attr_accessor :published
     attr_accessor :web_id
 
     validates :title, length: { minimum: 2, maximum: 200 }
@@ -20,6 +21,7 @@ module Repository
 
     def initialize(params = {})
       @children = []
+      @published = true
       super(params)
     end
 
@@ -87,6 +89,8 @@ module Repository
             self.page_index = object.to_s
           when kq_uri + kq_predicates::PARENT_URI
             self.parent_uri = object.to_s
+          when kq_uri + kq_predicates::PUBLISHED
+            self.published = ['true', '1'].include?(object.to_s)
           when kq_uri + kq_predicates::WEB_ID
             self.web_id = object.to_s
         end
@@ -128,6 +132,10 @@ module Repository
       update.delete('<>', "<kumquat:#{kq_predicates::PARENT_URI}>", '?o', false)
       update.insert(nil, "kumquat:#{kq_predicates::PARENT_URI}",
                     "<#{self.parent_uri}>", false) unless self.parent_uri.blank?
+      # published
+      update.delete('<>', "<kumquat:#{kq_predicates::PUBLISHED}>", '?o', false)
+      update.insert(nil, "kumquat:#{kq_predicates::PUBLISHED}",
+                 self.published ? 'true' : 'false')
       # resource type
       update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
           insert(nil, "kumquat:#{kq_predicates::CLASS}",

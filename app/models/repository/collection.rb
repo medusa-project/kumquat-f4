@@ -69,7 +69,7 @@ module Repository
           self.key = object.to_s
         elsif predicate == Kumquat::Application::NAMESPACE_URI +
             Kumquat::Application::RDFPredicates::PUBLISHED
-          self.published = (object.to_s == 'true')
+          self.published = ['true', '1'].include?(object.to_s)
         end
       end
     end

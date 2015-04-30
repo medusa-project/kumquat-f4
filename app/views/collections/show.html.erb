@@ -26,7 +26,9 @@
   <div class="col-sm-6">
     <% if @item %>
       <div class="kq-main-image">
-        <%= thumbnail_tag(@item, 512) %>
+        <%= link_to @item do %>
+          <%= thumbnail_tag(@item, 512) %>
+        <% end %>
         <%= link_to @item.title, @item, class: 'kq-title' %>
       </div>
     <% end %>

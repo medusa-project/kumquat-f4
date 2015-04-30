@@ -20,7 +20,9 @@
   <div class="col-sm-5">
     <% if @random_item %>
       <div class="kq-main-image">
-        <%= thumbnail_tag(@random_item, 512) %>
+        <%= link_to @random_item do %>
+          <%= thumbnail_tag(@random_item, 512) %>
+        <% end %>
         <%= link_to @random_item.title, @random_item, class: 'kq-title' %>
         <br>
         <%= link_to @random_item.collection.title, @random_item.collection,

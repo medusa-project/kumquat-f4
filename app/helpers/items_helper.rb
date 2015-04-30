@@ -337,7 +337,8 @@ module ItemsHelper
   ##
   # @param entity Repository::Item or some other object suitable for passing to
   # icon_for
-  # @param size integer One of DerivativeManagement::STATIC_IMAGE_SIZES
+  # @param size integer One of the sizes in
+  # DerivativeManagement::IMAGE_DERIVATIVES
   #
   def thumbnail_tag(entity, size)
     html = "<div class=\"kq-thumbnail\">"

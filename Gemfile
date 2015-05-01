@@ -35,6 +35,7 @@ gem 'rsolr'
 gem 'sprockets-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
+gem 'yomu' # text extraction from PDF, .docx, etc.
 
 group :development do
   gem 'capistrano-bundler'

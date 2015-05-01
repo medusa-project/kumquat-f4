@@ -70,6 +70,15 @@ module Repository
     end
 
     ##
+    # @return boolean True if any text was extracted; false if not
+    #
+    def extract_and_update_full_text
+      yomu = Yomu.new(self.master_bytestream.repository_url)
+      self.full_text = yomu.text
+      self.full_text.present?
+    end
+
+    ##
     # @return Repository::Item
     #
     def parent

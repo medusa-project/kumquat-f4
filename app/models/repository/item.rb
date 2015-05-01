@@ -10,18 +10,39 @@ module Repository
     WEB_ID_LENGTH = 5
 
     attr_accessor :collection
-    attr_accessor :full_text
-    attr_accessor :page_index
-    attr_accessor :parent_uri
-    attr_accessor :published
-    attr_accessor :web_id
+
+    rdf_property :collection_key, type: :string,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::COLLECTION_KEY
+    rdf_property :full_text, type: :string,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::FULL_TEXT
+    rdf_property :page_index, type: :integer,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::PAGE_INDEX
+    rdf_property :parent_uri, type: :uri,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::PARENT_URI
+    rdf_property :published, type: :boolean,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::PUBLISHED
+    rdf_property :resource_type, type: :uri,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::CLASS
+    rdf_property :web_id, type: :string,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::WEB_ID
 
     validates :title, length: { minimum: 2, maximum: 200 }
     validates :web_id, length: { minimum: 4, maximum: 7 }
 
+    before_save :set_rdf_properties
+
     def initialize(params = {})
       @children = []
       @published = true
+      @resource_type = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::ITEM
       super(params)
     end
 
@@ -68,78 +89,8 @@ module Repository
       self.title || self.web_id
     end
 
-    ##
-    # Overrides parent
-    #
-    # @param graph RDF::Graph
-    #
-    def populate_from_graph(graph)
-      super(graph)
-
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-
-      graph.each_triple do |subject, predicate, object|
-        case predicate
-          when kq_uri + kq_predicates::COLLECTION_KEY
-            @collection_key = object.to_s
-          when kq_uri + kq_predicates::FULL_TEXT
-           self.full_text = object.to_s
-          when kq_uri + kq_predicates::PAGE_INDEX
-            self.page_index = object.to_s
-          when kq_uri + kq_predicates::PARENT_URI
-            self.parent_uri = object.to_s
-          when kq_uri + kq_predicates::PUBLISHED
-            self.published = ['true', '1'].include?(object.to_s)
-          when kq_uri + kq_predicates::WEB_ID
-            self.web_id = object.to_s
-        end
-      end
-    end
-
     def to_param
       self.web_id
-    end
-
-    ##
-    # Overrides parent
-    #
-    # @return ActiveKumquat::SparqlUpdate
-    #
-    def to_sparql_update
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-      kq_objects = Kumquat::Application::RDFObjects
-
-      update = super
-      update.prefix('kumquat', kq_uri)
-      # web id
-      _web_id = self.web_id.blank? ? generate_web_id : self.web_id
-      update.delete('<>', "<kumquat:#{kq_predicates::WEB_ID}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::WEB_ID}", _web_id)
-      # collection key
-      update.delete('<>', "<kumquat:#{kq_predicates::COLLECTION_KEY}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::COLLECTION_KEY}", self.collection.key)
-      # full text
-      update.delete('<>', "<kumquat:#{kq_predicates::FULL_TEXT}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::FULL_TEXT}", self.full_text) unless
-          self.full_text.blank?
-      # page index
-      update.delete('<>', "<kumquat:#{kq_predicates::PAGE_INDEX}>", '?o', false)
-      update.insert(nil, "kumquat:#{kq_predicates::PAGE_INDEX}", self.page_index) unless
-          self.page_index.blank?
-      # parent uri
-      update.delete('<>', "<kumquat:#{kq_predicates::PARENT_URI}>", '?o', false)
-      update.insert(nil, "kumquat:#{kq_predicates::PARENT_URI}",
-                    "<#{self.parent_uri}>", false) unless self.parent_uri.blank?
-      # published
-      update.delete('<>', "<kumquat:#{kq_predicates::PUBLISHED}>", '?o', false)
-      update.insert(nil, "kumquat:#{kq_predicates::PUBLISHED}",
-                 self.published ? 'true' : 'false')
-      # resource type
-      update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::CLASS}",
-                 "<#{kq_uri}#{kq_objects::ITEM}>", false)
     end
 
     private
@@ -156,6 +107,11 @@ module Repository
         break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
       end
       proposed_id
+    end
+
+    def set_rdf_properties
+      @web_id = generate_web_id unless @web_id.present?
+      @collection_key = self.collection.key
     end
 
   end

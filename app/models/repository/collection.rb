@@ -6,8 +6,15 @@ module Repository
 
     ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION # TODO: get rid of this
 
-    attr_accessor :key
-    attr_accessor :published
+    rdf_property :key, type: :string,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::COLLECTION_KEY
+    rdf_property :published, type: :boolean,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::PUBLISHED
+    rdf_property :resource_type, type: :uri,
+                 uri: Kumquat::Application::NAMESPACE_URI +
+                     Kumquat::Application::RDFPredicates::CLASS
 
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
@@ -39,6 +46,12 @@ module Repository
           use_transaction_url(transaction_url).first rescue nil
     end
 
+    def initialize(params = {})
+      @resource_type = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::COLLECTION
+      super(params)
+    end
+
     ##
     # @return DB::Collection
     ##
@@ -58,52 +71,12 @@ module Repository
       @num_items
     end
 
-    ##
-    # @param graph RDF::Graph
-    #
-    def populate_from_graph(graph)
-      super(graph)
-      graph.each_triple do |subject, predicate, object|
-        if predicate == Kumquat::Application::NAMESPACE_URI +
-            Kumquat::Application::RDFPredicates::COLLECTION_KEY
-          self.key = object.to_s
-        elsif predicate == Kumquat::Application::NAMESPACE_URI +
-            Kumquat::Application::RDFPredicates::PUBLISHED
-          self.published = ['true', '1'].include?(object.to_s)
-        end
-      end
-    end
-
     def to_param
       self.key
     end
 
     def to_s
       self.title || self.key
-    end
-
-    ##
-    # Overrides parent
-    #
-    # @return ActiveKumquat::SparqlUpdate
-    #
-    def to_sparql_update
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-      kq_objects = Kumquat::Application::RDFObjects
-
-      update = super # TODO: define these properties at class level and have the superclass handle them
-      # key
-      update.delete('<>', "<#{kq_uri}#{kq_predicates::COLLECTION_KEY}>", '?o', false).
-          insert(nil, "<#{kq_uri}#{kq_predicates::COLLECTION_KEY}>", self.key)
-      # published
-      update.delete('<>', "<#{kq_uri}#{kq_predicates::PUBLISHED}>", '?o', false).
-          insert(nil, "<#{kq_uri}#{kq_predicates::PUBLISHED}>",
-                 self.published ? 'true' : 'false')
-      # resource type
-      update.delete('<>', "<#{kq_uri}#{kq_predicates::CLASS}>", '?o', false).
-          insert(nil, "<#{kq_uri}#{kq_predicates::CLASS}>",
-                 "<#{kq_uri}#{kq_objects::COLLECTION}>", false)
     end
 
     private

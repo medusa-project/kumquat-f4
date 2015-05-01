@@ -24,6 +24,7 @@ module ActiveKumquat
     end
 
     @@http = HTTPClient.new
+    @@properties = Set.new
 
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
@@ -36,6 +37,22 @@ module ActiveKumquat
     alias_method :id, :uuid
 
     validates :uuid, allow_nil: true, length: { minimum: 36, maximum: 36 }
+
+    ##
+    # Supplies a "property" keyword to subclasses with which they define the
+    # properties they want to persist to the repository. Example:
+    #
+    #     property :full_text, uri: 'http://example.org/fullText', type: :string
+    #
+    # @param name
+    # @param options Hash with the following keys:
+    #     :uri RDF predicate URI
+    #     :type One of: :string, :integer, :boolean, :uri
+    #
+    def self.rdf_property(name, options)
+      @@properties << { name: name, uri: options[:uri], type: options[:type] }
+      attr_accessor name.to_sym
+    end
 
     ##
     # Executes a block within a transaction. Use like:
@@ -144,6 +161,18 @@ module ActiveKumquat
         end
         self.rdf_graph << statement
       end
+
+      # add properties from subclass property definitions (see
+      # self.rdf_property())
+      @@properties.each do |prop|
+        graph.each_triple do |subject, predicate, object|
+          if predicate.to_s == prop[:uri]
+            instance_variable_set("@#{prop[:name]}", object.to_s)
+            break
+          end
+        end
+      end
+
       @persisted = true
     end
 
@@ -193,8 +222,6 @@ module ActiveKumquat
 
     ##
     # Generates a SparqlUpdate with the instance's current properties.
-    # Subclasses should override and add their own statements into the return
-    # value of super.
     #
     # @return ActiveKumquat::SparqlUpdate
     #
@@ -224,6 +251,25 @@ module ActiveKumquat
             insert(nil, "<#{statement.predicate.to_s}>",
                    statement.object.to_s)
       end
+
+      # add properties from subclass property definitions (see self.property())
+      @@properties.each do |prop|
+        update.delete('<>', "<#{prop[:uri]}>", '?o', false)
+        value = instance_variable_get("@#{prop[:name]}")
+        case prop[:type]
+          when :boolean
+            if value.present?
+              value = ['true', '1'].include?(value.to_s) ? 'true' : 'false'
+              update.insert(nil, "<#{prop[:uri]}>", value)
+            end
+          when :uri
+            update.insert(nil, "<#{prop[:uri]}>", "<#{value}>", false) if
+                value.present?
+          else
+            update.insert(nil, "<#{prop[:uri]}>", value) if value.present?
+        end
+      end
+
       update
     end
 

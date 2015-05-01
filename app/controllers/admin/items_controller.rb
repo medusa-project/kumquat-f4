@@ -2,6 +2,25 @@ module Admin
 
   class ItemsController < ControlPanelController
 
+    ##
+    # Responds to PATCH /admin/items/:web_id/full-text/clear
+    #
+    def clear_full_text
+      @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
+      raise ActiveRecord::RecordNotFound unless @item
+
+      begin
+        @item.full_text = nil
+        @item.save!
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = 'Full text cleared.'
+      ensure
+        redirect_to admin_repository_item_url(@item)
+      end
+    end
+
     def destroy
       @item = Repository::Item.find_by_web_id(params[:web_id])
       raise ActiveRecord::RecordNotFound unless @item
@@ -16,6 +35,19 @@ module Admin
         flash['success'] = "Item \"#{@item.title}\" deleted."
         redirect_to admin_repository_item_url
       end
+    end
+
+    ##
+    # Responds to PATCH /admin/items/:web_id/full-text/extract
+    #
+    def extract_full_text
+      @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
+      raise ActiveRecord::RecordNotFound unless @item
+
+      ExtractFullTextJob.perform_later(@item)
+
+      flash['success'] = 'Extracting full text. This may take a while.'
+      redirect_to :back
     end
 
     def index

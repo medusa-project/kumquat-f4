@@ -77,7 +77,12 @@ Rails.application.routes.draw do
       resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
     end
     resources :collections, param: :key, as: :db_collections
-    resources :items, param: :web_id, as: :repository_items, concerns: :publishable
+    resources :items, param: :web_id, as: :repository_items, concerns: :publishable do
+      match '/full-text/clear', to: 'items#clear_full_text', via: 'patch',
+            as: 'clear_full_text'
+      match '/full-text/extract', to: 'items#extract_full_text', via: 'patch',
+            as: 'extract_full_text'
+    end
     match '/items/search', to: 'items#search', via: 'post',
           as: 'repository_items_search'
     resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]

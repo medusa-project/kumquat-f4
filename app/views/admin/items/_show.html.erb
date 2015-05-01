@@ -49,11 +49,9 @@
           Pages <span class="badge"><%= @pages.length %></span></a>
       </li>
     <% end %>
-    <% if @item.full_text.present? %>
-      <li role="presentation">
-        <a href="#kq-full-text" aria-controls="home" role="tab" data-toggle="tab">Full Text</a>
-      </li>
-    <% end %>
+    <li role="presentation">
+      <a href="#kq-full-text" aria-controls="home" role="tab" data-toggle="tab">Full Text</a>
+    </li>
     <li role="presentation">
       <a href="#kq-repository" aria-controls="home" role="tab" data-toggle="tab">Fedora RDF</a>
     </li>
@@ -76,7 +74,21 @@
 
     <!-- Full Text pane -->
     <div role="tabpanel" class="tab-pane" id="kq-full-text">
-      <pre><%= @item.full_text %></pre>
+      <div class="clearfix">
+        <div class="btn-group pull-right">
+          <%= link_to admin_repository_item_extract_full_text_path(@item),
+                      method: :patch, class: 'btn btn-default' do %>
+            <i class="fa fa-file-text-o"></i> Re-Extract
+          <% end %>
+          <%= link_to admin_repository_item_clear_full_text_path(@item),
+                      method: :patch, class: 'btn btn-default' do %>
+            <i class="fa fa-trash"></i> Clear
+          <% end %>
+        </div>
+      </div>
+      <% if @item.full_text.present? %>
+        <pre><%= @item.full_text %></pre>
+      <% end %>
     </div>
 
     <!-- Repository pane -->

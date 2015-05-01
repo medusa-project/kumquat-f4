@@ -172,17 +172,13 @@ module ActiveKumquat
               entity.loaded = true
               @results << entity
             rescue HTTPClient::BadResponseError => e
-              if e.res.code == 410
-                # This probably means that the item was deleted from the
-                # repository and the delete did not propagate to Solr for some
-                # reason. There is nothing we can do, so swallow it and log it
-                # to avoid disrupting the user experience.
-                Rails.logger.error("Item present in Solr result is missing from "\
-                "repository: #{e.message}")
-                @results.total_length -= 1
-              else
-                raise e
-              end
+              # This probably means that the item was deleted from the
+              # repository and the delete did not propagate to Solr for some
+              # reason. There is nothing we can do, so swallow it and log it
+              # to avoid disrupting the user experience.
+              Rails.logger.error("Item present in Solr result is missing from "\
+              "repository: #{e.message}")
+              @results.total_length -= 1
             rescue HTTPClient::KeepAliveDisconnected => e
               raise 'Unable to connect to Fedora. Check that it is running and '\
             'that its URL is set correctly in the config file.'

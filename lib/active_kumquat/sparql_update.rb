@@ -38,7 +38,7 @@ module ActiveKumquat
     # @return self
     #
     def insert(subject, predicate, object, quote_object = true)
-      object_s = object.to_s
+      object_s = object.to_s.strip
       if quote_object
         value = "\"#{object_s.gsub('"', '\"')}\""
         if object_s.lines.length > 1

@@ -113,6 +113,32 @@ module Admin
       end
     end
 
+    def update
+      @item = Repository::Item.find_by_web_id(params[:web_id])
+      raise ActiveRecord::RecordNotFound unless @item
+
+      command = UpdateRepositoryItemCommand.new(@item, sanitized_params)
+      begin
+        executor.execute(command)
+      rescue => e
+        response.headers['X-Kumquat-Result'] = 'error'
+        flash['error'] = "#{e}"
+        redirect_to :back
+      else
+        response.headers['X-Kumquat-Result'] = 'success'
+        flash['success'] = "Item \"#{@item.title}\" updated."
+        redirect_to admin_repository_item_url(@item) unless request.xhr?
+      end
+
+      render 'show' if request.xhr?
+    end
+
+    private
+
+    def sanitized_params
+      params.require(:repository_item).permit(:full_text)
+    end
+
   end
 
 end

@@ -76,6 +76,10 @@
     <div role="tabpanel" class="tab-pane" id="kq-full-text">
       <div class="clearfix">
         <div class="btn-group pull-right">
+          <button type="button" class="btn btn-default" data-toggle="modal"
+                  data-target="#kq-edit-full-text-panel" data-backdrop="false">
+            <i class="fa fa-pencil"></i> Edit
+          </button>
           <%= link_to admin_repository_item_extract_full_text_path(@item),
                       method: :patch, class: 'btn btn-default' do %>
             <i class="fa fa-file-text-o"></i> Re-Extract

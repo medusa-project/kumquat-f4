@@ -36,6 +36,7 @@ class Permission < ActiveRecord::Base
   ROLES_UPDATE = 'roles.update'
   SETTINGS_UPDATE = 'settings.update'
   UNPUBLISH_COLLECTIONS = 'collections.unpublish'
+  UPDATE_ITEMS = 'items.update'
   UPDATE_USERS = 'users.update'
   USERS_UPDATE_SELF = 'users.update_self'
   USERS_VIEW = 'users.view'

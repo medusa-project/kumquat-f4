@@ -78,4 +78,11 @@ body#items_show div#kq-page-content {
       }
     }
   }
+
+  #kq-edit-full-text-panel {
+    textarea {
+      font-family: monospace;
+      min-height: 20em;
+    }
+  }
 }

@@ -24,7 +24,7 @@ module ActiveKumquat
     end
 
     @@http = HTTPClient.new
-    @@properties = Set.new
+    @@kq_properties = Set.new
 
     attr_reader :bytestreams # Set of Bytestreams
     attr_accessor :container_url # URL of the entity's parent container
@@ -50,8 +50,8 @@ module ActiveKumquat
     #     :type One of: :string, :integer, :boolean, :uri
     #
     def self.rdf_property(name, options)
-      @@properties << { name: name, uri: options[:uri], type: options[:type] }
-      attr_accessor name.to_sym
+      @@kq_properties << { class: self, name: name, uri: options[:uri],
+                           type: options[:type] }
     end
 
     ##
@@ -78,6 +78,9 @@ module ActiveKumquat
     end
 
     def initialize(params = {})
+      @@kq_properties.each do |prop|
+        self.class.instance_eval { attr_accessor prop[:name] }
+      end
       @bytestreams = Set.new
       @destroyed = false
       @persisted = false
@@ -164,10 +167,10 @@ module ActiveKumquat
 
       # add properties from subclass property definitions (see
       # self.rdf_property())
-      @@properties.each do |prop|
+      @@kq_properties.select{ |p| p[:class] == self.class }.each do |prop|
         graph.each_triple do |subject, predicate, object|
           if predicate.to_s == prop[:uri]
-            instance_variable_set("@#{prop[:name]}", object.to_s)
+            send("#{prop[:name]}=", object.to_s)
             break
           end
         end
@@ -253,9 +256,9 @@ module ActiveKumquat
       end
 
       # add properties from subclass property definitions (see self.property())
-      @@properties.each do |prop|
+      @@kq_properties.select{ |p| p[:class] == self.class }.each do |prop|
         update.delete('<>', "<#{prop[:uri]}>", '?o', false)
-        value = instance_variable_get("@#{prop[:name]}")
+        value = send(prop[:name])
         case prop[:type]
           when :boolean
             if value.present?

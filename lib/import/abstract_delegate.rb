@@ -81,7 +81,8 @@ module Import
 
     ##
     # Should return the full text of the item at the given index, or nil if the
-    # item does not have any.
+    # item does not have any. If this method returns nil, the importer will
+    # attempt to extract text from the item and use that instead.
     #
     # This method is optional.
     #

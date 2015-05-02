@@ -73,9 +73,18 @@ module Repository
     # @return boolean True if any text was extracted; false if not
     #
     def extract_and_update_full_text
-      yomu = Yomu.new(self.master_bytestream.repository_url)
-      self.full_text = yomu.text
-      self.full_text.present?
+      if self.master_bytestream and self.master_bytestream.repository_url
+        begin
+          yomu = Yomu.new(self.master_bytestream.repository_url)
+          self.full_text = yomu.text
+        rescue Errno::EPIPE
+          # nothing we can do
+          return false
+        else
+          return self.full_text.present?
+        end
+      end
+      false
     end
 
     ##

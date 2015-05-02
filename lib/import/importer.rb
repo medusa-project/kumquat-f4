@@ -75,7 +75,6 @@ module Import
           item = Repository::Item.new(
               collection: collection,
               container_url: parent_uri || collection.repository_url,
-              full_text: @import_delegate.full_text_of_item_at_index(index),
               requested_slug: @import_delegate.slug_of_item_at_index(index),
               web_id: @import_delegate.web_id_of_item_at_index(index),
               parent_uri: parent_uri,
@@ -120,6 +119,8 @@ module Import
             end
           end
 
+          item.full_text = @import_delegate.full_text_of_item_at_index(index)
+          item.extract_and_update_full_text unless item.full_text.present?
           item.generate_derivatives
           item.save!
 

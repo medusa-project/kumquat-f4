@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module Kumquat
   class Application < Rails::Application
 
-    NAMESPACE_URI = 'http://example.org/' # TODO: change this
+    NAMESPACE_URI = 'http://kumquat.library.illinois.edu/'
 
     ##
     # "System objects" used by the application in the subject-predicate-object

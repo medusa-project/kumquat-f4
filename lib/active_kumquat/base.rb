@@ -258,10 +258,8 @@ module ActiveKumquat
         value = send(prop[:name])
         case prop[:type]
           when :boolean
-            if value.present?
-              value = ['true', '1'].include?(value.to_s) ? 'true' : 'false'
-              update.insert(nil, "<#{prop[:uri]}>", value)
-            end
+            value = ['true', '1'].include?(value.to_s) ? 'true' : 'false'
+            update.insert(nil, "<#{prop[:uri]}>", value)
           when :uri
             update.insert(nil, "<#{prop[:uri]}>", "<#{value}>", false) if
                 value.present?

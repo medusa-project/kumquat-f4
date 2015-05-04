@@ -346,20 +346,20 @@ RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
 Theme.create!(name: 'Built-In', required: true, default: true)
 
 # URI Prefixes
-DB::URIPrefix.create!(prefix: 'dc',
-                      uri: 'http://purl.org/dc/elements/1.1/')
-DB::URIPrefix.create!(prefix: 'dcterms',
-                      uri: 'http://purl.org/dc/terms/')
-DB::URIPrefix.create!(prefix: 'foaf',
-                      uri: 'http://xmlns.com/foaf/0.1/')
-DB::URIPrefix.create!(prefix: 'iana',
-                      uri: 'http://www.iana.org/assignments/relation/')
-DB::URIPrefix.create!(prefix: 'ore',
-                      uri: 'http://www.openarchives.org/ore/terms/')
-DB::URIPrefix.create!(prefix: 'rdfs',
-                      uri: 'http://www.w3.org/2000/01/rdf-schema#')
-DB::URIPrefix.create!(prefix: 'rdf',
-                      uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+URIPrefix.create!(prefix: 'dc',
+                  uri: 'http://purl.org/dc/elements/1.1/')
+URIPrefix.create!(prefix: 'dcterms',
+                  uri: 'http://purl.org/dc/terms/')
+URIPrefix.create!(prefix: 'foaf',
+                  uri: 'http://xmlns.com/foaf/0.1/')
+URIPrefix.create!(prefix: 'iana',
+                  uri: 'http://www.iana.org/assignments/relation/')
+URIPrefix.create!(prefix: 'ore',
+                  uri: 'http://www.openarchives.org/ore/terms/')
+URIPrefix.create!(prefix: 'rdfs',
+                  uri: 'http://www.w3.org/2000/01/rdf-schema#')
+URIPrefix.create!(prefix: 'rdf',
+                  uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
 # Admin user
 users = {}

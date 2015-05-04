@@ -239,16 +239,13 @@ module ActiveKumquat
           delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)
 
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
       self.rdf_graph.each_statement do |statement|
         # exclude repository-managed predicates from the update
         next if Repository::Fedora::MANAGED_PREDICATES.
             select{ |p| statement.predicate.to_s.start_with?(p) }.any?
         # exclude subclass-managed predicates from the update
-        next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::CLASS}"
-        next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::PARENT_URI}"
-        next if statement.predicate.to_s == "#{kq_uri}#{kq_predicates::PUBLISHED}" # TODO: this is messy
+        next if @@kq_properties.select{ |p| p[:class] == self.class }.
+            map{ |p| p[:uri] } == statement.predicate.to_s
 
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
             insert(nil, "<#{statement.predicate.to_s}>",

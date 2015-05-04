@@ -11,7 +11,7 @@ module Admin
         render 'new'
       else
         flash[:success] = "Theme \"#{@theme.name}\" created."
-        redirect_to admin_db_themes_url
+        redirect_to admin_themes_url
       end
     end
 
@@ -24,7 +24,7 @@ module Admin
       else
         flash[:success] = "Theme \"#{@theme.name}\" deleted."
       ensure
-        redirect_to admin_db_themes_url
+        redirect_to admin_themes_url
       end
     end
 
@@ -50,7 +50,7 @@ module Admin
         render 'edit'
       else
         flash[:success] = "Theme \"#{@theme.name}\" updated."
-        redirect_to admin_db_themes_url
+        redirect_to admin_themes_url
       end
     end
 

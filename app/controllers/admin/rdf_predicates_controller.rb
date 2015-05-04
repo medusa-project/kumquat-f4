@@ -14,9 +14,9 @@ module Admin
         else # modifying global predicates
           params[:predicates].each do |id, props|
             if id.to_s.length == 36 # new predicates get UUID ids from the form
-              DB::RDFPredicate.create!(uri: props[:uri], label: props[:label])
+              RDFPredicate.create!(uri: props[:uri], label: props[:label])
             else
-              p = DB::RDFPredicate.find(id)
+              p = RDFPredicate.find(id)
               if props[:_destroy].to_i == 1
                 p.destroy!
               elsif p and !props[:uri].blank?
@@ -44,12 +44,12 @@ module Admin
             params[:repository_collection_key])
         @db_collection = @collection.db_counterpart
 
-        @global_predicates = DB::RDFPredicate.where(collection_id: nil).order(:uri)
-        @collection_predicates = DB::RDFPredicate.where(collection: @db_collection)
+        @global_predicates = RDFPredicate.where(collection_id: nil).order(:uri)
+        @collection_predicates = RDFPredicate.where(collection: @db_collection)
 
         render 'index_collection'
       else
-        @predicates = DB::RDFPredicate.where(collection_id: nil).order(:uri)
+        @predicates = RDFPredicate.where(collection_id: nil).order(:uri)
       end
     end
 

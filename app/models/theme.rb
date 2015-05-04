@@ -6,7 +6,7 @@ class Theme < ActiveRecord::Base
             uniqueness: { case_sensitive: false }
 
   before_save :ensure_default_uniqueness
-  
+
   ##
   # @return Theme
   #

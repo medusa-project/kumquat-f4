@@ -85,7 +85,7 @@ module Admin
         @num_results_shown = [@limit, @items.total_length].min
 
         # these are used by the search form
-        @predicates_for_select = DB::RDFPredicate.order(:uri).
+        @predicates_for_select = RDFPredicate.order(:uri).
             map{ |p| [ p.uri, p.solr_field ] }.uniq
         @predicates_for_select.unshift([ 'Any Triple', 'kq_searchall' ])
         @collections = Repository::Collection.all

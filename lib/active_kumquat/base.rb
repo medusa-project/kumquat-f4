@@ -170,7 +170,12 @@ module ActiveKumquat
       @@kq_properties.select{ |p| p[:class] == self.class }.each do |prop|
         graph.each_triple do |subject, predicate, object|
           if predicate.to_s == prop[:uri]
-            send("#{prop[:name]}=", object.to_s)
+            if prop[:type] == :boolean
+              value = ['true', '1'].include?(object.to_s)
+            else
+              value = object.to_s
+            end
+            send("#{prop[:name]}=", value)
             break
           end
         end

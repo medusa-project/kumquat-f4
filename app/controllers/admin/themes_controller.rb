@@ -3,7 +3,7 @@ module Admin
   class ThemesController < ControlPanelController
 
     def create
-      @theme = DB::Theme.new(sanitized_params)
+      @theme = Theme.new(sanitized_params)
       begin
         @theme.save!
       rescue => e
@@ -16,7 +16,7 @@ module Admin
     end
 
     def destroy
-      @theme = DB::Theme.find(params[:id])
+      @theme = Theme.find(params[:id])
       begin
         @theme.destroy!
       rescue => e
@@ -29,19 +29,19 @@ module Admin
     end
 
     def edit
-      @theme = DB::Theme.find(params[:id])
+      @theme = Theme.find(params[:id])
     end
 
     def index
-      @themes = DB::Theme.order(:name)
+      @themes = Theme.order(:name)
     end
 
     def new
-      @theme = DB::Theme.new
+      @theme = Theme.new
     end
 
     def update
-      @theme = DB::Theme.find(params[:id])
+      @theme = Theme.find(params[:id])
       begin
         @theme.update(sanitized_params)
         @theme.save!

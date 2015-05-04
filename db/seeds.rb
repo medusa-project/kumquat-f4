@@ -343,7 +343,7 @@ DB::RDFPredicate.create!(uri: 'http://purl.org/dc/terms/valid',
                          deletable: false)
 
 # Themes
-DB::Theme.create!(name: 'Built-In', required: true, default: true)
+Theme.create!(name: 'Built-In', required: true, default: true)
 
 # URI Prefixes
 DB::URIPrefix.create!(prefix: 'dc',
@@ -390,7 +390,7 @@ end
 if Rails.env.start_with?('uiuc')
 
   # Themes
-  DB::Theme.create!(name: 'UIUC', default: true)
+  Theme.create!(name: 'UIUC', default: true)
 
   # Overwrite some default options for internal demo purposes
   option = Option.find_by_key(Option::Key::COPYRIGHT_STATEMENT)

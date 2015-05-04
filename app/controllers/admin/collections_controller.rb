@@ -80,7 +80,7 @@ module Admin
       raise ActiveRecord::RecordNotFound unless @collection
 
       @theme_options_for_select = [[ 'None (Use Global)', nil ]] +
-          DB::Theme.order(:name).map{ |t| [ t.name, t.id ] }
+          Theme.order(:name).map{ |t| [ t.name, t.id ] }
     end
 
     ##

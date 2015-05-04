@@ -32,7 +32,7 @@ class WebsiteController < ApplicationController
       theme = nil
       collection = DB::Collection.find_by_key(key)
       theme = collection.theme if collection
-      theme ||= DB::Theme.default
+      theme ||= Theme.default
       pathname = nil
       pathname = File.join(Rails.root, theme.pathname, 'views') if theme
       prepend_view_path(pathname) if pathname

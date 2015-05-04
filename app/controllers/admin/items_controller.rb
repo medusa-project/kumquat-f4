@@ -76,7 +76,7 @@ module Admin
           @items = @items.where("#{Solr::Solr::COLLECTION_KEY_KEY}:(#{keys.join(' ')})")
         end
 
-        if params[:published] != 'any'
+        if params[:published].present? and params[:published] != 'any'
           @items = @items.where("#{Solr::Solr::PUBLISHED_KEY}:#{params[:published].to_i}")
         end
 

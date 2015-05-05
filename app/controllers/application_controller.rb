@@ -41,6 +41,23 @@ class ApplicationController < ActionController::Base
     @keep_flash = true
   end
 
+  ##
+  # Sets headers to be used in streaming downloads. Typically these would be
+  # augmented with:
+  #
+  #     Content-Disposition: attachment; filename="foo"
+  #
+  # and then self.response_body would be set to an Enumerable to start the
+  # streaming.
+  #
+  # Streaming requires a web server capable of it (not WEBrick).
+  #
+  def set_streaming_headers
+    headers['X-Accel-Buffering'] = 'no'
+    headers['Cache-Control'] ||= 'no-cache'
+    headers.delete('Content-Length')
+  end
+
   private
 
   @keep_flash = false

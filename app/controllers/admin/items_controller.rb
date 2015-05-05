@@ -54,42 +54,62 @@ module Admin
     def index
       if params[:clear]
         redirect_to admin_repository_items_path
-      else
-        @start = params[:start] ? params[:start].to_i : 0
-        @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
-        @items = Repository::Item.all.
-            where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
-            where(params[:q])
+        return
+      end
 
-        # fields
-        if params[:triples] and params[:triples].any?
-          params[:triples].each_with_index do |field, index|
-            if params[:terms].length > index and !params[:terms][index].blank?
-              @items = @items.where("#{field}:#{params[:terms][index]}")
-            end
+      @start = params[:start] ? params[:start].to_i : 0
+      @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
+      @items = Repository::Item.all.
+          where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
+          where(params[:q])
+
+      # fields
+      if params[:triples] and params[:triples].any?
+        params[:triples].each_with_index do |field, index|
+          if params[:terms].length > index and !params[:terms][index].blank?
+            @items = @items.where("#{field}:#{params[:terms][index]}")
           end
         end
+      end
 
-        # collections
-        keys = []
-        keys = params[:keys].select{ |k| !k.blank? } if params[:keys] and params[:keys].any?
-        if keys.any? and keys.length < Repository::Collection.all.length
-          @items = @items.where("#{Solr::Solr::COLLECTION_KEY_KEY}:(#{keys.join(' ')})")
+      # collections
+      keys = []
+      keys = params[:keys].select{ |k| !k.blank? } if params[:keys] and params[:keys].any?
+      if keys.any? and keys.length < Repository::Collection.all.length
+        @items = @items.where("#{Solr::Solr::COLLECTION_KEY_KEY}:(#{keys.join(' ')})")
+      end
+
+      if params[:published].present? and params[:published] != 'any'
+        @items = @items.where("#{Solr::Solr::PUBLISHED_KEY}:#{params[:published].to_i}")
+      end
+
+      respond_to do |format|
+        format.html do
+          @items = @items.start(@start).limit(@limit)
+          @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
+          @num_results_shown = [@limit, @items.total_length].min
+
+          # these are used by the search form
+          @predicates_for_select = RDFPredicate.order(:uri).
+              map{ |p| [ p.uri, p.solr_field ] }.uniq
+          @predicates_for_select.unshift([ 'Any Triple', 'kq_searchall' ])
+          @collections = Repository::Collection.all
         end
-
-        if params[:published].present? and params[:published] != 'any'
-          @items = @items.where("#{Solr::Solr::PUBLISHED_KEY}:#{params[:published].to_i}")
+        format.jsonld do
+          set_streaming_headers
+          headers['Content-Disposition'] = 'attachment; filename="export.json"'
+          self.response_body = RDFStreamer.new(@items, :jsonld)
         end
-
-        @items = @items.start(@start).limit(@limit)
-        @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
-        @num_results_shown = [@limit, @items.total_length].min
-
-        # these are used by the search form
-        @predicates_for_select = RDFPredicate.order(:uri).
-            map{ |p| [ p.uri, p.solr_field ] }.uniq
-        @predicates_for_select.unshift([ 'Any Triple', 'kq_searchall' ])
-        @collections = Repository::Collection.all
+        format.rdf do
+          set_streaming_headers
+          headers['Content-Disposition'] = 'attachment; filename="export.rdf"'
+          self.response_body = RDFStreamer.new(@items, :rdf)
+        end
+        format.ttl do
+          set_streaming_headers
+          headers['Content-Disposition'] = 'attachment; filename="export.ttl"'
+          self.response_body = RDFStreamer.new(@items, :ttl)
+        end
       end
     end
 

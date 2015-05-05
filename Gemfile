@@ -16,7 +16,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'backburner'
 gem 'bcrypt', '~> 3.1.7' # Use ActiveModel has_secure_password
-gem 'bootstrap-sass', '~> 3.3.3'
+gem 'bootstrap-sass', '~> 3.3.4.1'
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'httpclient', :git => 'git://github.com/adolski/httpclient.git'
 gem 'jquery-cookie-rails'

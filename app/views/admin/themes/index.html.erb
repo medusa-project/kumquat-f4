@@ -8,7 +8,7 @@
 </ol>
 
 <div class="btn-group pull-right">
-  <%= link_to new_admin_db_theme_path, class: 'btn btn-default' do %>
+  <%= link_to new_admin_theme_path, class: 'btn btn-default' do %>
     <i class="fa fa-plus"></i> New Theme
   <% end %>
 </div>
@@ -39,13 +39,13 @@
       <tr>
         <td>
           <% unless theme.required %>
-            <%= link_to 'Edit', edit_admin_db_theme_path(theme),
+            <%= link_to 'Edit', edit_admin_theme_path(theme),
                           class: 'btn btn-default btn-xs' %>
           <% end %>
         </td>
         <td>
           <% unless theme.required %>
-            <%= link_to 'Delete', admin_db_theme_path(theme),
+            <%= link_to 'Delete', admin_theme_path(theme),
                         class: 'btn btn-danger btn-xs', method: :delete,
                         data: { confirm: "Are you sure you want to delete the "\
                         "theme \"#{theme.name}\"? Its folder (if present) "\
@@ -56,7 +56,7 @@
           <% if theme.default %>
             <span class="label label-success">Default</span>
           <% else %>
-            <%= link_to 'Set As Default', admin_db_theme_path(theme, db_theme: { default: true }),
+            <%= link_to 'Set As Default', admin_theme_path(theme, db_theme: { default: true }),
                         class: 'btn btn-default btn-xs', method: :patch %>
           <% end %>
         </td>

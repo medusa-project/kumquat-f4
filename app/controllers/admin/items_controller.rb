@@ -95,21 +95,9 @@ module Admin
           @predicates_for_select.unshift([ 'Any Triple', 'kq_searchall' ])
           @collections = Repository::Collection.all
         end
-        format.jsonld do
-          set_streaming_headers
-          headers['Content-Disposition'] = 'attachment; filename="export.json"'
-          self.response_body = RDFStreamer.new(@items, :jsonld)
-        end
-        format.rdf do
-          set_streaming_headers
-          headers['Content-Disposition'] = 'attachment; filename="export.rdf"'
-          self.response_body = RDFStreamer.new(@items, :rdf)
-        end
-        format.ttl do
-          set_streaming_headers
-          headers['Content-Disposition'] = 'attachment; filename="export.ttl"'
-          self.response_body = RDFStreamer.new(@items, :ttl)
-        end
+        format.jsonld { stream(RDFStreamer.new(@items, :jsonld), 'export.json') }
+        format.rdf { stream(RDFStreamer.new(@items, :rdf), 'export.rdf') }
+        format.ttl { stream(RDFStreamer.new(@items, :ttl), 'export.ttl') }
       end
     end
 

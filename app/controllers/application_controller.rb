@@ -42,20 +42,15 @@ class ApplicationController < ActionController::Base
   end
 
   ##
-  # Sets headers to be used in streaming downloads. Typically these would be
-  # augmented with:
+  # Sends an Enumerable object in chunks as an attachment. Streaming requires
+  # a web server capable of it (not WEBrick).
   #
-  #     Content-Disposition: attachment; filename="foo"
-  #
-  # and then self.response_body would be set to an Enumerable to start the
-  # streaming.
-  #
-  # Streaming requires a web server capable of it (not WEBrick).
-  #
-  def set_streaming_headers
+  def stream(enumerable, filename)
     headers['X-Accel-Buffering'] = 'no'
     headers['Cache-Control'] ||= 'no-cache'
     headers.delete('Content-Length')
+    headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+    self.response_body = enumerable
   end
 
   private

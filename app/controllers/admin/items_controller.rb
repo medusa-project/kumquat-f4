@@ -44,9 +44,10 @@ module Admin
       @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
       raise ActiveRecord::RecordNotFound unless @item
 
-      ExtractFullTextJob.perform_later(@item)
+      @job_runner.run_later(ExtractFullTextJob.new, @item)
 
-      flash['success'] = 'Extracting full text. This may take a while.'
+      flash['success'] = 'Queued full text extraction. This may take a while '\
+      'depending on the size of the master bytestream.'
       redirect_to :back
     end
 

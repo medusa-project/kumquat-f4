@@ -32,10 +32,17 @@ class Job < ActiveJob::Base
   end
 
   ##
+  # @return array Permissions required to execute the job.
+  #
+  def required_permissions
+    []
+  end
+
+  ##
   # @return Task The Task associated with the job.
   #
   def task
-    @task = Task.find_by_job_id(self.job_id) unless @task
+    @task = Task.find_by_job_id(self.job_id || self.object_id) unless @task
     @task
   end
 
@@ -45,7 +52,9 @@ class Job < ActiveJob::Base
   end
 
   def do_after_enqueue
-    Task.create!(name: self.class.name, job_id: self.job_id,
+    # background jobs will have a job_id, but foreground jobs will not, so use
+    # the object_id instead.
+    Task.create!(name: self.class.name, job_id: self.job_id || self.object_id,
                  status: Task::Status::WAITING)
   end
 

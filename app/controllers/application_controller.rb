@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
 
   def setup
     @executor = CommandExecutor.new(current_user)
+    @job_runner = JobRunner.new(current_user)
   end
 
   def admin_user

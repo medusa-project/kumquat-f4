@@ -1,6 +1,9 @@
 class ExtractFullTextJob < Job
   queue_as :default
 
+  ##
+  # @param args Repository::Item
+  #
   def perform(*args)
     self.task.status_text = "Extract full text from item \"#{args[0].title}\""
     self.task.save!

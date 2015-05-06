@@ -17,9 +17,13 @@ class PublishCollectionCommand < Command
       @collection.save!
 
       items = Repository::Item.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
-      items.each do |item|
+      items.each_with_index do |item, index|
         item.published = true
         item.save!
+        if self.task and index % 10
+          self.task.percent_complete = index / items.length.to_f
+          self.task.save!
+        end
       end
     end
   end

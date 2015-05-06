@@ -71,7 +71,7 @@ module DerivativeManagement
   # @param shape One of the Repository::Bytestream::Shape constants
   # @return string
   #
-  def derivative_image_url(size, shape)
+  def derivative_image_url(size, shape = Repository::Bytestream::Shape::ORIGINAL)
     bs = self.bytestreams.
         select{ |bs| (bs.width == size and bs.height <= size) or (bs.height == size and bs.width <= size) }.
         select{ |bs| bs.shape == shape }.first

@@ -5,6 +5,11 @@
 class Command
 
   ##
+  # Task associated with the command (typically set by a Job for longer-
+  # running commands)
+  #
+  attr_accessor :task
+
   ##
   # Returns an array of permissions required to execute the command.
   #

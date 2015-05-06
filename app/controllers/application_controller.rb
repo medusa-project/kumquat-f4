@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   include SessionsHelper
 
-  attr_reader :executor
+  attr_reader :executor, :job_runner
 
   before_action :setup
   after_action :flash_in_response_headers

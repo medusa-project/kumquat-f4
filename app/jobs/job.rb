@@ -9,6 +9,13 @@ class Job < ActiveJob::Base
   after_perform :do_after_perform
 
   ##
+  # @return array Permissions required to execute the job.
+  #
+  def self.required_permissions
+    []
+  end
+
+  ##
   # The main job execution method. In this method, implementations should
   # update the status text and percent complete of the current task
   # frequently:
@@ -29,13 +36,6 @@ class Job < ActiveJob::Base
     self.task.status = Task::Status::FAILED
     self.task.save!
     raise e
-  end
-
-  ##
-  # @return array Permissions required to execute the job.
-  #
-  def required_permissions
-    []
   end
 
   ##

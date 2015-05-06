@@ -167,9 +167,9 @@ module DerivativeManagement
 
       # read the source image and write the derivative to a temp file
       system "convert \"#{src}[0]\" "\
+      "-quality #{profile[:quality]} -flatten -strip -interlace Plane "\
       "-define jpeg:size=#{profile[:size] * 2}x#{profile[:size] * 2} "\
       "-thumbnail #{profile[:size]}x#{profile[:size]}^ -alpha off "\
-      "-quality #{profile[:quality]} -flatten -strip -interlace Plane "\
       "-gravity center "\
       "-extent #{profile[:size]}x#{profile[:size]} \"#{upload_pathname}\""
 

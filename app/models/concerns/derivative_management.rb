@@ -68,12 +68,13 @@ module DerivativeManagement
   # Returns the path at which an item's image is expected to reside.
   #
   # @param size int One of the sizes in IMAGE_DERIVATIVES
+  # @param shape One of the Repository::Bytestream::Shape constants
   # @return string
   #
-  def derivative_image_url(size)
+  def derivative_image_url(size, shape)
     bs = self.bytestreams.
-        select{ |bs| (bs.width == size and bs.height <= size) or
-        (bs.height == size and bs.width <= size) }.first
+        select{ |bs| (bs.width == size and bs.height <= size) or (bs.height == size and bs.width <= size) }.
+        select{ |bs| bs.shape == shape }.first
     bs ? bs.public_repository_url : nil
   end
 

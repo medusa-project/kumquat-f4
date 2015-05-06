@@ -39,7 +39,8 @@
         <%= items_as_list(@items, @start, show_collections: !@collection,
                           show_add_to_favorites_buttons: true,
                           show_description: true,
-                          show_remove_from_favorites_buttons: true) %>
+                          show_remove_from_favorites_buttons: true,
+                          thumbnail_shape: Repository::Bytestream::Shape::SQUARE) %>
       </div>
 
       <div class="text-center">

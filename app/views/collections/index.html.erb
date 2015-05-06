@@ -5,7 +5,8 @@
 <h1>Collections <small><%= @collections.total_length %> total</small></h1>
 
 <div class="kq-results">
-  <%= items_as_list(@collections, @start) %>
+  <%= items_as_list(@collections, @start,
+                    thumbnail_shape: Repository::Bytestream::Shape::SQUARE) %>
 </div>
 
 <%= paginate(@collections, @limit, @current_page) %>

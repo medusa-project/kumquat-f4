@@ -133,11 +133,14 @@ module ItemsHelper
   # :link_to_admin (boolean), :show_remove_from_favorites_buttons (boolean),
   # :show_add_to_favorites_buttons (boolean),
   # :show_collections (boolean), :show_description (boolean),
-  # :thumbnail_size (integer)
+  # :thumbnail_size (integer),
+  # :thumbnail_shape (Repository::Bytestream::Shape constant)
   #
   def items_as_list(items, start, options = {})
     options[:show_description] = true unless
         options.keys.include?(:show_description)
+    options[:thumbnail_shape] = Repository::Bytestream::Shape::ORIGINAL unless
+        options.keys.include?(:thumbnail_shape)
 
     html = "<ol start=\"#{start + 1}\">"
     items.each do |entity|
@@ -157,7 +160,8 @@ module ItemsHelper
           item = entity
         end
         thumbnail_tag(item,
-                      options[:thumbnail_size] ? options[:thumbnail_size] : 256)
+                      options[:thumbnail_size] ? options[:thumbnail_size] : 256,
+                      options[:thumbnail_shape])
       end
       html += '<span class="kq-title">'
       html += link_to(entity.title, link_target)
@@ -339,11 +343,13 @@ module ItemsHelper
   # icon_for
   # @param size integer One of the sizes in
   # DerivativeManagement::IMAGE_DERIVATIVES
+  # @param shape One of the Repository::Bytestream::Shape constants
   #
-  def thumbnail_tag(entity, size)
+  def thumbnail_tag(entity, size,
+                    shape = Repository::Bytestream::Shape::ORIGINAL)
     html = "<div class=\"kq-thumbnail\">"
     if entity.kind_of?(Repository::Item)
-      thumb_url = entity.derivative_image_url(size)
+      thumb_url = entity.derivative_image_url(size, shape)
       if thumb_url
         html += image_tag(thumb_url, alt: 'Thumbnail image')
       else

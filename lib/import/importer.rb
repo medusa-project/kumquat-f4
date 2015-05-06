@@ -94,6 +94,7 @@ module Import
                   owner: item,
                   upload_pathname: pathname,
                   type: Repository::Bytestream::Type::MASTER,
+                  shape: Repository::Bytestream::Shape::ORIGINAL,
                   transaction_url: transaction_url)
               # assign media type
               media_type = @import_delegate.media_type_of_item_at_index(index)
@@ -110,6 +111,7 @@ module Import
                   owner: item,
                   external_resource_url: url,
                   type: Repository::Bytestream::Type::MASTER,
+                  shape: Repository::Bytestream::Shape::ORIGINAL,
                   transaction_url: transaction_url)
               # assign media type
               media_type = @import_delegate.media_type_of_item_at_index(index)

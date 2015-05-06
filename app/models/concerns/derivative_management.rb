@@ -79,19 +79,7 @@ module DerivativeManagement
 
   private
 
-  ##
-  # @param item Repository::Item
-  # @param src Path to source master audio file
-  #
-  def generate_derivatives_for_audio(item, src)
-    # TODO: write this
-  end
-
-  ##
-  # @param item Repository::Item
-  # @param src Path to source master image
-  #
-  def generate_derivatives_for_image(item, src)
+  def generate_aspect_fit_derivatives_for_image(item, src)
     IMAGE_DERIVATIVES.each do |profile|
       tempfile = Tempfile.new("deriv-#{profile[:size]}")
       upload_pathname = "#{tempfile.path}.#{profile[:extension]}"
@@ -107,6 +95,7 @@ module DerivativeManagement
             owner: item,
             upload_pathname: upload_pathname,
             media_type: profile[:media_type],
+            shape: Repository::Bytestream::Shape::ORIGINAL,
             type: Repository::Bytestream::Type::DERIVATIVE,
             transaction_url: self.transaction_url)
         bs.save
@@ -117,6 +106,50 @@ module DerivativeManagement
     end
   end
 
+  def generate_aspect_fit_image_derivatives_for_video(item, src)
+    IMAGE_DERIVATIVES.each do |profile|
+      tempfile = Tempfile.new("deriv-#{profile[:size]}")
+      upload_pathname = "#{tempfile.path}.#{profile[:extension]}"
+      begin
+        system "ffmpeg -i \"#{src}\" -vframes 1 -an -vf -loglevel fatal "\
+        "scale=\"min(#{profile[:size]}\\, iw):-1\" -y \"#{upload_pathname}\""
+
+        if File.exist?(upload_pathname)
+          # create a new Bytestream using the temp file as a source
+          bs = Repository::Bytestream.new(
+              owner: item,
+              upload_pathname: upload_pathname,
+              media_type: profile[:media_type],
+              shape: Repository::Bytestream::Shape::ORIGINAL,
+              type: Repository::Bytestream::Type::DERIVATIVE,
+              transaction_url: self.transaction_url)
+          bs.save
+          item.bytestreams << bs
+        end
+      ensure
+        File.delete(upload_pathname) if File.exist?(upload_pathname)
+        tempfile.unlink
+      end
+    end
+  end
+
+  ##
+  # @param item Repository::Item
+  # @param src Path to source master audio file
+  #
+  def generate_derivatives_for_audio(item, src)
+    # TODO: write this
+  end
+
+  ##
+  # @param item Repository::Item
+  # @param src Path to source master image
+  #
+  def generate_derivatives_for_image(item, src)
+    generate_aspect_fit_derivatives_for_image(item, src)
+    generate_square_derivatives_for_image(item, src)
+  end
+
   ##
   # @param item Repository::Item
   # @param src Path to source master video
@@ -124,6 +157,64 @@ module DerivativeManagement
   def generate_derivatives_for_video(item, src)
     generate_video_derivatives_for_video(item, src)
     generate_image_derivatives_for_video(item, src)
+  end
+
+  def generate_square_derivatives_for_image(item, src)
+    IMAGE_DERIVATIVES.each do |profile|
+      tempfile = Tempfile.new("deriv-#{profile[:size]}")
+      upload_pathname = "#{tempfile.path}.#{profile[:extension]}"
+
+      # read the source image and write the derivative to a temp file
+      system "convert \"#{src}[0]\" "\
+      "-define jpeg:size=#{profile[:size] * 2}x#{profile[:size] * 2} "\
+      "-thumbnail #{profile[:size]}x#{profile[:size]}^ -alpha off "\
+      "-quality #{profile[:quality]} -flatten -strip -interlace Plane "\
+      "-gravity center "\
+      "-extent #{profile[:size]}x#{profile[:size]} \"#{upload_pathname}\""
+
+      if File.exist?(upload_pathname)
+        # create a new Bytestream using the temp file as a source
+        bs = Repository::Bytestream.new(
+            owner: item,
+            upload_pathname: upload_pathname,
+            media_type: profile[:media_type],
+            shape: Repository::Bytestream::Shape::SQUARE,
+            type: Repository::Bytestream::Type::DERIVATIVE,
+            transaction_url: self.transaction_url)
+        bs.save
+        item.bytestreams << bs
+      end
+      File.delete(upload_pathname) if File.exist?(upload_pathname)
+      tempfile.unlink
+    end
+  end
+
+  def generate_square_image_derivatives_for_video(item, src)
+    IMAGE_DERIVATIVES.each do |profile|
+      tempfile = Tempfile.new("deriv-#{profile[:size]}")
+      upload_pathname = "#{tempfile.path}.#{profile[:extension]}"
+      begin
+        system "ffmpeg -i \"#{src}\" -vframes 1 -an "\
+        "-vf \"crop=ih:ih, scale=#{profile[:size]}:ih*#{profile[:size]}/iw\" "\
+        "-y \"#{upload_pathname}\""
+
+        if File.exist?(upload_pathname)
+          # create a new Bytestream using the temp file as a source
+          bs = Repository::Bytestream.new(
+              owner: item,
+              upload_pathname: upload_pathname,
+              media_type: profile[:media_type],
+              shape: Repository::Bytestream::Shape::SQUARE,
+              type: Repository::Bytestream::Type::DERIVATIVE,
+              transaction_url: self.transaction_url)
+          bs.save
+          item.bytestreams << bs
+        end
+      ensure
+        File.delete(upload_pathname) if File.exist?(upload_pathname)
+        tempfile.unlink
+      end
+    end
   end
 
   def generate_video_derivatives_for_video(item, src)
@@ -142,6 +233,7 @@ module DerivativeManagement
               owner: item,
               upload_pathname: upload_pathname,
               media_type: profile[:media_type],
+              shape: Repository::Bytestream::Shape::ORIGINAL,
               type: Repository::Bytestream::Type::DERIVATIVE,
               transaction_url: self.transaction_url)
           bs.save
@@ -155,29 +247,8 @@ module DerivativeManagement
   end
 
   def generate_image_derivatives_for_video(item, src)
-    IMAGE_DERIVATIVES.each do |profile|
-      tempfile = Tempfile.new("deriv-#{profile[:size]}")
-      upload_pathname = "#{tempfile.path}.#{profile[:extension]}"
-      begin
-        system "ffmpeg -i \"#{src}\" -vframes 1 -an -vf -loglevel fatal "\
-        "scale=\"min(#{profile[:size]}\\, iw):-1\" -y \"#{upload_pathname}\""
-
-        if File.exist?(upload_pathname)
-          # create a new Bytestream using the temp file as a source
-          bs = Repository::Bytestream.new(
-              owner: item,
-              upload_pathname: upload_pathname,
-              media_type: profile[:media_type],
-              type: Repository::Bytestream::Type::DERIVATIVE,
-              transaction_url: self.transaction_url)
-          bs.save
-          item.bytestreams << bs
-        end
-      ensure
-        File.delete(upload_pathname) if File.exist?(upload_pathname)
-        tempfile.unlink
-      end
-    end
+    generate_aspect_fit_image_derivatives_for_video(item, src)
+    generate_square_image_derivatives_for_video(item, src)
   end
 
 end

@@ -5,6 +5,8 @@ module Repository
   # as ActiveKumquat::Base, but do not descend from that class as they are not
   # indexable, so they cannot be retrieved with finder methods.
   #
+  # TODO: extend ActiveKumquat::Base
+  #
   class Bytestream
 
     include ActiveModel::Model
@@ -19,12 +21,20 @@ module Repository
     attr_accessor :owner # ActiveKumquat::Base subclass
     attr_accessor :repository_url # string
     attr_accessor :transaction_url # string
+    attr_accessor :shape # Bytestream::Shape
     attr_accessor :type # Bytestream::Type
     attr_accessor :upload_pathname # string
     attr_accessor :uuid # string
     attr_accessor :width # integer
 
     validates_presence_of :owner
+
+    class Shape
+      ORIGINAL = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::ORIGINAL_SHAPE
+      SQUARE = Kumquat::Application::NAMESPACE_URI +
+          Kumquat::Application::RDFObjects::SQUARE_SHAPE
+    end
 
     class Type
       DERIVATIVE = Kumquat::Application::NAMESPACE_URI +
@@ -146,6 +156,8 @@ module Repository
           self.height = object.to_s.to_i
         elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_TYPE}"
           self.type = object.to_s
+        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_SHAPE}"
+          self.shape = object.to_s
         elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::WIDTH}"
           self.width = object.to_s.to_i
         elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
@@ -245,6 +257,9 @@ module Repository
           insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width.to_i)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height.to_i)
+      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_SHAPE}>", '?o').
+          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_SHAPE}",
+                 "<#{self.shape}>", false)
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::CLASS}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
                  "<#{kq_uri}#{kq_objects::BYTESTREAM}>", false)

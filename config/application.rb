@@ -21,6 +21,8 @@ module Kumquat
       DERIVATIVE_BYTESTREAM = 'Bytestream/Derivative'
       ITEM = 'Item'
       MASTER_BYTESTREAM = 'Bytestream/Master'
+      ORIGINAL_SHAPE = 'Bytestream/Shape/Original'
+      SQUARE_SHAPE = 'Bytestream/Shape/Square'
     end
 
     ##
@@ -29,6 +31,7 @@ module Kumquat
     #
     class RDFPredicates
       BYTE_SIZE = 'byteSize'
+      BYTESTREAM_SHAPE = 'bytestreamShape'
       BYTESTREAM_TYPE = 'bytestreamType'
       BYTESTREAM_URI = 'hasBytestream'
       CLASS = 'class'

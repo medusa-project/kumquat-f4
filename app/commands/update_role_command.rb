@@ -1,5 +1,9 @@
 class UpdateRoleCommand < Command
 
+  def self.required_permissions
+    super + [Permission::ROLES_UPDATE]
+  end
+
   def initialize(role, role_params)
     @role = role
     @role_params = role_params
@@ -11,10 +15,6 @@ class UpdateRoleCommand < Command
 
   def object
     @role
-  end
-
-  def required_permissions
-    super + [Permission::ROLES_UPDATE]
   end
 
 end

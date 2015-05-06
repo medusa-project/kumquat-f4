@@ -1,5 +1,9 @@
 class UnpublishCollectionCommand < Command
 
+  def self.required_permissions
+    super + [Permission::UNPUBLISH_COLLECTIONS]
+  end
+
   ##
   # @param collection Repository::Collection
   #
@@ -22,10 +26,6 @@ class UnpublishCollectionCommand < Command
 
   def object
     @collection
-  end
-
-  def required_permissions
-    super + [Permission::UNPUBLISH_COLLECTIONS]
   end
 
 end

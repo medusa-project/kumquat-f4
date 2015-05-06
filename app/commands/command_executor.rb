@@ -37,7 +37,7 @@ class CommandExecutor
   private
 
   def check_permissions(command)
-    missing_permissions = command.required_permissions.reject do |p|
+    missing_permissions = command.class.required_permissions.reject do |p|
       @doing_user.can?(p)
     end
     if missing_permissions.any?

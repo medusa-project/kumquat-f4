@@ -1,5 +1,9 @@
 class ExtractFullTextCommand < Command
 
+  def self.required_permissions
+    super + []
+  end
+
   def initialize(item)
     @item = item
   end
@@ -11,10 +15,6 @@ class ExtractFullTextCommand < Command
 
   def object
     @item
-  end
-
-  def required_permissions
-    super + []
   end
 
 end

@@ -1,5 +1,9 @@
 class CreateRoleCommand < Command
 
+  def self.required_permissions
+    super + [Permission::ROLES_CREATE]
+  end
+
   def initialize(role_params)
     @role_params = role_params
     @role = Role.new(role_params)
@@ -11,10 +15,6 @@ class CreateRoleCommand < Command
 
   def object
     @role
-  end
-
-  def required_permissions
-    super + [Permission::ROLES_CREATE]
   end
 
 end

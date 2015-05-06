@@ -1,5 +1,9 @@
 class UpdateRepositoryCollectionCommand < Command
 
+  def self.required_permissions
+    super + [Permission::COLLECTIONS_UPDATE]
+  end
+
   def initialize(collection, collection_params)
     @collection = collection
     @collection.update(collection_params)
@@ -11,10 +15,6 @@ class UpdateRepositoryCollectionCommand < Command
 
   def object
     @collection
-  end
-
-  def required_permissions
-    super + [Permission::COLLECTIONS_UPDATE]
   end
 
 end

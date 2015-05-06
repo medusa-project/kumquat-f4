@@ -1,5 +1,9 @@
 class UpdateDBCollectionCommand < Command
 
+  def self.required_permissions
+    super + [Permission::COLLECTIONS_UPDATE]
+  end
+
   def initialize(collection, params)
     @collection = collection
     @params = params
@@ -21,10 +25,6 @@ class UpdateDBCollectionCommand < Command
 
   def object
     @collection
-  end
-
-  def required_permissions
-    super + [Permission::COLLECTIONS_UPDATE]
   end
 
 end

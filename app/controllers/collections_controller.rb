@@ -7,7 +7,7 @@ class CollectionsController < WebsiteController
     # TODO: find a way to sort by title
     @collections = Repository::Collection.where(query).
         where(Solr::Solr::PUBLISHED_KEY => true).
-        order(:kq_system_collection_key).start(@start).limit(@limit)
+        order(Solr::Solr::COLLECTION_KEY_KEY).start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_shown = [@limit, @collections.total_length].min
   end

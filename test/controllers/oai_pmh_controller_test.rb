@@ -108,7 +108,7 @@ class OaiPmhControllerTest < ActionController::TestCase
                   Option::string(Option::Key::WEBSITE_NAME)
     assert_select 'Identify > baseURL', 'http://test.host/'
     assert_select 'Identify > protocolVersion', '2.0'
-    items = Repository::Item.order(kq_system_created_at: :desc).limit(1)
+    items = Repository::Item.order(Solr::Solr::CREATED_AT_KEY => :desc).limit(1)
     assert_select 'Identify > earliestDatestamp', items.first.created_at.iso8601
     assert_select 'Identify > deletedRecord', 'no'
     assert_select 'Identify > granularity', 'YYYY-MM-DDThh:mm:ssZ'

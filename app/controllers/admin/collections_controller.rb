@@ -45,8 +45,8 @@ module Admin
       @start = params[:start] ? params[:start].to_i : 0
       @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
       # TODO: find a way to sort by title
-      @collections = Repository::Collection.order(:kq_system_collection_key).
-          start(@start).limit(@limit)
+      @collections = Repository::Collection.
+          order(Solr::Solr::COLLECTION_KEY_KEY).start(@start).limit(@limit)
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @num_shown = [@limit, @collections.total_length].min
     end

@@ -236,10 +236,11 @@ module ActiveKumquat
     def to_sparql_update
       update = SparqlUpdate.new
       update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+      # TODO: this property probably isn't necessary unless we are using
+      # fcrepo-camel to directly populate Solr
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
           delete('<>', '<indexing:hasIndexingTransformation>', '?o', false).
-          insert(nil, 'indexing:hasIndexingTransformation',
-                 Repository::Fedora::INDEXING_TRANSFORM_NAME)
+          insert(nil, 'indexing:hasIndexingTransformation', 'default')
       update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
           delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)

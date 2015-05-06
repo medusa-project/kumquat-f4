@@ -159,7 +159,7 @@ module ActiveKumquat
           bs = Repository::Bytestream.new(owner: self,
                                           repository_url: statement.object.to_s,
                                           transaction_url: self.transaction_url)
-          bs.reload!
+          bs.reload! # TODO: be lazier
           self.bytestreams << bs
         end
         self.rdf_graph << statement

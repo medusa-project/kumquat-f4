@@ -22,6 +22,9 @@ class CommandExecutor
   end
 
   ##
+  # Executes a Command. To run a command in the background, see the
+  # documentation for JobRunner::run_later.
+  #
   # @param command Command
   # @raise RuntimeError
   #

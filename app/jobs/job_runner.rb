@@ -33,6 +33,15 @@ class JobRunner
   alias_method :run_now, :run
 
   ##
+  # Runs a given job later. To run a Command later, do something like this:
+  #
+  #     args = {
+  #        command: DoSomethingCommand,
+  #        args: @item,
+  #        task_status_text: "Starting to do something"
+  #     }
+  #     runner.run_later(CommandJob, args)
+  #
   # @param job Job class (not instance)
   # @param args Arguments to pass to the job
   # @raise RuntimeError

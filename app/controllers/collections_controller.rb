@@ -1,7 +1,3 @@
-class Array
-  attr_accessor :total_length
-end
-
 class CollectionsController < WebsiteController
 
   def index

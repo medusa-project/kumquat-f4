@@ -42,8 +42,9 @@ class ItemsController < WebsiteController
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
       @items = @items.where(Solr::Fields::COLLECTION_KEY => @collection.key)
     end
-    #@items = @items.order(:kq_title).start(@start).limit(@limit)
-    # TODO: find a way to re-enable sorting
+    # if there is no user-entered query, sort by title. Otherwise, use the
+    # default sort, which is by relevancy
+    @items = @items.order(Solr::Fields::SINGLE_TITLE) if params[:q].blank?
     @items = @items.start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_results_shown = [@limit, @items.total_length].min

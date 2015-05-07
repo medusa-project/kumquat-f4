@@ -66,13 +66,16 @@ module Admin
       @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
       @items = Repository::Item.all.
           where("-#{Solr::Fields::PARENT_URI}:[* TO *]").
-          where(params[:q])
+          where(params[:q]).
+          facet(false)
 
       # fields
+      field_input_present = false
       if params[:triples] and params[:triples].any?
         params[:triples].each_with_index do |field, index|
           if params[:terms].length > index and !params[:terms][index].blank?
             @items = @items.where("#{field}:#{params[:terms][index]}")
+            field_input_present = true
           end
         end
       end
@@ -90,6 +93,9 @@ module Admin
 
       respond_to do |format|
         format.html do
+          # if there is no user-entered query, sort by title. Otherwise, use
+          # the default sort, which is by relevancy
+          @items = @items.order(Solr::Fields::SINGLE_TITLE) unless field_input_present
           @items = @items.start(@start).limit(@limit)
           @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
           @num_results_shown = [@limit, @items.total_length].min

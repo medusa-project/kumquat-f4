@@ -6,7 +6,7 @@ module Repository
     include DerivativeManagement
     include ImageServing
 
-    ENTITY_CLASS = ActiveKumquat::Base::Class::ITEM
+    ENTITY_CLASS = Kumquat::Application::RDFObjects::ITEM
     WEB_ID_LENGTH = 5
 
     attr_accessor :collection

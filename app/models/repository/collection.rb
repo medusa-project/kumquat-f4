@@ -4,7 +4,7 @@ module Repository
 
     include Introspection
 
-    ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION # TODO: get rid of this
+    ENTITY_CLASS = Kumquat::Application::RDFObjects::COLLECTION
 
     rdf_property :key, type: :string,
                  uri: Kumquat::Application::NAMESPACE_URI +

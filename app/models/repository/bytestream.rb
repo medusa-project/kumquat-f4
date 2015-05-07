@@ -12,7 +12,7 @@ module Repository
     include ActiveModel::Model
     include ActiveKumquat::Transactions
 
-    ENTITY_CLASS = ActiveKumquat::Base::Class::BYTESTREAM
+    ENTITY_CLASS = Kumquat::Application::RDFObjects::BYTESTREAM
 
     attr_accessor :byte_size # integer
     attr_accessor :external_resource_url # string

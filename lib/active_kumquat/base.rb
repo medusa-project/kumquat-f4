@@ -17,12 +17,6 @@ module ActiveKumquat
     define_model_callbacks :create, :delete, :load, :save, :update,
                            only: [:after, :before]
 
-    class Class
-      BYTESTREAM = 'Bytestream'
-      COLLECTION = 'Collection'
-      ITEM = 'Item'
-    end
-
     @@http = HTTPClient.new
     @@kq_properties = Set.new
 

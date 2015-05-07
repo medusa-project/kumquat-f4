@@ -3,7 +3,7 @@ class CollectionsController < WebsiteController
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
-    query = !params[:q].blank? ? "kq_searchall:#{params[:q]}" : nil
+    query = !params[:q].blank? ? "#{Solr::Fields::SEARCH_ALL}:#{params[:q]}" : nil
     @collections = Repository::Collection.where(query).
         where(Solr::Fields::PUBLISHED => true).
         order(Solr::Fields::SINGLE_TITLE).start(@start).limit(@limit)

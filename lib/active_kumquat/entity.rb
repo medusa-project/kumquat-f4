@@ -142,7 +142,7 @@ module ActiveKumquat
             @caller.constants.include?(:ENTITY_CLASS)
         params = {
             q: @where_clauses.join(' AND '),
-            df: 'kq_searchall',
+            df: Solr::Fields::SEARCH_ALL,
             start: @start,
             sort: @order,
             rows: @limit

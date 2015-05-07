@@ -6,7 +6,7 @@ class SearchController < WebsiteController
   def index
     @predicates_for_select = RDFPredicate.order(:label).
         map{ |p| [ p.label, p.solr_field ] }.uniq
-    @predicates_for_select.unshift([ 'Any Field', 'kq_searchall' ])
+    @predicates_for_select.unshift([ 'Any Field', Solr::Fields::SEARCH_ALL ])
 
     @collections = Repository::Collection.all
   end

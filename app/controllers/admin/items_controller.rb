@@ -103,7 +103,7 @@ module Admin
           # these are used by the search form
           @predicates_for_select = RDFPredicate.order(:uri).
               map{ |p| [ p.uri, p.solr_field ] }.uniq
-          @predicates_for_select.unshift([ 'Any Triple', 'kq_searchall' ])
+          @predicates_for_select.unshift([ 'Any Triple', Solr::Fields::SEARCH_ALL ])
           @collections = Repository::Collection.all
         end
         format.jsonld { stream(RDFStreamer.new(@items, :jsonld), 'export.json') }

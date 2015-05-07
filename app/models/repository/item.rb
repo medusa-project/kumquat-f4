@@ -73,7 +73,7 @@ module Repository
       if self.master_bytestream and self.master_bytestream.repository_url
         begin
           yomu = Yomu.new(self.master_bytestream.repository_url)
-          self.full_text = yomu.text
+          self.full_text = yomu.text.force_encoding('UTF-8')
         rescue Errno::EPIPE
           # nothing we can do
           return false

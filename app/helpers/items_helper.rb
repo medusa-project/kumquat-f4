@@ -368,7 +368,7 @@ module ItemsHelper
   #
   def triples_to_dl(describable, options = {})
     exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
-        [Kumquat::Application::NAMESPACE_URI])
+        [Kumquat::NAMESPACE_URI])
 
     # process triples into an array of hashes, collapsing identical subjects
     triples = []

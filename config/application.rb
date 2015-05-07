@@ -7,9 +7,10 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module Kumquat
-  class Application < Rails::Application
 
-    NAMESPACE_URI = 'http://kumquat.library.illinois.edu/'
+  NAMESPACE_URI = 'http://kumquat.library.illinois.edu/'
+
+  class Application < Rails::Application
 
     ##
     # "System objects" used by the application in the subject-predicate-object

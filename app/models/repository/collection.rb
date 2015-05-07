@@ -7,13 +7,13 @@ module Repository
     ENTITY_CLASS = Kumquat::Application::RDFObjects::COLLECTION
 
     rdf_property :key, type: :string,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::COLLECTION_KEY
     rdf_property :published, type: :boolean,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::PUBLISHED
     rdf_property :resource_type, type: :uri,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::CLASS
 
     validates :key, length: { minimum: 2, maximum: 20 }
@@ -47,7 +47,7 @@ module Repository
     end
 
     def initialize(params = {})
-      @resource_type = Kumquat::Application::NAMESPACE_URI +
+      @resource_type = Kumquat::NAMESPACE_URI +
           Kumquat::Application::RDFObjects::COLLECTION
       super(params)
     end

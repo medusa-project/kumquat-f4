@@ -30,16 +30,16 @@ module Repository
     validates_presence_of :owner
 
     class Shape
-      ORIGINAL = Kumquat::Application::NAMESPACE_URI +
+      ORIGINAL = Kumquat::NAMESPACE_URI +
           Kumquat::Application::RDFObjects::ORIGINAL_SHAPE
-      SQUARE = Kumquat::Application::NAMESPACE_URI +
+      SQUARE = Kumquat::NAMESPACE_URI +
           Kumquat::Application::RDFObjects::SQUARE_SHAPE
     end
 
     class Type
-      DERIVATIVE = Kumquat::Application::NAMESPACE_URI +
+      DERIVATIVE = Kumquat::NAMESPACE_URI +
           Kumquat::Application::RDFObjects::DERIVATIVE_BYTESTREAM
-      MASTER = Kumquat::Application::NAMESPACE_URI +
+      MASTER = Kumquat::NAMESPACE_URI +
           Kumquat::Application::RDFObjects::MASTER_BYTESTREAM
     end
 
@@ -150,15 +150,15 @@ module Repository
       graph.each_triple do |subject, predicate, object|
         if predicate == 'http://purl.org/dc/terms/MediaType'
           self.media_type = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTE_SIZE}"
+        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::BYTE_SIZE}"
           self.byte_size = object.to_s.to_i
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::HEIGHT}"
+        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::HEIGHT}"
           self.height = object.to_s.to_i
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_TYPE}"
+        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_TYPE}"
           self.type = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_SHAPE}"
+        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_SHAPE}"
           self.shape = object.to_s
-        elsif predicate == "#{Kumquat::Application::NAMESPACE_URI}#{kq_predicates::WIDTH}"
+        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::WIDTH}"
           self.width = object.to_s.to_i
         elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
           self.uuid = object.to_s
@@ -237,7 +237,7 @@ module Repository
     end
 
     def to_sparql_update
-      kq_uri = Kumquat::Application::NAMESPACE_URI
+      kq_uri = Kumquat::NAMESPACE_URI
       kq_predicates = Kumquat::Application::RDFPredicates
       kq_objects = Kumquat::Application::RDFObjects
 

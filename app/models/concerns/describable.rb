@@ -50,7 +50,7 @@ module Describable
           !statement.predicate.to_s.start_with?('http://www.w3.org/1999/02/22-rdf-syntax-ns') and
           !statement.predicate.to_s.start_with?('http://www.w3.org/2000/01/rdf-schema') and
           !statement.predicate.to_s.start_with?('http://www.w3.org/ns/ldp') and
-          !statement.predicate.to_s.start_with?(Kumquat::Application::NAMESPACE_URI)
+          !statement.predicate.to_s.start_with?(Kumquat::NAMESPACE_URI)
         st = statement.dup
         st.subject = RDF::URI(subject_uri)
         public_graph << st

@@ -138,7 +138,7 @@ module ActiveKumquat
         return @results
       end
       unless @loaded
-        @where_clauses << "#{Solr::Fields::CLASS}:\"#{Kumquat::Application::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
+        @where_clauses << "#{Solr::Fields::CLASS}:\"#{Kumquat::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
             @caller.constants.include?(:ENTITY_CLASS)
         params = {
             q: @where_clauses.join(' AND '),

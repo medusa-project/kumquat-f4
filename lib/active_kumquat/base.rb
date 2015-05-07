@@ -143,7 +143,7 @@ module ActiveKumquat
     # @param graph RDF::Graph
     #
     def populate_from_graph(graph)
-      kq_uri = Kumquat::Application::NAMESPACE_URI
+      kq_uri = Kumquat::NAMESPACE_URI
       kq_predicates = Kumquat::Application::RDFPredicates
 
       graph.each_statement do |statement|
@@ -229,7 +229,7 @@ module ActiveKumquat
     #
     def to_sparql_update
       update = SparqlUpdate.new
-      update.prefix('kumquat', Kumquat::Application::NAMESPACE_URI)
+      update.prefix('kumquat', Kumquat::NAMESPACE_URI)
       # TODO: this property probably isn't necessary unless we are using
       # fcrepo-camel to directly populate Solr
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').

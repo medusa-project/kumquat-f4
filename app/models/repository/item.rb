@@ -12,25 +12,25 @@ module Repository
     attr_accessor :collection
 
     rdf_property :collection_key, type: :string,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::COLLECTION_KEY
     rdf_property :full_text, type: :string,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::FULL_TEXT
     rdf_property :page_index, type: :integer,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::PAGE_INDEX
     rdf_property :parent_uri, type: :uri,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::PARENT_URI
     rdf_property :published, type: :boolean,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::PUBLISHED
     rdf_property :resource_type, type: :uri,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::CLASS
     rdf_property :web_id, type: :string,
-                 uri: Kumquat::Application::NAMESPACE_URI +
+                 uri: Kumquat::NAMESPACE_URI +
                      Kumquat::Application::RDFPredicates::WEB_ID
 
     validates :title, length: { minimum: 2, maximum: 200 }
@@ -41,7 +41,7 @@ module Repository
     def initialize(params = {})
       @children = []
       @published = true
-      @resource_type = Kumquat::Application::NAMESPACE_URI +
+      @resource_type = Kumquat::NAMESPACE_URI +
           Kumquat::Application::RDFObjects::ITEM
       super(params)
     end
@@ -93,7 +93,7 @@ module Repository
     def parent
       unless @parent
         self.rdf_graph.each_statement do |s|
-          if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
+          if s.predicate.to_s == Kumquat::NAMESPACE_URI +
               Kumquat::Application::RDFPredicates::PARENT_URI
             @parent = Repository::Item.find_by_uri(s.object.to_s)
             break

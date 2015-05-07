@@ -91,8 +91,8 @@ module Repository
         self.owner.bytestreams.delete(self)
 
         if commit_immediately
-          # wait for solr to get the delete from fcrepo-message-consumer
-          # TODO: this is horrible
+          # wait for solr to get the delete
+          # TODO: this is horrible (also doing it in save())
           sleep 2
           Solr::Solr.client.commit
         end

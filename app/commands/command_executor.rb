@@ -44,7 +44,7 @@ class CommandExecutor
     rescue => e
       message = "#{command.class.to_s} failed: #{e.message}"
       Rails.logger.warn(message)
-      raise message # TODO: make this a ValidationError?
+      raise message
     else
       message = "#{command.class.to_s} succeeded"
       Rails.logger.info(message)

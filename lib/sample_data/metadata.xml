@@ -15,8 +15,8 @@ the local:hasParent predicate.
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:dc="http://purl.org/dc/elements/1.1/"
          xmlns:dcterms="http://purl.org/dc/terms/"
-         xmlns:kumquat="http://example.org/"
-         xmlns:local="http://example.net/"> <!-- TODO: change kumquat namespace -->
+         xmlns:kumquat="http://kumquat.library.illinois.edu/"
+         xmlns:local="http://example.net/">
 
   <!-- AUDIO COLLECTION -->
 

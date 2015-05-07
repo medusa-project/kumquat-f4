@@ -547,6 +547,9 @@
        
      -->
 
+  <requestHandler name="/mlt" class="solr.MoreLikeThisHandler">
+  </requestHandler>
+
   <!-- Terms Component
 
        http://wiki.apache.org/solr/TermsComponent

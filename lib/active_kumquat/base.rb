@@ -132,6 +132,13 @@ module ActiveKumquat
       end
     end
 
+    ##
+    # @return ActiveKumquat::Entity
+    #
+    def more_like_this
+      ActiveKumquat::Entity.new(self.class).more_like_this
+    end
+
     def persisted?
       @persisted and !@destroyed
     end

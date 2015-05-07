@@ -23,6 +23,7 @@ module ActiveKumquat
       @facet_queries = []
       @limit = nil
       @loaded = false
+      @more_like_this = false
       @order = nil
       @results = ResultSet.new
       @start = 0
@@ -72,6 +73,12 @@ module ActiveKumquat
       else
         super
       end
+    end
+
+    def more_like_this
+      @more_like_this = true
+      @facet = false
+      self
     end
 
     ##
@@ -148,14 +155,17 @@ module ActiveKumquat
             sort: @order,
             rows: @limit
         }
-        if @facet
+        if @more_like_this
+          params['mlt.fl'] = Solr::Fields::SEARCH_ALL
+        elsif @facet
           params[:facet] = true
           params['facet.mincount'] = 1
           params['facet.field'] = Solr::Fields::FACET_FIELDS
           params[:fq] = @facet_queries
         end
         begin
-          solr_response = Solr::Solr.client.get('select', params: params)
+          solr_response = Solr::Solr.client.get(@more_like_this ? 'mlt' : 'select',
+                                                params: params)
           @solr_request = solr_response.request
           @results.facet_fields = solr_facet_fields_to_objects(
               solr_response['facet_counts']['facet_fields']) if @facet

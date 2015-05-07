@@ -63,9 +63,9 @@ body#items_show {
     width: 100%;
   }
 
-  .kq-horizontal-pages {
+  .kq-horizontal-items {
     overflow-x: scroll;
-    ol {
+    ol, ul {
       margin-left:0px;
       padding-left:0px;
       li {

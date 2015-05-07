@@ -357,6 +357,31 @@ module ItemsHelper
   end
 
   ##
+  # @param item Repository::Item
+  # @param limit integer
+  # @return HTML unordered list
+  #
+  def similar_items_as_list(item, limit = 10)
+    html = ''
+    items = item.more_like_this.limit(limit)
+    if items.any?
+      html += '<ul>'
+      items.each do |item|
+        next unless item.web_id # TODO: why is this necessary?
+        html += '<li><div>'
+        html += link_to(repository_item_path(item)) do
+          thumbnail_tag(item, 256, Repository::Bytestream::Shape::SQUARE)
+        end
+        html += link_to(truncate(item.title, length: 40),
+                        repository_item_path(item), class: 'kq-title')
+        html += '</div></li>'
+      end
+      html += '</ul>'
+    end
+    raw(html)
+  end
+
+  ##
   # @param entity Repository::Item or some other object suitable for passing to
   # icon_for
   # @param size integer One of the sizes in

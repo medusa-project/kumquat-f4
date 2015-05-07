@@ -21,7 +21,7 @@ the local:hasParent predicate.
   <!-- AUDIO COLLECTION -->
 
   <rdf:Description rdf:about="http://example.net/collections/audio-sample">
-    <dc:description>A collection full of audio files.</dc:description>
+    <dc:description>A collection containing audio files.</dc:description>
     <dc:title>Sample Audio Collection</dc:title>
     <local:key>audio-sample</local:key>
   </rdf:Description>
@@ -56,7 +56,7 @@ the local:hasParent predicate.
   <!-- DOCUMENT COLLECTION -->
 
   <rdf:Description rdf:about="http://example.net/collections/doc-sample">
-    <dc:description>A collection full of documents.</dc:description>
+    <dc:description>A collection containing documents.</dc:description>
     <dc:title>Sample Document Collection</dc:title>
     <local:key>doc-sample</local:key>
   </rdf:Description>
@@ -126,7 +126,7 @@ the local:hasParent predicate.
   <!-- IMAGE COLLECTION -->
 
   <rdf:Description rdf:about="http://example.net/collections/image-sample">
-    <dc:description>A collection full of images.</dc:description>
+    <dc:description>A collection containing images.</dc:description>
     <dc:title>Sample Image Collection</dc:title>
     <local:key>image-sample</local:key>
   </rdf:Description>
@@ -237,7 +237,7 @@ Red Grange of Illinois.</kumquat:fullText>
   <!-- MISC COLLECTION -->
 
   <rdf:Description rdf:about="http://example.net/collections/misc-sample">
-    <dc:description>A collection full of files of various types.</dc:description>
+    <dc:description>A collection containing files of various types.</dc:description>
     <dc:title>Sample Miscellaneous Collection</dc:title>
     <local:key>misc-sample</local:key>
   </rdf:Description>
@@ -283,7 +283,7 @@ Red Grange of Illinois.</kumquat:fullText>
   <!-- VIDEO COLLECTION -->
 
   <rdf:Description rdf:about="http://example.net/collections/video-sample">
-    <dc:description>A collection full of videos.</dc:description>
+    <dc:description>A collection containing videos.</dc:description>
     <dc:title>Sample Video Collection</dc:title>
     <local:key>video-sample</local:key>
   </rdf:Description>

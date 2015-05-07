@@ -34,7 +34,7 @@ class IndexController < ApplicationController
     kq_ns = Kumquat::Application::NAMESPACE_URI
     kq_predicates = Kumquat::Application::RDFPredicates
 
-    # initialize a document with some system-required properties
+    # initialize a document with some system-administered properties
     doc = {
         'id' => uri,
         Solr::Fields::UUID => struct['uuid'][0],
@@ -83,8 +83,10 @@ class IndexController < ApplicationController
   # Restricts access to the fcrepo-camel host.
   #
   def check_access
-    # TODO: write this
-    #Resolv.getname(request.remote_ip)
+    if Kumquat::Application.kumquat_config[:fcrepo_camel_ip] != request.remote_ip
+      render text: 'Access denied. Check the value of :fcrepo_camel_ip in the '\
+      'config file.', status: 403
+    end
   end
 
 end

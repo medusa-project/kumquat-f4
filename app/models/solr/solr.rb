@@ -9,6 +9,8 @@ module Solr
     # kq_meta_*          normalized metadata schema into which many of the
     #                    uri_* fields are copied (notably, /dc/elements/1.1 and
     #                    /dc/terms are merged)
+    # kq_meta_title_s    Single-valued title field that can be sorted (must be
+    #                    populated manually)
     # kq_sys_*           system properties
     # kq_*_facet         facets
     # kq_searchall_txt   full-text search field
@@ -558,6 +560,7 @@ module Solr
     PAGE_INDEX_KEY = :kq_sys_page_index_i
     PARENT_URI_KEY = :kq_sys_parent_uri_s
     PUBLISHED_KEY = :kq_sys_published_b
+    SINGLE_TITLE_KEY = :kq_meta_title_s
     UPDATED_AT_KEY = :kq_sys_updated_at_dts
     UUID_KEY = :kq_sys_uuid_s
     WEB_ID_KEY = :kq_sys_web_id_s

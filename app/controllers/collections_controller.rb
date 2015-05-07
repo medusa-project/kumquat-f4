@@ -4,10 +4,9 @@ class CollectionsController < WebsiteController
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
     query = !params[:q].blank? ? "kq_searchall:#{params[:q]}" : nil
-    # TODO: find a way to sort by title
     @collections = Repository::Collection.where(query).
         where(Solr::Solr::PUBLISHED_KEY => true).
-        order(Solr::Solr::COLLECTION_KEY_KEY).start(@start).limit(@limit)
+        order(Solr::Solr::SINGLE_TITLE_KEY).start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_shown = [@limit, @collections.total_length].min
   end

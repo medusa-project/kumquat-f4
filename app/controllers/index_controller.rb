@@ -61,6 +61,14 @@ class IndexController < ApplicationController
           select{ |p| statement.predicate.to_s.start_with?(p) }.any?
       field_name = Solr::Solr.field_name_for_predicate(statement.predicate)
       doc[field_name] = statement.object.to_s
+
+      # field_name fields are all multiValued, i.e. not sortable. We will
+      # make the title sortable by copying only one title into a designated
+      # non-multiValued title field.
+      if %w(http://purl.org/dc/elements/1.1/title http://purl.org/dc/terms/title).
+          include?(statement.predicate.to_s)
+        doc[Solr::Solr::SINGLE_TITLE_KEY] = statement.object.to_s
+      end
     end
 
     solr = Solr::Solr.client

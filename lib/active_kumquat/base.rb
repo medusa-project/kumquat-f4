@@ -144,7 +144,7 @@ module ActiveKumquat
     #
     def populate_from_graph(graph)
       kq_uri = Kumquat::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
+      kq_predicates = Kumquat::RDFPredicates
 
       graph.each_statement do |statement|
         if statement.predicate == RDF::URI('http://fedora.info/definitions/v4/repository#uuid')

@@ -6,32 +6,30 @@ module Repository
     include DerivativeManagement
     include ImageServing
 
-    ENTITY_CLASS = Kumquat::Application::RDFObjects::ITEM
+    ENTITY_CLASS = Kumquat::RDFObjects::ITEM
     WEB_ID_LENGTH = 5
 
     attr_accessor :collection
 
     rdf_property :collection_key, type: :string,
                  uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::COLLECTION_KEY
+                     Kumquat::RDFPredicates::COLLECTION_KEY
     rdf_property :full_text, type: :string,
                  uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::FULL_TEXT
+                     Kumquat::RDFPredicates::FULL_TEXT
     rdf_property :page_index, type: :integer,
                  uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::PAGE_INDEX
+                     Kumquat::RDFPredicates::PAGE_INDEX
     rdf_property :parent_uri, type: :uri,
                  uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::PARENT_URI
+                     Kumquat::RDFPredicates::PARENT_URI
     rdf_property :published, type: :boolean,
                  uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::PUBLISHED
+                     Kumquat::RDFPredicates::PUBLISHED
     rdf_property :resource_type, type: :uri,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::CLASS
+                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::CLASS
     rdf_property :web_id, type: :string,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::WEB_ID
+                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::WEB_ID
 
     validates :title, length: { minimum: 2, maximum: 200 }
     validates :web_id, length: { minimum: 4, maximum: 7 }
@@ -41,8 +39,7 @@ module Repository
     def initialize(params = {})
       @children = []
       @published = true
-      @resource_type = Kumquat::NAMESPACE_URI +
-          Kumquat::Application::RDFObjects::ITEM
+      @resource_type = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ITEM
       super(params)
     end
 
@@ -94,7 +91,7 @@ module Repository
       unless @parent
         self.rdf_graph.each_statement do |s|
           if s.predicate.to_s == Kumquat::NAMESPACE_URI +
-              Kumquat::Application::RDFPredicates::PARENT_URI
+              Kumquat::RDFPredicates::PARENT_URI
             @parent = Repository::Item.find_by_uri(s.object.to_s)
             break
           end

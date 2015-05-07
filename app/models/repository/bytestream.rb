@@ -12,7 +12,7 @@ module Repository
     include ActiveModel::Model
     include ActiveKumquat::Transactions
 
-    ENTITY_CLASS = Kumquat::Application::RDFObjects::BYTESTREAM
+    ENTITY_CLASS = Kumquat::RDFObjects::BYTESTREAM
 
     attr_accessor :byte_size # integer
     attr_accessor :external_resource_url # string
@@ -30,17 +30,14 @@ module Repository
     validates_presence_of :owner
 
     class Shape
-      ORIGINAL = Kumquat::NAMESPACE_URI +
-          Kumquat::Application::RDFObjects::ORIGINAL_SHAPE
-      SQUARE = Kumquat::NAMESPACE_URI +
-          Kumquat::Application::RDFObjects::SQUARE_SHAPE
+      ORIGINAL = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ORIGINAL_SHAPE
+      SQUARE = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::SQUARE_SHAPE
     end
 
     class Type
       DERIVATIVE = Kumquat::NAMESPACE_URI +
-          Kumquat::Application::RDFObjects::DERIVATIVE_BYTESTREAM
-      MASTER = Kumquat::NAMESPACE_URI +
-          Kumquat::Application::RDFObjects::MASTER_BYTESTREAM
+          Kumquat::RDFObjects::DERIVATIVE_BYTESTREAM
+      MASTER = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::MASTER_BYTESTREAM
     end
 
     @@http = HTTPClient.new
@@ -146,7 +143,7 @@ module Repository
     # @param graph RDF::Graph
     #
     def populate_from_graph(graph)
-      kq_predicates = Kumquat::Application::RDFPredicates
+      kq_predicates = Kumquat::RDFPredicates
       graph.each_triple do |subject, predicate, object|
         if predicate == 'http://purl.org/dc/terms/MediaType'
           self.media_type = object.to_s
@@ -238,8 +235,8 @@ module Repository
 
     def to_sparql_update
       kq_uri = Kumquat::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-      kq_objects = Kumquat::Application::RDFObjects
+      kq_predicates = Kumquat::RDFPredicates
+      kq_objects = Kumquat::RDFObjects
 
       update = ActiveKumquat::SparqlUpdate.new
       update.prefix('kumquat', kq_uri).prefix('dcterms', 'http://purl.org/dc/terms/')

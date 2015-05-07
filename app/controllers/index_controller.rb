@@ -32,7 +32,7 @@ class IndexController < ApplicationController
     graph.from_ntriples(response.body)
 
     kq_ns = Kumquat::NAMESPACE_URI
-    kq_predicates = Kumquat::Application::RDFPredicates
+    kq_predicates = Kumquat::RDFPredicates
 
     # initialize a document with some system-administered properties
     doc = {

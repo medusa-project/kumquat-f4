@@ -10,41 +10,41 @@ module Kumquat
 
   NAMESPACE_URI = 'http://kumquat.library.illinois.edu/'
 
+  ##
+  # "System objects" used by the application in the subject-predicate-object
+  # sense. These will be appended to NAMESPACE_URI.
+  #
+  class RDFObjects
+    BYTESTREAM = 'Bytestream'
+    COLLECTION = 'Collection'
+    DERIVATIVE_BYTESTREAM = 'Bytestream/Derivative'
+    ITEM = 'Item'
+    MASTER_BYTESTREAM = 'Bytestream/Master'
+    ORIGINAL_SHAPE = 'Bytestream/Shape/Original'
+    SQUARE_SHAPE = 'Bytestream/Shape/Square'
+  end
+
+  ##
+  # "System predicates" used by the application in the
+  # subject-predicate-object sense. These will be appended to NAMESPACE_URI.
+  #
+  class RDFPredicates
+    BYTE_SIZE = 'byteSize'
+    BYTESTREAM_SHAPE = 'bytestreamShape'
+    BYTESTREAM_TYPE = 'bytestreamType'
+    BYTESTREAM_URI = 'hasBytestream'
+    CLASS = 'class'
+    COLLECTION_KEY = 'collectionKey'
+    FULL_TEXT = 'fullText'
+    HEIGHT = 'height'
+    PAGE_INDEX = 'pageIndex'
+    PARENT_URI = 'hasParent'
+    PUBLISHED = 'published'
+    WEB_ID = 'webID'
+    WIDTH = 'width'
+  end
+
   class Application < Rails::Application
-
-    ##
-    # "System objects" used by the application in the subject-predicate-object
-    # sense. These will be appended to NAMESPACE_URI.
-    #
-    class RDFObjects
-      BYTESTREAM = 'Bytestream'
-      COLLECTION = 'Collection'
-      DERIVATIVE_BYTESTREAM = 'Bytestream/Derivative'
-      ITEM = 'Item'
-      MASTER_BYTESTREAM = 'Bytestream/Master'
-      ORIGINAL_SHAPE = 'Bytestream/Shape/Original'
-      SQUARE_SHAPE = 'Bytestream/Shape/Square'
-    end
-
-    ##
-    # "System predicates" used by the application in the
-    # subject-predicate-object sense. These will be appended to NAMESPACE_URI.
-    #
-    class RDFPredicates
-      BYTE_SIZE = 'byteSize'
-      BYTESTREAM_SHAPE = 'bytestreamShape'
-      BYTESTREAM_TYPE = 'bytestreamType'
-      BYTESTREAM_URI = 'hasBytestream'
-      CLASS = 'class'
-      COLLECTION_KEY = 'collectionKey'
-      FULL_TEXT = 'fullText'
-      HEIGHT = 'height'
-      PAGE_INDEX = 'pageIndex'
-      PARENT_URI = 'hasParent'
-      PUBLISHED = 'published'
-      WEB_ID = 'webID'
-      WIDTH = 'width'
-    end
 
     attr_accessor :kumquat_config
 

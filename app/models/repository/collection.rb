@@ -4,17 +4,15 @@ module Repository
 
     include Introspection
 
-    ENTITY_CLASS = Kumquat::Application::RDFObjects::COLLECTION
+    ENTITY_CLASS = Kumquat::RDFObjects::COLLECTION
 
     rdf_property :key, type: :string,
                  uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::COLLECTION_KEY
+                     Kumquat::RDFPredicates::COLLECTION_KEY
     rdf_property :published, type: :boolean,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::PUBLISHED
+                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::PUBLISHED
     rdf_property :resource_type, type: :uri,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::Application::RDFPredicates::CLASS
+                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::CLASS
 
     validates :key, length: { minimum: 2, maximum: 20 }
     validates :title, length: { minimum: 2, maximum: 200 }
@@ -47,8 +45,7 @@ module Repository
     end
 
     def initialize(params = {})
-      @resource_type = Kumquat::NAMESPACE_URI +
-          Kumquat::Application::RDFObjects::COLLECTION
+      @resource_type = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::COLLECTION
       super(params)
     end
 

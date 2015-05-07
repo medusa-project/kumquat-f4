@@ -25,6 +25,7 @@ module ActiveKumquat
     attr_accessor :rdf_graph
     attr_accessor :repository_url # the entity's repository URL outside of any transaction
     attr_accessor :requested_slug # requested F4 last path component for new entities
+    attr_accessor :score # float populated by ActiveKumquat::Entity, not persisted
     attr_accessor :solr_json
     attr_accessor :transaction_url
     attr_accessor :uuid

@@ -143,6 +143,7 @@ module ActiveKumquat
         params = {
             q: @where_clauses.join(' AND '),
             df: Solr::Fields::SEARCH_ALL,
+            fl: '*,score',
             start: @start,
             sort: @order,
             rows: @limit
@@ -162,6 +163,7 @@ module ActiveKumquat
           solr_response['response']['docs'].each do |doc|
             begin
               entity = @caller.new(solr_json: doc, repository_url: doc['id'])
+              entity.score = doc['score']
               url = doc['id']
               url = transactional_url(url) if self.transaction_url.present?
               f4_response = @@http.get(url, nil,

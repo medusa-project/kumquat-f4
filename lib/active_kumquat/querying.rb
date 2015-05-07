@@ -42,7 +42,7 @@ module ActiveKumquat
     # @return Entity
     #
     def find_by_web_id(web_id, transaction_url = nil)
-      self.where(Solr::Solr::WEB_ID_KEY => web_id).
+      self.where(Solr::Fields::WEB_ID => web_id).
           use_transaction_url(transaction_url).first
     end
 

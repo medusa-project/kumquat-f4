@@ -16,7 +16,7 @@ class PublishCollectionCommand < Command
       @collection.published = true
       @collection.save!
 
-      items = Repository::Item.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
+      items = Repository::Item.where(Solr::Fields::COLLECTION_KEY => @collection.key)
       items.each_with_index do |item, index|
         item.published = true
         item.save!

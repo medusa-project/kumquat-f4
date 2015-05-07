@@ -152,8 +152,8 @@ module ItemsHelper
         if entity.kind_of?(Repository::Collection)
           media_types = "(#{Repository::Bytestream::types_with_image_derivatives.join(' OR ')})"
           item = Repository::Item.
-              where(Solr::Solr::COLLECTION_KEY_KEY => entity.key).
-              where(Solr::Solr::MEDIA_TYPE_KEY => media_types).
+              where(Solr::Fields::COLLECTION_KEY => entity.key).
+              where(Solr::Fields::MEDIA_TYPE => media_types).
               facet(false).order("random_#{SecureRandom.hex}").first ||
               Repository::Collection
         else

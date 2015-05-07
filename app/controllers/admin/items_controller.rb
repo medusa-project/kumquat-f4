@@ -65,7 +65,7 @@ module Admin
       @start = params[:start] ? params[:start].to_i : 0
       @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
       @items = Repository::Item.all.
-          where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
+          where("-#{Solr::Fields::PARENT_URI}:[* TO *]").
           where(params[:q])
 
       # fields
@@ -81,11 +81,11 @@ module Admin
       keys = []
       keys = params[:keys].select{ |k| !k.blank? } if params[:keys] and params[:keys].any?
       if keys.any? and keys.length < Repository::Collection.all.length
-        @items = @items.where("#{Solr::Solr::COLLECTION_KEY_KEY}:(#{keys.join(' ')})")
+        @items = @items.where("#{Solr::Fields::COLLECTION_KEY}:(#{keys.join(' ')})")
       end
 
       if params[:published].present? and params[:published] != 'any'
-        @items = @items.where("#{Solr::Solr::PUBLISHED_KEY}:#{params[:published].to_i}")
+        @items = @items.where("#{Solr::Fields::PUBLISHED}:#{params[:published].to_i}")
       end
 
       respond_to do |format|

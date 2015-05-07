@@ -42,7 +42,7 @@ module Repository
     # @return Entity
     #
     def self.find_by_key(key, transaction_url = nil)
-      self.where(Solr::Solr::COLLECTION_KEY_KEY => key).
+      self.where(Solr::Fields::COLLECTION_KEY => key).
           use_transaction_url(transaction_url).first rescue nil
     end
 
@@ -66,8 +66,8 @@ module Repository
 
     def num_items
       @num_items = Repository::Item.
-          where(Solr::Solr::COLLECTION_KEY_KEY => self.key).
-          where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").count unless @num_items
+          where(Solr::Fields::COLLECTION_KEY => self.key).
+          where("-#{Solr::Fields::PARENT_URI}:[* TO *]").count unless @num_items
       @num_items
     end
 

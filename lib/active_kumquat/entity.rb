@@ -138,7 +138,7 @@ module ActiveKumquat
         return @results
       end
       unless @loaded
-        @where_clauses << "#{Solr::Solr::CLASS_KEY}:\"#{Kumquat::Application::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
+        @where_clauses << "#{Solr::Fields::CLASS}:\"#{Kumquat::Application::NAMESPACE_URI}#{@caller::ENTITY_CLASS}\"" if
             @caller.constants.include?(:ENTITY_CLASS)
         params = {
             q: @where_clauses.join(' AND '),
@@ -150,7 +150,7 @@ module ActiveKumquat
         if @facet
           params[:facet] = true
           params['facet.mincount'] = 1
-          params['facet.field'] = Solr::Solr::FACET_FIELDS
+          params['facet.field'] = Solr::Fields::FACET_FIELDS
           params[:fq] = @facet_queries
         end
         begin

@@ -74,7 +74,7 @@ class OaiPmhController < ApplicationController
   end
 
   def do_identify
-    items = Repository::Item.order(Solr::Solr::CREATED_AT_KEY => :desc).limit(1)
+    items = Repository::Item.order(Solr::Fields::CREATED_AT => :desc).limit(1)
     @earliest_datestamp = items.any? ?
         items.first.created_at.iso8601 : nil
     'identify.xml.builder'
@@ -103,8 +103,8 @@ class OaiPmhController < ApplicationController
 
   def do_list_sets
     @collections = Repository::Collection.
-        where(Solr::Solr::PUBLISHED_KEY => true).
-        order(Solr::Solr::COLLECTION_KEY_KEY)
+        where(Solr::Fields::PUBLISHED => true).
+        order(Solr::Fields::COLLECTION_KEY)
     'list_sets.xml.builder'
   end
 
@@ -127,17 +127,17 @@ class OaiPmhController < ApplicationController
                            'this repository.' }
     end
 
-    @results = Repository::Item.where(Solr::Solr::PUBLISHED_KEY => true).
-        order(Solr::Solr::UPDATED_AT_KEY => :desc)
+    @results = Repository::Item.where(Solr::Fields::PUBLISHED => true).
+        order(Solr::Fields::UPDATED_AT => :desc)
 
     from = to = 'NOW'
     from = Time.parse(params[:from]).iso8601 + 'Z' if params[:from]
     to = Time.parse(params[:until]).iso8601 + 'Z' if params[:until]
     if from != to
-      @results = @results.where(Solr::Solr::UPDATED_AT_KEY => "[#{from} TO #{to}]")
+      @results = @results.where(Solr::Fields::UPDATED_AT => "[#{from} TO #{to}]")
     end
     if params[:set]
-      @results = @results.where(Solr::Solr::COLLECTION_KEY_KEY => params[:set])
+      @results = @results.where(Solr::Fields::COLLECTION_KEY => params[:set])
     end
 
     @errors << { code: 'noRecordsMatch',

@@ -55,8 +55,8 @@ module Repository
     #
     def children
       @children = Repository::Item.all.
-          where(Solr::Solr::PARENT_URI_KEY => "\"#{self.repository_url}\"").
-          order(Solr::Solr::PAGE_INDEX_KEY) unless @children.any?
+          where(Solr::Fields::PARENT_URI => "\"#{self.repository_url}\"").
+          order(Solr::Fields::PAGE_INDEX) unless @children.any?
       @children
     end
 

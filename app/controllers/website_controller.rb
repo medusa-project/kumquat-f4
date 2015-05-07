@@ -8,9 +8,9 @@ class WebsiteController < ApplicationController
   def setup
     super
     @num_items = Repository::Item.count
-    @num_audios = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'audio/*').count
-    @num_images = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'image/*').count
-    @num_videos = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'video/*').count
+    @num_audios = Repository::Item.where(Solr::Fields::MEDIA_TYPE => 'audio/*').count
+    @num_images = Repository::Item.where(Solr::Fields::MEDIA_TYPE => 'image/*').count
+    @num_videos = Repository::Item.where(Solr::Fields::MEDIA_TYPE => 'video/*').count
   end
 
   private

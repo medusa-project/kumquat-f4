@@ -312,139 +312,139 @@ module Solr
             # Copy a bunch of different fields into one for easy searching
             {
                 source: 'kq_sys_full_text_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_contributor_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_coverage_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_creator_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_description_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_format_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_identifier_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_language_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_publisher_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_relation_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_source_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_subject_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_title_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_elements_1_1_type_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_abstract_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_alternative_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_contributor_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_coverage_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_creator_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_description_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_format_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_identifier_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_language_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_mediator_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_medium_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_provenance_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_publisher_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_rights_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_rightsHolder_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_source_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_subject_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_tableOfContents_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_title_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
             {
                 source: 'uri_http_purl_org_dc_terms_type_txt',
-                dest: 'kq_searchall_txt'
+                dest: Fields::SEARCH_ALL
             },
 
             # Create a string version of various fields for faceting
@@ -544,27 +544,6 @@ module Solr
             }
         ]
     }
-
-    # TODO: move these to Solr::Fields
-    CLASS_KEY = :kq_sys_class_s
-    COLLECTION_KEY_KEY = :kq_sys_collection_key_s
-    CREATED_AT_KEY = :kq_sys_created_at_dts
-    # each of these requires a localized label (solr_field_*)
-    FACET_FIELDS = [:kq_collection_facet, :kq_contributor_facet,
-                    :kq_coverage_facet, :kq_creator_facet, :kq_date_facet,
-                    :kq_format_facet, :kq_language_facet, :kq_publisher_facet,
-                    :kq_source_facet, :kq_subject_facet, :kq_type_facet]
-    FULL_TEXT_KEY = :kq_sys_full_text_txt
-    HEIGHT_KEY = :kq_sys_height_i
-    MEDIA_TYPE_KEY = :kq_sys_media_type_s
-    PAGE_INDEX_KEY = :kq_sys_page_index_i
-    PARENT_URI_KEY = :kq_sys_parent_uri_s
-    PUBLISHED_KEY = :kq_sys_published_b
-    SINGLE_TITLE_KEY = :kq_meta_title_s
-    UPDATED_AT_KEY = :kq_sys_updated_at_dts
-    UUID_KEY = :kq_sys_uuid_s
-    WEB_ID_KEY = :kq_sys_web_id_s
-    WIDTH_KEY = :kq_sys_width_i
 
     @@client = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url].chomp('/') +
                                  '/' + Kumquat::Application.kumquat_config[:solr_collection])

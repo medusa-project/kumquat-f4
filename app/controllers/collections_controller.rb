@@ -5,8 +5,8 @@ class CollectionsController < WebsiteController
     @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
     query = !params[:q].blank? ? "kq_searchall:#{params[:q]}" : nil
     @collections = Repository::Collection.where(query).
-        where(Solr::Solr::PUBLISHED_KEY => true).
-        order(Solr::Solr::SINGLE_TITLE_KEY).start(@start).limit(@limit)
+        where(Solr::Fields::PUBLISHED => true).
+        order(Solr::Fields::SINGLE_TITLE).start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_shown = [@limit, @collections.total_length].min
   end
@@ -25,8 +25,8 @@ class CollectionsController < WebsiteController
     # be safe.
     media_types = "(#{Repository::Bytestream::derivable_image_types.join(' OR ')})"
     @item = Repository::Item.
-        where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key).
-        where(Solr::Solr::MEDIA_TYPE_KEY => media_types).
+        where(Solr::Fields::COLLECTION_KEY => @collection.key).
+        where(Solr::Fields::MEDIA_TYPE => media_types).
         facet(false).order("random_#{SecureRandom.hex}").first
   end
 

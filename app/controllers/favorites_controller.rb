@@ -17,7 +17,7 @@ class FavoritesController < WebsiteController
       web_ids = cookies[:favorites].split(COOKIE_DELIMITER)
       if web_ids.any?
         @items = Repository::Item.
-            where("#{Solr::Solr::WEB_ID_KEY}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")
+            where("#{Solr::Fields::WEB_ID}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")
       end
     end
 

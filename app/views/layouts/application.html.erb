@@ -57,11 +57,11 @@
                 <li><%= link_to "All Items (#{@num_items})", repository_items_path %></li>
                 <li class="divider"></li>
                 <li><%= link_to "Images (#{@num_images})",
-                                repository_items_path(q: "#{Solr::Solr::MEDIA_TYPE_KEY}:image/*") %></li>
+                                repository_items_path(q: "#{Solr::Fields::MEDIA_TYPE}:image/*") %></li>
                 <li><%= link_to "Videos (#{@num_videos})",
-                                repository_items_path(q: "#{Solr::Solr::MEDIA_TYPE_KEY}:video/*") %></li>
+                                repository_items_path(q: "#{Solr::Fields::MEDIA_TYPE}:video/*") %></li>
                 <li><%= link_to "Sound Recordings (#{@num_audios})",
-                                repository_items_path(q: "#{Solr::Solr::MEDIA_TYPE_KEY}:audio/*") %></li>
+                                repository_items_path(q: "#{Solr::Fields::MEDIA_TYPE}:audio/*") %></li>
               </ul>
             </li>
             <li id="favorites-nav">

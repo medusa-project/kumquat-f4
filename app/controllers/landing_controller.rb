@@ -8,7 +8,7 @@ class LandingController < WebsiteController
     # be safe.
     media_types = "(#{Repository::Bytestream::derivable_image_types.join(' OR ')})"
     @random_item = Repository::Item.
-        where(Solr::Solr::MEDIA_TYPE_KEY => media_types).
+        where(Solr::Fields::MEDIA_TYPE => media_types).
         facet(false).order("random_#{SecureRandom.hex}").first
   end
 

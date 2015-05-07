@@ -37,18 +37,18 @@ class IndexController < ApplicationController
     # initialize a document with some system-required properties
     doc = {
         'id' => uri,
-        Solr::Solr::UUID_KEY => struct['uuid'][0],
-        Solr::Solr::CLASS_KEY => graph.any_object(kq_ns + kq_predicates::CLASS).to_s,
-        Solr::Solr::COLLECTION_KEY_KEY => graph.any_object(kq_ns + kq_predicates::COLLECTION_KEY).to_s,
-        Solr::Solr::CREATED_AT_KEY => graph.any_object('http://fedora.info/definitions/v4/repository#created').to_s,
-        Solr::Solr::FULL_TEXT_KEY => graph.any_object(kq_ns + kq_predicates::FULL_TEXT).to_s,
-        Solr::Solr::HEIGHT_KEY => graph.any_object(kq_ns + kq_predicates::HEIGHT).to_s,
-        Solr::Solr::PAGE_INDEX_KEY => graph.any_object(kq_ns + kq_predicates::PAGE_INDEX).to_s,
-        Solr::Solr::PARENT_URI_KEY => graph.any_object(kq_ns + kq_predicates::PARENT_URI).to_s,
-        Solr::Solr::PUBLISHED_KEY => graph.any_object(kq_ns + kq_predicates::PUBLISHED).to_s,
-        Solr::Solr::UPDATED_AT_KEY => graph.any_object('http://fedora.info/definitions/v4/repository#lastModified').to_s,
-        Solr::Solr::WEB_ID_KEY => graph.any_object(kq_ns + kq_predicates::WEB_ID).to_s,
-        Solr::Solr::WIDTH_KEY => graph.any_object(kq_ns + kq_predicates::WIDTH).to_s
+        Solr::Fields::UUID => struct['uuid'][0],
+        Solr::Fields::CLASS => graph.any_object(kq_ns + kq_predicates::CLASS).to_s,
+        Solr::Fields::COLLECTION_KEY => graph.any_object(kq_ns + kq_predicates::COLLECTION_KEY).to_s,
+        Solr::Fields::CREATED_AT => graph.any_object('http://fedora.info/definitions/v4/repository#created').to_s,
+        Solr::Fields::FULL_TEXT => graph.any_object(kq_ns + kq_predicates::FULL_TEXT).to_s,
+        Solr::Fields::HEIGHT => graph.any_object(kq_ns + kq_predicates::HEIGHT).to_s,
+        Solr::Fields::PAGE_INDEX => graph.any_object(kq_ns + kq_predicates::PAGE_INDEX).to_s,
+        Solr::Fields::PARENT_URI => graph.any_object(kq_ns + kq_predicates::PARENT_URI).to_s,
+        Solr::Fields::PUBLISHED => graph.any_object(kq_ns + kq_predicates::PUBLISHED).to_s,
+        Solr::Fields::UPDATED_AT => graph.any_object('http://fedora.info/definitions/v4/repository#lastModified').to_s,
+        Solr::Fields::WEB_ID => graph.any_object(kq_ns + kq_predicates::WEB_ID).to_s,
+        Solr::Fields::WIDTH => graph.any_object(kq_ns + kq_predicates::WIDTH).to_s
     }
 
     # add node metadata to the document
@@ -67,7 +67,7 @@ class IndexController < ApplicationController
       # non-multiValued title field.
       if %w(http://purl.org/dc/elements/1.1/title http://purl.org/dc/terms/title).
           include?(statement.predicate.to_s)
-        doc[Solr::Solr::SINGLE_TITLE_KEY] = statement.object.to_s
+        doc[Solr::Fields::SINGLE_TITLE] = statement.object.to_s
       end
     end
 

@@ -16,7 +16,7 @@ class UnpublishCollectionCommand < Command
       @collection.published = false
       @collection.save!
 
-      items = Repository::Item.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
+      items = Repository::Item.where(Solr::Fields::COLLECTION_KEY => @collection.key)
       items.each_with_index do |item, index|
         item.published = false
         item.save!

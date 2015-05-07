@@ -30,7 +30,7 @@ class ItemsController < WebsiteController
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
     @items = Repository::Item.all.
-        where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
+        where("-#{Solr::Fields::PARENT_URI}:[* TO *]").
         where(params[:q])
     if params[:fq].respond_to?(:each)
       params[:fq].each { |fq| @items = @items.facet(fq) }
@@ -40,7 +40,7 @@ class ItemsController < WebsiteController
     if params[:repository_collection_key]
       @collection = Repository::Collection.find_by_key(params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
-      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
+      @items = @items.where(Solr::Fields::COLLECTION_KEY => @collection.key)
     end
     #@items = @items.order(:kq_title).start(@start).limit(@limit)
     # TODO: find a way to re-enable sorting

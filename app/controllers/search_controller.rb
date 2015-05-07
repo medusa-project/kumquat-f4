@@ -34,7 +34,7 @@ class SearchController < WebsiteController
       keys = params[:keys].select{ |k| !k.blank? }
     end
     if keys.any? and keys.length < Repository::Collection.all.length
-      where_clauses << "#{Solr::Solr::COLLECTION_KEY_KEY}:+(#{keys.join(' ')})"
+      where_clauses << "#{Solr::Fields::COLLECTION_KEY}:+(#{keys.join(' ')})"
     end
 
     redirect_to repository_items_path(q: where_clauses.join(' AND '))

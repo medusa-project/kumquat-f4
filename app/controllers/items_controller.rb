@@ -48,6 +48,11 @@ class ItemsController < WebsiteController
     @items = @items.start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_results_shown = [@limit, @items.total_length].min
+
+    # if there are no results, get some suggestions
+    if @items.total_length < 1 and params[:q].present?
+      @suggestions = Solr::Solr.new.suggestions(params[:q])
+    end
   end
 
   def show

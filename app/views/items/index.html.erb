@@ -49,5 +49,7 @@
     </div>
   </div>
 <% else %>
-  <p>No items.</p>
+  <div class="kq-no-results">
+    <%= no_results_help(params[:q], @suggestions) %>
+  </div>
 <% end %>

@@ -574,6 +574,16 @@ module Solr
     end
 
     ##
+    # @param term string Search term
+    # @return array of string suggestions
+    #
+    def suggestions(term)
+      result = Solr::client.get('suggest', params: { q: term })
+      suggestions = result['spellcheck']['suggestions']
+      suggestions.any? ? suggestions[1]['suggestion'] : []
+    end
+
+    ##
     # Creates the set of fields needed by the application. For this to work,
     # Solr must be using the ManagedIndexSchemaFactory.
     #

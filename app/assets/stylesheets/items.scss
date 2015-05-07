@@ -25,6 +25,13 @@ body#items_index div#kq-page-content {
       }
     }
   }
+
+  .kq-no-results {
+    ul {
+      margin-left: 1.2em;
+      padding-left: 0em;
+    }
+  }
 }
 
 body#items_show {

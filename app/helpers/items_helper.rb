@@ -199,6 +199,24 @@ module ItemsHelper
     raw(html)
   end
 
+  def no_results_help(search_term, suggestions)
+    html = ''
+    if search_term.present?
+      html += "<p class=\"alert alert-warning\">Sorry, we couldn't find "\
+      "anything matching &quot;#{h(params[:q])}&quot;.</p>"
+      if suggestions.any?
+        html += "<p>Did you mean:</p><ul>"
+        suggestions.each do |suggestion|
+          html += "<li>#{link_to(suggestion, { q: suggestion })}?</li>"
+        end
+        html += '</ul>'
+      end
+    else
+      html += '<p>No items.</p>'
+    end
+    raw(html)
+  end
+
   ##
   # @return integer
   #

@@ -5,6 +5,7 @@ module Solr
     CLASS = :kq_sys_class_s
     COLLECTION_KEY = :kq_sys_collection_key_s
     CREATED_AT = :kq_sys_created_at_dts
+    DATE = :kq_meta_date_dts
     # each of these requires a localized label (solr_field_*)
     FACET_FIELDS = [:kq_collection_facet, :kq_contributor_facet,
                     :kq_coverage_facet, :kq_creator_facet, :kq_date_facet,

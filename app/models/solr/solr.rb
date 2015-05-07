@@ -11,6 +11,7 @@ module Solr
     #                    /dc/terms are merged)
     # kq_meta_title_s    Single-valued title field that can be sorted (must be
     #                    populated manually)
+    # kq_meta_date_dts   Single-valued date field
     # kq_sys_*           system properties
     # kq_*_facet         facets
     # kq_searchall_txt   full-text search field

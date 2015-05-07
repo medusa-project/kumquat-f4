@@ -69,6 +69,13 @@ class IndexController < ApplicationController
           include?(statement.predicate.to_s)
         doc[Solr::Fields::SINGLE_TITLE] = statement.object.to_s
       end
+
+      # try to normalize a date and copy it into a designated date field
+      if %w(http://purl.org/dc/elements/1.1/date http://purl.org/dc/terms/date).
+          include?(statement.predicate.to_s)
+        date = parse_date(statement.object.to_s)
+        doc[Solr::Fields::DATE] = date if date
+      end
     end
 
     solr = Solr::Solr.client
@@ -78,6 +85,28 @@ class IndexController < ApplicationController
   end
 
   private
+
+  ##
+  # Tries to convert date_str into a Solr-compatible date. Returns nil if
+  # unsuccessful.
+  #
+  def parse_date(date_str)
+    if date_str.match(/\//) # if we are dealing with an ODRF date range
+      date_str = date_str.split('/').first
+    end
+
+    if date_str.length <= 4 # if the input string is apparently a year
+      date_i = date_str.to_i
+      if date_i > -20000 and date_i < 2100 and date_i != 0
+        date_str = "#{date_i.to_s}-01-01T00:00:00Z"
+      end
+    end
+
+    begin
+      return Time.parse(date_str).utc.iso8601
+    rescue
+    end
+  end
 
   ##
   # Restricts access to the fcrepo-camel host.

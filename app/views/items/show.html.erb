@@ -92,22 +92,30 @@
   </div>
 <% end %>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h2 class="panel-title">Descriptive Info</h2>
-  </div>
-  <div class="panel-body">
-    <%= triples_to_dl(@item) %>
-  </div>
-</div>
+<div class="row">
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h2 class="panel-title">More Like This</h2>
+  <div class="col-sm-9">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Descriptive Info</h2>
+      </div>
+      <div class="panel-body">
+        <%= triples_to_dl(@item) %>
+      </div>
+    </div>
   </div>
-  <div class="panel-body kq-horizontal-items">
-    <%= similar_items_as_list(@item) %>
+
+  <div class="col-sm-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Similar Items</h2>
+      </div>
+      <div class="panel-body kq-vertical-items">
+        <%= similar_items_as_list(@item) %>
+      </div>
+    </div>
   </div>
+
 </div>
 
 <% if Rails.env.development? %>

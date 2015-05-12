@@ -357,24 +357,24 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
-  # @param limit integer
-  # @return HTML unordered list
+  # @param item [Repository::Item]
+  # @param limit [Integer]
+  # @return [String] HTML unordered list
   #
-  def similar_items_as_list(item, limit = 10)
+  def similar_items_as_list(item, limit = 5)
     html = ''
     items = item.more_like_this.limit(limit)
     if items.any?
       html += '<ul>'
       items.each do |item|
         next unless item.web_id # TODO: why is this necessary?
-        html += '<li><div>'
+        html += '<li>'
         html += link_to(repository_item_path(item)) do
           thumbnail_tag(item, 256, Repository::Bytestream::Shape::SQUARE)
         end
         html += link_to(truncate(item.title, length: 40),
                         repository_item_path(item), class: 'kq-title')
-        html += '</div></li>'
+        html += '</li>'
       end
       html += '</ul>'
     end

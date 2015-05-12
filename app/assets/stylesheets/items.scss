@@ -90,4 +90,30 @@ body#items_show {
       }
     }
   }
+
+  .kq-vertical-items {
+    ol, ul {
+      list-style: none;
+      margin-left:0px;
+      padding-left:0px;
+      li {
+        max-height: 180px;
+        margin-bottom: 20px;
+        text-align: center;
+        vertical-align: top;
+        width: 100%;
+        .kq-thumbnail {
+          display: block;
+          font-size:100px;
+          height: 150px;
+          margin-bottom: 10px;
+          img {
+            height: 150px;
+            text-align: center;
+            width: 150px;
+          }
+        }
+      }
+    }
+  }
 }

@@ -42,10 +42,8 @@ Download and extract Solr 5.0.0. Create a core for Kumquat by copying
 
 ### fcrepo-camel
 
-Edit the `applicationContext.xml` file to route repository changes to Solr.
-(Note that unlike the examples on the Fedora wiki that post directly to Solr,
-this configuration will post to Kumquat, which will be able to do more advanced
-processing than a Fedora indexing transformation.)
+Edit the `applicationContext.xml` file to use the correct Fedora/Solr URLs,
+the correct Solr core name, and the `kumquat` index transform:
 
     <camelContext xmlns="http://camel.apache.org/schema/spring"
                   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -68,11 +66,8 @@ processing than a Fedora indexing transformation.)
             <to uri="fcrepo:localhost:8080/fedora/rest"/>
             <filter>
                 <xpath>/rdf:RDF/rdf:Description/rdf:type[@rdf:resource='http://fedora.info/definitions/v4/indexing#Indexable']</xpath>
-                <to uri="fcrepo:localhost:8080/fedora/rest?transform=default"/>
-                <setHeader headerName="CamelHttpMethod">
-                    <constant>POST</constant>
-                </setHeader>
-                <to uri="http4:localhost:3000/index"/>
+                <to uri="fcrepo:localhost:8080/fedora/rest?transform=kumquat"/>
+                <to uri="http4:localhost:8983/solr/kumquat/update"/>
             </filter>
         </route>
 
@@ -258,14 +253,18 @@ the Control Panel.
 
 ### Kumquat
 
-1. Install/update the Solr schema:
+1. Install/update Kumquat's Fedora indexing transform:
+
+  `$ bundle exec rake kumquat:update_index_transform`
+
+2. Install/update the Solr schema:
 
   `$ bundle exec rake kumquat:update_solr_schema`
 
-2. Import the sample collections:
+3. Import the sample collections:
 
   `$ bundle exec rake kumquat:sample_import`
 
-3. `$ rails server`
+4. `$ rails server`
 
 Go to [http://localhost:3000/](http://localhost:3000/) in a web browser.

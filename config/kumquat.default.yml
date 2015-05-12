@@ -1,7 +1,6 @@
 development:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
-  :fcrepo_camel_ip: 127.0.0.1 # access will be restricted to this IP
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
@@ -9,7 +8,6 @@ development:
 test:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
-  :fcrepo_camel_ip: 127.0.0.1 # access will be restricted to this IP
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1
@@ -17,7 +15,6 @@ test:
 production:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
-  :fcrepo_camel_ip: 127.0.0.1 # access will be restricted to this IP
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_collection: collection1

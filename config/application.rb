@@ -35,6 +35,7 @@ module Kumquat
     BYTESTREAM_URI = 'hasBytestream'
     CLASS = 'class'
     COLLECTION_KEY = 'collectionKey'
+    DATE = 'date'
     FULL_TEXT = 'fullText'
     HEIGHT = 'height'
     PAGE_INDEX = 'pageIndex'

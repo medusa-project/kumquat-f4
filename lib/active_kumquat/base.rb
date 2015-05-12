@@ -238,11 +238,10 @@ module ActiveKumquat
     def to_sparql_update
       update = SparqlUpdate.new
       update.prefix('kumquat', Kumquat::NAMESPACE_URI)
-      # TODO: this property probably isn't necessary unless we are using
-      # fcrepo-camel to directly populate Solr
       update.prefix('indexing', 'http://fedora.info/definitions/v4/indexing#').
           delete('<>', '<indexing:hasIndexingTransformation>', '?o', false).
-          insert(nil, 'indexing:hasIndexingTransformation', 'default')
+          insert(nil, 'indexing:hasIndexingTransformation',
+                 Repository::Fedora::INDEXING_TRANSFORM_NAME)
       update.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
           delete('<>', '<rdf:type>', 'indexing:Indexable', false).
           insert(nil, 'rdf:type', 'indexing:Indexable', false)
@@ -258,6 +257,18 @@ module ActiveKumquat
         update.delete('<>', "<#{statement.predicate.to_s}>", '?o', false).
             insert(nil, "<#{statement.predicate.to_s}>",
                    statement.object.to_s)
+      end
+
+      self.rdf_graph.each_statement do |statement|
+        # try to normalize a date and copy it into a designated date field
+        if %w(http://purl.org/dc/elements/1.1/date http://purl.org/dc/terms/date).
+            include?(statement.predicate.to_s)
+          date = parse_date(statement.object.to_s)
+          update.delete('<>', "<#{Kumquat::RDFPredicates::DATE}>", '?o', false).
+              insert(nil, "<#{Kumquat::RDFPredicates::DATE}>",
+                     statement.object.to_s) if date
+          break
+        end
       end
 
       # add properties from subclass property definitions (see self.property())
@@ -328,6 +339,30 @@ module ActiveKumquat
         self.repository_url = nontransactional_url(response.header['Location'].first)
         self.requested_slug = nil
         save_existing
+      end
+    end
+
+    private
+
+    ##
+    # Tries to convert date_str into a Solr-compatible date. Returns nil if
+    # unsuccessful.
+    #
+    def parse_date(date_str)
+      if date_str.match(/\//) # if we are dealing with an ODRF date range
+        date_str = date_str.split('/').first
+      end
+
+      if date_str.length <= 4 # if the input string is apparently a year
+        date_i = date_str.to_i
+        if date_i > -20000 and date_i < 2100 and date_i != 0
+          date_str = "#{date_i.to_s}-01-01T00:00:00Z"
+        end
+      end
+
+      begin
+        return Time.parse(date_str).utc.iso8601
+      rescue
       end
     end
 

@@ -44,8 +44,8 @@ The resulting F4 node structure looks like this:
 * Only one level of compound object structure will be imported.
 * CONTENTdm field settings like searchable, hidden, etc. are ignored.
 * When an import is re-run, old collection nodes (and all child nodes) will be
-  deleted and replaced by new ones, but the resulting UUIDs and "web IDs" will
-  be different, the latter of which will break public URLs.
+  deleted and replaced by new ones, but the resulting UUIDs will be different.
+  (This may or may not matter for you.)
 
 ## Instructions
 

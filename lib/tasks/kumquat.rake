@@ -21,8 +21,12 @@ namespace :kumquat do
   desc 'Set the default theme'
   task :set_default_theme, [:theme] => :environment do |task, args|
     theme = Theme.find_by_name(args[:theme])
-    theme.default = true
-    theme.save!
+    if theme
+      theme.default = true
+      theme.save!
+    else
+      puts "#{args[:theme]} not found."
+    end
   end
 
   desc 'Update Fedora index transform'

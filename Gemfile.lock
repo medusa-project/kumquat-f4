@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/adolski/httpclient.git
-  revision: 5c2136d04f1d930ac9591c535165fabacd608087
+  remote: git://github.com/medusa-project/httpclient.git
+  revision: f676352ceaecb61ecca722b36c920c2a0bb52e8b
   specs:
     httpclient (2.6.0.1)
 

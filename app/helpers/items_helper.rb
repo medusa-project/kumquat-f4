@@ -500,7 +500,7 @@ module ItemsHelper
 
   def audio_player_for(item)
     tag = "<audio controls>
-      <source src=\"#{item.master_bytestream.repository_url}\"
+      <source src=\"#{item.master_bytestream.public_repository_url}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the audio tag.
     </audio>"
@@ -538,7 +538,7 @@ module ItemsHelper
 
   def video_player_for(item)
     tag = "<video controls id=\"kq-video-player\">
-      <source src=\"#{item.master_bytestream.repository_url}\"
+      <source src=\"#{item.master_bytestream.public_repository_url}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the video tag.
     </video>"

@@ -1,33 +1,6 @@
 module Repository
 
-  ##
-  # Encapsulates a Fedora binary resource. Bytestreams implement a similar API
-  # as ActiveKumquat::Base, but do not descend from that class as they are not
-  # indexable, so they cannot be retrieved with finder methods.
-  #
-  # TODO: extend ActiveKumquat::Base
-  #
-  class Bytestream
-
-    include ActiveModel::Model
-    include ActiveKumquat::Transactions
-
-    ENTITY_CLASS = Kumquat::RDFObjects::BYTESTREAM
-
-    attr_accessor :byte_size # integer
-    attr_accessor :external_resource_url # string
-    attr_accessor :height # integer
-    attr_accessor :media_type # string
-    attr_accessor :owner # ActiveKumquat::Base subclass
-    attr_accessor :repository_url # string
-    attr_accessor :transaction_url # string
-    attr_accessor :shape # Bytestream::Shape
-    attr_accessor :type # Bytestream::Type
-    attr_accessor :upload_pathname # string
-    attr_accessor :uuid # string
-    attr_accessor :width # integer
-
-    validates_presence_of :owner
+  class Bytestream < ActiveMedusa::Binary
 
     class Shape
       ORIGINAL = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ORIGINAL_SHAPE
@@ -39,6 +12,40 @@ module Repository
           Kumquat::RDFObjects::DERIVATIVE_BYTESTREAM
       MASTER = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::MASTER_BYTESTREAM
     end
+
+    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::BYTESTREAM
+
+    belongs_to :item, class_name: 'Repository::Item',
+               predicate: Kumquat::NAMESPACE_URI +
+                   Kumquat::RDFPredicates::PARENT_URI,
+               solr_field: :collection_s
+
+    rdf_property :byte_size,
+                 xs_type: :integer,
+                 predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::BYTE_SIZE,
+                 solr_field: Solr::Fields::BYTE_SIZE
+    rdf_property :height,
+                 xs_type: :integer,
+                 predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::HEIGHT,
+                 solr_field: Solr::Fields::HEIGHT
+    rdf_property :media_type,
+                 xs_type: :string,
+                 predicate: 'http://purl.org/dc/terms/MediaType',
+                 solr_field: Solr::Fields::MEDIA_TYPE
+    rdf_property :shape,
+                 xs_type: :anyURI,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::BYTESTREAM_SHAPE,
+                 solr_field: Solr::Fields::BYTESTREAM_SHAPE
+    rdf_property :type,
+                 xs_type: :anyURI,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::BYTESTREAM_TYPE,
+                 solr_field: Solr::Fields::BYTESTREAM_TYPE
+    rdf_property :width,
+                 xs_type: :integer,
+                 predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::WIDTH,
+                 solr_field: Solr::Fields::WIDTH
 
     @@http = HTTPClient.new
 
@@ -64,43 +71,10 @@ module Repository
     end
 
     def initialize(params = {})
-      params.except(:id, :uuid).each do |k, v|
-        send("#{k}=", v) if respond_to?("#{k}=")
-      end
-      @destroyed = false
-      @persisted = false
       self.read_byte_size unless self.byte_size
       self.guess_media_type unless self.media_type
       self.read_dimensions unless self.width and self.height
-    end
-
-    ##
-    # @param also_tombstone boolean
-    # @param commit_immediately boolean
-    #
-    def delete(also_tombstone = false, commit_immediately = true)
-      if self.repository_url
-        url = transactional_url(self.repository_url).chomp('/')
-        @@http.delete(url)
-        @@http.delete("#{url}/fcr:tombstone") if also_tombstone
-        @destroyed = true
-        @persisted = false
-        self.owner.bytestreams.delete(self)
-
-        if commit_immediately
-          # wait for solr to get the delete
-          # TODO: this is horrible (also doing it in save())
-          sleep 2
-          Solr::Solr.client.commit
-        end
-      end
-    end
-
-    alias_method :destroy, :delete
-    alias_method :destroy!, :delete
-
-    def destroyed?
-      @destroyed
+      super
     end
 
     def guess_media_type
@@ -133,39 +107,8 @@ module Repository
       self.media_type and self.media_type.start_with?('video/')
     end
 
-    def persisted?
-      @persisted and !@destroyed
-    end
-
-    ##
-    # Populates the instance with data from an RDF graph.
-    #
-    # @param graph RDF::Graph
-    #
-    def populate_from_graph(graph)
-      kq_predicates = Kumquat::RDFPredicates
-      graph.each_triple do |subject, predicate, object|
-        if predicate == 'http://purl.org/dc/terms/MediaType'
-          self.media_type = object.to_s
-        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::BYTE_SIZE}"
-          self.byte_size = object.to_s.to_i
-        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::HEIGHT}"
-          self.height = object.to_s.to_i
-        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_TYPE}"
-          self.type = object.to_s
-        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::BYTESTREAM_SHAPE}"
-          self.shape = object.to_s
-        elsif predicate == "#{Kumquat::NAMESPACE_URI}#{kq_predicates::WIDTH}"
-          self.width = object.to_s.to_i
-        elsif predicate == 'http://fedora.info/definitions/v4/repository#uuid'
-          self.uuid = object.to_s
-        end
-      end
-      @persisted = true
-    end
-
     def public_repository_url
-      self.repository_url.gsub(Kumquat::Application.kumquat_config[:fedora_url],
+      self.repository_url.gsub(ActiveMedusa::Configuration.fedora_url,
                                Kumquat::Application.kumquat_config[:public_fedora_url])
     end
 
@@ -195,44 +138,10 @@ module Repository
       end
     end
 
-    def reload!
-      url = self.repository_metadata_url # already transactionalized
-      response = @@http.get(url, nil, { 'Accept' => 'application/n-triples' })
-      graph = RDF::Graph.new
-      graph.from_ntriples(response.body)
-      self.populate_from_graph(graph)
-    end
-
-    def repository_metadata_url
-      url = transactional_url(self.repository_url).chomp('/')
-      "#{url}/fcr:metadata"
-    end
-
-    def save(commit_immediately = true) # TODO: look into Solr soft commits
-      raise "Validation error: #{self.errors.messages.first}" unless self.valid?
-      if self.destroyed?
-        raise RuntimeError, 'Cannot save a destroyed object.'
-      elsif self.uuid
-        save_existing
-      else
-        save_new
-      end
-      @persisted = true
-      self.owner.bytestreams << self
-      if commit_immediately
-        # wait for solr to get the add from fcrepo-message-consumer
-        # TODO: this is horrible (also doing it in delete())
-        sleep 2
-        Solr::Solr.client.commit
-      end
-    end
-
-    alias_method :save!, :save
-
     def to_param
       self.uuid
     end
-
+=begin
     def to_sparql_update
       kq_uri = Kumquat::NAMESPACE_URI
       kq_predicates = Kumquat::RDFPredicates
@@ -260,7 +169,7 @@ module Repository
       update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::CLASS}>", '?o').
           insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
                  "<#{kq_uri}#{kq_objects::BYTESTREAM}>", false)
-
+TODO: fix
       # also update the owning entity with some useful properties that we can't
       # easily query for without a triple store
       update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTESTREAM_URI}>", "<#{my_uri}>").
@@ -277,7 +186,7 @@ module Repository
       end
       update
     end
-
+=end
     private
 
     ##
@@ -292,47 +201,6 @@ module Repository
         self.width = parts[0].strip.to_i
         self.height = parts[1].strip.to_i
       end
-    end
-
-    ##
-    # Updates an existing bytestream.
-    #
-    def save_existing
-      url = self.repository_metadata_url # already transactionalized
-      update = self.to_sparql_update
-      @@http.patch(url, update.to_s,
-                   { 'Content-Type' => 'application/sparql-update' })
-    end
-
-    ##
-    # Creates a new bytestream.
-    #
-    def save_new
-      raise 'Validation error' unless self.valid?
-      raise 'Owner must have a Fedora container URL before a bytestream can be '\
-        'added.' unless self.owner.repository_url
-      response = nil
-      if self.upload_pathname
-        File.open(self.upload_pathname) do |file|
-          filename = File.basename(self.upload_pathname)
-          headers = {
-              'Content-Disposition' => "attachment; filename=\"#{filename}\""
-          }
-          headers['Content-Type'] = self.media_type unless self.media_type.blank?
-          url = transactional_url(self.owner.repository_url)
-          response = @@http.post(url, file, headers)
-        end
-      elsif self.external_resource_url
-        url = transactional_url(self.owner.repository_url)
-        response = @@http.post(url, nil,
-                               { 'Content-Type' => 'text/plain' })
-        headers = { 'Content-Type' => "message/external-body; "\
-          "access-type=URL; URL=\"#{self.external_resource_url}\"" }
-        @@http.put(response.header['Location'].first, nil, headers)
-      end
-      self.repository_url = nontransactional_url(
-          response.header['Location'].first)
-      save_existing
     end
 
   end

@@ -93,18 +93,19 @@ module DerivativeManagement
       if File.exist?(upload_pathname)
         # create a new Bytestream using the temp file as a source
         bs = Repository::Bytestream.new(
-            owner: item,
             upload_pathname: upload_pathname,
             media_type: profile[:media_type],
-            shape: Repository::Bytestream::Shape::ORIGINAL,
-            type: Repository::Bytestream::Type::DERIVATIVE,
             transaction_url: self.transaction_url)
-        bs.save
-        item.bytestreams << bs
+        bs.save!
+        bs.item = item
+        bs.shape = Repository::Bytestream::Shape::ORIGINAL
+        bs.type = Repository::Bytestream::Type::DERIVATIVE
+        bs.save!
       end
       File.delete(upload_pathname) if File.exist?(upload_pathname)
       tempfile.unlink
     end
+    item.save!
   end
 
   def generate_aspect_fit_image_derivatives_for_video(item, src)
@@ -118,20 +119,21 @@ module DerivativeManagement
         if File.exist?(upload_pathname)
           # create a new Bytestream using the temp file as a source
           bs = Repository::Bytestream.new(
-              owner: item,
               upload_pathname: upload_pathname,
               media_type: profile[:media_type],
-              shape: Repository::Bytestream::Shape::ORIGINAL,
-              type: Repository::Bytestream::Type::DERIVATIVE,
               transaction_url: self.transaction_url)
-          bs.save
-          item.bytestreams << bs
+          bs.save!
+          bs.item = item
+          bs.shape = Repository::Bytestream::Shape::ORIGINAL
+          bs.type = Repository::Bytestream::Type::DERIVATIVE
+          bs.save!
         end
       ensure
         File.delete(upload_pathname) if File.exist?(upload_pathname)
         tempfile.unlink
       end
     end
+    item.save!
   end
 
   ##
@@ -176,18 +178,19 @@ module DerivativeManagement
       if File.exist?(upload_pathname)
         # create a new Bytestream using the temp file as a source
         bs = Repository::Bytestream.new(
-            owner: item,
             upload_pathname: upload_pathname,
             media_type: profile[:media_type],
-            shape: Repository::Bytestream::Shape::SQUARE,
-            type: Repository::Bytestream::Type::DERIVATIVE,
             transaction_url: self.transaction_url)
-        bs.save
-        item.bytestreams << bs
+        bs.save!
+        bs.item = item
+        bs.shape = Repository::Bytestream::Shape::SQUARE
+        bs.type = Repository::Bytestream::Type::DERIVATIVE
+        bs.save!
       end
       File.delete(upload_pathname) if File.exist?(upload_pathname)
       tempfile.unlink
     end
+    item.save!
   end
 
   def generate_square_image_derivatives_for_video(item, src)
@@ -202,20 +205,21 @@ module DerivativeManagement
         if File.exist?(upload_pathname)
           # create a new Bytestream using the temp file as a source
           bs = Repository::Bytestream.new(
-              owner: item,
               upload_pathname: upload_pathname,
               media_type: profile[:media_type],
-              shape: Repository::Bytestream::Shape::SQUARE,
-              type: Repository::Bytestream::Type::DERIVATIVE,
               transaction_url: self.transaction_url)
-          bs.save
-          item.bytestreams << bs
+          bs.save!
+          bs.item = item
+          bs.shape = Repository::Bytestream::Shape::SQUARE
+          bs.type = Repository::Bytestream::Type::DERIVATIVE
+          bs.save!
         end
       ensure
         File.delete(upload_pathname) if File.exist?(upload_pathname)
         tempfile.unlink
       end
     end
+    item.save!
   end
 
   def generate_video_derivatives_for_video(item, src)
@@ -231,20 +235,21 @@ module DerivativeManagement
         if File.exist?(upload_pathname)
           # create a new Bytestream using the temp file as a source
           bs = Repository::Bytestream.new(
-              owner: item,
               upload_pathname: upload_pathname,
               media_type: profile[:media_type],
-              shape: Repository::Bytestream::Shape::ORIGINAL,
-              type: Repository::Bytestream::Type::DERIVATIVE,
               transaction_url: self.transaction_url)
-          bs.save
-          item.bytestreams << bs
+          bs.save!
+          bs.item = item
+          bs.shape = Repository::Bytestream::Shape::ORIGINAL
+          bs.type = Repository::Bytestream::Type::DERIVATIVE
+          bs.save!
         end
       ensure
         File.delete(upload_pathname) if File.exist?(upload_pathname)
         tempfile.unlink
       end
     end
+    item.save!
   end
 
   def generate_image_derivatives_for_video(item, src)

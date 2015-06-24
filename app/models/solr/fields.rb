@@ -2,6 +2,9 @@ module Solr
 
   class Fields
 
+    BYTE_SIZE = :kq_sys_byte_size_i
+    BYTESTREAM_SHAPE = :kq_sys_bytestream_shape_s
+    BYTESTREAM_TYPE = :kq_sys_bytestream_type_s
     CLASS = :kq_sys_class_s
     COLLECTION_KEY = :kq_sys_collection_key_s
     CREATED_AT = :kq_sys_created_at_dts

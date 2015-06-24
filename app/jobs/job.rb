@@ -25,7 +25,7 @@ class Job < ActiveJob::Base
   #     self.task.save!
   #
   # @param args Arguments to pass to the job. Must be serializable or an
-  # object that includes GlobalID::Identifier (ActiveRecord and ActiveKumquat
+  # object that includes GlobalID::Identifier (ActiveRecord and ActiveMedusa
   # objects already do).
   #
   def perform(*args)

@@ -1,69 +1,64 @@
 module Repository
 
-  class Item < ActiveKumquat::Base
+  class Item < ActiveMedusa::Container
 
     include BytestreamOwner
     include DerivativeManagement
+    include Describable
     include ImageServing
 
-    ENTITY_CLASS = Kumquat::RDFObjects::ITEM
     WEB_ID_LENGTH = 5
 
-    attr_accessor :collection
+    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ITEM
 
-    rdf_property :collection_key, type: :string,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::COLLECTION_KEY
-    rdf_property :full_text, type: :string,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::FULL_TEXT
-    rdf_property :page_index, type: :integer,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::PAGE_INDEX
-    rdf_property :parent_uri, type: :uri,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::PARENT_URI
-    rdf_property :published, type: :boolean,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::PUBLISHED
-    rdf_property :resource_type, type: :uri,
-                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::CLASS
-    rdf_property :web_id, type: :string,
-                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::WEB_ID
+    belongs_to :collection, class_name: 'Repository::Collection',
+               predicate: Kumquat::NAMESPACE_URI +
+                   Kumquat::RDFPredicates::IS_MEMBER_OF_COLLECTION,
+               solr_field: :collection_s
+    belongs_to :item, class_name: 'Repository::Item',
+               predicate: Kumquat::NAMESPACE_URI +
+                   Kumquat::RDFPredicates::PARENT_URI,
+               solr_field: Solr::Fields::PARENT_URI,
+               name: :parent_item
+    has_many :bytestreams, class_name: 'Repository::Bytestream',
+             predicate: Kumquat::NAMESPACE_URI +
+                   Kumquat::RDFPredicates::BYTESTREAM_URI
+    has_many :items, class_name: 'Repository::Item'
 
-    validates :title, length: { minimum: 2, maximum: 200 }
-    validates :web_id, length: { minimum: 4, maximum: 7 }
+    rdf_property :full_text,
+                 xs_type: :string,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::FULL_TEXT,
+                 solr_field: Solr::Fields::FULL_TEXT
+    rdf_property :page_index,
+                 xs_type: :integer,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::PAGE_INDEX,
+                 solr_field: Solr::Fields::PAGE_INDEX
+    rdf_property :published,
+                 xs_type: :boolean,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::PUBLISHED,
+                 solr_field: Solr::Fields::PUBLISHED
+    rdf_property :web_id,
+                 xs_type: :string,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::WEB_ID,
+                 solr_field: Solr::Fields::WEB_ID
 
-    before_save :set_rdf_properties
+    #validates :title, length: { minimum: 2, maximum: 200 }
+    validates :web_id, length: { minimum: WEB_ID_LENGTH,
+                                 maximum: WEB_ID_LENGTH }
+
+    before_create { self.web_id = generate_web_id }
 
     def initialize(params = {})
-      @children = []
       @published = true
-      @resource_type = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ITEM
-      super(params)
+      super
     end
 
     def ==(other)
       other.kind_of?(Repository::Item) and self.uuid == other.uuid
-    end
-
-    ##
-    # @return ActiveKumquat::Entity
-    #
-    def children
-      @children = Repository::Item.all.
-          where(Solr::Fields::PARENT_URI => "\"#{self.repository_url}\"").
-          order(Solr::Fields::PAGE_INDEX) unless @children.any?
-      @children
-    end
-
-    ##
-    # @return Repository::Collection
-    #
-    def collection
-      @collection = Repository::Collection.find_by_key(@collection_key) unless
-          @collection
-      @collection
     end
 
     ##
@@ -82,22 +77,6 @@ module Repository
         end
       end
       false
-    end
-
-    ##
-    # @return Repository::Item
-    #
-    def parent
-      unless @parent
-        self.rdf_graph.each_statement do |s|
-          if s.predicate.to_s == Kumquat::NAMESPACE_URI +
-              Kumquat::RDFPredicates::PARENT_URI
-            @parent = Repository::Item.find_by_uri(s.object.to_s)
-            break
-          end
-        end
-      end
-      @parent
     end
 
     def to_s
@@ -119,14 +98,9 @@ module Repository
       while true
         proposed_id = (36 ** (WEB_ID_LENGTH - 1) +
             rand(36 ** WEB_ID_LENGTH - 36 ** (WEB_ID_LENGTH - 1))).to_s(36)
-        break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
+        break unless self.class.find_by_web_id(proposed_id)
       end
       proposed_id
-    end
-
-    def set_rdf_properties
-      @web_id = generate_web_id unless @web_id.present?
-      @collection_key = self.collection.key
     end
 
   end

@@ -38,6 +38,7 @@ module Kumquat
     DATE = 'date'
     FULL_TEXT = 'fullText'
     HEIGHT = 'height'
+    IS_MEMBER_OF_COLLECTION = 'isMemberOfCollection'
     PAGE_INDEX = 'pageIndex'
     PARENT_URI = 'hasParent'
     PUBLISHED = 'published'

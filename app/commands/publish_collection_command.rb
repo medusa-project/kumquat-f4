@@ -12,7 +12,7 @@ class PublishCollectionCommand < Command
   end
 
   def execute
-    ActiveKumquat::Base.transaction do
+    ActiveMedusa::Base.transaction do
       @collection.published = true
       @collection.save!
 

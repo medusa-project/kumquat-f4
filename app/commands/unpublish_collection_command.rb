@@ -12,7 +12,7 @@ class UnpublishCollectionCommand < Command
   end
 
   def execute
-    ActiveKumquat::Base.transaction do
+    ActiveMedusa::Base.transaction do
       @collection.published = false
       @collection.save!
 

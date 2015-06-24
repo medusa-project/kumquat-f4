@@ -16,8 +16,8 @@ module Import
     #
     def import(options = {})
       if options[:transactional]
-        ActiveKumquat::Base.transaction do |transaction_url|
-          do_import(transaction_url)
+        ActiveMedusa::Base.transaction do |tx_url|
+          do_import(tx_url)
         end
       else
         do_import
@@ -49,13 +49,12 @@ module Import
           if @collections[key]
             collection = @collections[key]
           else
-            collection = Repository::Collection.find_by_key(key,
-                                                            transaction_url)
+            collection = Repository::Collection.find_by_key(key)
           end
           unless collection
             collection = Repository::Collection.new(
                 key: key,
-                container_url: @import_delegate.root_container_url,
+                parent_url: @import_delegate.root_container_url,
                 published: @import_delegate.collection_of_item_at_index_is_published(index),
                 requested_slug: @import_delegate.slug_of_collection_of_item_at_index(index),
                 rdf_graph: @import_delegate.metadata_of_collection_of_item_at_index(index),
@@ -74,7 +73,7 @@ module Import
           # create the item
           item = Repository::Item.new(
               collection: collection,
-              container_url: parent_uri || collection.repository_url,
+              parent_url: parent_uri || collection.repository_url,
               requested_slug: @import_delegate.slug_of_item_at_index(index),
               web_id: @import_delegate.web_id_of_item_at_index(index),
               parent_uri: parent_uri,
@@ -91,16 +90,17 @@ module Import
           if pathname
             if File.exists?(pathname)
               bs = Repository::Bytestream.new(
-                  owner: item,
+                  parent_url: item.repository_url,
                   upload_pathname: pathname,
-                  type: Repository::Bytestream::Type::MASTER,
-                  shape: Repository::Bytestream::Shape::ORIGINAL,
                   transaction_url: transaction_url)
-              # assign media type
-              media_type = @import_delegate.media_type_of_item_at_index(index)
-              bs.media_type = media_type unless media_type.blank?
-              bs.save
-              item.bytestreams << bs
+              bs.save!
+              #bs.item = item
+              #bs.type = Repository::Bytestream::Type::MASTER
+              #bs.shape = Repository::Bytestream::Shape::ORIGINAL
+              #media_type = @import_delegate.media_type_of_item_at_index(index)
+              #bs.media_type = media_type unless media_type.blank?
+              #bs.save!
+              Rails.logger.debug "Created master bytestream"
             else
               Rails.logger.warn "#{pathname} does not exist"
             end
@@ -108,24 +108,28 @@ module Import
             url = @import_delegate.master_url_of_item_at_index(index)
             if url
               bs = Repository::Bytestream.new(
-                  owner: item,
+                  parent_url: item.repository_url,
                   external_resource_url: url,
-                  type: Repository::Bytestream::Type::MASTER,
-                  shape: Repository::Bytestream::Shape::ORIGINAL,
                   transaction_url: transaction_url)
-              # assign media type
+              bs.save!
+              bs.item = item
+              bs.external_resource_url = url
+              bs.type = Repository::Bytestream::Type::MASTER
+              bs.shape = Repository::Bytestream::Shape::ORIGINAL
               media_type = @import_delegate.media_type_of_item_at_index(index)
               bs.media_type = media_type unless media_type.blank?
-              bs.save
-              item.bytestreams << bs
+              bs.save!
+              Rails.logger.debug "Created master bytestream URL"
             end
           end
-
+=begin
           item.full_text = @import_delegate.full_text_of_item_at_index(index)
           item.extract_and_update_full_text unless item.full_text.present?
-          item.generate_derivatives
-          item.save!
-
+          Rails.logger.debug "Added item full text"
+          #item.generate_derivatives
+          Rails.logger.debug "Added item bytestream derivatives"
+          #item.save!
+=end
           task.percent_complete = index.to_f / item_count.to_f
           task.save!
         end

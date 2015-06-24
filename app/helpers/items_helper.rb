@@ -47,7 +47,7 @@ module ItemsHelper
   end
 
   ##
-  # @param items ActiveKumquat::ResultSet
+  # @param items ActiveMedusa::ResultSet
   # @param options Hash with available keys: :show_collection_facet (boolean)
   #
   def facets_as_panels(items, options = {})
@@ -127,9 +127,9 @@ module ItemsHelper
   end
 
   ##
-  # @param items ActiveKumquat::Entity
-  # @param start integer
-  # @param options Hash with available keys:
+  # @param items [ActiveMedusa::Relation]
+  # @param start [integer]
+  # @param options [Hash] with available keys:
   # :link_to_admin (boolean), :show_remove_from_favorites_buttons (boolean),
   # :show_add_to_favorites_buttons (boolean),
   # :show_collections (boolean), :show_description (boolean),

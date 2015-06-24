@@ -1,7 +1,7 @@
 class RDFStreamer
 
   ##
-  # @param describables ActiveKumquat::Entity of Describable objects
+  # @param describables [ActiveMedusa::Relation<Describable>]
   # @param format One of :jsonld, :ttl, or :rdf
   def initialize(describables, format)
     @describables = describables

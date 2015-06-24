@@ -1,28 +1,34 @@
 module Repository
 
-  class Collection < ActiveKumquat::Base
+  class Collection < ActiveMedusa::Container
 
+    include Describable
     include Introspection
 
-    ENTITY_CLASS = Kumquat::RDFObjects::COLLECTION
+    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::COLLECTION
 
-    rdf_property :key, type: :string,
-                 uri: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::COLLECTION_KEY
-    rdf_property :published, type: :boolean,
-                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::PUBLISHED
-    rdf_property :resource_type, type: :uri,
-                 uri: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::CLASS
+    has_many :items, class_name: 'Repository::Item'
+
+    rdf_property :key,
+                 xs_type: :string,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::COLLECTION_KEY,
+                 solr_field: Solr::Fields::COLLECTION_KEY
+    rdf_property :published,
+                 xs_type: :boolean,
+                 predicate: Kumquat::NAMESPACE_URI +
+                     Kumquat::RDFPredicates::PUBLISHED,
+                 solr_field: Solr::Fields::PUBLISHED
 
     validates :key, length: { minimum: 2, maximum: 20 }
-    validates :title, length: { minimum: 2, maximum: 200 }
+    #validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_delete :delete_db_counterpart
+    after_destroy :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.
     #
-    # @param key
+    # @param key [String]
     # @param transaction_url string
     #
     def self.delete_with_key(key, transaction_url = nil)
@@ -35,23 +41,16 @@ module Repository
     end
 
     ##
-    # @param key string
-    # @param transaction_url string
-    # @return Entity
+    # @param key [String]
+    # @return [Repository::Collection]
     #
-    def self.find_by_key(key, transaction_url = nil)
-      self.where(Solr::Fields::COLLECTION_KEY => key).
-          use_transaction_url(transaction_url).first rescue nil
-    end
-
-    def initialize(params = {})
-      @resource_type = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::COLLECTION
-      super(params)
+    def self.find_by_key(key)
+      self.where(Solr::Fields::COLLECTION_KEY => key).first rescue nil
     end
 
     ##
-    # @return DB::Collection
-    ##
+    # @return [DB::Collection]
+    #
     def db_counterpart
       unless @db_counterpart
         @db_counterpart = DB::Collection.find_by_key(self.key)

@@ -20,15 +20,27 @@ module Repository
     # http://wiki.apache.org/marmotta/LDPath
     #
     def apply_indexing_transform
+      http = HTTPClient.new
+      url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
+      "/fedora:system/fedora:transform/fedora:ldpath/#{INDEXING_TRANSFORM_NAME}/fedora:Container"
+      http.put(url, indexing_transform,
+               { 'Content-Type' => 'application/rdf+ldpath' })
+    end
+
+    ##
+    # @return [String] The Fedora indexing transform to be used by the
+    # application.
+    #
+    def indexing_transform
       kq_predicates = Kumquat::RDFPredicates
-      body = "@prefix fcrepo : <http://fedora.info/definitions/v4/repository#>
+      "@prefix fcrepo : <http://fedora.info/definitions/v4/repository#>
       @prefix dc : <http://purl.org/dc/elements/1.1/>
       @prefix dcterms : <http://purl.org/dc/terms/>
       @prefix kumquat : <#{Kumquat::NAMESPACE_URI}>
 
       id = . :: xsd:string;
       #{Solr::Fields::UUID} = fcrepo:uuid :: xsd:string;
-      #{Solr::Fields::CLASS} = kumquat:#{kq_predicates::CLASS} :: xsd:anyURI;
+      #{Solr::Fields::CLASS} = <#{ActiveMedusa::Configuration.instance.class_predicate}> :: xsd:anyURI;
       #{Solr::Fields::COLLECTION_KEY} = kumquat:#{kq_predicates::COLLECTION_KEY} :: xsd:string;
       #{Solr::Fields::CREATED_AT} = fcrepo:created :: xsd:string;
       #{Solr::Fields::DATE} = kumquat:#{kq_predicates::DATE} :: xsd:dateTime;
@@ -112,10 +124,6 @@ module Repository
       uri_http_purl_org_dc_terms_title_txt = dcterms:title :: xsd:string;
       uri_http_purl_org_dc_terms_type_txt = dcterms:type :: xsd:string;
       uri_http_purl_org_dc_terms_valid_txt = dcterms:valid :: xsd:string;"
-      http = HTTPClient.new
-      url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
-      "/fedora:system/fedora:transform/fedora:ldpath/#{INDEXING_TRANSFORM_NAME}/fedora:Container"
-      http.put(url, body, { 'Content-Type' => 'application/rdf+ldpath' })
     end
 
   end

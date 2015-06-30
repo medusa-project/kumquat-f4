@@ -41,6 +41,7 @@ module Repository
       id = . :: xsd:string;
       #{Solr::Fields::UUID} = fcrepo:uuid :: xsd:string;
       #{Solr::Fields::CLASS} = <#{ActiveMedusa::Configuration.instance.class_predicate}> :: xsd:anyURI;
+      #{Solr::Fields::COLLECTION} = kumquat:#{kq_predicates::IS_MEMBER_OF_COLLECTION} :: xsd:anyURI;
       #{Solr::Fields::COLLECTION_KEY} = kumquat:#{kq_predicates::COLLECTION_KEY} :: xsd:string;
       #{Solr::Fields::CREATED_AT} = fcrepo:created :: xsd:string;
       #{Solr::Fields::DATE} = kumquat:#{kq_predicates::DATE} :: xsd:dateTime;

@@ -14,7 +14,7 @@ module Repository
     belongs_to :collection, class_name: 'Repository::Collection',
                predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::IS_MEMBER_OF_COLLECTION,
-               solr_field: :collection_s
+               solr_field: Solr::Fields::COLLECTION
     belongs_to :item, class_name: 'Repository::Item',
                predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::PARENT_URI,

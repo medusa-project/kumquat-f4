@@ -33,7 +33,7 @@ module Kumquat
     BYTESTREAM_SHAPE = 'bytestreamShape'
     BYTESTREAM_TYPE = 'bytestreamType'
     BYTESTREAM_URI = 'hasBytestream'
-    CLASS = 'class'
+    CLASS = 'hasClass'
     COLLECTION_KEY = 'collectionKey'
     DATE = 'date'
     FULL_TEXT = 'fullText'

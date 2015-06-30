@@ -40,7 +40,7 @@ class ItemsController < WebsiteController
     if params[:repository_collection_key]
       @collection = Repository::Collection.find_by_key(params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
-      @items = @items.where(Solr::Fields::COLLECTION_KEY => @collection.key)
+      @items = @items.where(Solr::Fields::COLLECTION => @collection.repository_url)
     end
     # if there is no user-entered query, sort by title. Otherwise, use the
     # default sort, which is by relevancy

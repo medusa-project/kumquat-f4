@@ -47,10 +47,11 @@ module ItemsHelper
   end
 
   ##
-  # @param items ActiveMedusa::ResultSet
-  # @param options Hash with available keys: :show_collection_facet (boolean)
+  # @param items [ActiveMedusa::Relation]
+  # @param options [Hash] Hash with available keys: `:show_collection_facet` (boolean)
   #
   def facets_as_panels(items, options = {})
+    return nil unless items.facet_fields
     term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
     panels = ''
     items.facet_fields.each do |facet|

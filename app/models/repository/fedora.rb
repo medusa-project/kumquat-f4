@@ -47,6 +47,7 @@ module Repository
       #{Solr::Fields::DATE} = kumquat:#{kq_predicates::DATE} :: xsd:dateTime;
       #{Solr::Fields::FULL_TEXT} = kumquat:#{kq_predicates::FULL_TEXT} :: xsd:string;
       #{Solr::Fields::HEIGHT} = kumquat:#{kq_predicates::HEIGHT} :: xsd:integer;
+      #{Solr::Fields::ITEM} = kumquat:#{kq_predicates::IS_MEMBER_OF_ITEM} :: xsd:anyURI;
       #{Solr::Fields::PAGE_INDEX} = kumquat:#{kq_predicates::PAGE_INDEX} :: xsd:integer;
       #{Solr::Fields::PARENT_URI} = kumquat:#{kq_predicates::PARENT_URI} :: xsd:anyURI;
       #{Solr::Fields::PUBLISHED} = kumquat:#{kq_predicates::PUBLISHED} :: xsd:boolean;

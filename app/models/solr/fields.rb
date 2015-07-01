@@ -17,6 +17,7 @@ module Solr
                     :kq_source_facet, :kq_subject_facet, :kq_type_facet]
     FULL_TEXT = :kq_sys_full_text_txt
     HEIGHT = :kq_sys_height_i
+    ITEM = :kq_sys_item_s
     MEDIA_TYPE = :kq_sys_media_type_s
     PAGE_INDEX = :kq_sys_page_index_i
     PARENT_URI = :kq_sys_parent_uri_s

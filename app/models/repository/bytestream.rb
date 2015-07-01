@@ -18,7 +18,7 @@ module Repository
     belongs_to :item, class_name: 'Repository::Item',
                predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::PARENT_URI,
-               solr_field: :collection_s
+               solr_field: Solr::Fields::ITEM
 
     rdf_property :byte_size,
                  xs_type: :integer,

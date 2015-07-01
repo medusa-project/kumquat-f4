@@ -94,12 +94,12 @@ module Import
                   upload_pathname: pathname,
                   transaction_url: transaction_url)
               bs.save!
-              #bs.item = item
-              #bs.type = Repository::Bytestream::Type::MASTER
-              #bs.shape = Repository::Bytestream::Shape::ORIGINAL
-              #media_type = @import_delegate.media_type_of_item_at_index(index)
-              #bs.media_type = media_type unless media_type.blank?
-              #bs.save!
+              bs.item = item
+              bs.type = Repository::Bytestream::Type::MASTER
+              bs.shape = Repository::Bytestream::Shape::ORIGINAL
+              media_type = @import_delegate.media_type_of_item_at_index(index)
+              bs.media_type = media_type unless media_type.blank?
+              bs.save!
               Rails.logger.debug "Created master bytestream"
             else
               Rails.logger.warn "#{pathname} does not exist"

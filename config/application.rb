@@ -39,6 +39,7 @@ module Kumquat
     FULL_TEXT = 'fullText'
     HEIGHT = 'height'
     IS_MEMBER_OF_COLLECTION = 'isMemberOfCollection'
+    IS_MEMBER_OF_ITEM = 'isMemberOfItem'
     PAGE_INDEX = 'pageIndex'
     PARENT_URI = 'hasParent'
     PUBLISHED = 'published'

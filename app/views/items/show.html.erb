@@ -54,7 +54,7 @@
   <%= download_button(@item) %>
 </div>
 
-<% if @item.parent %>
+<% if @item.parent.kind_of?(Repository::Item) %>
   <h1 class="kq-compound-title">
     <small><%= link_to @item.parent.title, @item.parent %></small>
     <br>&nbsp;&nbsp;&#8627; <%= @item.title %>
@@ -80,11 +80,10 @@
   </div>
 <% end %>
 
-<% pages = @item.parent ? @item.parent.children : @item.children %>
-<% if pages.any? %>
+<% if @pages.any? %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title">Pages (<%= pages.length %>)</h2>
+      <h2 class="panel-title">Pages (<%= @pages.length %>)</h2>
     </div>
     <div class="panel-body kq-horizontal-items">
       <%= pages_as_list(@item) %>

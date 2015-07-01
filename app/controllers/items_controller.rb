@@ -67,7 +67,10 @@ class ItemsController < WebsiteController
 
     uri = repository_item_url(@item)
     respond_to do |format|
-      format.html {}
+      format.html do
+        @pages = @item.parent.kind_of?(Repository::Item) ?
+            @item.parent.children : @item.children
+      end
       format.jsonld { render text: @item.public_rdf_graph(uri).to_jsonld }
       format.rdf { render text: @item.public_rdf_graph(uri).to_rdfxml }
       format.ttl { render text: @item.public_rdf_graph(uri).to_ttl }

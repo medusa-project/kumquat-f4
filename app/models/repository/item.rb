@@ -6,6 +6,7 @@ module Repository
     include DerivativeManagement
     include Describable
     include ImageServing
+    include Indexable
 
     WEB_ID_LENGTH = 5
 
@@ -51,6 +52,8 @@ module Repository
                                  maximum: WEB_ID_LENGTH }
 
     before_create { self.web_id = generate_web_id }
+    after_save :update_solr
+    after_destroy :delete_from_solr
 
     def initialize(params = {})
       @published = true
@@ -88,6 +91,38 @@ module Repository
     end
 
     private
+
+    def delete_from_solr
+      Solr::Solr.client.delete_by_id(self.repository_url)
+    end
+
+    def update_solr
+      kq_predicates = Kumquat::RDFPredicates
+
+      doc = base_solr_document
+      doc[Solr::Fields::COLLECTION] =
+          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_COLLECTION)
+      doc[Solr::Fields::FULL_TEXT] =
+          self.rdf_graph.any_object(kq_predicates::FULL_TEXT)
+      doc[Solr::Fields::ITEM] =
+          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_ITEM)
+      doc[Solr::Fields::PAGE_INDEX] =
+          self.rdf_graph.any_object(kq_predicates::PAGE_INDEX)
+      doc[Solr::Fields::PUBLISHED] =
+          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
+      doc[Solr::Fields::SINGLE_TITLE] = self.title
+      doc[Solr::Fields::WEB_ID] =
+          self.rdf_graph.any_object(kq_predicates::WEB_ID)
+
+=begin TODO: fix this
+      date = self.rdf_graph.any_object(kq_predicates::DATE).to_s.strip
+      if date.present?
+        data[Solr::Fields::DATE] = DateTime.parse(date).iso8601 + 'Z'
+      end
+=end
+
+      Solr::Solr.client.add(doc)
+    end
 
     ##
     # Generates a guaranteed-unique web ID, of which there are

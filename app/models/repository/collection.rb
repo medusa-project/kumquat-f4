@@ -3,6 +3,7 @@ module Repository
   class Collection < ActiveMedusa::Container
 
     include Describable
+    include Indexable
     include Introspection
 
     entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::COLLECTION
@@ -23,7 +24,8 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     #validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_destroy :delete_db_counterpart
+    after_save :update_solr
+    after_destroy :delete_from_solr, :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.
@@ -83,6 +85,23 @@ module Repository
     def delete_db_counterpart
       db_cp = db_counterpart
       db_cp.destroy! if db_cp
+    end
+
+    def delete_from_solr
+      Solr::Solr.client.delete_by_id(self.repository_url)
+    end
+
+    def update_solr
+      kq_predicates = Kumquat::RDFPredicates
+
+      doc = base_solr_document
+      doc[Solr::Fields::COLLECTION_KEY] =
+          self.rdf_graph.any_object(kq_predicates::COLLECTION_KEY)
+      doc[Solr::Fields::PUBLISHED] =
+          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
+      doc[Solr::Fields::SINGLE_TITLE] = self.title
+
+      Solr::Solr.client.add(doc)
     end
 
   end

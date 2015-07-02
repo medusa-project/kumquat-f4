@@ -29,11 +29,9 @@ namespace :kumquat do
     end
   end
 
-  desc 'Update Fedora index transform'
-  task :update_index_transform => :environment do
-    Repository::Fedora.new.apply_indexing_transform
-    puts "Fedora indexing transform "\
-    "\"#{Repository::Fedora::INDEXING_TRANSFORM_NAME}\" updated"
+  desc 'Reindex the repository in Solr'
+  task :reindex => :environment do
+    Repository::Fedora.new.reindex
   end
 
   desc 'Update Solr schema'

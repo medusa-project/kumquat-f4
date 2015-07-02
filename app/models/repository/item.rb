@@ -52,7 +52,7 @@ module Repository
                                  maximum: WEB_ID_LENGTH }
 
     before_create { self.web_id = generate_web_id }
-    after_save :update_solr
+    after_save :reindex
     after_destroy :delete_from_solr
 
     def initialize(params = {})
@@ -90,13 +90,7 @@ module Repository
       self.web_id
     end
 
-    private
-
-    def delete_from_solr
-      Solr::Solr.client.delete_by_id(self.repository_url)
-    end
-
-    def update_solr
+    def reindex
       kq_predicates = Kumquat::RDFPredicates
 
       doc = base_solr_document
@@ -123,6 +117,8 @@ module Repository
 
       Solr::Solr.client.add(doc)
     end
+
+    private
 
     ##
     # Generates a guaranteed-unique web ID, of which there are

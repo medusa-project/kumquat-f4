@@ -27,13 +27,17 @@ module Indexable
       pred = st.predicate.to_s
       obj = st.object.to_s
       if !pred.start_with?(Kumquat::NAMESPACE_URI) and
-          !pred.start_with?('http://fedora.info') and
+          !pred.start_with?('http://fedora.info') and # TODO: use Repository::Fedora::MANAGED_PREDICATES
           !obj.start_with?('http://fedora.info')
         doc[field_name_for_predicate(pred)] = st.object.to_s
       end
     end
 
     doc
+  end
+
+  def delete_from_solr
+    Solr::Solr.client.delete_by_id(self.repository_url)
   end
 
   private

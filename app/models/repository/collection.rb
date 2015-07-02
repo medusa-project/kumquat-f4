@@ -24,7 +24,7 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     #validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_save :update_solr
+    after_save :reindex
     after_destroy :delete_from_solr, :delete_db_counterpart
 
     ##
@@ -69,6 +69,19 @@ module Repository
       @num_items
     end
 
+    def reindex
+      kq_predicates = Kumquat::RDFPredicates
+
+      doc = base_solr_document
+      doc[Solr::Fields::COLLECTION_KEY] =
+          self.rdf_graph.any_object(kq_predicates::COLLECTION_KEY)
+      doc[Solr::Fields::PUBLISHED] =
+          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
+      doc[Solr::Fields::SINGLE_TITLE] = self.title
+
+      Solr::Solr.client.add(doc)
+    end
+
     def to_param
       self.key
     end
@@ -85,23 +98,6 @@ module Repository
     def delete_db_counterpart
       db_cp = db_counterpart
       db_cp.destroy! if db_cp
-    end
-
-    def delete_from_solr
-      Solr::Solr.client.delete_by_id(self.repository_url)
-    end
-
-    def update_solr
-      kq_predicates = Kumquat::RDFPredicates
-
-      doc = base_solr_document
-      doc[Solr::Fields::COLLECTION_KEY] =
-          self.rdf_graph.any_object(kq_predicates::COLLECTION_KEY)
-      doc[Solr::Fields::PUBLISHED] =
-          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
-      doc[Solr::Fields::SINGLE_TITLE] = self.title
-
-      Solr::Solr.client.add(doc)
     end
 
   end

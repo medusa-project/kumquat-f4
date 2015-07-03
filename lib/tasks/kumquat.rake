@@ -6,6 +6,11 @@ namespace :kumquat do
     Import::Importer.new(delegate).import
   end
 
+  desc 'Clear the Solr index'
+  task :clear_solr => :environment do
+    Solr::Solr.new.clear
+  end
+
   desc 'Import using an import delegate'
   task :import, [:delegate] => :environment do |task, args|
     delegate = args[:delegate].constantize.new

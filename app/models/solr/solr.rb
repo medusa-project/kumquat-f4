@@ -562,6 +562,12 @@ module Solr
           Kumquat::Application.kumquat_config[:solr_collection]
     end
 
+    def clear
+      @http = HTTPClient.new
+      @http.get(@url + '/update?stream.body=<delete><query>*:*</query></delete>')
+      @http.get(@url + '/update?stream.body=<commit/>')
+    end
+
     ##
     # @param term string Search term
     # @return array of string suggestions

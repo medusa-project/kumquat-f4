@@ -2,6 +2,11 @@ module Indexable
 
   extend ActiveSupport::Concern
 
+  included do
+    after_save :reindex
+    after_destroy :delete_from_solr
+  end
+
   ##
   # Returns a base Solr document.
   #
@@ -38,6 +43,10 @@ module Indexable
 
   def delete_from_solr
     Solr::Solr.client.delete_by_id(self.repository_url)
+  end
+
+  def reindex
+    raise 'Must implement reindex()'
   end
 
   private

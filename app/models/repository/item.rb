@@ -52,8 +52,6 @@ module Repository
                                  maximum: WEB_ID_LENGTH }
 
     before_create { self.web_id = generate_web_id }
-    after_save :reindex
-    after_destroy :delete_from_solr
 
     def initialize(params = {})
       @published = true

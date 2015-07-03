@@ -24,8 +24,7 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     #validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_save :reindex
-    after_destroy :delete_from_solr, :delete_db_counterpart
+    after_destroy :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.

@@ -18,7 +18,7 @@ module Repository
                solr_field: Solr::Fields::COLLECTION
     belongs_to :item, class_name: 'Repository::Item',
                predicate: Kumquat::NAMESPACE_URI +
-                   Kumquat::RDFPredicates::PARENT_URI,
+                   Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
                solr_field: Solr::Fields::PARENT_URI,
                name: :parent_item
     has_many :bytestreams, class_name: 'Repository::Bytestream',

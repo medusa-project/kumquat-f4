@@ -31,10 +31,9 @@ module Indexable
     self.rdf_graph.each_statement do |st|
       pred = st.predicate.to_s
       obj = st.object.to_s
-      if !pred.start_with?(Kumquat::NAMESPACE_URI) and
-          !pred.start_with?('http://fedora.info') and # TODO: use Repository::Fedora::MANAGED_PREDICATES
-          !obj.start_with?('http://fedora.info')
-        doc[field_name_for_predicate(pred)] = st.object.to_s
+      if Repository::Fedora::MANAGED_PREDICATES.select{ |p| pred.start_with?(p) or
+          obj.start_with?(p) }.empty?
+        doc[field_name_for_predicate(pred)] = obj
       end
     end
 

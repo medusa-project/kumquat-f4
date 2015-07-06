@@ -29,8 +29,7 @@ class ItemsController < WebsiteController
   def index
     @start = params[:start] ? params[:start].to_i : 0
     @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
-    @items = Repository::Item.all.
-        where("-#{Solr::Fields::PARENT_URI}:[* TO *]").
+    @items = Repository::Item.where("-#{Solr::Fields::ITEM}:[* TO *]").
         where(params[:q])
     if params[:fq].respond_to?(:each)
       params[:fq].each { |fq| @items = @items.facet(fq) }
@@ -68,8 +67,8 @@ class ItemsController < WebsiteController
     uri = repository_item_url(@item)
     respond_to do |format|
       format.html do
-        @pages = @item.parent.kind_of?(Repository::Item) ?
-            @item.parent.children : @item.children
+        @pages = @item.parent_item.kind_of?(Repository::Item) ?
+            @item.parent_item.items : @item.items
       end
       format.jsonld { render text: @item.public_rdf_graph(uri).to_jsonld }
       format.rdf { render text: @item.public_rdf_graph(uri).to_rdfxml }

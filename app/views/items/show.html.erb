@@ -6,8 +6,8 @@
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
       <li><%= link_to 'Search', session[:browse_context_url] %></li>
-      <% if @item.parent %>
-        <li><%= link_to @item.parent.title, @item.parent %></li>
+      <% if @item.parent_item %>
+        <li><%= link_to @item.parent_item.title, @item.parent_item %></li>
       <% end %>
       <li class="active"><%= truncate(@item.title, length: 50) %></li>
     </ol>
@@ -15,8 +15,8 @@
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
       <li><%= link_to 'All Items', repository_items_path %></li>
-      <% if @item.parent %>
-        <li><%= link_to @item.parent.title, @item.parent %></li>
+      <% if @item.parent_item %>
+        <li><%= link_to @item.parent_item.title, @item.parent_item %></li>
       <% end %>
       <li class="active"><%= truncate(@item.title, length: 50) %></li>
     </ol>
@@ -24,8 +24,8 @@
     <ol class="breadcrumb">
       <li><%= link_to 'Home', root_path %></li>
       <li><%= link_to 'Favorites', favorites_path %></li>
-      <% if @item.parent %>
-          <li><%= link_to @item.parent.title, @item.parent %></li>
+      <% if @item.parent_item %>
+          <li><%= link_to @item.parent_item.title, @item.parent_item %></li>
       <% end %>
       <li class="active"><%= truncate(@item.title, length: 50) %></li>
     </ol>
@@ -34,8 +34,8 @@
       <li><%= link_to 'Home', root_path %></li>
       <li><%= link_to 'Collections', repository_collections_path %></li>
       <li><%= link_to @item.collection.title, @item.collection %></li>
-      <% if @item.parent %>
-        <li><%= link_to @item.parent.title, @item.parent %></li>
+      <% if @item.parent_item %>
+        <li><%= link_to @item.parent_item.title, @item.parent_item %></li>
       <% end %>
       <li class="active"><%= truncate(@item.title, length: 50) %></li>
     </ol>
@@ -54,9 +54,9 @@
   <%= download_button(@item) %>
 </div>
 
-<% if @item.parent.kind_of?(Repository::Item) %>
+<% if @item.parent_item.kind_of?(Repository::Item) %>
   <h1 class="kq-compound-title">
-    <small><%= link_to @item.parent.title, @item.parent %></small>
+    <small><%= link_to @item.parent_item.title, @item.parent_item %></small>
     <br>&nbsp;&nbsp;&#8627; <%= @item.title %>
   </h1>
 <% else %>

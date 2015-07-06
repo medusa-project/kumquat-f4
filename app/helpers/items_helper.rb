@@ -1,8 +1,8 @@
 module ItemsHelper
 
   ##
-  # @param item Repository::Item
-  # @param options Hash with available keys: :for_admin (boolean)
+  # @param item [Repository::Item]
+  # @param options [Hash] with available keys: `:for_admin` (boolean)
   #
   def download_button(item, options = {})
     return nil unless item.master_bytestream
@@ -97,8 +97,8 @@ module ItemsHelper
   end
 
   ##
-  # @param describable Describable
-  # @return string HTML <i> tag
+  # @param describable [Describable]
+  # @return [String] HTML <i> tag
   #
   def icon_for(describable)
     icon = 'fa-cube'
@@ -111,7 +111,7 @@ module ItemsHelper
         icon = 'fa-file-text-o'
       elsif describable.is_video?
         icon = 'fa-film'
-      elsif describable.children.any?
+      elsif describable.items.any?
         icon = 'fa-cubes'
       end
     elsif describable.kind_of?(Repository::Collection) or
@@ -121,6 +121,9 @@ module ItemsHelper
     raw("<i class=\"fa #{icon}\"></i>")
   end
 
+  ##
+  # @param item [Repository::Item]
+  #
   def is_favorite?(item)
     cookies[:favorites] and cookies[:favorites].
         split(FavoritesController::COOKIE_DELIMITER).
@@ -153,7 +156,7 @@ module ItemsHelper
         if entity.kind_of?(Repository::Collection)
           media_types = "(#{Repository::Bytestream::types_with_image_derivatives.join(' OR ')})"
           item = Repository::Item.
-              where(Solr::Fields::COLLECTION_KEY => entity.key).
+              where(Solr::Fields::COLLECTION => entity.repository_url).
               where(Solr::Fields::MEDIA_TYPE => media_types).
               facet(false).order("random_#{SecureRandom.hex}").first ||
               Repository::Collection
@@ -200,6 +203,11 @@ module ItemsHelper
     raw(html)
   end
 
+  ##
+  # @param search_term [String]
+  # @param suggestions [Array<String>]
+  # @return [String] HTML string
+  #
   def no_results_help(search_term, suggestions)
     html = ''
     if search_term.present?
@@ -219,7 +227,7 @@ module ItemsHelper
   end
 
   ##
-  # @return integer
+  # @return [Integer]
   #
   def num_favorites
     cookies[:favorites] ?
@@ -227,12 +235,12 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
-  # @param options Hash with available keys: :link_to_admin (boolean)
+  # @param item [Repository::Item]
+  # @param options [Hash] with available keys: `:link_to_admin` [Boolean]
   #
   def pages_as_list(item, options = {})
-    return nil unless item.children.any? or item.parent
-    items = item.children.any? ? item.children : item.parent.children
+    return nil unless item.items.any? or item.parent_item
+    items = item.items.any? ? item.items : item.parent_item.items
     html = '<ol>'
     items.each do |child|
       link_target = options[:link_to_admin] ?
@@ -242,10 +250,9 @@ module ItemsHelper
         html += thumbnail_tag(child, 256)
         html += "<strong class=\"kq-text kq-title\">#{truncate(child.title, length: 40)}</strong>"
       else
-        html += link_to(link_target) do
-          thumbnail_tag(child, 256)
-        end
-        html += link_to(truncate(child.title, length: 40), link_target, class: 'kq-title')
+        html += link_to(link_target) { thumbnail_tag(child, 256) }
+        html += link_to(truncate(child.title, length: 40), link_target,
+                        class: 'kq-title')
       end
       html += '</div></li>'
     end
@@ -254,10 +261,10 @@ module ItemsHelper
   end
 
   ##
-  # @param items array
-  # @param per_page integer
-  # @param current_page integer
-  # @param max_links integer (ideally odd)
+  # @param items [Array]
+  # @param per_page [Integer]
+  # @param current_page [Integer]
+  # @param max_links [Integer] (ideally odd)
   #
   def paginate(items, per_page, current_page, max_links = 9)
     return '' unless items.total_length > per_page
@@ -306,6 +313,10 @@ module ItemsHelper
     raw(html)
   end
 
+  ##
+  # @param item [Repository::Item]
+  # @return [String] HTML string
+  #
   def share_button(item)
     html = '<div class="btn-group">
       <button type="button" class="btn btn-default dropdown-toggle"
@@ -383,11 +394,11 @@ module ItemsHelper
   end
 
   ##
-  # @param entity Repository::Item or some other object suitable for passing to
-  # icon_for
-  # @param size integer One of the sizes in
-  # DerivativeManagement::IMAGE_DERIVATIVES
-  # @param shape One of the Repository::Bytestream::Shape constants
+  # @param entity [Repository::Item] or some other object suitable for passing
+  # to `icon_for`
+  # @param size [Integer] One of the sizes in
+  # `DerivativeManagement::IMAGE_DERIVATIVES`
+  # @param shape [String] One of the `Repository::Bytestream::Shape` constants
   #
   def thumbnail_tag(entity, size,
                     shape = Repository::Bytestream::Shape::ORIGINAL)
@@ -407,8 +418,9 @@ module ItemsHelper
   end
 
   ##
-  # @param describable Describable
-  # @param options :full_label_info boolean
+  # @param describable [Describable]
+  # @param options [Hash] Hash with the following options: `:full_label_info`
+  # [Boolean]
   #
   def triples_to_dl(describable, options = {})
     exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
@@ -477,7 +489,7 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
+  # @param item [Repository::Item]
   #
   def viewer_for(item)
     if item.is_pdf?
@@ -570,10 +582,10 @@ module ItemsHelper
   end
 
   def human_label_for_uri(describable, uri)
-    if describable.kind_of?(Repository::Item)
-      collection = describable.collection
-    else
+    if describable.kind_of?(Repository::Collection)
       collection = describable
+    else
+      collection = describable.collection
     end
     label = nil
     p = RDFPredicate.where(uri: uri, collection: collection.db_counterpart)

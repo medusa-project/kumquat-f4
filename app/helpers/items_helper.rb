@@ -212,7 +212,7 @@ module ItemsHelper
     html = ''
     if search_term.present?
       html += "<p class=\"alert alert-warning\">Sorry, we couldn't find "\
-      "anything matching &quot;#{h(params[:q])}&quot;.</p>"
+      "anything matching &quot;#{h(search_term)}&quot;.</p>"
       if suggestions.any?
         html += "<p>Did you mean:</p><ul>"
         suggestions.each do |suggestion|

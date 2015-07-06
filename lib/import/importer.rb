@@ -3,7 +3,7 @@ module Import
   class Importer
 
     ##
-    # @param import_delegate ImportDelegate
+    # @param import_delegate [ImportDelegate]
     #
     def initialize(import_delegate)
       @import_delegate = import_delegate
@@ -12,12 +12,13 @@ module Import
     end
 
     ##
-    # @param options Hash with available keys: :transactional (boolean)
+    # @param options [Hash] with available keys: `:commit` [Boolean],
+    # `:transactional` [Boolean]
     #
     def import(options = {})
       if options[:transactional]
         ActiveMedusa::Base.transaction do |tx_url|
-          do_import(tx_url)
+          do_import(tx_url, options[:commit])
         end
       else
         do_import
@@ -31,7 +32,7 @@ module Import
 
     private
 
-    def do_import(transaction_url = nil)
+    def do_import(tx_url = nil, commit = true)
       item_count = @import_delegate.total_number_of_items.to_i
       return if item_count < 1 # nothing to do
 
@@ -40,7 +41,7 @@ module Import
                           status_text: "Import #{item_count} items")
 
       begin
-        @import_delegate.before_import(transaction_url)
+        @import_delegate.before_import(tx_url)
 
         item_count.times do |index|
           # retrieve or create the collection
@@ -58,12 +59,12 @@ module Import
                 published: @import_delegate.collection_of_item_at_index_is_published(index),
                 requested_slug: @import_delegate.slug_of_collection_of_item_at_index(index),
                 rdf_graph: @import_delegate.metadata_of_collection_of_item_at_index(index),
-                transaction_url: transaction_url)
+                transaction_url: tx_url)
             Rails.logger.debug collection.title if collection.title
             collection.save!
             @collections[key] = collection
           end
-          collection.transaction_url = transaction_url
+          collection.transaction_url = tx_url
 
           # determine the resource URI under which the item will be created
           parent_import_id = @import_delegate.
@@ -78,7 +79,7 @@ module Import
               web_id: @import_delegate.web_id_of_item_at_index(index),
               parent_uri: parent_uri,
               rdf_graph: @import_delegate.metadata_of_item_at_index(index),
-              transaction_url: transaction_url)
+              transaction_url: tx_url)
           item.save! # save it in order to populate its repository URL
           Rails.logger.debug "Created #{item.repository_url} (#{index + 1}/#{item_count})"
 
@@ -92,9 +93,7 @@ module Import
               bs = Repository::Bytestream.new(
                   parent_url: item.repository_url,
                   upload_pathname: pathname,
-                  transaction_url: transaction_url)
-              bs.save!
-              bs.item = item
+                  transaction_url: tx_url)
               bs.type = Repository::Bytestream::Type::MASTER
               bs.shape = Repository::Bytestream::Shape::ORIGINAL
               media_type = @import_delegate.media_type_of_item_at_index(index)
@@ -110,9 +109,7 @@ module Import
               bs = Repository::Bytestream.new(
                   parent_url: item.repository_url,
                   external_resource_url: url,
-                  transaction_url: transaction_url)
-              bs.save!
-              bs.item = item
+                  transaction_url: tx_url)
               bs.external_resource_url = url
               bs.type = Repository::Bytestream::Type::MASTER
               bs.shape = Repository::Bytestream::Shape::ORIGINAL
@@ -122,15 +119,16 @@ module Import
               Rails.logger.debug "Created master bytestream URL"
             end
           end
-=begin
+
+          item.reload!
           item.full_text = @import_delegate.full_text_of_item_at_index(index)
           item.extract_and_update_full_text unless item.full_text.present?
           Rails.logger.debug "Added item full text"
           #item.generate_derivatives
           Rails.logger.debug "Added item bytestream derivatives"
-          #item.save!
-=end
-          task.percent_complete = index.to_f / item_count.to_f
+          item.save!
+
+          task.percent_complete = index / item_count.to_f
           task.save!
         end
       rescue => e
@@ -138,6 +136,7 @@ module Import
         task.save!
         raise e
       else
+        Solr::Solr.client.commit if commit
         task.status = Task::Status::SUCCEEDED
         task.save!
       end

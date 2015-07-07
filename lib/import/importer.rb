@@ -23,11 +23,14 @@ module Import
       else
         do_import
       end
-      solr_url = Kumquat::Application.kumquat_config[:solr_url].chomp('/')
-      solr_collection = Kumquat::Application.kumquat_config[:solr_collection]
-      puts "Import complete. Remember to commit the Solr index once it has "\
-      "ingested everything, e.g.: "\
-      "curl #{solr_url}/#{solr_collection}/update?commit=true"
+      puts 'Import complete.'
+      unless options[:commit]
+        solr_url = Kumquat::Application.kumquat_config[:solr_url].chomp('/')
+        solr_collection = Kumquat::Application.kumquat_config[:solr_collection]
+        puts "Remember to commit the Solr index once it has ingested "\
+        "everything, e.g.: "\
+        "curl #{solr_url}/#{solr_collection}/update?commit=true"
+      end
     end
 
     private

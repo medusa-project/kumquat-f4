@@ -12,8 +12,9 @@ module Repository
     ]
 
     def reindex
-      # we have to reference all of our model classes before
-      # ActiveRecord::Base.class_for_predicate will work
+      # TODO: get a list of all node URIs from Solr and delete any that don't exist
+      # In case we are coming in via rake, we have to reference all of our
+      # model classes before ActiveRecord::Base.class_for_predicate will work
       [Item, Collection, Bytestream]
       index_node(ActiveMedusa::Configuration.instance.fedora_url)
     end
@@ -31,13 +32,11 @@ module Repository
       class_uri = graph.any_object(ActiveMedusa::Configuration.
                                        instance.class_predicate)
       if class_uri
-        # TODO: move this into ActiveMedusa::Base.from_url
-        class_ = ActiveMedusa::Base.class_of_predicate(class_uri.to_s)
-        if class_
-          instance = class_.new
-          instance.repository_url = url
-          instance.reload!
+        begin
+          instance = ActiveMedusa::Base.load(url)
           instance.reindex
+        rescue
+          # noop
         end
       end
 

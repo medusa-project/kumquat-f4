@@ -40,8 +40,9 @@ module BytestreamOwner
   end
 
   def master_bytestream
-    self.bytestreams.where(Solr::Fields::BYTESTREAM_TYPE =>
-                               Repository::Bytestream::Type::MASTER).first
+    self.bytestreams.facet(false).
+        where(Solr::Fields::BYTESTREAM_TYPE =>
+                  Repository::Bytestream::Type::MASTER).first
   end
 
   def master_image

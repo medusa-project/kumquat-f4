@@ -20,7 +20,7 @@ module Repository
     belongs_to :item, class_name: 'Repository::Item',
                predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
-               solr_field: Solr::Fields::PARENT_URI
+               solr_field: Solr::Fields::ITEM
 
     rdf_property :height,
                  xs_type: :integer,
@@ -127,7 +127,11 @@ module Repository
     end
 
     def reindex
+      kq_predicates = Kumquat::RDFPredicates
+
       doc = base_solr_document
+      doc[Solr::Fields::ITEM] =
+          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_ITEM)
       doc[Solr::Fields::BYTE_SIZE] = self.byte_size
       doc[Solr::Fields::HEIGHT] = self.height
       doc[Solr::Fields::MEDIA_TYPE] = self.media_type

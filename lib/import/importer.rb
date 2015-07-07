@@ -46,14 +46,10 @@ module Import
         item_count.times do |index|
           # retrieve or create the collection
           key = @import_delegate.collection_key_of_item_at_index(index)
+          collection = @collections[key] || Repository::Collection.find_by_key(key)
 
-          if @collections[key]
-            collection = @collections[key]
-          else
-            collection = Repository::Collection.find_by_key(key)
-          end
           unless collection
-            collection = Repository::Collection.new(
+            collection = Repository::Collection.create!(
                 key: key,
                 parent_url: @import_delegate.root_container_url,
                 published: @import_delegate.collection_of_item_at_index_is_published(index),
@@ -61,41 +57,42 @@ module Import
                 rdf_graph: @import_delegate.metadata_of_collection_of_item_at_index(index),
                 transaction_url: tx_url)
             Rails.logger.debug collection.title if collection.title
-            collection.save!
             @collections[key] = collection
           end
           collection.transaction_url = tx_url
 
-          # determine the resource URI under which the item will be created
+          # determine the node URI under which the item will be created
           parent_import_id = @import_delegate.
               parent_import_id_of_item_at_index(index)
-          parent_uri = @import_id_uri_map[parent_import_id]
+          parent_url = @import_id_uri_map[parent_import_id]
+          parent_item = nil
+          parent_item = Repository::Item.find_by_uri(parent_url) if parent_url
 
           # create the item
-          item = Repository::Item.new(
+          item = Repository::Item.create!(
               collection: collection,
-              parent_url: parent_uri || collection.repository_url,
+              parent_url: parent_url || collection.repository_url,
+              parent_item: parent_item,
               requested_slug: @import_delegate.slug_of_item_at_index(index),
               web_id: @import_delegate.web_id_of_item_at_index(index),
-              parent_uri: parent_uri,
               rdf_graph: @import_delegate.metadata_of_item_at_index(index),
               transaction_url: tx_url)
-          item.save! # save it in order to populate its repository URL
           Rails.logger.debug "Created #{item.repository_url} (#{index + 1}/#{item_count})"
 
           import_id = @import_delegate.import_id_of_item_at_index(index)
           @import_id_uri_map[import_id] = item.repository_url
 
-          # append bytestream
+          # append its master bytestream
           pathname = @import_delegate.master_pathname_of_item_at_index(index)
           if pathname
             if File.exists?(pathname)
               bs = Repository::Bytestream.new(
                   parent_url: item.repository_url,
+                  item: item,
+                  type: Repository::Bytestream::Type::MASTER,
+                  shape: Repository::Bytestream::Shape::ORIGINAL,
                   upload_pathname: pathname,
                   transaction_url: tx_url)
-              bs.type = Repository::Bytestream::Type::MASTER
-              bs.shape = Repository::Bytestream::Shape::ORIGINAL
               media_type = @import_delegate.media_type_of_item_at_index(index)
               bs.media_type = media_type unless media_type.blank?
               bs.save!
@@ -108,11 +105,11 @@ module Import
             if url
               bs = Repository::Bytestream.new(
                   parent_url: item.repository_url,
+                  item: item,
+                  type: Repository::Bytestream::Type::MASTER,
+                  shape: Repository::Bytestream::Shape::ORIGINAL,
                   external_resource_url: url,
                   transaction_url: tx_url)
-              bs.external_resource_url = url
-              bs.type = Repository::Bytestream::Type::MASTER
-              bs.shape = Repository::Bytestream::Shape::ORIGINAL
               media_type = @import_delegate.media_type_of_item_at_index(index)
               bs.media_type = media_type unless media_type.blank?
               bs.save!
@@ -124,7 +121,7 @@ module Import
           item.full_text = @import_delegate.full_text_of_item_at_index(index)
           item.extract_and_update_full_text unless item.full_text.present?
           Rails.logger.debug "Added item full text"
-          #item.generate_derivatives
+          #item.generate_derivatives TODO: uncomment this
           Rails.logger.debug "Added item bytestream derivatives"
           item.save!
 

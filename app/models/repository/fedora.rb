@@ -2,10 +2,13 @@ module Repository
 
   class Fedora
 
-    # Predicate URIs that start with any of these are repository-managed.
+    # Predicate URIs that start with any of these are repository-managed...
+    # not really, but we'll just say they are for now.
     MANAGED_PREDICATES = [
         'http://fedora.info/definitions/',
+        'http://www.iana.org/assignments/relation',
         'http://www.jcp.org/jcr',
+        'http://www.loc.gov/premis/rdf/v1#',
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
         'http://www.w3.org/2000/01/rdf-schema#',
         'http://www.w3.org/ns/ldp#'

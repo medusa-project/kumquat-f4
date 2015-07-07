@@ -32,7 +32,8 @@ module Indexable
       pred = st.predicate.to_s
       obj = st.object.to_s
       if Repository::Fedora::MANAGED_PREDICATES.select{ |p| pred.start_with?(p) or
-          obj.start_with?(p) }.empty?
+          obj.start_with?(p) }.empty? and
+          self.class.rdf_properties.map{ |p| p[:predicate] }.select{ |p| pred == p }.empty?
         doc[field_name_for_predicate(pred)] = obj
       end
     end

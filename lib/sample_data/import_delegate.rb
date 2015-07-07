@@ -64,6 +64,13 @@ module SampleData
       nil
     end
 
+    def master_url_of_item_at_index(index)
+      items[index].each_statement do |st|
+        return st.object.to_s if st.predicate.to_s == "#{LOCAL_NAMESPACE}hasURL"
+      end
+      nil
+    end
+
     def media_type_of_item_at_index(index)
       items[index].each_statement do |statement|
         return statement.object.to_s if

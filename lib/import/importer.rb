@@ -73,10 +73,15 @@ module Import
               collection: collection,
               parent_url: parent_url || collection.repository_url,
               parent_item: parent_item,
+              full_text: @import_delegate.full_text_of_item_at_index(index),
               requested_slug: @import_delegate.slug_of_item_at_index(index),
               web_id: @import_delegate.web_id_of_item_at_index(index),
               rdf_graph: @import_delegate.metadata_of_item_at_index(index),
               transaction_url: tx_url)
+          unless item.full_text.present?
+            item.extract_and_update_full_text
+            item.save!
+          end
           Rails.logger.debug "Created #{item.repository_url} (#{index + 1}/#{item_count})"
 
           import_id = @import_delegate.import_id_of_item_at_index(index)
@@ -116,14 +121,6 @@ module Import
               Rails.logger.debug "Created master bytestream URL"
             end
           end
-
-          item.reload!
-          item.full_text = @import_delegate.full_text_of_item_at_index(index)
-          item.extract_and_update_full_text unless item.full_text.present?
-          Rails.logger.debug "Added item full text"
-          #item.generate_derivatives TODO: uncomment this
-          Rails.logger.debug "Added item bytestream derivatives"
-          item.save!
 
           task.percent_complete = index / item_count.to_f
           task.save!

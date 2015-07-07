@@ -3,7 +3,6 @@ module Repository
   class Item < ActiveMedusa::Container
 
     include BytestreamOwner
-    include DerivativeManagement
     include Describable
     include ImageServing
     include Indexable

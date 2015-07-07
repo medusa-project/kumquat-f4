@@ -2,6 +2,7 @@ module Repository
 
   class Bytestream < ActiveMedusa::Binary
 
+    include Derivable
     include Indexable
 
     class Shape

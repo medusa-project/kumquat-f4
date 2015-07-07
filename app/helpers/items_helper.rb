@@ -396,8 +396,7 @@ module ItemsHelper
   ##
   # @param entity [Repository::Item] or some other object suitable for passing
   # to `icon_for`
-  # @param size [Integer] One of the sizes in
-  # `DerivativeManagement::IMAGE_DERIVATIVES`
+  # @param size [Integer] One of the sizes in `Derivable::IMAGE_DERIVATIVES`
   # @param shape [String] One of the `Repository::Bytestream::Shape` constants
   #
   def thumbnail_tag(entity, size,

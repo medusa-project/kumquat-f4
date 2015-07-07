@@ -1,5 +1,19 @@
 module BytestreamOwner
 
+  ##
+  # Returns the path at which an item's image is expected to reside.
+  #
+  # @param size [Integer] One of the sizes in `IMAGE_DERIVATIVES`
+  # @param shape [String] One of the `Repository::Bytestream::Shape` constants
+  # @return [String]
+  #
+  def derivative_image_url(size, shape = Repository::Bytestream::Shape::ORIGINAL)
+    bs = self.bytestreams. # TODO: rewrite this as a solr query
+    select{ |bs| (bs.width == size and bs.height <= size) or (bs.height == size and bs.width <= size) }.
+        select{ |bs| bs.shape == shape }.first
+    bs ? bs.public_repository_url : nil
+  end
+
   def is_audio?
     bs = self.master_bytestream
     bs and bs.is_audio?

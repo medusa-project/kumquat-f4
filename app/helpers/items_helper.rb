@@ -566,7 +566,7 @@ module ItemsHelper
     type = MIME::Types[bytestream.media_type].first
     if type and type.friendly
       parts << type.friendly
-    else
+    elsif bytestream.media_type.present?
       parts << bytestream.media_type
     end
     if bytestream.width and bytestream.width > 0 and bytestream.height and

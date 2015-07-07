@@ -26,8 +26,8 @@ module BytestreamOwner
   end
 
   def master_bytestream
-    self.bytestreams.
-        select{ |b| b.type == Repository::Bytestream::Type::MASTER }.first
+    self.bytestreams.where(Solr::Fields::BYTESTREAM_TYPE =>
+                               Repository::Bytestream::Type::MASTER).first
   end
 
   def master_image

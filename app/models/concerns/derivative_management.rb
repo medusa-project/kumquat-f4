@@ -72,7 +72,7 @@ module DerivativeManagement
   # @return string
   #
   def derivative_image_url(size, shape = Repository::Bytestream::Shape::ORIGINAL)
-    bs = self.bytestreams.
+    bs = self.bytestreams. # TODO: rewrite this as a solr query
         select{ |bs| (bs.width == size and bs.height <= size) or (bs.height == size and bs.width <= size) }.
         select{ |bs| bs.shape == shape }.first
     bs ? bs.public_repository_url : nil

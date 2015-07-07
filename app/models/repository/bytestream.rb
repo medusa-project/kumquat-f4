@@ -2,6 +2,8 @@ module Repository
 
   class Bytestream < ActiveMedusa::Binary
 
+    include Indexable
+
     class Shape
       ORIGINAL = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ORIGINAL_SHAPE
       SQUARE = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::SQUARE_SHAPE
@@ -17,13 +19,9 @@ module Repository
 
     belongs_to :item, class_name: 'Repository::Item',
                predicate: Kumquat::NAMESPACE_URI +
-                   Kumquat::RDFPredicates::PARENT_URI,
-               solr_field: Solr::Fields::ITEM
+                   Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
+               solr_field: Solr::Fields::PARENT_URI
 
-    rdf_property :byte_size,
-                 xs_type: :integer,
-                 predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::BYTE_SIZE,
-                 solr_field: Solr::Fields::BYTE_SIZE
     rdf_property :height,
                  xs_type: :integer,
                  predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::HEIGHT,
@@ -47,7 +45,7 @@ module Repository
                  predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::WIDTH,
                  solr_field: Solr::Fields::WIDTH
 
-    @@http = HTTPClient.new
+    before_save :assign_technical_info, :update_owning_item
 
     ##
     # Returns a list of image media types for which we can presume to be able
@@ -68,13 +66,6 @@ module Repository
     def self.types_with_image_derivatives
       # TODO: there are more than this
       self.derivable_image_types + %w(video/mpeg video/quicktime video/mp4)
-    end
-
-    def initialize(params = {})
-      self.read_byte_size unless self.byte_size
-      self.guess_media_type unless self.media_type
-      self.read_dimensions unless self.width and self.height
-      super
     end
 
     def guess_media_type
@@ -108,15 +99,8 @@ module Repository
     end
 
     def public_repository_url
-      self.repository_url.gsub(ActiveMedusa::Configuration.fedora_url,
+      self.repository_url.gsub(ActiveMedusa::Configuration.instance.fedora_url,
                                Kumquat::Application.kumquat_config[:public_fedora_url])
-    end
-
-    ##
-    # Reads the byte size and assigns it to the instance.
-    #
-    def read_byte_size
-      self.byte_size = File.size(self.upload_pathname) if self.upload_pathname
     end
 
     ##
@@ -128,7 +112,7 @@ module Repository
         if self.upload_pathname
           read_dimensions_from_pathname(self.upload_pathname)
         elsif self.external_resource_url
-          response = @@http.get(self.external_resource_url)
+          response = ActiveMedusa::Fedora.client.get(self.external_resource_url)
           tempfile = Tempfile.new('tmp')
           tempfile.write(response.body)
           tempfile.close
@@ -141,53 +125,24 @@ module Repository
     def to_param
       self.uuid
     end
-=begin
-    def to_sparql_update
-      kq_uri = Kumquat::NAMESPACE_URI
-      kq_predicates = Kumquat::RDFPredicates
-      kq_objects = Kumquat::RDFObjects
 
-      update = ActiveKumquat::SparqlUpdate.new
-      update.prefix('kumquat', kq_uri).prefix('dcterms', 'http://purl.org/dc/terms/')
-      owner_uri = "<#{self.owner.repository_url}>"
-      my_uri = "<#{self.repository_url}>"
-      my_metadata_uri = "<#{self.repository_metadata_url}>"
-      update.delete(my_metadata_uri, '<dcterms:MediaType>', '?o').
-          insert(my_metadata_uri, 'dcterms:MediaType', self.media_type)
-      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
-      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_TYPE}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_TYPE}",
-                 "<#{self.type}>", false)
-      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::WIDTH}", self.width.to_i)
-      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height.to_i)
-      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::BYTESTREAM_SHAPE}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::BYTESTREAM_SHAPE}",
-                 "<#{self.shape}>", false)
-      update.delete(my_metadata_uri, "<kumquat:#{kq_predicates::CLASS}>", '?o').
-          insert(my_metadata_uri, "kumquat:#{kq_predicates::CLASS}",
-                 "<#{kq_uri}#{kq_objects::BYTESTREAM}>", false)
-TODO: fix
-      # also update the owning entity with some useful properties that we can't
-      # easily query for without a triple store
-      update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTESTREAM_URI}>", "<#{my_uri}>").
-          insert(owner_uri, "kumquat:#{kq_predicates::BYTESTREAM_URI}", my_uri, false)
-      if self.type == Type::MASTER
-        update.delete(owner_uri, "<kumquat:#{kq_predicates::BYTE_SIZE}>", '?o').
-            insert(owner_uri, "kumquat:#{kq_predicates::BYTE_SIZE}", self.byte_size)
-        update.delete(owner_uri, "<kumquat:#{kq_predicates::HEIGHT}>", '?o').
-            insert(owner_uri, "kumquat:#{kq_predicates::HEIGHT}", self.height.to_i)
-        update.delete(owner_uri, '<dcterms:MediaType>', '?o').
-            insert(owner_uri, 'dcterms:MediaType', self.media_type)
-        update.delete(owner_uri, "<kumquat:#{kq_predicates::WIDTH}>", '?o').
-            insert(owner_uri, "kumquat:#{kq_predicates::WIDTH}", self.width.to_i)
-      end
-      update
+    def reindex
+      doc = base_solr_document
+      doc[Solr::Fields::BYTE_SIZE] = self.byte_size
+      doc[Solr::Fields::HEIGHT] = self.height
+      doc[Solr::Fields::MEDIA_TYPE] = self.media_type
+      doc[Solr::Fields::BYTESTREAM_SHAPE] = self.shape
+      doc[Solr::Fields::BYTESTREAM_TYPE] = self.type
+      doc[Solr::Fields::WIDTH] = self.width
+      Solr::Solr.client.add(doc)
     end
-=end
+
     private
+
+    def assign_technical_info
+      self.guess_media_type unless self.media_type
+      self.read_dimensions unless self.width and self.height
+    end
 
     ##
     # @param pathname string
@@ -200,6 +155,40 @@ TODO: fix
       if parts.length == 2
         self.width = parts[0].strip.to_i
         self.height = parts[1].strip.to_i
+      end
+    end
+
+    ##
+    # Updates the owning item with some useful properties that can't easily be
+    # queried for without a triple store.
+    # TODO: look into solr joins instead
+    #
+    def update_owning_item
+      if self.parent
+        kq_predicates = Kumquat::RDFPredicates
+        self.parent.rdf_graph.delete_predicate(kq_predicates::BYTESTREAM_URI)
+        self.parent.rdf_graph << [RDF::URI(), kq_predicates::BYTESTREAM_URI,
+                                  RDF::URI(self.repository_url)]
+        if self.type == Type::MASTER
+          # byte size
+          self.parent.rdf_graph << [RDF::URI(),
+                                    RDF::URI('http://www.loc.gov/premis/rdf/v1#hasSize'),
+                                    self.byte_size] if self.byte_size
+          # height
+          self.parent.rdf_graph.delete_predicate(kq_predicates::HEIGHT)
+          self.parent.rdf_graph << [RDF::URI(), RDF::URI(kq_predicates::HEIGHT),
+                                    self.height.to_i] if self.height
+          # media type
+          self.parent.rdf_graph.delete_predicate('http://purl.org/dc/terms/MediaType')
+          self.parent.rdf_graph << [RDF::URI(),
+                                    RDF::URI('http://purl.org/dc/terms/MediaType'),
+                                    self.media_type] if self.media_type
+          # width
+          self.parent.rdf_graph.delete_predicate(kq_predicates::WIDTH)
+          self.parent.rdf_graph << [RDF::URI(), RDF::URI(kq_predicates::WIDTH),
+                                    self.width.to_i] if self.width
+        end
+        self.parent.save
       end
     end
 

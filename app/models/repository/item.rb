@@ -21,9 +21,7 @@ module Repository
                    Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
                solr_field: Solr::Fields::PARENT_URI,
                name: :parent_item
-    has_many :bytestreams, class_name: 'Repository::Bytestream',
-             predicate: Kumquat::NAMESPACE_URI +
-                   Kumquat::RDFPredicates::BYTESTREAM_URI
+    has_many :bytestreams, class_name: 'Repository::Bytestream'
     has_many :items, class_name: 'Repository::Item'
 
     rdf_property :full_text,

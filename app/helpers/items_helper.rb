@@ -379,7 +379,6 @@ module ItemsHelper
     if items.any?
       html += '<ul>'
       items.each do |item|
-        next unless item.web_id # TODO: why is this necessary?
         html += '<li>'
         html += link_to(repository_item_path(item)) do
           thumbnail_tag(item, 256, Repository::Bytestream::Shape::SQUARE)

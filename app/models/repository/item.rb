@@ -56,7 +56,7 @@ module Repository
     end
 
     def ==(other)
-      other.kind_of?(Repository::Item) and self.uuid == other.uuid
+      other.kind_of?(self.class) and self.uuid == other.uuid
     end
 
     ##

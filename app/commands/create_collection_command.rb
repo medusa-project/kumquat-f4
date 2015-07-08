@@ -6,7 +6,7 @@ class CreateCollectionCommand < Command
 
   def initialize(collection_params)
     @collection = Repository::Collection.new(collection_params)
-    @collection.container_url = Kumquat::Application.kumquat_config[:fedora_url]
+    @collection.parent_url = Kumquat::Application.kumquat_config[:fedora_url]
   end
 
   def execute

@@ -57,7 +57,7 @@ module Admin
     private
 
     def sanitized_params
-      params.require(:db_theme).permit(:name, :default)
+      params.require(:theme).permit(:name, :default)
     end
 
   end

@@ -15,14 +15,56 @@ module Repository
     ]
 
     def reindex
-      # TODO: get a list of all node URIs from Solr and delete any that don't exist
       # In case we are coming in via rake, we have to reference all of our
-      # model classes before ActiveRecord::Base.class_for_predicate will work
+      # model classes before ActiveMedusa::Base.class_for_predicate will work
       [Item, Collection, Bytestream]
+      delete_missing_ids
       index_node(ActiveMedusa::Configuration.instance.fedora_url)
     end
 
     private
+
+    def delete_ids(ids)
+      if ids.any?
+        Rails.logger.debug("Deleting #{ids} missing records from Solr")
+        body = "<delete><query>#{Solr::Fields::ID}:(#{ids.to_a.join(' OR ')})</query></delete>"
+        Solr::Solr.client.post('update', params: { 'stream.body' => body})
+      end
+    end
+
+    ##
+    # Gets a list of all node URIs from Solr and deletes any that
+    # don't exist in the repository.
+    #
+    def delete_missing_ids
+      chunk_size = 1000
+      solr = Solr::Solr.client
+      params = { q: '*:*', fl: Solr::Fields::ID, start: 0, rows: 0 }
+      response = solr.get('select', params: params)
+      num_results = response['response']['numFound'].to_i
+      num_chunks = (num_results / chunk_size.to_f).ceil
+      ids = Set.new
+      num_chunks.times do |i|
+        params[:rows] = chunk_size
+        params[:start] = i * num_results
+        response = Solr::Solr.client.get('select', params: params)
+        response['response']['docs'].each do |doc|
+          ids << doc[Solr::Fields::ID.to_s] unless
+              exists_in_fedora?(doc[Solr::Fields::ID.to_s])
+        end
+      end
+      delete_ids(ids)
+    end
+
+    def exists_in_fedora?(url)
+      http = ActiveMedusa::Fedora.client
+      begin
+        http.head(url)
+      rescue HTTPClient::BadResponseError => e
+        return false if [404, 410].include?(e.res.status)
+      end
+      true
+    end
 
     ##
     # Recursive method that indexes the node at the given URL and all of its

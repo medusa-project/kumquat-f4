@@ -10,11 +10,11 @@
 * CONTENTdm compound object pages are imported as item nodes within their
   parent item container node.
 * CONTENTdm "URL items" are imported as F4 "binary resources redirecting to
-  external content," which work pretty much the same.
+  external content," which work the same.
 * Most descriptive metadata is preserved for items, collections, compound
   objects, and compound object pages.
-* Dublin Core metadata is imported into the appropriate namespace:
-  `http://purl.org/dc/elements/1.1/` or `http://purl.org/dc/terms/`.
+* Dublin Core metadata is imported into the `http://purl.org/dc/terms/`
+  namespace.
 * Local "unmapped" metadata is imported into a local namespace.
 
 The resulting F4 node structure looks like this:
@@ -44,8 +44,7 @@ The resulting F4 node structure looks like this:
 * Only one level of compound object structure will be imported.
 * CONTENTdm field settings like searchable, hidden, etc. are ignored.
 * When an import is re-run, old collection nodes (and all child nodes) will be
-  deleted and replaced by new ones, but the resulting UUIDs will be different.
-  (This may or may not matter for you.)
+  deleted and replaced by new ones.
 
 ## Instructions
 

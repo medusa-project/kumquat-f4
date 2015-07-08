@@ -7,11 +7,11 @@ class DCElementTest < ActiveSupport::TestCase
   end
 
   test 'namespace_prefix should return the correct prefix' do
-    assert_equal 'dc', @element.namespace_prefix
+    assert_equal 'dcterms', @element.namespace_prefix
   end
 
   test 'uri should return the correct URI' do
-    assert_equal 'http://purl.org/dc/elements/1.1/title', @element.uri
+    assert_equal 'http://purl.org/dc/terms/title', @element.uri
   end
 
 end

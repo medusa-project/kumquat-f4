@@ -46,12 +46,12 @@ class ImportDelegateTest < ActiveSupport::TestCase
 
   test 'metadata_of_collection_of_item_at_index should return metadata' do
     graph = @delegate.metadata_of_collection_of_item_at_index(0)
-    assert graph.has_predicate?(RDF::URI('http://purl.org/dc/elements/1.1/title'))
+    assert graph.has_predicate?(RDF::URI('http://purl.org/dc/terms/title'))
   end
 
   test 'metadata_of_item_at_index should return metadata' do
     graph = @delegate.metadata_of_item_at_index(0)
-    assert graph.has_predicate?(RDF::URI('http://purl.org/dc/elements/1.1/title'))
+    assert graph.has_predicate?(RDF::URI('http://purl.org/dc/terms/title'))
   end
 
   test 'slug_of_collection_of_item_at_index should return a correct slug' do

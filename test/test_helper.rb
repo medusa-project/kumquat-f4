@@ -36,7 +36,7 @@ class ActiveSupport::TestCase
 
     # make sure solr is empty
     url = Kumquat::Application.kumquat_config[:solr_url].chomp('/') + '/' +
-        Kumquat::Application.kumquat_config[:solr_collection] +
+        Kumquat::Application.kumquat_config[:solr_core] +
         '/update?stream.body=<delete><query>*:*</query></delete>'
     http.get(url)
     Solr::Solr.client.commit

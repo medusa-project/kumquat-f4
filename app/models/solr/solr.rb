@@ -547,7 +547,7 @@ module Solr
     }
 
     @@client = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url].chomp('/') +
-                                 '/' + Kumquat::Application.kumquat_config[:solr_collection])
+                                 '/' + Kumquat::Application.kumquat_config[:solr_core])
 
     ##
     # @return RSolr
@@ -559,7 +559,7 @@ module Solr
     def initialize
       @http = HTTPClient.new
       @url = Kumquat::Application.kumquat_config[:solr_url].chomp('/') + '/' +
-          Kumquat::Application.kumquat_config[:solr_collection]
+          Kumquat::Application.kumquat_config[:solr_core]
     end
 
     def clear

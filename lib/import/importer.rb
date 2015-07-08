@@ -26,10 +26,10 @@ module Import
       puts 'Import complete.'
       unless options[:commit]
         solr_url = Kumquat::Application.kumquat_config[:solr_url].chomp('/')
-        solr_collection = Kumquat::Application.kumquat_config[:solr_collection]
+        solr_core = Kumquat::Application.kumquat_config[:solr_core]
         puts "Remember to commit the Solr index once it has ingested "\
         "everything, e.g.: "\
-        "curl #{solr_url}/#{solr_collection}/update?commit=true"
+        "curl #{solr_url}/#{solr_core}/update?commit=true"
       end
     end
 

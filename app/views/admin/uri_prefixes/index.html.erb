@@ -12,21 +12,21 @@
 <%= form_tag do %>
     <table class="table table-striped kq-prefixes">
       <thead>
+      <th style="width:15%">Prefix</th>
       <th>URI</th>
-      <th>Prefix</th>
-      <th></th>
+      <th style="width:1%"></th>
       </thead>
       <tbody>
       <% @prefixes.each do |prefix| %>
           <tr>
+            <td><%= text_field_tag "prefixes[#{prefix.id}][prefix]",
+                                   prefix.prefix, class: 'form-control' %></td>
             <td>
               <%= hidden_field_tag "prefixes[#{prefix.id}][_destroy]", 0,
                                    class: 'kq-destroy-marker' %>
               <%= text_field_tag "prefixes[#{prefix.id}][uri]",
                                  prefix.uri, class: 'form-control' %>
             </td>
-            <td><%= text_field_tag "prefixes[#{prefix.id}][prefix]",
-                                   prefix.prefix, class: 'form-control' %></td>
             <td><button type="button"
                         class="btn btn-sm btn-danger kq-remove-prefix">&minus;</button></td>
           </tr>

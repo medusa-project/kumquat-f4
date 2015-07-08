@@ -102,7 +102,7 @@ module ItemsHelper
   #
   def icon_for(describable)
     icon = 'fa-cube'
-    if describable.kind_of?(Repository::Item)
+    if describable.class.to_s == 'Repository::Item' # TODO: why doesn't describable.kind_of?(Repository::Item) work?
       if describable.is_audio?
         icon = 'fa-volume-up'
       elsif describable.is_image?
@@ -114,7 +114,7 @@ module ItemsHelper
       elsif describable.items.any?
         icon = 'fa-cubes'
       end
-    elsif describable.kind_of?(Repository::Collection) or
+    elsif describable.class.to_s == 'Repository::Collection' or # TODO: why doesn't describable.kind_of?(Repository::Collection) work?
         describable == Repository::Collection
       icon = 'fa-folder-open-o'
     end
@@ -185,7 +185,7 @@ module ItemsHelper
         html += '</button>'
       end
       html += '</span>'
-      if options[:show_collections] and entity.kind_of?(Repository::Item)
+      if options[:show_collections] and entity.class.to_s == 'Repository::Item' # TODO: why does entity.kind_of?(Repository::Item) return false?
         html += '<br>'
         html += link_to(entity.collection) do
           raw("#{self.icon_for(entity.collection)} #{entity.collection.title}")
@@ -402,7 +402,7 @@ module ItemsHelper
   def thumbnail_tag(entity, size,
                     shape = Repository::Bytestream::Shape::ORIGINAL)
     html = "<div class=\"kq-thumbnail\">"
-    if entity.kind_of?(Repository::Item)
+    if entity.class.to_s == 'Repository::Item' # TODO: why doesn't entity.kind_of?(Repository::Item) work?
       thumb_url = entity.derivative_image_url(size, shape)
       if thumb_url
         html += image_tag(thumb_url, alt: 'Thumbnail image')
@@ -581,7 +581,7 @@ module ItemsHelper
   end
 
   def human_label_for_uri(describable, uri)
-    if describable.kind_of?(Repository::Collection)
+    if describable.class.to_s == 'Repository::Collection' # TODO: why does entity.kind_of?(Repository::Collection) return false?
       collection = describable
     else
       collection = describable.collection

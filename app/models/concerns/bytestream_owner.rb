@@ -8,9 +8,12 @@ module BytestreamOwner
   # @return [String]
   #
   def derivative_image_url(size, shape = Repository::Bytestream::Shape::ORIGINAL)
-    bs = self.bytestreams. # TODO: rewrite this as a solr query
-    select{ |bs| (bs.width == size and bs.height <= size) or (bs.height == size and bs.width <= size) }.
-        select{ |bs| bs.shape == shape }.first
+    q = "("\
+      "(#{Solr::Fields::WIDTH}:#{size} AND #{Solr::Fields::HEIGHT}:[* TO #{size}]) "\
+      "OR (#{Solr::Fields::HEIGHT}:#{size} AND #{Solr::Fields::WIDTH}:[* TO #{size}])"\
+      ") "\
+      "AND #{Solr::Fields::BYTESTREAM_SHAPE}:\"#{shape}\""
+    bs = self.bytestreams.where(q).limit(1).first
     bs ? bs.public_repository_url : nil
   end
 

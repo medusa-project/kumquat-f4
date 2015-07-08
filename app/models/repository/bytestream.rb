@@ -46,14 +46,14 @@ module Repository
                  predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::WIDTH,
                  solr_field: Solr::Fields::WIDTH
 
-    before_save :assign_technical_info, :update_owning_item
+    before_save :assign_technical_info
 
     ##
     # Returns a list of image media types for which we can presume to be able
     # to generate derivatives. This will be a subset of
     # types_with_image_derivatives.
     #
-    def self.derivable_image_types
+    def self.derivable_image_types # TODO: move this to Derivable
       %w(gif jp2 jpg png tif).map do |ext| # TODO: there are more than this
         MIME::Types.of(ext).map{ |type| type.to_s }
       end
@@ -64,7 +64,7 @@ module Repository
     # derivatives will be available. This will be a superset of
     # derivable_image_types.
     #
-    def self.types_with_image_derivatives
+    def self.types_with_image_derivatives # TODO: move this to Derivable
       # TODO: there are more than this
       self.derivable_image_types + %w(video/mpeg video/quicktime video/mp4)
     end
@@ -160,40 +160,6 @@ module Repository
       if parts.length == 2
         self.width = parts[0].strip.to_i
         self.height = parts[1].strip.to_i
-      end
-    end
-
-    ##
-    # Updates the owning item with some useful properties that can't easily be
-    # queried for without a triple store.
-    # TODO: look into solr joins instead
-    #
-    def update_owning_item
-      if self.parent
-        kq_predicates = Kumquat::RDFPredicates
-        self.parent.rdf_graph.delete_predicate(kq_predicates::BYTESTREAM_URI)
-        self.parent.rdf_graph << [RDF::URI(), kq_predicates::BYTESTREAM_URI,
-                                  RDF::URI(self.repository_url)]
-        if self.type == Type::MASTER
-          # byte size
-          self.parent.rdf_graph << [RDF::URI(),
-                                    RDF::URI('http://www.loc.gov/premis/rdf/v1#hasSize'),
-                                    self.byte_size] if self.byte_size
-          # height
-          self.parent.rdf_graph.delete_predicate(kq_predicates::HEIGHT)
-          self.parent.rdf_graph << [RDF::URI(), RDF::URI(kq_predicates::HEIGHT),
-                                    self.height.to_i] if self.height
-          # media type
-          self.parent.rdf_graph.delete_predicate('http://purl.org/dc/terms/MediaType')
-          self.parent.rdf_graph << [RDF::URI(),
-                                    RDF::URI('http://purl.org/dc/terms/MediaType'),
-                                    self.media_type] if self.media_type
-          # width
-          self.parent.rdf_graph.delete_predicate(kq_predicates::WIDTH)
-          self.parent.rdf_graph << [RDF::URI(), RDF::URI(kq_predicates::WIDTH),
-                                    self.width.to_i] if self.width
-        end
-        self.parent.save
       end
     end
 

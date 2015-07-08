@@ -21,13 +21,13 @@ class CollectionsController < WebsiteController
     end
     raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
 
-    # Get a random image item to show. Limit to certain common media types to
-    # be safe.
-    media_types = "(#{Repository::Bytestream::derivable_image_types.join(' OR ')})"
+    # Get a random image item to show. Limit to displayable media types.
+    media_types = Repository::Bytestream::derivable_image_types.join(' OR ')
     @item = Repository::Item.
-        where(Solr::Fields::COLLECTION_KEY => @collection.key).
-        where(Solr::Fields::MEDIA_TYPE => media_types).
-        facet(false).order("random_#{SecureRandom.hex}").first
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
+        filter(Solr::Fields::COLLECTION => @collection.repository_url).
+        omit_entity_query(true).
+        facet(false).order("random_#{SecureRandom.hex}").limit(1).first
   end
 
 end

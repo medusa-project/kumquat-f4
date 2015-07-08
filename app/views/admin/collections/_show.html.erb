@@ -51,9 +51,6 @@
     <li role="presentation">
       <a href="#kq-repository" aria-controls="home" role="tab" data-toggle="tab">Fedora RDF</a>
     </li>
-    <li role="presentation">
-      <a href="#kq-index" aria-controls="home" role="tab" data-toggle="tab">Solr JSON</a>
-    </li>
   </ul>
 
   <div class="tab-content">
@@ -89,11 +86,6 @@
     <!-- Repository pane -->
     <div role="tabpanel" class="tab-pane" id="kq-repository">
       <pre><%= @collection.rdf_graph.dump(:ttl) %></pre>
-    </div>
-
-    <!-- Index pane -->
-    <div role="tabpanel" class="tab-pane" id="kq-index">
-      <pre><%= JSON.pretty_generate(@collection.solr_json) %></pre>
     </div>
 
   </div> <!-- .tab-content -->

@@ -153,13 +153,14 @@ module ItemsHelper
       html += '<li>'\
         '<div>'
       html += link_to(link_target, class: 'kq-thumbnail-link') do
-        if entity.kind_of?(Repository::Collection)
+        if entity.class.to_s == 'Repository::Collection' # TODO: why does entity.kind_of?(Repository::Collection) return false?
           media_types = "(#{Repository::Bytestream::types_with_image_derivatives.join(' OR ')})"
           item = Repository::Item.
-              where(Solr::Fields::COLLECTION => entity.repository_url).
-              where(Solr::Fields::MEDIA_TYPE => media_types).
-              facet(false).order("random_#{SecureRandom.hex}").first ||
-              Repository::Collection
+              where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
+              filter(Solr::Fields::COLLECTION => entity.repository_url).
+              omit_entity_query(true).
+              facet(false).order("random_#{SecureRandom.hex}").limit(1).first
+          item ||= Repository::Collection
         else
           item = entity
         end

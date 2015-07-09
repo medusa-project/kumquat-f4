@@ -315,6 +315,21 @@ module ItemsHelper
   end
 
   ##
+  # Returns the status of a search or browse action, e.g. "Showing n of n
+  # items".
+  #
+  # @param items [ActiveMedusa::Relation]
+  # @param start [Integer]
+  # @param num_results_shown [Integer]
+  # @return [String]
+  #
+  def search_status(items, start, num_results_shown)
+    total = items.total_length
+    last = [total, start + num_results_shown].min
+    raw("Showing #{start + 1}&ndash;#{last} of #{total} items")
+  end
+
+  ##
   # @param item [Repository::Item]
   # @return [String] HTML string
   #

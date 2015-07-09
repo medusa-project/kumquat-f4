@@ -31,8 +31,7 @@
     <div class="col-sm-9 kq-results">
       <div class="panel panel-default">
         <div class="panel-body">
-          Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-            <%= @items.total_length %> items
+          <%= search_status(@items, @start, @num_results_shown) %>
         </div>
       </div>
       <div class="kq-list-results">

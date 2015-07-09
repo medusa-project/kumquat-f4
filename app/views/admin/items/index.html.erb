@@ -86,8 +86,7 @@
 
 <div class="panel">
   <div class="panel-body">
-    Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-    <%= @items.total_length %> results
+    <%= search_status(@items, @start, @num_results_shown) %>
     <div class="btn-group pull-right" role="group">
       <button type="button" class="btn btn-default dropdown-toggle"
               data-toggle="dropdown" aria-expanded="false">

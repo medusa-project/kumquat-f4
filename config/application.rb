@@ -17,9 +17,9 @@ module Kumquat
   class RDFObjects
     BYTESTREAM = 'Bytestream'
     COLLECTION = 'Collection'
-    DERIVATIVE_BYTESTREAM = 'Bytestream/Derivative'
+    DERIVATIVE_BYTESTREAM = 'Bytestream/Type/Derivative'
     ITEM = 'Item'
-    MASTER_BYTESTREAM = 'Bytestream/Master'
+    MASTER_BYTESTREAM = 'Bytestream/Type/Master'
     ORIGINAL_SHAPE = 'Bytestream/Shape/Original'
     SQUARE_SHAPE = 'Bytestream/Shape/Square'
   end

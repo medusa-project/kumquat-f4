@@ -126,7 +126,9 @@ module Admin
 
       uri = repository_item_url(@item)
       respond_to do |format|
-        format.html { @pages = @item.parent ? @item.parent.children : @item.children}
+        format.html do
+          @pages = @item.parent_item ? @item.parent_item.items : @item.items
+        end
         format.jsonld { render text: @item.admin_rdf_graph(uri).to_jsonld }
         format.rdf { render text: @item.admin_rdf_graph(uri).to_rdfxml }
         format.ttl { render text: @item.admin_rdf_graph(uri).to_ttl }

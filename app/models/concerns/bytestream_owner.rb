@@ -42,16 +42,28 @@ module BytestreamOwner
     bs and bs.is_video?
   end
 
+  ##
+  # @return [Repository::Bytestream]
+  #
   def master_bytestream
-    self.bytestreams.facet(false).
-        where(Solr::Fields::BYTESTREAM_TYPE =>
-                  Repository::Bytestream::Type::MASTER).first
+    unless @master_bytestream
+      @master_bytestream = self.bytestreams.facet(false).
+          where(Solr::Fields::BYTESTREAM_TYPE =>
+                    Repository::Bytestream::Type::MASTER).first
+    end
+    @master_bytestream
   end
 
+  ##
+  # @return [Repository::Bytestream, nil] Nil if the instance is not an image.
+  #
   def master_image
     self.is_image? ? self.master_bytestream : nil
   end
 
+  ##
+  # @return [String]
+  #
   def media_type
     bs = self.master_bytestream
     bs ? bs.media_type : nil

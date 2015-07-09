@@ -69,6 +69,16 @@ module Repository
       self.derivable_image_types + %w(video/mpeg video/quicktime video/mp4)
     end
 
+    ##
+    # Returns the PREMIS byte size, populated by the repository. Not available
+    # until the instance has been persisted.
+    #
+    # @return [Integer]
+    #
+    def byte_size
+      self.rdf_graph.any_object('http://www.loc.gov/premis/rdf/v1#hasSize').to_i
+    end
+
     def guess_media_type
       type = nil
       if self.upload_pathname and File.exist?(self.upload_pathname)

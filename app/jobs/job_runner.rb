@@ -14,7 +14,7 @@ class JobRunner
   #
   def run(job, *args)
     begin
-      CommandExecutor.check_permissions(job) if @doing_user
+      CommandExecutor.check_permissions(job, @doing_user) if @doing_user
       job.perform_now(*args)
     rescue ActiveRecord::RecordInvalid => e
       message = "#{job.to_s} failed: #{e.message}"
@@ -48,7 +48,7 @@ class JobRunner
   #
   def run_later(job, *args)
     begin
-      CommandExecutor.check_permissions(job) if @doing_user
+      CommandExecutor.check_permissions(job, @doing_user) if @doing_user
       # can't pass a Class to a Job
       args[0][:command] = args[0][:command].to_s if args.any? and args[0][:command]
       job.perform_later(*args)

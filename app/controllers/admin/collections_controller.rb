@@ -2,21 +2,31 @@ module Admin
 
   class CollectionsController < ControlPanelController
 
-    before_action :create_rbac, only: [:new, :create]
+    before_action :create_rbac, only: :create
     before_action :delete_rbac, only: :destroy
-    before_action :update_rbac, only: [:edit, :update]
+    before_action :update_rbac, only: :update
 
     def create
       command = CreateCollectionCommand.new(sanitized_repo_params)
       @collection = command.object
       begin
         executor.execute(command)
+      rescue ActiveMedusa::RecordInvalid
+        response.headers['X-Kumquat-Result'] = 'error'
+        render partial: 'shared/validation_messages',
+               locals: { entity: @collection }
       rescue => e
+        response.headers['X-Kumquat-Result'] = 'error'
         flash['error'] = "#{e}"
-        render 'new'
+        keep_flash
+        render partial: 'form', locals: { collection: @collection,
+                                          context: :create }
       else
+        Solr::Solr.client.commit
+        response.headers['X-Psap-Result'] = 'success'
         flash['success'] = "Collection \"#{@collection.title}\" created."
-        redirect_to admin_repository_collection_url(@collection)
+        keep_flash
+        render 'create' # create.js.erb will reload the page
       end
     end
 
@@ -36,11 +46,6 @@ module Admin
       end
     end
 
-    def edit
-      @collection = Repository::Collection.find_by_key(params[:key])
-      raise ActiveRecord::RecordNotFound unless @collection
-    end
-
     def index
       @start = params[:start] ? params[:start].to_i : 0
       @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
@@ -48,9 +53,6 @@ module Admin
           order(Solr::Fields::SINGLE_TITLE).start(@start).limit(@limit)
       @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
       @num_shown = [@limit, @collections.total_length].min
-    end
-
-    def new
       @collection = Repository::Collection.new
     end
 

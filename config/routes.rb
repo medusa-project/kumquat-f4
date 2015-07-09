@@ -72,8 +72,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :key, as: :repository_collections,
-              concerns: :publishable do
+    resources :collections, param: :key, except: [:new, :edit],
+              as: :repository_collections, concerns: :publishable do
       resources :rdf_predicates, path: 'rdf-predicates'
     end
     resources :collections, param: :key, as: :db_collections

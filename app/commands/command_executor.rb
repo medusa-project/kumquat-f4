@@ -1,38 +1,38 @@
 class CommandExecutor
 
-  def self.check_permissions(command)
-    missing_permissions = command.required_permissions.reject do |p|
-      @doing_user.can?(p)
+  def self.check_permissions(command, user)
+    missing_permissions = command.class.required_permissions.reject do |p|
+      user.can?(p)
     end
     if missing_permissions.any?
       list = missing_permissions.map do |p|
         perm = Permission.find_by_key(p)
         perm ? perm.name.downcase : p
       end
-      raise "#{@doing_user.username} has insufficient privileges for the "\
+      raise "#{user.username} has insufficient privileges for the "\
       "following actions: #{list.join(', ')}"
     end
   end
 
   ##
-  # @param doing_user User
+  # @param doing_user [User]
   #
   def initialize(doing_user = nil)
     @doing_user = doing_user
   end
 
   ##
-  # Executes a Command. To run a command in the background, see the
-  # documentation for JobRunner::run_later.
+  # Executes a `Command`. To run a command in the background, see the
+  # documentation for `JobRunner::run_later`.
   #
-  # @param command Command
-  # @raise RuntimeError
+  # @param command [Command]
+  # @raise [StandardError]
   #
   def execute(command)
     begin
-      check_permissions(command) if @doing_user
+      self.class.check_permissions(command, @doing_user) if @doing_user
       command.execute
-    rescue ActiveRecord::RecordInvalid => e
+    rescue *[ActiveRecord::RecordInvalid, ActiveMedusa::RecordInvalid] => e
       if command.object.respond_to?('errors')
         message = "#{command.class.to_s} failed: "\
         "#{command.object.errors.full_messages[0]}"
@@ -40,7 +40,7 @@ class CommandExecutor
         message = "#{command.class.to_s} failed: #{e.message}"
       end
       Rails.logger.debug(message)
-      raise message
+      raise e
     rescue => e
       message = "#{command.class.to_s} failed: #{e.message}"
       Rails.logger.warn(message)

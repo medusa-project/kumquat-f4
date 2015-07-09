@@ -25,29 +25,27 @@
   </ul>
 </div>
 
-<%= form_tag do %>
-  <table class="table table-striped kq-predicates">
-    <thead>
-      <th>URI</th>
-      <th>Label</th>
-      <th></th>
-    </thead>
-    <tbody>
-      <% @predicates.each do |predicate| %>
-        <tr>
-          <td><%= predicate.uri %></td>
-          <td><%= predicate.label %></td>
-          <td>
-            <%= link_to admin_rdf_predicate_path(predicate), method: :delete,
-                        class: 'btn btn-sm btn-danger' do %>
-              &minus;
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
+<table class="table table-striped kq-predicates">
+  <thead>
+    <th>URI</th>
+    <th>Label</th>
+    <th></th>
+  </thead>
+  <tbody>
+    <% @predicates.each do |predicate| %>
+      <tr>
+        <td><%= predicate.uri %></td>
+        <td><%= predicate.label %></td>
+        <td>
+          <%= link_to admin_rdf_predicate_path(predicate), method: :delete,
+                      class: 'btn btn-sm btn-danger' do %>
+            &minus;
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <div class="modal fade" id="kq-add-predicate-modal" tabindex="-1" role="dialog"
      aria-labelledby="kq-add-predicate-modal-label">

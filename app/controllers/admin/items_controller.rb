@@ -65,7 +65,7 @@ module Admin
       @start = params[:start] ? params[:start].to_i : 0
       @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
       @items = Repository::Item.all.
-          where("-#{Solr::Fields::PARENT_URI}:[* TO *]").
+          where("-#{Solr::Fields::ITEM}:[* TO *]").
           where(params[:q]).
           facet(false)
 
@@ -81,10 +81,15 @@ module Admin
       end
 
       # collections
-      keys = []
-      keys = params[:keys].select{ |k| !k.blank? } if params[:keys] and params[:keys].any?
-      if keys.any? and keys.length < Repository::Collection.all.length
-        @items = @items.where("#{Solr::Fields::COLLECTION_KEY}:(#{keys.join(' ')})")
+      collections = []
+      collections = params[:collections].select{ |k| !k.blank? } if
+          params[:collections] and params[:collections].any?
+      if collections.any?
+        if collections.length == 1
+          @items = @items.where("#{Solr::Fields::COLLECTION}:\"#{collections.first}\"")
+        elsif collections.length < Repository::Collection.all.count
+          @items = @items.where("#{Solr::Fields::COLLECTION}:(#{collections.join(' ')})")
+        end
       end
 
       if params[:published].present? and params[:published] != 'any'
@@ -113,11 +118,16 @@ module Admin
     end
 
     ##
-    # Responds to POST /admin/items/search
+    # Redirects GET /admin/items/search to /admin/items. Also responds to
+    # POST /admin/items/search.
     #
     def search
-      index
-      render 'index' unless params[:clear]
+      if request.get?
+        redirect_to action: :index, status: 301
+      else
+        index
+        render 'index' unless params[:clear]
+      end
     end
 
     def show

@@ -77,14 +77,14 @@ Rails.application.routes.draw do
       resources :rdf_predicates, path: 'rdf-predicates'
     end
     resources :collections, param: :key, as: :db_collections
+    match '/items/search', to: 'items#search', via: %w(get post),
+          as: 'repository_items_search'
     resources :items, param: :web_id, as: :repository_items, concerns: :publishable do
       match '/full-text/clear', to: 'items#clear_full_text', via: 'patch',
             as: 'clear_full_text'
       match '/full-text/extract', to: 'items#extract_full_text', via: 'patch',
             as: 'extract_full_text'
     end
-    match '/items/search', to: 'items#search', via: 'post',
-          as: 'repository_items_search'
     resources :rdf_predicates, path: 'rdf-predicates'
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'

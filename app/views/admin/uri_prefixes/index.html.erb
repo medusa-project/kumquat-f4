@@ -14,29 +14,27 @@
 
 <h1>URI Prefixes</h1>
 
-<%= form_tag do %>
-  <table class="table table-striped kq-prefixes">
-    <thead>
-      <th style="width:15%">Prefix</th>
-      <th>URI</th>
-      <th style="width:1%"></th>
-    </thead>
-    <tbody>
-      <% @prefixes.each do |prefix| %>
-        <tr>
-          <td><%= prefix.prefix %></td>
-          <td><%= prefix.uri %></td>
-          <td>
-            <%= link_to admin_uri_prefix_path(prefix), method: :delete,
-                        class: 'btn btn-sm btn-danger' do %>
-              &minus;
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
+<table class="table table-striped kq-prefixes">
+  <thead>
+    <th style="width:15%">Prefix</th>
+    <th>URI</th>
+    <th style="width:1%"></th>
+  </thead>
+  <tbody>
+    <% @prefixes.each do |prefix| %>
+      <tr>
+        <td><%= prefix.prefix %></td>
+        <td><%= prefix.uri %></td>
+        <td>
+          <%= link_to admin_uri_prefix_path(prefix), method: :delete,
+                      class: 'btn btn-sm btn-danger' do %>
+            &minus;
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <div class="modal fade" id="kq-add-prefix-modal" tabindex="-1" role="dialog"
      aria-labelledby="kq-add-prefix-modal-label">
@@ -46,7 +44,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">Add Prefix</h4>
+        <h4 class="modal-title" id="kq-add-prefix-modal-label">Add Prefix</h4>
       </div>
       <div class="modal-body">
         <%= render partial: 'create' %>

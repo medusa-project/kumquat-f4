@@ -7,6 +7,11 @@
   <li class="active">RDF Predicates</li>
 </ol>
 
+<div class="pull-right">
+  <button type="button" class="btn btn-default" data-toggle="modal"
+          data-target="#kq-add-predicate-modal">Add Predicate</button>
+</div>
+
 <h1>RDF Predicates</h1>
 
 <div class="alert alert-info">
@@ -23,33 +28,40 @@
 <%= form_tag do %>
   <table class="table table-striped kq-predicates">
     <thead>
-      <th>Predicate URI</th>
+      <th>URI</th>
       <th>Label</th>
       <th></th>
     </thead>
     <tbody>
       <% @predicates.each do |predicate| %>
         <tr>
+          <td><%= predicate.uri %></td>
+          <td><%= predicate.label %></td>
           <td>
-            <%= hidden_field_tag "predicates[#{predicate.id}][_destroy]", 0,
-                                 class: 'kq-destroy-marker' %>
-            <%= text_field_tag "predicates[#{predicate.id}][uri]",
-                               predicate.uri, class: 'form-control' %>
+            <%= link_to admin_rdf_predicate_path(predicate), method: :delete,
+                        class: 'btn btn-sm btn-danger' do %>
+              &minus;
+            <% end %>
           </td>
-          <td><%= text_field_tag "predicates[#{predicate.id}][label]",
-                                 predicate.label, class: 'form-control' %></td>
-          <td><button type="button"
-                      class="btn btn-sm btn-danger kq-remove-predicate">&minus;</button></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  <div class="clearfix">
-    <div class="pull-right">
-      <button type="button"
-              class="btn btn-default btn-success kq-add-predicate">Add Predicate</button>
+<% end %>
+
+<div class="modal fade" id="kq-add-predicate-modal" tabindex="-1" role="dialog"
+     aria-labelledby="kq-add-predicate-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="kq-add-predicate-modal-label">Add Predicate</h4>
+      </div>
+      <div class="modal-body">
+        <%= render partial: 'create' %>
+      </div>
     </div>
   </div>
-  <br>
-  <%= submit_tag('Save Changes', class: 'btn btn-primary') %>
-<% end %>
+</div>

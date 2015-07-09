@@ -74,7 +74,7 @@ Rails.application.routes.draw do
     root 'dashboard#index'
     resources :collections, param: :key, as: :repository_collections,
               concerns: :publishable do
-      resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
+      resources :rdf_predicates, path: 'rdf-predicates'
     end
     resources :collections, param: :key, as: :db_collections
     resources :items, param: :web_id, as: :repository_items, concerns: :publishable do
@@ -85,7 +85,7 @@ Rails.application.routes.draw do
     end
     match '/items/search', to: 'items#search', via: 'post',
           as: 'repository_items_search'
-    resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
+    resources :rdf_predicates, path: 'rdf-predicates'
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',

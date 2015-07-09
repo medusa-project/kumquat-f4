@@ -53,7 +53,7 @@
       <a href="#kq-full-text" aria-controls="home" role="tab" data-toggle="tab">Full Text</a>
     </li>
     <li role="presentation">
-      <a href="#kq-repository" aria-controls="home" role="tab" data-toggle="tab">Fedora RDF</a>
+      <a href="#kq-repository" aria-controls="home" role="tab" data-toggle="tab">Repository</a>
     </li>
   </ul>
 
@@ -94,7 +94,9 @@
 
     <!-- Repository pane -->
     <div role="tabpanel" class="tab-pane" id="kq-repository">
+      <h3>Fedora URL</h3>
       <p><%= link_to @item.repository_url, @item.repository_url %></p>
+      <h3>Fedora RDF (Turtle)</h3>
       <pre><%= @item.rdf_graph.dump(:ttl) %></pre>
     </div>
 

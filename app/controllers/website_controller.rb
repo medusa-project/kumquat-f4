@@ -8,9 +8,15 @@ class WebsiteController < ApplicationController
   def setup
     super
     @num_items = Repository::Item.count
-    @num_audios = Repository::Item.where(Solr::Fields::MEDIA_TYPE => 'audio/*').count
-    @num_images = Repository::Item.where(Solr::Fields::MEDIA_TYPE => 'image/*').count
-    @num_videos = Repository::Item.where(Solr::Fields::MEDIA_TYPE => 'video/*').count
+    @num_audios = Repository::Item.
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:audio/*").
+        omit_entity_query(true).facet(false).limit(1).count
+    @num_images = Repository::Item.
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:image/*").
+        omit_entity_query(true).facet(false).limit(1).count
+    @num_videos = Repository::Item.
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:video/*").
+        omit_entity_query(true).facet(false).limit(1).count
   end
 
   private

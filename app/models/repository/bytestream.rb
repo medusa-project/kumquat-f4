@@ -19,32 +19,34 @@ module Repository
     entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::BYTESTREAM
 
     belongs_to :item, class_name: 'Repository::Item',
-               predicate: Kumquat::NAMESPACE_URI +
+               rdf_predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
                solr_field: Solr::Fields::ITEM
 
-    rdf_property :height,
-                 xs_type: :integer,
-                 predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::HEIGHT,
-                 solr_field: Solr::Fields::HEIGHT
-    rdf_property :media_type,
-                 xs_type: :string,
-                 predicate: 'http://purl.org/dc/terms/MediaType',
-                 solr_field: Solr::Fields::MEDIA_TYPE
-    rdf_property :shape,
-                 xs_type: :anyURI,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::BYTESTREAM_SHAPE,
-                 solr_field: Solr::Fields::BYTESTREAM_SHAPE
-    rdf_property :type,
-                 xs_type: :anyURI,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::BYTESTREAM_TYPE,
-                 solr_field: Solr::Fields::BYTESTREAM_TYPE
-    rdf_property :width,
-                 xs_type: :integer,
-                 predicate: Kumquat::NAMESPACE_URI + Kumquat::RDFPredicates::WIDTH,
-                 solr_field: Solr::Fields::WIDTH
+    property :height,
+             type: :integer,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::HEIGHT,
+             solr_field: Solr::Fields::HEIGHT
+    property :media_type,
+             type: :string,
+             rdf_predicate: 'http://purl.org/dc/terms/MediaType',
+             solr_field: Solr::Fields::MEDIA_TYPE
+    property :shape,
+             type: :anyURI,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::BYTESTREAM_SHAPE,
+             solr_field: Solr::Fields::BYTESTREAM_SHAPE
+    property :type,
+             type: :anyURI,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::BYTESTREAM_TYPE,
+             solr_field: Solr::Fields::BYTESTREAM_TYPE
+    property :width,
+             type: :integer,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::WIDTH,
+             solr_field: Solr::Fields::WIDTH
 
     before_save :assign_technical_info
 

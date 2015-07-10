@@ -12,37 +12,37 @@ module Repository
     entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ITEM
 
     belongs_to :collection, class_name: 'Repository::Collection',
-               predicate: Kumquat::NAMESPACE_URI +
+               rdf_predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::IS_MEMBER_OF_COLLECTION,
                solr_field: Solr::Fields::COLLECTION
     belongs_to :item, class_name: 'Repository::Item',
-               predicate: Kumquat::NAMESPACE_URI +
+               rdf_predicate: Kumquat::NAMESPACE_URI +
                    Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
                solr_field: Solr::Fields::ITEM,
                name: :parent_item
     has_many :bytestreams, class_name: 'Repository::Bytestream'
     has_many :items, class_name: 'Repository::Item'
 
-    rdf_property :full_text,
-                 xs_type: :string,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::FULL_TEXT,
-                 solr_field: Solr::Fields::FULL_TEXT
-    rdf_property :page_index,
-                 xs_type: :integer,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::PAGE_INDEX,
-                 solr_field: Solr::Fields::PAGE_INDEX
-    rdf_property :published,
-                 xs_type: :boolean,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::PUBLISHED,
-                 solr_field: Solr::Fields::PUBLISHED
-    rdf_property :web_id,
-                 xs_type: :string,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::WEB_ID,
-                 solr_field: Solr::Fields::WEB_ID
+    property :full_text,
+             type: :string,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::FULL_TEXT,
+             solr_field: Solr::Fields::FULL_TEXT
+    property :page_index,
+             type: :integer,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::PAGE_INDEX,
+             solr_field: Solr::Fields::PAGE_INDEX
+    property :published,
+             type: :boolean,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::PUBLISHED,
+             solr_field: Solr::Fields::PUBLISHED
+    property :web_id,
+             type: :string,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::WEB_ID,
+             solr_field: Solr::Fields::WEB_ID
 
     #validates :title, length: { minimum: 2, maximum: 200 }
     validates :web_id, length: { minimum: WEB_ID_LENGTH,

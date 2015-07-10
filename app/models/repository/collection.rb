@@ -10,16 +10,16 @@ module Repository
 
     has_many :items, class_name: 'Repository::Item'
 
-    rdf_property :key,
-                 xs_type: :string,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::COLLECTION_KEY,
-                 solr_field: Solr::Fields::COLLECTION_KEY
-    rdf_property :published,
-                 xs_type: :boolean,
-                 predicate: Kumquat::NAMESPACE_URI +
-                     Kumquat::RDFPredicates::PUBLISHED,
-                 solr_field: Solr::Fields::PUBLISHED
+    property :key,
+             type: :string,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::COLLECTION_KEY,
+             solr_field: Solr::Fields::COLLECTION_KEY
+    property :published,
+             type: :boolean,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::PUBLISHED,
+             solr_field: Solr::Fields::PUBLISHED
 
     validates :key, length: { minimum: 2, maximum: 20 }
     #validates :title, length: { minimum: 2, maximum: 200 }
@@ -38,7 +38,7 @@ module Repository
           repository_url: "#{root_container_url.chomp('/')}/#{key}",
           key: key,
           transaction_url: transaction_url)
-      col_to_delete.delete(true)
+      col_to_delete.delete(also_tombstone: true)
     end
 
     ##

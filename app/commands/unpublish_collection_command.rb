@@ -5,7 +5,7 @@ class UnpublishCollectionCommand < Command
   end
 
   ##
-  # @param collection Repository::Collection
+  # @param collection [Repository::Collection]
   #
   def initialize(collection)
     @collection = collection
@@ -16,7 +16,7 @@ class UnpublishCollectionCommand < Command
       @collection.published = false
       @collection.save!
 
-      items = Repository::Item.where(Solr::Fields::COLLECTION_KEY => @collection.key)
+      items = Repository::Item.where(Solr::Fields::COLLECTION => @collection)
       items.each_with_index do |item, index|
         item.published = false
         item.save!

@@ -23,7 +23,7 @@ module Admin
                                           context: :create }
       else
         Solr::Solr.client.commit
-        response.headers['X-Psap-Result'] = 'success'
+        response.headers['X-Kumquat-Result'] = 'success'
         flash['success'] = "Collection \"#{@collection.title}\" created."
         keep_flash
         render 'create' # create.js.erb will reload the page
@@ -109,24 +109,41 @@ module Admin
       if params[:repository_collection]
         command = UpdateRepositoryCollectionCommand.new(@collection,
                                                         sanitized_repo_params)
+        begin
+          executor.execute(command)
+        rescue ActiveMedusa::RecordInvalid
+          response.headers['X-Kumquat-Result'] = 'error'
+          render partial: 'shared/validation_messages',
+                 locals: { entity: @collection }
+        rescue => e
+          response.headers['X-Kumquat-Result'] = 'error'
+          flash['error'] = "#{e}"
+          keep_flash
+          render partial: 'form', locals: { collection: @collection,
+                                            context: :edit }
+        else
+          Solr::Solr.client.commit
+          response.headers['X-Kumquat-Result'] = 'success'
+          flash['success'] = "Collection \"#{@collection.title}\" updated."
+          keep_flash
+          render 'create' # create.js.erb will reload the page
+        end
       else
         command = UpdateDBCollectionCommand.new(@collection.db_counterpart,
                                                 sanitized_db_params)
+        begin
+          executor.execute(command)
+        rescue => e
+          response.headers['X-Kumquat-Result'] = 'error'
+          flash['error'] = "#{e}"
+          render 'edit' unless request.xhr?
+        else
+          response.headers['X-Kumquat-Result'] = 'success'
+          flash['success'] = "Collection \"#{@collection.title}\" updated."
+          keep_flash
+          render 'update' # update.js.erb will reload the page
+        end
       end
-
-      begin
-        executor.execute(command)
-      rescue => e
-        response.headers['X-Kumquat-Result'] = 'error'
-        flash['error'] = "#{e}"
-        render 'edit' unless request.xhr?
-      else
-        response.headers['X-Kumquat-Result'] = 'success'
-        flash['success'] = "Collection \"#{@collection.title}\" updated."
-        redirect_to admin_repository_collection_url(@collection) unless request.xhr?
-      end
-
-      render 'show' if request.xhr?
     end
 
     private

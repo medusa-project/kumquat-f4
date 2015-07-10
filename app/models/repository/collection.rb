@@ -54,9 +54,8 @@ module Repository
     #
     def db_counterpart
       unless @db_counterpart
-        @db_counterpart = DB::Collection.find_by_key(self.key)
-        @db_counterpart = DB::Collection.create!(key: self.key) unless
-            @db_counterpart
+        @db_counterpart = DB::Collection.find_by_key(self.key) ||
+            DB::Collection.create!(key: self.key)
       end
       @db_counterpart
     end

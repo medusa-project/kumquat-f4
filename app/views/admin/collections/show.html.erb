@@ -5,24 +5,3 @@
 <div id="kq-show-collection-content">
   <%= render partial: 'show' %>
 </div>
-
-<!-- theme panel -->
-<div class="modal fade kq-edit-panel" id="kq-theme-panel">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <%= form_for([:admin, @collection.db_counterpart], remote: true) do |f| %>
-        <div class="modal-header">
-          <h4 class="modal-title">Theme</h4>
-        </div>
-        <div class="modal-body">
-          <%= select(:db_collection, :theme_id, @theme_options_for_select, {},
-                     class: 'form-control') %>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <%= f.submit 'Save', class: 'btn btn-primary' %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>

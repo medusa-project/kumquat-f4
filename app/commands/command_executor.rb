@@ -1,7 +1,8 @@
 class CommandExecutor
 
   def self.check_permissions(command, user)
-    missing_permissions = command.class.required_permissions.reject do |p|
+    class_ = command.kind_of?(Class) ? command : command.class
+    missing_permissions = class_.required_permissions.reject do |p|
       user.can?(p)
     end
     if missing_permissions.any?

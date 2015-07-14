@@ -158,6 +158,9 @@ GEM
     puma (2.11.2)
       rack (>= 1.1, < 2.0)
     rack (1.6.0)
+    rack-streaming-proxy (2.0.1)
+      rack (>= 1.4)
+      servolux (~> 0.10)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.1)
@@ -221,6 +224,7 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    servolux (0.12.0)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -274,6 +278,7 @@ DEPENDENCIES
   passenger
   pg
   puma
+  rack-streaming-proxy
   rails (= 4.2.1)
   rails_autolink
   rdf

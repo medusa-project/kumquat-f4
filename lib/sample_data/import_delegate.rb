@@ -5,7 +5,7 @@ module SampleData
   #
   class ImportDelegate < ::Import::AbstractDelegate
 
-    LOCAL_NAMESPACE = 'http://example.net/'
+    LOCAL_NAMESPACE = 'http://kumquat.library.illinois.edu/'
     SOURCE_PATH = File.join(Rails.root, 'lib', 'sample_data', 'bytestreams')
 
     def initialize
@@ -42,7 +42,7 @@ module SampleData
     def full_text_of_item_at_index(index)
       items[index].each_statement do |statement|
         return statement.object.to_s if
-            statement.predicate.to_s == 'http://example.org/fullText'
+            statement.predicate.to_s == "#{LOCAL_NAMESPACE}fullText"
       end
       nil
     end

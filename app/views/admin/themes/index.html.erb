@@ -56,7 +56,7 @@
           <% if theme.default %>
             <span class="label label-success">Default</span>
           <% else %>
-            <%= link_to 'Set As Default', admin_theme_path(theme, db_theme: { default: true }),
+            <%= link_to 'Set As Default', admin_theme_path(theme, theme: { default: true }),
                         class: 'btn btn-default btn-xs', method: :patch %>
           <% end %>
         </td>

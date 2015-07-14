@@ -74,7 +74,8 @@ class OaiPmhController < ApplicationController
   end
 
   def do_identify
-    items = Repository::Item.order(Solr::Fields::CREATED_AT => :desc).limit(1)
+    items = Repository::Item.all.facet(false).
+        order(Solr::Fields::CREATED_AT => :desc).limit(1)
     @earliest_datestamp = items.any? ?
         items.first.created_at.iso8601 : nil
     'identify.xml.builder'
@@ -102,7 +103,7 @@ class OaiPmhController < ApplicationController
   end
 
   def do_list_sets
-    @collections = Repository::Collection.
+    @collections = Repository::Collection.all.facet(false).
         where(Solr::Fields::PUBLISHED => true).
         order(Solr::Fields::COLLECTION_KEY)
     'list_sets.xml.builder'
@@ -127,7 +128,8 @@ class OaiPmhController < ApplicationController
                            'this repository.' }
     end
 
-    @results = Repository::Item.where(Solr::Fields::PUBLISHED => true).
+    @results = Repository::Item.all.facet(false).
+        where(Solr::Fields::PUBLISHED => true).
         order(Solr::Fields::UPDATED_AT => :desc)
 
     from = to = 'NOW'

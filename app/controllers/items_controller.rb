@@ -9,13 +9,18 @@ class ItemsController < WebsiteController
 
   before_action :set_browse_context, only: :index
 
+  ##
+  # Redirects to an item's master bytestream in the repository.
+  #
+  # Responds to GET /items/:web_id/master
+  #
   def master_bytestream
     @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
 
     bs = @item.master_bytestream
-    if bs and bs.repository_url
-      redirect_to bs.repository_url
+    if bs and bs.public_repository_url
+      redirect_to bs.public_repository_url
     else
       render text: '404 Not Found', status: 404
     end
@@ -23,9 +28,8 @@ class ItemsController < WebsiteController
 
   def index
     @start = params[:start] ? params[:start].to_i : 0
-    @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
-    @items = Repository::Item.all.
-        where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").
+    @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
+    @items = Repository::Item.where("-#{Solr::Fields::ITEM}:[* TO *]").
         where(params[:q])
     if params[:fq].respond_to?(:each)
       params[:fq].each { |fq| @items = @items.facet(fq) }
@@ -35,18 +39,41 @@ class ItemsController < WebsiteController
     if params[:repository_collection_key]
       @collection = Repository::Collection.find_by_key(params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
-      @items = @items.where(Solr::Solr::COLLECTION_KEY_KEY => @collection.key)
+      @items = @items.where(Solr::Fields::COLLECTION => @collection.repository_url)
     end
-    #@items = @items.order(:kq_title).start(@start).limit(@limit)
-    # TODO: find a way to re-enable sorting
+    # if there is no user-entered query, sort by title. Otherwise, use the
+    # default sort, which is by relevancy
+    @items = @items.order(Solr::Fields::SINGLE_TITLE) if params[:q].blank?
     @items = @items.start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_results_shown = [@limit, @items.total_length].min
+
+    # if there are no results, get some suggestions
+    if @items.total_length < 1 and params[:q].present?
+      @suggestions = Solr::Solr.new.suggestions(params[:q])
+    end
   end
 
   def show
-    @item = Repository::Item.find_by_web_id(params[:web_id])
-    raise ActiveRecord::RecordNotFound, 'Collection not found' unless @item
+    begin
+      @item = Repository::Item.find_by_web_id(params[:web_id])
+    rescue HTTPClient::BadResponseError => e
+      render text: '410 Gone', status: 410 if e.res.code == 410
+      @skip_after_actions = true
+      return
+    end
+    raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
+
+    uri = repository_item_url(@item)
+    respond_to do |format|
+      format.html do
+        @pages = @item.parent_item.kind_of?(Repository::Item) ?
+            @item.parent_item.items : @item.items
+      end
+      format.jsonld { render text: @item.public_rdf_graph(uri).to_jsonld }
+      format.rdf { render text: @item.public_rdf_graph(uri).to_rdfxml }
+      format.ttl { render text: @item.public_rdf_graph(uri).to_ttl }
+    end
   end
 
   private

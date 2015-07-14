@@ -1,5 +1,9 @@
 class DeleteRoleCommand < Command
 
+  def self.required_permissions
+    super + [Permission::ROLES_DELETE]
+  end
+
   def initialize(role)
     @role = role
   end
@@ -14,10 +18,6 @@ class DeleteRoleCommand < Command
 
   def object
     @role
-  end
-
-  def required_permissions
-    super + [Permission::ROLES_DELETE]
   end
 
 end

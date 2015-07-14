@@ -1,137 +1,116 @@
 module Repository
 
-  class Item < ActiveKumquat::Base
+  class Item < ActiveMedusa::Container
 
     include BytestreamOwner
-    include DerivativeManagement
+    include Describable
     include ImageServing
+    include Indexable
 
-    ENTITY_CLASS = ActiveKumquat::Base::Class::ITEM
     WEB_ID_LENGTH = 5
 
-    attr_accessor :collection
-    attr_accessor :full_text
-    attr_accessor :page_index
-    attr_accessor :parent_uri
-    attr_accessor :web_id
+    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ITEM
 
-    validates :title, length: { minimum: 2, maximum: 200 }
-    validates :web_id, length: { minimum: 4, maximum: 7 }
+    belongs_to :collection, class_name: 'Repository::Collection',
+               rdf_predicate: Kumquat::NAMESPACE_URI +
+                   Kumquat::RDFPredicates::IS_MEMBER_OF_COLLECTION,
+               solr_field: Solr::Fields::COLLECTION
+    belongs_to :item, class_name: 'Repository::Item',
+               rdf_predicate: Kumquat::NAMESPACE_URI +
+                   Kumquat::RDFPredicates::IS_MEMBER_OF_ITEM,
+               solr_field: Solr::Fields::ITEM,
+               name: :parent_item
+    has_many :bytestreams, class_name: 'Repository::Bytestream'
+    has_many :items, class_name: 'Repository::Item'
+
+    property :full_text,
+             type: :string,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::FULL_TEXT,
+             solr_field: Solr::Fields::FULL_TEXT
+    property :page_index,
+             type: :integer,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::PAGE_INDEX,
+             solr_field: Solr::Fields::PAGE_INDEX
+    property :published,
+             type: :boolean,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::PUBLISHED,
+             solr_field: Solr::Fields::PUBLISHED
+    property :web_id,
+             type: :string,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::WEB_ID,
+             solr_field: Solr::Fields::WEB_ID
+
+    #validates :title, length: { minimum: 2, maximum: 200 }
+    validates :web_id, length: { minimum: WEB_ID_LENGTH,
+                                 maximum: WEB_ID_LENGTH }
+
+    before_create { self.web_id = generate_web_id }
 
     def initialize(params = {})
-      @children = []
-      super(params)
+      @published = true
+      super
     end
 
     def ==(other)
-      other.kind_of?(Repository::Item) and self.uuid == other.uuid
+      other.kind_of?(self.class) and self.uuid == other.uuid
     end
 
     ##
-    # @return ActiveKumquat::Entity
+    # @return boolean True if any text was extracted; false if not
     #
-    def children
-      @children = Repository::Item.all.
-          where(Solr::Solr::PARENT_URI_KEY => "\"#{self.repository_url}\"").
-          order(Solr::Solr::PAGE_INDEX_KEY) unless @children.any?
-      @children
-    end
-
-    ##
-    # @return Repository::Collection
-    #
-    def collection
-      @collection = Repository::Collection.find_by_key(@collection_key) unless
-          @collection
-      @collection
-    end
-
-    ##
-    # @return Repository::Item
-    #
-    def parent
-      unless @parent
-        self.rdf_graph.each_statement do |s|
-          if s.predicate.to_s == Kumquat::Application::NAMESPACE_URI +
-              Kumquat::Application::RDFPredicates::PARENT_URI
-            @parent = Repository::Item.find_by_uri(s.object.to_s)
-            break
-          end
+    def extract_and_update_full_text
+      if self.master_bytestream and self.master_bytestream.repository_url
+        begin
+          yomu = Yomu.new(self.master_bytestream.repository_url)
+          self.full_text = yomu.text.force_encoding('UTF-8')
+        rescue Errno::EPIPE
+          # nothing we can do
+          return false
+        else
+          return self.full_text.present?
         end
       end
-      @parent
+      false
     end
 
     def to_s
       self.title || self.web_id
     end
 
-    ##
-    # Overrides parent
-    #
-    # @param graph RDF::Graph
-    #
-    def populate_from_graph(graph)
-      super(graph)
-
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-
-      graph.each_triple do |subject, predicate, object|
-        case predicate
-          when kq_uri + kq_predicates::COLLECTION_KEY
-            @collection_key = object.to_s
-          when kq_uri + kq_predicates::FULL_TEXT
-           self.full_text = object.to_s
-          when kq_uri + kq_predicates::PAGE_INDEX
-            self.page_index = object.to_s
-          when kq_uri + kq_predicates::PARENT_URI
-            self.parent_uri = object.to_s
-          when kq_uri + kq_predicates::WEB_ID
-            self.web_id = object.to_s
-        end
-      end
-    end
-
     def to_param
       self.web_id
     end
 
-    ##
-    # Overrides parent
-    #
-    # @return ActiveKumquat::SparqlUpdate
-    #
-    def to_sparql_update
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-      kq_objects = Kumquat::Application::RDFObjects
+    def reindex
+      kq_predicates = Kumquat::RDFPredicates
 
-      update = super
-      update.prefix('kumquat', kq_uri)
-      # web id
-      _web_id = self.web_id.blank? ? generate_web_id : self.web_id
-      update.delete('<>', "<kumquat:#{kq_predicates::WEB_ID}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::WEB_ID}", _web_id)
-      # collection key
-      update.delete('<>', "<kumquat:#{kq_predicates::COLLECTION_KEY}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::COLLECTION_KEY}", self.collection.key)
-      # full text
-      update.delete('<>', "<kumquat:#{kq_predicates::FULL_TEXT}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::FULL_TEXT}", self.full_text) unless
-          self.full_text.blank?
-      # page index
-      update.delete('<>', "<kumquat:#{kq_predicates::PAGE_INDEX}>", '?o', false)
-      update.insert(nil, "kumquat:#{kq_predicates::PAGE_INDEX}", self.page_index) unless
-          self.page_index.blank?
-      # parent uri
-      update.delete('<>', "<kumquat:#{kq_predicates::PARENT_URI}>", '?o', false)
-      update.insert(nil, "kumquat:#{kq_predicates::PARENT_URI}",
-                    "<#{self.parent_uri}>", false) unless self.parent_uri.blank?
-      # resource type
-      update.delete('<>', "<kumquat:#{kq_predicates::CLASS}>", '?o', false).
-          insert(nil, "kumquat:#{kq_predicates::CLASS}",
-                 "<#{kq_uri}#{kq_objects::ITEM}>", false)
+      doc = base_solr_document
+      doc[Solr::Fields::COLLECTION] =
+          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_COLLECTION)
+      doc[Solr::Fields::FULL_TEXT] =
+          self.rdf_graph.any_object(kq_predicates::FULL_TEXT)
+      doc[Solr::Fields::ITEM] =
+          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_ITEM)
+      doc[Solr::Fields::PAGE_INDEX] =
+          self.rdf_graph.any_object(kq_predicates::PAGE_INDEX)
+      doc[Solr::Fields::PUBLISHED] =
+          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
+      doc[Solr::Fields::SINGLE_TITLE] = self.title
+      doc[Solr::Fields::WEB_ID] =
+          self.rdf_graph.any_object(kq_predicates::WEB_ID)
+
+=begin TODO: fix this
+      date = self.rdf_graph.any_object(kq_predicates::DATE).to_s.strip
+      if date.present?
+        data[Solr::Fields::DATE] = DateTime.parse(date).iso8601 + 'Z'
+      end
+=end
+
+      Solr::Solr.client.add(doc)
     end
 
     private
@@ -145,7 +124,7 @@ module Repository
       while true
         proposed_id = (36 ** (WEB_ID_LENGTH - 1) +
             rand(36 ** WEB_ID_LENGTH - 36 ** (WEB_ID_LENGTH - 1))).to_s(36)
-        break unless ActiveKumquat::Base.find_by_web_id(proposed_id)
+        break unless self.class.find_by_web_id(proposed_id)
       end
       proposed_id
     end

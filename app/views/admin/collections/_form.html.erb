@@ -1,6 +1,8 @@
-<%= form_for [:admin, collection], method: context == :create ? :post : :patch do |f| %>
-
-  <% render 'shared/error_messages', object: f.object %>
+<%= form_for([:admin, collection], method: (context == :create) ? :post : :patch, remote: true) do |f| %>
+  <div class="kq-error-messages">
+    <% # populated via ajax by shared/_validation_messages.js.erb
+    %>
+  </div>
 
   <div class="form-group">
     <%= f.label :title %>
@@ -14,9 +16,13 @@
 
   <div class="form-group">
     <%= f.label :description %>
-    <%= f.text_area :description, class: 'form-control' %>
+    <%= f.text_area :description, class: 'form-control', rows: 10 %>
   </div>
 
-  <%= f.submit(context == :create ? 'Create' : 'Save Changes', class: 'btn btn-primary') %>
-
+  <div class="clearfix">
+    <div class="pull-right">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      <%= f.submit(context == :create ? 'Create' : 'Save Changes', class: 'btn btn-primary') %>
+    </div>
+  </div>
 <% end %>

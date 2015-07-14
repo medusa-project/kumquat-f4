@@ -1,182 +1,183 @@
 <?xml version="1.0"?>
 <!--
-Metadata describing the Kumquat sample data. This is an RDF file created
-by hand. RDF offers a simple way to describe relationships between items and
-collections that is both human- and machine-readable; but this is not to assert
-that RDF is the only, or even best, way to import metadata into the
-application.
-
-In this file, items and collections have their own URIs in a namespace
-prefixed by "local". Items are linked to collections by the
-local:partOfCollection predicate, and to bytestreams (files) by the
-local:filename predicate. Compound item pages are linked to their parent by
-the local:hasParent predicate.
+Metadata describing the Kumquat demonstration data. This is an RDF file created
+by hand. In it, items and collections have their own URIs in a namespace
+prefixed by "kumquat". Items are linked to collections by the
+kumquat:partOfCollection predicate, and to bytestreams (files) by the
+kumquat:filename predicate. Compound item pages are linked to their parent by
+the kumquat:hasParent predicate.
 -->
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-         xmlns:dc="http://purl.org/dc/elements/1.1/"
          xmlns:dcterms="http://purl.org/dc/terms/"
-         xmlns:kumquat="http://example.org/"
-         xmlns:local="http://example.net/"> <!-- TODO: change kumquat namespace -->
+         xmlns:kumquat="http://kumquat.library.illinois.edu/">
 
   <!-- AUDIO COLLECTION -->
 
-  <rdf:Description rdf:about="http://example.net/collections/audio-sample">
-    <dc:description>A collection full of audio files.</dc:description>
-    <dc:title>Sample Audio Collection</dc:title>
-    <local:key>audio-sample</local:key>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/collections/audio-demo">
+    <dcterms:description>A collection containing audio files.</dcterms:description>
+    <dcterms:title>Demo Audio Collection</dcterms:title>
+    <kumquat:key>audio-demo</kumquat:key>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/beep-piano.aif">
-    <local:partOfCollection rdf:resource="http://example.net/collections/audio-sample"/>
-    <dc:description>A short beep.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/beep-piano.aif">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/audio-demo"/>
+    <dcterms:description>A short beep.</dcterms:description>
     <dcterms:extent>22 Kbytes</dcterms:extent>
-    <local:filename>beep-piano.aif</local:filename>
+    <kumquat:filename>beep-piano.aif</kumquat:filename>
     <dcterms:MediaType>audio/aiff</dcterms:MediaType>
-    <dc:identifier>beep-piano.aif</dc:identifier>
-    <dc:subject>Pianos</dc:subject>
-    <dc:subject>Beeps</dc:subject>
-    <dc:subject>Annoying noises</dc:subject>
-    <dc:title>Sample AIFF audio item</dc:title>
-    <dc:type>Sound</dc:type>
+    <dcterms:identifier>beep-piano.aif</dcterms:identifier>
+    <dcterms:subject>Pianos</dcterms:subject>
+    <dcterms:subject>Beeps</dcterms:subject>
+    <dcterms:subject>Annoying noises</dcterms:subject>
+    <dcterms:title>Demo AIFF audio item</dcterms:title>
+    <dcterms:type>Sound</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/retro_click.wav">
-    <local:partOfCollection rdf:resource="http://example.net/collections/audio-sample"/>
-    <dc:description>A short click.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/retro_click.wav">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/audio-demo"/>
+    <dcterms:description>A short click.</dcterms:description>
     <dcterms:extent>4 Kbytes</dcterms:extent>
-    <local:filename>retro_click.wav</local:filename>
+    <kumquat:filename>retro_click.wav</kumquat:filename>
     <dcterms:MediaType>audio/wave</dcterms:MediaType>
-    <dc:identifier>retro_click.wav</dc:identifier>
-    <dc:subject>Clicks</dc:subject>
-    <dc:subject>Annoying noises</dc:subject>
-    <dc:title>Sample wave audio item</dc:title>
-    <dc:type>Sound</dc:type>
+    <dcterms:identifier>retro_click.wav</dcterms:identifier>
+    <dcterms:subject>Clicks</dcterms:subject>
+    <dcterms:subject>Annoying noises</dcterms:subject>
+    <dcterms:title>Demo wave audio item</dcterms:title>
+    <dcterms:type>Sound</dcterms:type>
   </rdf:Description>
 
   <!-- DOCUMENT COLLECTION -->
 
-  <rdf:Description rdf:about="http://example.net/collections/doc-sample">
-    <dc:description>A collection full of documents.</dc:description>
-    <dc:title>Sample Document Collection</dc:title>
-    <local:key>doc-sample</local:key>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/collections/doc-demo">
+    <dcterms:description>A collection containing documents.</dcterms:description>
+    <dcterms:title>Demo Document Collection</dcterms:title>
+    <kumquat:key>doc-demo</kumquat:key>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/magna_carta.txt">
-    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
-    <dc:creator>Stephen Langton</dc:creator>
-    <dc:date>1215-06-19</dc:date>
-    <dc:description>The Magna Carta, in UTF-8 with no byte order
-      mark.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/magna_carta.txt">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/doc-demo"/>
+    <dcterms:creator>Stephen Langton</dcterms:creator>
+    <dcterms:date>1215-06-19</dcterms:date>
+    <dcterms:description>The Magna Carta, in UTF-8 with no byte order
+      mark.</dcterms:description>
     <dcterms:extent>4583 words</dcterms:extent>
-    <local:filename>magna carta.txt</local:filename>
+    <kumquat:filename>magna carta.txt</kumquat:filename>
     <dcterms:MediaType>text/plain</dcterms:MediaType>
-    <dc:language>English</dc:language>
-    <dc:publisher>England</dc:publisher>
-    <dc:rights>Public domain</dc:rights>
-    <dc:subject>Important historical documents</dc:subject>
-    <dc:title>Sample plain text item</dc:title>
-    <dc:type>Text</dc:type>
+    <dcterms:language>English</dcterms:language>
+    <dcterms:publisher>England</dcterms:publisher>
+    <dcterms:rights>Public domain</dcterms:rights>
+    <dcterms:subject>Important historical documents</dcterms:subject>
+    <dcterms:title>Demo plain text item</dcterms:title>
+    <dcterms:type>Text</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/NEXTSTEP.pdf">
-    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
-    <dc:creator>NeXT Computer, Inc.</dc:creator>
-    <dc:date>1995</dc:date>
-    <dc:description>A flyer advertising the NEXTSTEP operating
-      system.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/NEXTSTEP.pdf">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/doc-demo"/>
+    <dcterms:creator>NeXT Computer, Inc.</dcterms:creator>
+    <dcterms:date>1995</dcterms:date>
+    <dcterms:description>A flyer advertising the NEXTSTEP operating
+      system.</dcterms:description>
     <dcterms:extent>312 Kbytes</dcterms:extent>
-    <local:filename>NEXTSTEP.pdf</local:filename>
+    <kumquat:filename>NEXTSTEP.pdf</kumquat:filename>
     <dcterms:MediaType>application/pdf</dcterms:MediaType>
-    <dc:language>English</dc:language>
-    <dc:publisher>NeXT Computer, Inc.</dc:publisher>
-    <dc:title>Sample PDF item</dc:title>
-    <dc:type>Text</dc:type>
+    <dcterms:language>English</dcterms:language>
+    <dcterms:publisher>NeXT Computer, Inc.</dcterms:publisher>
+    <dcterms:title>Demo PDF item</dcterms:title>
+    <dcterms:type>Text</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/office-compound-item">
-    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
-    <dc:description>A compound item consisting of bytestreams in various
-      Microsoft Office 2011 file formats.</dc:description>
-    <local:filename>powerpoint.pptx</local:filename>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/office-compound-item">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/doc-demo"/>
+    <dcterms:description>A compound item consisting of bytestreams in various
+      Microsoft Office 2011 file formats.</dcterms:description>
+    <kumquat:filename>powerpoint.pptx</kumquat:filename>
     <dcterms:extent>58 Kbytes</dcterms:extent>
     <dcterms:MediaType>application/vnd.openxmlformats-officedocument.presentationml.presentation</dcterms:MediaType>
-    <dc:title>Sample compound item consisting of Microsoft Office files</dc:title>
+    <dcterms:title>Demo compound item consisting of Microsoft Office files</dcterms:title>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/office-compound-item/1">
-    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
-    <dc:description>A Microsoft Word 2011 file.</dc:description>
-    <local:filename>word.docx</local:filename>
-    <local:hasParent rdf:resource="http://example.net/items/office-compound-item"/>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/office-compound-item/1">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/doc-demo"/>
+    <dcterms:description>A Microsoft Word 2011 file.</dcterms:description>
+    <kumquat:filename>word.docx</kumquat:filename>
+    <kumquat:hasParent rdf:resource="http://kumquat.library.illinois.edu/items/office-compound-item"/>
     <dcterms:extent>22 Kbytes</dcterms:extent>
     <dcterms:MediaType>application/vnd.openxmlformats-officedocument.wordprocessingml.document</dcterms:MediaType>
-    <dc:title>Sample Microsoft Word 2011 document</dc:title>
+    <dcterms:title>Demo Microsoft Word 2011 document</dcterms:title>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/office-compound-item/2">
-    <local:partOfCollection rdf:resource="http://example.net/collections/doc-sample"/>
-    <dc:description>A Microsoft Excel 2011 file.</dc:description>
-    <local:filename>excel.xlsx</local:filename>
-    <local:hasParent rdf:resource="http://example.net/items/office-compound-item"/>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/office-compound-item/2">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/doc-demo"/>
+    <dcterms:description>A Microsoft Excel 2011 file.</dcterms:description>
+    <kumquat:filename>excel.xlsx</kumquat:filename>
+    <kumquat:hasParent rdf:resource="http://kumquat.library.illinois.edu/items/office-compound-item"/>
     <dcterms:extent>29 Kbytes</dcterms:extent>
     <dcterms:MediaType>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</dcterms:MediaType>
-    <dc:title>Sample Microsoft Excel 2011 document</dc:title>
+    <dcterms:title>Demo Microsoft Excel 2011 document</dcterms:title>
+  </rdf:Description>
+
+  <!-- EMPTY COLLECTION -->
+
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/collections/empty-demo">
+    <dcterms:description>An empty collection.</dcterms:description>
+    <dcterms:title>Demo Empty Collection</dcterms:title>
+    <kumquat:key>empty-demo</kumquat:key>
   </rdf:Description>
 
   <!-- IMAGE COLLECTION -->
 
-  <rdf:Description rdf:about="http://example.net/collections/image-sample">
-    <dc:description>A collection full of images.</dc:description>
-    <dc:title>Sample Image Collection</dc:title>
-    <local:key>image-sample</local:key>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/collections/image-demo">
+    <dcterms:description>A collection containing images.</dcterms:description>
+    <dcterms:title>Demo Image Collection</dcterms:title>
+    <kumquat:key>image-demo</kumquat:key>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/800379272_de0817d41a.tiff">
-    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
-    <dc:description>The Death Star under construction.</dc:description>
-    <local:filename>800379272_de0817d41a.tiff</local:filename>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/800379272_de0817d41a.tiff">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/image-demo"/>
+    <dcterms:description>The Death Star under construction.</dcterms:description>
+    <kumquat:filename>800379272_de0817d41a.tiff</kumquat:filename>
     <dcterms:extent>248 Kbytes</dcterms:extent>
     <dcterms:MediaType>image/tiff</dcterms:MediaType>
-    <dc:subject>Cranes</dc:subject>
-    <dc:subject>Moons</dc:subject>
-    <dc:title>Sample LZW-compressed TIFF image item</dc:title>
-    <dc:type>Image</dc:type>
+    <dcterms:subject>Cranes</dcterms:subject>
+    <dcterms:subject>Moons</dcterms:subject>
+    <dcterms:title>Demo LZW-compressed TIFF image item</dcterms:title>
+    <dcterms:type>Image</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/bike.png">
-    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
-    <dc:description>A bicycle in a parking space.</dc:description>
-    <local:filename>bike.png</local:filename>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/bike.png">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/image-demo"/>
+    <dcterms:description>A bicycle in a parking space.</dcterms:description>
+    <kumquat:filename>bike.png</kumquat:filename>
     <dcterms:extent>318 Kbytes</dcterms:extent>
     <dcterms:MediaType>image/png</dcterms:MediaType>
-    <dc:subject>Bicycles</dc:subject>
-    <dc:subject>Parking spaces</dc:subject>
-    <dc:title>Sample PNG image item</dc:title>
-    <dc:type>Image</dc:type>
+    <dcterms:subject>Bicycles</dcterms:subject>
+    <dcterms:subject>Parking spaces</dcterms:subject>
+    <dcterms:title>Demo PNG image item</dcterms:title>
+    <dcterms:type>Image</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/escher_lego.webp">
-    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
-    <dc:description>An M.C. Escher painting brought to life in Lego.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/escher_lego.webp">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/image-demo"/>
+    <dcterms:description>An M.C. Escher painting brought to life in Lego.</dcterms:description>
     <dcterms:extent>38 Kbytes</dcterms:extent>
-    <local:filename>escher_lego.webp</local:filename>
+    <kumquat:filename>escher_lego.webp</kumquat:filename>
     <dcterms:MediaType>image/webp</dcterms:MediaType>
-    <dc:identifier>escher_lego.webp</dc:identifier>
-    <dc:subject>Escher, M.C.</dc:subject>
-    <dc:subject>Lego</dc:subject>
-    <dc:title>Sample WebP image item</dc:title>
-    <dc:type>Image</dc:type>
+    <dcterms:identifier>escher_lego.webp</dcterms:identifier>
+    <dcterms:subject>Escher, M.C.</dcterms:subject>
+    <dcterms:subject>Lego</dcterms:subject>
+    <dcterms:title>Demo WebP image item</dcterms:title>
+    <dcterms:type>Image</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/IMG_1118.jp2">
-    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
-    <dc:coverage>Memorial Stadium, University of Illinois at
-      Urbana-Champaign</dc:coverage>
-    <dc:creator/>
-    <dc:date>2014-06-12</dc:date>
-    <dc:description>A plaque of Red Grange in Memorial Stadium on the
-      University of Illinois at Urbana-Champaign campus.</dc:description>
-    <local:filename>IMG_1118.jp2</local:filename>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/IMG_1118.jp2">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/image-demo"/>
+    <dcterms:coverage>Memorial Stadium, University of Illinois at
+      Urbana-Champaign</dcterms:coverage>
+    <dcterms:creator/>
+    <dcterms:date>2014-06-12</dcterms:date>
+    <dcterms:description>A plaque of Red Grange in Memorial Stadium on the
+      University of Illinois at Urbana-Champaign campus.</dcterms:description>
+    <kumquat:filename>IMG_1118.jp2</kumquat:filename>
     <kumquat:fullText>Harold E. "Red" Grange
 "the Galloping Ghost"
 "77"
@@ -204,90 +205,116 @@ Whose destination is the goal..
 Red Grange of Illinois.</kumquat:fullText>
     <dcterms:extent>912 Kbytes</dcterms:extent>
     <dcterms:MediaType>image/jp2</dcterms:MediaType>
-    <dc:identifier>IMG_1118.jp2</dc:identifier>
-    <dc:language>English</dc:language>
-    <dc:publisher/>
-    <dc:relation/>
-    <dc:rights>Creative Commons Attribution-NoDerivatives 4.0
-      International</dc:rights>
-    <dc:source/>
-    <dc:subject>Plaques</dc:subject>
-    <dc:subject>Football</dc:subject>
-    <dc:title>Sample JPEG2000 image item</dc:title>
-    <dc:type>Image</dc:type>
+    <dcterms:identifier>IMG_1118.jp2</dcterms:identifier>
+    <dcterms:language>English</dcterms:language>
+    <dcterms:publisher/>
+    <dcterms:relation/>
+    <dcterms:rights>Creative Commons Attribution-NoDerivatives 4.0
+      International</dcterms:rights>
+    <dcterms:source/>
+    <dcterms:subject>Plaques</dcterms:subject>
+    <dcterms:subject>Football</dcterms:subject>
+    <dcterms:title>Demo JPEG2000 image item</dcterms:title>
+    <dcterms:type>Image</dcterms:type>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/P1000245.jpg">
-    <local:partOfCollection rdf:resource="http://example.net/collections/image-sample"/>
-    <dc:coverage>Memorial Stadium, University of Illinois at
-      Urbana-Champaign</dc:coverage>
-    <dc:date>2014-05-21</dc:date>
-    <dc:description>Bleachers and playing field in Memorial
-      Stadium.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/P1000245.jpg">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/image-demo"/>
+    <dcterms:coverage>Memorial Stadium, University of Illinois at
+      Urbana-Champaign</dcterms:coverage>
+    <dcterms:date>2014-05-21</dcterms:date>
+    <dcterms:description>Bleachers and playing field in Memorial
+      Stadium.</dcterms:description>
     <dcterms:extent>1.7 Mbytes</dcterms:extent>
-    <local:filename>P1000245.jpg</local:filename>
+    <kumquat:filename>P1000245.jpg</kumquat:filename>
     <dcterms:MediaType>image/jpeg</dcterms:MediaType>
-    <dc:rights>Creative Commons Attribution-NoDerivatives 4.0
-      International</dc:rights>
-    <dc:subject>Football stadiums</dc:subject>
-    <dc:title>Sample JPEG image item</dc:title>
-    <dc:type>Image</dc:type>
+    <dcterms:rights>Creative Commons Attribution-NoDerivatives 4.0
+      International</dcterms:rights>
+    <dcterms:subject>Football stadiums</dcterms:subject>
+    <dcterms:title>Demo JPEG image item</dcterms:title>
+    <dcterms:type>Image</dcterms:type>
   </rdf:Description>
 
   <!-- MISC COLLECTION -->
 
-  <rdf:Description rdf:about="http://example.net/collections/misc-sample">
-    <dc:description>A collection full of files of various types.</dc:description>
-    <dc:title>Sample Miscellaneous Collection</dc:title>
-    <local:key>misc-sample</local:key>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/collections/misc-demo">
+    <dcterms:description>A collection containing files of various types.</dcterms:description>
+    <dcterms:title>Demo Miscellaneous Collection</dcterms:title>
+    <kumquat:key>misc-demo</kumquat:key>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/empty">
-    <local:partOfCollection rdf:resource="http://example.net/collections/misc-sample"/>
-    <dc:description>An item with no attached bytestream.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/empty">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/misc-demo"/>
+    <dcterms:description>An item with no attached bytestream.</dcterms:description>
     <dcterms:extent>0 bytes</dcterms:extent>
-    <dc:title>Empty item</dc:title>
+    <dcterms:title>Empty item</dcterms:title>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/hello_world">
-    <local:partOfCollection rdf:resource="http://example.net/collections/misc-sample"/>
-    <dc:date>2015-03-12</dc:date>
-    <dc:description>"Hello world!", written in C and compiled with GCC for
-      Darwin 14.1 x86_64.</dc:description>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/hello_world">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/misc-demo"/>
+    <dcterms:date>2015-03-12</dcterms:date>
+    <dcterms:description>"Hello world!", written in C and compiled with GCC for
+      Darwin 14.1 x86_64.</dcterms:description>
     <dcterms:extent>8 Kbytes</dcterms:extent>
-    <local:filename>hello_world</local:filename>
+    <kumquat:filename>hello_world</kumquat:filename>
     <dcterms:MediaType>application/octet-stream</dcterms:MediaType>
-    <dc:identifier>hello_world</dc:identifier>
-    <dc:language>English</dc:language>
-    <dc:rights>Public domain</dc:rights>
-    <dc:subject>Computer software</dc:subject>
-    <dc:title>Sample binary executable item</dc:title>
-    <dc:type>Dataset</dc:type>
+    <dcterms:identifier>hello_world</dcterms:identifier>
+    <dcterms:language>English</dcterms:language>
+    <dcterms:rights>Public domain</dcterms:rights>
+    <dcterms:subject>Computer software</dcterms:subject>
+    <dcterms:title>Demo binary executable item</dcterms:title>
+    <dcterms:type>Dataset</dcterms:type>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/utf8">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/misc-demo"/>
+    <dcterms:description>
+      An item with non-Roman metadata characters. 🍊🍉
+      Here are some embedded URLs, to see how/whether they get auto-linked:
+      http://example.org/something http://example.org:8080/
+      https://example.org/something/else.html ftp://example.org/something
+      sftp://example.org/something mailto:user@example.org gopher://example.org/
+      file:///dev/null news://example.org/ feed://example.org/feed.rss
+      foo://example.org/
+    </dcterms:description>
+    <dcterms:extent>0 bytes</dcterms:extent>
+    <dcterms:title>Non-Roman character item 的 ب 🎵</dcterms:title>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/url">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/misc-demo"/>
+    <dcterms:description>
+      A "URL item," pointing to an external URL via an HTTP redirect.
+      (Try downloading the master.)
+    </dcterms:description>
+    <kumquat:hasURL>http://www.library.illinois.edu/</kumquat:hasURL>
+    <dcterms:MediaType>text/html</dcterms:MediaType>
+    <dcterms:title>URL item</dcterms:title>
   </rdf:Description>
 
   <!-- VIDEO COLLECTION -->
 
-  <rdf:Description rdf:about="http://example.net/collections/video-sample">
-    <dc:description>A collection full of videos.</dc:description>
-    <dc:title>Sample Video Collection</dc:title>
-    <local:key>video-sample</local:key>
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/collections/video-demo">
+    <dcterms:description>A collection containing videos.</dcterms:description>
+    <dcterms:title>Demo Video Collection</dcterms:title>
+    <kumquat:key>video-demo</kumquat:key>
   </rdf:Description>
 
-  <rdf:Description rdf:about="http://example.net/items/IMG_0054.mov">
-    <local:partOfCollection rdf:resource="http://example.net/collections/video-sample"/>
-    <dc:description>Part of the south façade of the Illini Union on the
+  <rdf:Description rdf:about="http://kumquat.library.illinois.edu/items/IMG_0054.mov">
+    <kumquat:partOfCollection rdf:resource="http://kumquat.library.illinois.edu/collections/video-demo"/>
+    <dcterms:description>Part of the south façade of the Illini Union on the
       University of Illinois at Urbana-Champaign campus. Filmed on an
-      iPhone 5S.</dc:description>
+      iPhone 5S.</dcterms:description>
     <dcterms:extent>1.1 Mbytes</dcterms:extent>
     <dcterms:extent>1280x720</dcterms:extent>
-    <local:filename>IMG_0054.mov</local:filename>
+    <kumquat:filename>IMG_0054.mov</kumquat:filename>
     <dcterms:MediaType>video/quicktime</dcterms:MediaType>
-    <dc:identifier>IMG_0054.mov</dc:identifier>
-    <dc:subject>University of Illinois at Urbana-Champaign</dc:subject>
-    <dc:subject>Illini Union</dc:subject>
-    <dc:subject>Buildings</dc:subject>
-    <dc:title>Sample QuickTime H.264/AAC video item</dc:title>
-    <dc:type>Video</dc:type>
+    <dcterms:identifier>IMG_0054.mov</dcterms:identifier>
+    <dcterms:subject>University of Illinois at Urbana-Champaign</dcterms:subject>
+    <dcterms:subject>Illini Union</dcterms:subject>
+    <dcterms:subject>Buildings</dcterms:subject>
+    <dcterms:title>Demo QuickTime H.264/AAC video item</dcterms:title>
+    <dcterms:type>Video</dcterms:type>
   </rdf:Description>
 
 </rdf:RDF>

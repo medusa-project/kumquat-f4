@@ -9,7 +9,7 @@ class FavoritesController < WebsiteController
 
   def index
     @start = params[:start] ? params[:start].to_i : 0
-    @limit = DB::Option::integer(DB::Option::Key::RESULTS_PER_PAGE)
+    @limit = Option::integer(Option::Key::RESULTS_PER_PAGE)
 
     @items = Repository::Item.none
 
@@ -17,7 +17,7 @@ class FavoritesController < WebsiteController
       web_ids = cookies[:favorites].split(COOKIE_DELIMITER)
       if web_ids.any?
         @items = Repository::Item.
-            where("#{Solr::Solr::WEB_ID_KEY}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")
+            where("#{Solr::Fields::WEB_ID}:(#{web_ids.map{ |id| "#{id}" }.join(' ')})")
       end
     end
 
@@ -33,9 +33,11 @@ class FavoritesController < WebsiteController
   # no longer exist in the repo.
   #
   def purge_invalid_favorites
-    web_ids = cookies[:favorites].split(COOKIE_DELIMITER)
-    if web_ids.length != @items.length
-      cookies[:favorites] = @items.map(&:web_id).join(COOKIE_DELIMITER)
+    if cookies[:favorites]
+      web_ids = cookies[:favorites].split(COOKIE_DELIMITER)
+      if web_ids.length != @items.length
+        cookies[:favorites] = @items.map(&:web_id).join(COOKIE_DELIMITER)
+      end
     end
   end
 

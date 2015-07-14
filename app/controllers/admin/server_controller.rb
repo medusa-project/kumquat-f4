@@ -46,7 +46,7 @@ module Admin
     # or 503
     #
     def search_server_status
-      solr = RSolr.connect(url: Kumquat::Application.kumquat_config[:solr_url])
+      solr = Solr::Solr.client
       begin
         solr.get('select', params: { q: '*:*', start: 0, rows: 1 })
       rescue RSolr::Error::Http

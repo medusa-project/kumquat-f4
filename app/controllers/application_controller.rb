@@ -5,13 +5,14 @@ class ApplicationController < ActionController::Base
 
   include SessionsHelper
 
-  attr_reader :executor
+  attr_reader :executor, :job_runner
 
   before_action :setup
   after_action :flash_in_response_headers
 
   def setup
     @executor = CommandExecutor.new(current_user)
+    @job_runner = JobRunner.new(current_user)
   end
 
   def admin_user
@@ -38,6 +39,18 @@ class ApplicationController < ActionController::Base
   #
   def keep_flash
     @keep_flash = true
+  end
+
+  ##
+  # Sends an Enumerable object in chunks as an attachment. Streaming requires
+  # a web server capable of it (not WEBrick).
+  #
+  def stream(enumerable, filename)
+    headers['X-Accel-Buffering'] = 'no'
+    headers['Cache-Control'] ||= 'no-cache'
+    headers.delete('Content-Length')
+    headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+    self.response_body = enumerable
   end
 
   private

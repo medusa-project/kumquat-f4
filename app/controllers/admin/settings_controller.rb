@@ -3,7 +3,7 @@ module Admin
   ##
   # To add a new setting:
   #
-  # 1) Add it to DB::Option::Keys
+  # 1) Add it to Option::Keys
   # 2) Add it to seeds.rb if necessary
   # 3) Add it to views/admin/settings/index.html.erb
   #
@@ -19,14 +19,14 @@ module Admin
       begin
         ActiveRecord::Base.transaction do
           params[:options].each_key do |key|
-            option = DB::Option.find_by_key(key)
+            option = Option.find_by_key(key)
             if option # if the option already exists
               if option.value != params[:options][key] # if the option has a new value
                 option.value = params[:options][key]
                 option.save!
               end
             else # it doesn't exist, so create it
-              option = DB::Option.new(key: key, value: params[:options][key])
+              option = Option.new(key: key, value: params[:options][key])
               option.save!
             end
           end

@@ -43,6 +43,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li><%= link_to 'Collections', admin_repository_collections_path %></li>
+                <li><%= link_to 'Items', admin_repository_items_path %></li>
                 <li class="divider"></li>
                 <li><%= link_to 'RDF Predicates', admin_rdf_predicates_path %></li>
                 <li><%= link_to 'URI Prefixes', admin_uri_prefixes_path %></li>
@@ -54,7 +55,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li><%= link_to 'Settings', admin_settings_path %></li>
-                <li><%= link_to 'Themes', admin_db_themes_path %></li>
+                <li><%= link_to 'Themes', admin_themes_path %></li>
                 <li class="divider"></li>
                 <li>
                   <%= link_to 'Public Website', root_url, target: '_blank' %>
@@ -76,6 +77,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li><%= link_to 'Status', admin_server_path %></li>
+                <li><%= link_to 'Tasks', admin_tasks_path %></li>
               </ul>
             </li>
           </ul>

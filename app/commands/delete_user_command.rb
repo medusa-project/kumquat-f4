@@ -1,5 +1,9 @@
 class DeleteUserCommand < Command
 
+  def self.required_permissions
+    super + [Permission::DELETE_USERS]
+  end
+
   def initialize(user)
     @user = user
   end
@@ -10,10 +14,6 @@ class DeleteUserCommand < Command
 
   def object
     @user
-  end
-
-  def required_permissions
-    super + [Permission::DELETE_USERS]
   end
 
 end

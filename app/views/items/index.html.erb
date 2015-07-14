@@ -24,21 +24,22 @@
 <% if @items.total_length > 0 %>
   <div class="row">
     <div class="col-sm-3 kq-facets kq-panel-facets">
-      <%= facets_as_panels(@items) %>
+      <%= facets_as_panels(@items,
+                           show_collection_facet: session[:browse_context] != ItemsController::BrowseContext::BROWSING_COLLECTION) %>
     </div>
 
     <div class="col-sm-9 kq-results">
       <div class="panel panel-default">
         <div class="panel-body">
-          Showing <%= @start + 1 %>&ndash;<%= @start + @num_results_shown %> of
-            <%= @items.total_length %> items
+          <%= search_status(@items, @start, @num_results_shown) %>
         </div>
       </div>
       <div class="kq-list-results">
         <%= items_as_list(@items, @start, show_collections: !@collection,
                           show_add_to_favorites_buttons: true,
                           show_description: true,
-                          show_remove_from_favorites_buttons: true) %>
+                          show_remove_from_favorites_buttons: true,
+                          thumbnail_shape: Repository::Bytestream::Shape::SQUARE) %>
       </div>
 
       <div class="text-center">
@@ -47,5 +48,7 @@
     </div>
   </div>
 <% else %>
-  <p>No items.</p>
+  <div class="kq-no-results">
+    <%= no_results_help(params[:q], @suggestions) %>
+  </div>
 <% end %>

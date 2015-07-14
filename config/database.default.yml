@@ -24,7 +24,7 @@ test:
   encoding: unicode
   template: template0
 
-production:
+production: &production
   adapter: postgresql
   database: kumquat_production
   host: localhost
@@ -32,3 +32,8 @@ production:
   min_messages: warning
   encoding: unicode
   template: template0
+
+# Create a duplicate of the production environment that we (at UIUC) can use
+# to seed some site-specific data.
+uiuc_production:
+  <<: *production

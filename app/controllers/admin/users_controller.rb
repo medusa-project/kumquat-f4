@@ -39,6 +39,8 @@ module Admin
         executor.execute(command)
       rescue => e
         flash['error'] = "#{e}"
+        @user = User.new
+        @roles = Role.all.order(:name)
         render 'new'
       else
         flash['success'] = "User #{command.object.username} created."
@@ -136,8 +138,9 @@ module Admin
       begin
         executor.execute(command)
       rescue => e
+        @roles = Role.all.order(:name)
         flash['error'] = "#{e}"
-        render 'new'
+        render 'edit'
       else
         flash['success'] = "User #{@user.username} updated."
         redirect_to admin_user_path(@user)
@@ -147,9 +150,9 @@ module Admin
     private
 
     def sanitized_params
-      params.require(:user).permit(:username, :email, :enabled, :password,
-                                   :password_confirmation,
-                                   role_ids: [])
+      params.require(:user).permit(:current_password, :email, :enabled,
+                                   :password, :password_confirmation,
+                                   :username, role_ids: [])
     end
 
     def view_users_rbac

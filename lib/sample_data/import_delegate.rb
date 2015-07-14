@@ -5,7 +5,7 @@ module SampleData
   #
   class ImportDelegate < ::Import::AbstractDelegate
 
-    LOCAL_NAMESPACE = 'http://example.net/'
+    LOCAL_NAMESPACE = 'http://kumquat.library.illinois.edu/'
     SOURCE_PATH = File.join(Rails.root, 'lib', 'sample_data', 'bytestreams')
 
     def initialize
@@ -13,7 +13,9 @@ module SampleData
       @root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
       @collections = [] # array of RDF::Graphs
       @items = [] # array of RDF::Graphs
+    end
 
+    def before_import(transaction_url)
       # delete any old collections that may be lying around from
       # previous/failed imports
       collections.each do |collection|
@@ -40,7 +42,7 @@ module SampleData
     def full_text_of_item_at_index(index)
       items[index].each_statement do |statement|
         return statement.object.to_s if
-            statement.predicate.to_s == 'http://example.org/fullText'
+            statement.predicate.to_s == "#{LOCAL_NAMESPACE}fullText"
       end
       nil
     end
@@ -58,6 +60,13 @@ module SampleData
       items[index].each_statement do |statement|
         return File.join(SOURCE_PATH, statement.object.to_s) if
             statement.predicate.to_s == "#{LOCAL_NAMESPACE}filename"
+      end
+      nil
+    end
+
+    def master_url_of_item_at_index(index)
+      items[index].each_statement do |st|
+        return st.object.to_s if st.predicate.to_s == "#{LOCAL_NAMESPACE}hasURL"
       end
       nil
     end

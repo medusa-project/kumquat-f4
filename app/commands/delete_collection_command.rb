@@ -1,5 +1,9 @@
 class DeleteCollectionCommand < Command
 
+  def self.required_permissions
+    super + [Permission::COLLECTIONS_DELETE]
+  end
+
   def initialize(collection)
     @collection = collection
   end
@@ -10,10 +14,6 @@ class DeleteCollectionCommand < Command
 
   def object
     @collection
-  end
-
-  def required_permissions
-    super + [Permission::COLLECTIONS_DELETE]
   end
 
 end

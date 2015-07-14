@@ -1,40 +1,51 @@
+##
+# Base controller for all controllers related to the public website.
+#
 class WebsiteController < ApplicationController
 
-  before_filter :prepend_view_paths
+  before_action :prepend_view_paths
 
   def setup
     super
     @num_items = Repository::Item.count
-    @num_audios = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'audio/*').count
-    @num_images = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'image/*').count
-    @num_videos = Repository::Item.where(Solr::Solr::MEDIA_TYPE_KEY => 'video/*').count
+    @num_audios = Repository::Item.
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:audio/*").
+        omit_entity_query(true).facet(false).limit(1).count
+    @num_images = Repository::Item.
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:image/*").
+        omit_entity_query(true).facet(false).limit(1).count
+    @num_videos = Repository::Item.
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:video/*").
+        omit_entity_query(true).facet(false).limit(1).count
   end
 
   private
 
   ##
-  # Allow users to override view templates by adding them to
-  # /local/[theme name]/views.
+  # Allow view templates to be overridden by adding custom templates to
+  # /local/themes/[theme name]/views.
   #
   def prepend_view_paths
-    key = 'default'
-    if params[:key]
-      key = params[:key]
-    elsif params[:repository_collection_key]
-      key = params[:repository_collection_key]
-    elsif params[:web_id]
-      item = Repository::Item.find_by_web_id(params[:web_id])
-      raise ActiveRecord::RecordNotFound unless item
-      key = item.collection.key
-    end
+    unless @skip_after_actions
+      key = 'default'
+      if params[:key]
+        key = params[:key]
+      elsif params[:repository_collection_key]
+        key = params[:repository_collection_key]
+      elsif params[:web_id]
+        item = Repository::Item.find_by_web_id(params[:web_id])
+        raise ActiveRecord::RecordNotFound unless item
+        key = item.collection.key
+      end
 
-    theme = nil
-    collection = DB::Collection.find_by_key(key)
-    theme = collection.theme if collection
-    theme ||= DB::Theme.default
-    pathname = nil
-    pathname = File.join(Rails.root, theme.pathname, 'views') if theme
-    prepend_view_path(pathname) if pathname
+      theme = nil
+      collection = DB::Collection.find_by_key(key)
+      theme = collection.theme if collection
+      theme ||= Theme.default
+      pathname = nil
+      pathname = File.join(Rails.root, theme.pathname, 'views') if theme
+      prepend_view_path(pathname) if pathname
+    end
   end
 
 end

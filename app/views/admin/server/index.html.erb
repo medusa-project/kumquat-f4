@@ -24,6 +24,8 @@
           <dd><%= link_to root_url, root_url %></dd>
           <dt>Control Panel URL</dt>
           <dd><%= link_to admin_root_url, admin_root_url %></dd>
+          <dt>OAI-PMH URL</dt>
+          <dd><%= link_to oai_pmh_url, oai_pmh_url(verb: 'Identify') %></dd>
           <dt>Application Root</dt>
           <dd><%= Rails.root %></dd>
         </dl>
@@ -41,8 +43,8 @@
       <div class="panel-body">
         <dl>
           <dt>URL</dt>
-          <dd><%= link_to Kumquat::Application.kumquat_config[:fedora_url],
-                          Kumquat::Application.kumquat_config[:fedora_url] %></dd>
+          <dd><%= link_to Kumquat::Application.kumquat_config[:public_fedora_url],
+                          Kumquat::Application.kumquat_config[:public_fedora_url] %></dd>
         </dl>
       </div>
     </div>
@@ -62,8 +64,8 @@
           <dt>URL</dt>
           <dd><%= link_to Kumquat::Application.kumquat_config[:solr_url],
                           Kumquat::Application.kumquat_config[:solr_url] %></dd>
-          <dt>Collection</dt>
-          <dd><%= Kumquat::Application.kumquat_config[:solr_collection] %></dd>
+          <dt>Core</dt>
+          <dd><%= Kumquat::Application.kumquat_config[:solr_core] %></dd>
         </dl>
       </div>
     </div>

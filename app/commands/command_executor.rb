@@ -1,35 +1,39 @@
 class CommandExecutor
 
+  def self.check_permissions(command, user)
+    class_ = command.kind_of?(Class) ? command : command.class
+    missing_permissions = class_.required_permissions.reject do |p|
+      user.can?(p)
+    end
+    if missing_permissions.any?
+      list = missing_permissions.map do |p|
+        perm = Permission.find_by_key(p)
+        perm ? perm.name.downcase : p
+      end
+      raise "#{user.username} has insufficient privileges for the "\
+      "following actions: #{list.join(', ')}"
+    end
+  end
+
   ##
-  # @param doing_user User
+  # @param doing_user [User]
   #
   def initialize(doing_user = nil)
     @doing_user = doing_user
   end
 
   ##
-  # @param command Command
-  # @raise RuntimeError
+  # Executes a `Command`. To run a command in the background, see the
+  # documentation for `JobRunner::run_later`.
+  #
+  # @param command [Command]
+  # @raise [StandardError]
   #
   def execute(command)
-    if @doing_user
-      # check the user's permissions
-      missing_permissions = command.required_permissions.reject do |p|
-        @doing_user.can?(p)
-      end
-      if missing_permissions.any?
-        list = missing_permissions.map do |p|
-          perm = Permission.find_by_key(p)
-          return perm ? perm.name.downcase : p
-        end
-        raise SecurityError, "#{@doing_user.username} has insufficient "\
-        "privileges for the following actions: #{list.join(', ')}"
-      end
-    end
-
     begin
+      self.class.check_permissions(command, @doing_user) if @doing_user
       command.execute
-    rescue ActiveRecord::RecordInvalid => e
+    rescue *[ActiveRecord::RecordInvalid, ActiveMedusa::RecordInvalid] => e
       if command.object.respond_to?('errors')
         message = "#{command.class.to_s} failed: "\
         "#{command.object.errors.full_messages[0]}"
@@ -37,11 +41,11 @@ class CommandExecutor
         message = "#{command.class.to_s} failed: #{e.message}"
       end
       Rails.logger.debug(message)
-      raise message
+      raise e
     rescue => e
       message = "#{command.class.to_s} failed: #{e.message}"
       Rails.logger.warn(message)
-      raise message # TODO: make this a ValidationError?
+      raise message
     else
       message = "#{command.class.to_s} succeeded"
       Rails.logger.info(message)

@@ -1,73 +1,84 @@
 module Repository
 
-  class Collection < ActiveKumquat::Base
+  class Collection < ActiveMedusa::Container
 
+    include Describable
+    include Indexable
     include Introspection
 
-    ENTITY_CLASS = ActiveKumquat::Base::Class::COLLECTION # TODO: get rid of this
+    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::COLLECTION
 
-    attr_accessor :key
-    attr_accessor :published
+    has_many :items, class_name: 'Repository::Item'
+
+    property :key,
+             type: :string,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::COLLECTION_KEY,
+             solr_field: Solr::Fields::COLLECTION_KEY
+    property :published,
+             type: :boolean,
+             rdf_predicate: Kumquat::NAMESPACE_URI +
+                 Kumquat::RDFPredicates::PUBLISHED,
+             solr_field: Solr::Fields::PUBLISHED
 
     validates :key, length: { minimum: 2, maximum: 20 }
-    validates :title, length: { minimum: 2, maximum: 200 }
+    #validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_delete :delete_db_counterpart
+    # TODO: this is a workaround for after_destroy not working
+    after_save :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.
     #
-    # @param key
+    # @param key [String]
+    # @param transaction_url string
     #
-    def self.delete_with_key(key)
+    def self.delete_with_key(key, transaction_url = nil)
       root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
       col_to_delete = Repository::Collection.new(
           repository_url: "#{root_container_url.chomp('/')}/#{key}",
-          key: key)
-      col_to_delete.delete(true)
+          key: key,
+          transaction_url: transaction_url)
+      col_to_delete.delete(also_tombstone: true)
     end
 
     ##
-    # @param key string
-    # @return Entity
+    # @param key [String]
+    # @return [Repository::Collection]
     #
     def self.find_by_key(key)
-      self.where(Solr::Solr::COLLECTION_KEY_KEY => key).first
+      self.where(Solr::Fields::COLLECTION_KEY => key).first rescue nil
     end
 
     ##
-    # @return DB::Collection
-    ##
+    # @return [DB::Collection]
+    #
     def db_counterpart
       unless @db_counterpart
-        @db_counterpart = DB::Collection.find_by_key(self.key)
-        @db_counterpart = DB::Collection.create!(key: self.key) unless
-            @db_counterpart
+        @db_counterpart = DB::Collection.find_by_key(self.key) ||
+            DB::Collection.create!(key: self.key)
       end
       @db_counterpart
     end
 
     def num_items
       @num_items = Repository::Item.
-          where(Solr::Solr::COLLECTION_KEY_KEY => self.key).
-          where("-#{Solr::Solr::PARENT_URI_KEY}:[* TO *]").count unless @num_items
+          where(Solr::Fields::COLLECTION => self.repository_url).
+          where("-#{Solr::Fields::ITEM}:[* TO *]").count unless @num_items
       @num_items
     end
 
-    ##
-    # @param graph RDF::Graph
-    #
-    def populate_from_graph(graph)
-      super(graph)
-      graph.each_triple do |subject, predicate, object|
-        if predicate == Kumquat::Application::NAMESPACE_URI +
-            Kumquat::Application::RDFPredicates::COLLECTION_KEY
-          self.key = object.to_s
-        elsif predicate == Kumquat::Application::NAMESPACE_URI +
-            Kumquat::Application::RDFPredicates::PUBLISHED
-          self.published = (object.to_s == 'true')
-        end
-      end
+    def reindex
+      kq_predicates = Kumquat::RDFPredicates
+
+      doc = base_solr_document
+      doc[Solr::Fields::COLLECTION_KEY] =
+          self.rdf_graph.any_object(kq_predicates::COLLECTION_KEY)
+      doc[Solr::Fields::PUBLISHED] =
+          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
+      doc[Solr::Fields::SINGLE_TITLE] = self.title
+
+      Solr::Solr.client.add(doc)
     end
 
     def to_param
@@ -78,38 +89,16 @@ module Repository
       self.title || self.key
     end
 
-    ##
-    # Overrides parent
-    #
-    # @return ActiveKumquat::SparqlUpdate
-    #
-    def to_sparql_update
-      kq_uri = Kumquat::Application::NAMESPACE_URI
-      kq_predicates = Kumquat::Application::RDFPredicates
-      kq_objects = Kumquat::Application::RDFObjects
-
-      update = super # TODO: define these properties at class level and have the superclass handle them
-      # key
-      update.delete('<>', "<#{kq_uri}#{kq_predicates::COLLECTION_KEY}>", '?o', false).
-          insert(nil, "<#{kq_uri}#{kq_predicates::COLLECTION_KEY}>", self.key)
-      # published
-      update.delete('<>', "<#{kq_uri}#{kq_predicates::PUBLISHED}>", '?o', false).
-          insert(nil, "<#{kq_uri}#{kq_predicates::PUBLISHED}>",
-                 self.published ? 'true' : 'false')
-      # resource type
-      update.delete('<>', "<#{kq_uri}#{kq_predicates::CLASS}>", '?o', false).
-          insert(nil, "<#{kq_uri}#{kq_predicates::CLASS}>",
-                 "<#{kq_uri}#{kq_objects::COLLECTION}>", false)
-    end
-
     private
 
     ##
     # Deletes the corresponding database model.
     #
     def delete_db_counterpart
-      db_cp = db_counterpart
-      db_cp.destroy! if db_cp
+      if self.destroyed?
+        db_cp = db_counterpart
+        db_cp.destroy! if db_cp
+      end
     end
 
   end

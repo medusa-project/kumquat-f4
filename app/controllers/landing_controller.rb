@@ -4,10 +4,12 @@ class LandingController < WebsiteController
   # Responds to GET /
   #
   def index
-    # get a random image item to show
+    # Get a random image item to show. Limit to known displayable media types.
+    media_types = Repository::Bytestream::derivable_image_types.join(' OR ')
     @random_item = Repository::Item.
-        where(Solr::Solr::MEDIA_TYPE_KEY => 'image/*').
-        facet(false).order("random_#{SecureRandom.hex}").first
+        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
+        omit_entity_query(true).
+        facet(false).order("random_#{SecureRandom.hex}").limit(1).first
   end
 
 end

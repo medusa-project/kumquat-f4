@@ -6,8 +6,8 @@ Kumquat has several dependencies that need to be installed first:
 * ffmpeg
 * PostgreSQL
 * Fedora
-* fcrepo-message-consumer
-* Solr
+* Solr 5
+* fcrepo-camel
 * Loris
 
 These will be covered in sequence.
@@ -24,29 +24,68 @@ the output of `$ identify -list format`.
 
 ### ffmpeg
 
-`$ brew install ffmpeg`
+`$ brew install ffmpeg --with-fdk-aac --with-libvpx --with-libvorbis`
 
 ### PostgreSQL
 
-TODO: write this
+`$ brew install postgresql`
 
 ### Fedora
 
 [https://wiki.duraspace.org/display/FEDORA41/Deploying+Fedora+4+Complete+Guide]
 (https://wiki.duraspace.org/display/FEDORA41/Deploying+Fedora+4+Complete+Guide)
 
-### fcrepo-message-consumer
+### Solr 5
 
-1. `$ git clone git@github.com:fcrepo4/fcrepo-message-consumer.git`
+Download and extract Solr 5.0.0. Create a core for Kumquat by copying
+`config/solr/kumquat` to `solr-5.0.0/server/solr`.
 
-2. Open `fcrepo-message-consumer/fcrepo-message-consumer-webapp/src/main/resources/spring/indexer-core.xml`
-   and uncomment the `<ref bean="solrIndexer"/>` tag.
+### fcrepo-camel
 
-### Solr
+Edit the `applicationContext.xml` file to use the correct Fedora/Solr URLs,
+the correct Solr core name, and the `kumquat` index transform:
 
-1. `$ curl -O http://mirror.cogentco.com/pub/apache/lucene/solr/4.10.3/solr-4.10.3.tgz`
+    <camelContext xmlns="http://camel.apache.org/schema/spring"
+                  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 
-2. `$ tar xfz solr-4.10.3.tgz`
+        <route id="solr-router">
+            <from uri="activemq:topic:fedora"/>
+            <choice>
+                <when>
+                    <simple>${header[org.fcrepo.jms.eventType]} == 'http://fedora.info/definitions/v4/repository#NODE_REMOVED'</simple>
+                    <to uri="direct:remove"/>
+                </when>
+                <otherwise>
+                    <to uri="direct:update"/>
+                </otherwise>
+            </choice>
+        </route>
+
+        <route id="solr-updater">
+            <from uri="direct:update"/>
+            <to uri="fcrepo:localhost:8080/fedora/rest"/>
+            <filter>
+                <xpath>/rdf:RDF/rdf:Description/rdf:type[@rdf:resource='http://fedora.info/definitions/v4/indexing#Indexable']</xpath>
+                <to uri="fcrepo:localhost:8080/fedora/rest?transform=kumquat"/>
+                <to uri="http4:localhost:8983/solr/kumquat/update"/>
+            </filter>
+        </route>
+
+        <route id="solr-remover">
+            <from uri="direct:remove"/>
+            <transform>
+                <simple>{"delete":{"id":"${header[org.fcrepo.jms.baseURL]}${header[org.fcrepo.jms.identifier]}"}}</simple>
+            </transform>
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <to uri="http4:localhost:8983/solr/kumquat/update"/>
+        </route>
+
+    </camelContext>
 
 ### Loris
 
@@ -145,9 +184,15 @@ website).
 
 `$ gem install bundler`
 
+#### Install beanstalkd
+
+`$ brew install beanstalkd`
+
+Follow the instructions in the output for starting beanstalkd.
+
 #### Check out the code
 
-`$ git clone https://YOUR_NETID@code.library.illinois.edu/scm/kq/kumquat.git`
+`$ git clone https://github.com/medusa-project/kumquat`
 
 `$ cd kumquat`
 
@@ -169,8 +214,6 @@ branching model.)*
 
 Edit these as necessary.
 
-Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collection1/conf/schema.xml`.
-
 #### Create and seed the database
 
 `$ bundle exec rake db:setup`
@@ -183,17 +226,15 @@ Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collecti
 
 `$ java -jar ../start.jar`
 
-### fcrepo-message-consumer
+### fcrepo-camel
 
-`$ mvn clean install -DskipTests`
-
-`$ cd fcrepo-message-consumer-webapp`
+`$ cd fcrepo-camel-routes`
 
 `$ mvn -Djetty.port=9999 jetty:run`
 
 ### Solr
 
-`$ cd solr-4.10.3/example`
+`$ cd solr-5.0/solr`
 
 `$ java -jar start.jar`
 
@@ -203,12 +244,27 @@ Also copy `kumquat/config/solr/schema.xml` to `solr-4.10.3/example/solr/collecti
 
 `$ apachectl start`
 
+### Backburner
+
+Backburner is used to execute background jobs, which are typically invoked in
+the Control Panel.
+
+`$ bundle exec rake backburner:work`
+
 ### Kumquat
 
 1. Install/update Kumquat's Fedora indexing transform:
 
   `$ bundle exec rake kumquat:update_index_transform`
 
-2. `$ rails server`
+2. Install/update the Solr schema:
+
+  `$ bundle exec rake kumquat:update_solr_schema`
+
+3. Import the sample collections:
+
+  `$ bundle exec rake kumquat:sample_import`
+
+4. `$ rails server`
 
 Go to [http://localhost:3000/](http://localhost:3000/) in a web browser.

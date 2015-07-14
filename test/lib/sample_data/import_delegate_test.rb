@@ -7,7 +7,7 @@ class ImportDelegateTest < ActiveSupport::TestCase
   end
 
   test 'total_number_of_items should return the correct number of items' do
-    assert_equal 15, @delegate.total_number_of_items
+    assert_equal 16, @delegate.total_number_of_items
   end
 
   test 'collection_key_of_item_at_index should return the correct key' do

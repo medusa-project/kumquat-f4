@@ -7,7 +7,8 @@
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
-
+server 'kumquat-dev.library.illinois.edu', user: 'kumquat',
+       roles: %w{web app db}, primary: true
 
 # role-based syntax
 # ==================
@@ -22,7 +23,6 @@
 # role :db,  %w{deploy@example.com}
 
 
-
 # Configuration
 # =============
 # You can set any configuration variable like in config/deploy.rb
@@ -31,7 +31,8 @@
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
 
-
+# Default branch is :master
+ask :branch, 'develop'
 
 # Custom SSH Options
 # ==================

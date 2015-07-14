@@ -19,6 +19,17 @@ module Import
   class AbstractDelegate
 
     ##
+    # Will be run within the import transaction before the import begins. The
+    # transaction URL is passed in.
+    #
+    # This method is optional.
+    #
+    # @param transaction_url string
+    #
+    def before_import(transaction_url)
+    end
+
+    ##
     # Should return the root container URL. Can also return nil, in which case
     # :fedora_url from the config file will be used.
     #
@@ -70,7 +81,8 @@ module Import
 
     ##
     # Should return the full text of the item at the given index, or nil if the
-    # item does not have any.
+    # item does not have any. If this method returns nil, the importer will
+    # attempt to extract text from the item and use that instead.
     #
     # This method is optional.
     #
@@ -154,10 +166,9 @@ module Import
     # Should return the IANA media type
     # (https://www.iana.org/assignments/media-types/media-types.xhtml) of the
     # item at the given index, if known. It's also okay to return nil, in which
-    # case the media type will be guessed. The guessing is pretty reliable for
-    # common file types.
+    # case the media type will be guessed.
     #
-    # This method is optional.
+    # This method is optional, but recommended.
     #
     # @param index integer
     # @return string

@@ -5,11 +5,8 @@
 body#items_index div#kq-page-content {
   .kq-facets {
     overflow-x: scroll;
-    .kq-clear {
-      color: red;
-    }
-    .kq-selected-term {
-      font-weight: bold;
+    div.checkbox {
+      margin:0.2em 0em;
     }
     .kq-count.badge {
       background-color: #c0c0c0;
@@ -21,10 +18,17 @@ body#items_index div#kq-page-content {
     .panel-body {
       overflow-x: scroll;
       ul {
+        list-style:none;
         margin-bottom:0em;
-        margin-left: 1em;
+        margin-left: 0em;
         padding-left: 0px;
       }
+    }
+  }
+
+  .kq-no-results {
+    ul {
+      margin-left: 0.5em;
     }
   }
 }
@@ -58,9 +62,9 @@ body#items_show {
     width: 100%;
   }
 
-  .kq-horizontal-pages {
+  .kq-horizontal-items {
     overflow-x: scroll;
-    ol {
+    ol, ul {
       margin-left:0px;
       padding-left:0px;
       li {
@@ -81,6 +85,32 @@ body#items_show {
               max-height: 100px;
               max-width: 100px;
             }
+          }
+        }
+      }
+    }
+  }
+
+  .kq-vertical-items {
+    ol, ul {
+      list-style: none;
+      margin-left:0px;
+      padding-left:0px;
+      li {
+        max-height: 180px;
+        margin-bottom: 20px;
+        text-align: center;
+        vertical-align: top;
+        width: 100%;
+        .kq-thumbnail {
+          display: block;
+          font-size:100px;
+          height: 150px;
+          margin-bottom: 10px;
+          img {
+            height: 150px;
+            text-align: center;
+            width: 150px;
           }
         }
       }

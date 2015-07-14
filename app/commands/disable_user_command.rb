@@ -1,5 +1,9 @@
 class DisableUserCommand < Command
 
+  def self.required_permissions
+    super + [Permission::DISABLE_USERS]
+  end
+
   def initialize(user)
     @user = user
   end
@@ -11,10 +15,6 @@ class DisableUserCommand < Command
 
   def object
     @user
-  end
-
-  def required_permissions
-    super + [Permission::DISABLE_USERS]
   end
 
 end

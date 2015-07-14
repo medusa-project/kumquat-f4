@@ -4,9 +4,9 @@ class SearchController < WebsiteController
   # Responds to GET /search
   #
   def index
-    @predicates_for_select = DB::RDFPredicate.order(:label).
+    @predicates_for_select = RDFPredicate.order(:label).
         map{ |p| [ p.label, p.solr_field ] }.uniq
-    @predicates_for_select.unshift([ 'Any Field', 'kq_searchall' ])
+    @predicates_for_select.unshift([ 'Any Field', Solr::Fields::SEARCH_ALL ])
 
     @collections = Repository::Collection.all
   end
@@ -34,7 +34,7 @@ class SearchController < WebsiteController
       keys = params[:keys].select{ |k| !k.blank? }
     end
     if keys.any? and keys.length < Repository::Collection.all.length
-      where_clauses << "#{Solr::Solr::COLLECTION_KEY_KEY}:+(#{keys.join(' ')})"
+      where_clauses << "#{Solr::Fields::COLLECTION_KEY}:+(#{keys.join(' ')})"
     end
 
     redirect_to repository_items_path(q: where_clauses.join(' AND '))

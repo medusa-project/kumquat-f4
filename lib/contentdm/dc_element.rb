@@ -3,21 +3,6 @@ module Contentdm
   class DCElement < Element
 
     URIS = [
-        'http://purl.org/dc/elements/1.1/contributor',
-        'http://purl.org/dc/elements/1.1/coverage',
-        'http://purl.org/dc/elements/1.1/creator',
-        'http://purl.org/dc/elements/1.1/date',
-        'http://purl.org/dc/elements/1.1/description',
-        'http://purl.org/dc/elements/1.1/format',
-        'http://purl.org/dc/elements/1.1/identifier',
-        'http://purl.org/dc/elements/1.1/language',
-        'http://purl.org/dc/elements/1.1/publisher',
-        'http://purl.org/dc/elements/1.1/relation',
-        'http://purl.org/dc/elements/1.1/rights',
-        'http://purl.org/dc/elements/1.1/source',
-        'http://purl.org/dc/elements/1.1/subject',
-        'http://purl.org/dc/elements/1.1/title',
-        'http://purl.org/dc/elements/1.1/type',
         'http://purl.org/dc/terms/abstract',
         'http://purl.org/dc/terms/accessRights',
         'http://purl.org/dc/terms/accrualMethod',
@@ -76,7 +61,7 @@ module Contentdm
     ]
 
     def namespace_prefix
-      self.uri.include?('/dc/terms') ? 'dcterms' : 'dc'
+      'dcterms'
     end
 
     def uri

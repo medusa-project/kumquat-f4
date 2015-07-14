@@ -1,8 +1,12 @@
 class CreateCollectionCommand < Command
 
+  def self.required_permissions
+    super + [Permission::COLLECTIONS_CREATE]
+  end
+
   def initialize(collection_params)
     @collection = Repository::Collection.new(collection_params)
-    @collection.container_url = Kumquat::Application.kumquat_config[:fedora_url]
+    @collection.parent_url = Kumquat::Application.kumquat_config[:fedora_url]
   end
 
   def execute
@@ -11,10 +15,6 @@ class CreateCollectionCommand < Command
 
   def object
     @collection
-  end
-
-  def required_permissions
-    super + [Permission::COLLECTIONS_CREATE]
   end
 
 end

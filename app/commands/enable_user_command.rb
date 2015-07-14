@@ -1,5 +1,9 @@
 class EnableUserCommand < Command
 
+  def self.required_permissions
+    super + [Permission::ENABLE_USERS]
+  end
+
   def initialize(user)
     @user = user
   end
@@ -11,10 +15,6 @@ class EnableUserCommand < Command
 
   def object
     @user
-  end
-
-  def required_permissions
-    super + [Permission::ENABLE_USERS]
   end
 
 end

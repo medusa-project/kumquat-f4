@@ -5,6 +5,19 @@
 class Command
 
   ##
+  # Task associated with the command (typically set by a Job for longer-
+  # running commands)
+  #
+  attr_accessor :task
+
+  ##
+  # Returns an array of permissions required to execute the command.
+  #
+  def self.required_permissions
+    []
+  end
+
+  ##
   # Executes the command, checking all relevant preconditions and raising an
   # error if anything goes wrong. Raised error messages should be suitable for
   # public consumption.
@@ -23,13 +36,6 @@ class Command
   #
   def object
     nil
-  end
-
-  ##
-  # Returns an array of permissions required to execute the command.
-  #
-  def required_permissions
-    []
   end
 
 end

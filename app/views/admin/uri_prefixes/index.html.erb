@@ -7,38 +7,48 @@
   <li class="active">URI Prefixes</li>
 </ol>
 
+<div class="pull-right">
+  <button type="button" class="btn btn-default" data-toggle="modal"
+          data-target="#kq-add-prefix-modal">Add Prefix</button>
+</div>
+
 <h1>URI Prefixes</h1>
 
-<%= form_tag do %>
-    <table class="table table-striped kq-prefixes">
-      <thead>
-      <th>URI</th>
-      <th>Prefix</th>
-      <th></th>
-      </thead>
-      <tbody>
-      <% @prefixes.each do |prefix| %>
-          <tr>
-            <td>
-              <%= hidden_field_tag "prefixes[#{prefix.id}][_destroy]", 0,
-                                   class: 'kq-destroy-marker' %>
-              <%= text_field_tag "prefixes[#{prefix.id}][uri]",
-                                 prefix.uri, class: 'form-control' %>
-            </td>
-            <td><%= text_field_tag "prefixes[#{prefix.id}][prefix]",
-                                   prefix.prefix, class: 'form-control' %></td>
-            <td><button type="button"
-                        class="btn btn-sm btn-danger kq-remove-prefix">&minus;</button></td>
-          </tr>
-      <% end %>
-      </tbody>
-    </table>
-    <div class="clearfix">
-      <div class="pull-right">
-        <button type="button"
-                class="btn btn-default btn-success kq-add-prefix">Add Prefix</button>
+<table class="table table-striped kq-prefixes">
+  <thead>
+    <th style="width:15%">Prefix</th>
+    <th>URI</th>
+    <th style="width:1%"></th>
+  </thead>
+  <tbody>
+    <% @prefixes.each do |prefix| %>
+      <tr>
+        <td><%= prefix.prefix %></td>
+        <td><%= prefix.uri %></td>
+        <td>
+          <%= link_to admin_uri_prefix_path(prefix), method: :delete,
+                      class: 'btn btn-sm btn-danger' do %>
+            &minus;
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="modal fade" id="kq-add-prefix-modal" tabindex="-1" role="dialog"
+     aria-labelledby="kq-add-prefix-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="kq-add-prefix-modal-label">Add Prefix</h4>
+      </div>
+      <div class="modal-body">
+        <%= render partial: 'create' %>
       </div>
     </div>
-    <br>
-    <%= submit_tag('Save Changes', class: 'btn btn-primary') %>
-<% end %>
+  </div>
+</div>

@@ -1,9 +1,12 @@
 body#landing {
-  .kq-thumbnail {
-    img {
-      border: 6px solid #404040;
-      max-height: 450px;
-      max-width: 90%;
+  .btn-lg:first-child {
+    margin-right: 1em;
+  }
+
+  @media screen and (max-width: 320px) {
+    .kq-main-image {
+      margin-top:1em;
     }
   }
+
 }

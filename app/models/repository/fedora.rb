@@ -2,114 +2,106 @@ module Repository
 
   class Fedora
 
-    INDEXING_TRANSFORM_NAME = 'kumquat'
-    # Predicate URIs that start with any of these are repository-managed.
+    # Predicate URIs that start with any of these are repository-managed...
+    # not really, but we'll just say they are for now.
     MANAGED_PREDICATES = [
         'http://fedora.info/definitions/',
+        'http://www.iana.org/assignments/relation',
         'http://www.jcp.org/jcr',
+        'http://www.loc.gov/premis/rdf/v1#',
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
         'http://www.w3.org/2000/01/rdf-schema#',
         'http://www.w3.org/ns/ldp#'
     ]
 
-    ##
-    # Creates or updates the Fedora indexing transform used by the application.
-    #
-    # https://wiki.duraspace.org/display/FEDORA41/Indexing+Transformations
-    #
-    def apply_indexing_transform
-      kq_predicates = Kumquat::Application::RDFPredicates
-      body = "@prefix fcrepo : <http://fedora.info/definitions/v4/repository#>
-      @prefix dc : <http://purl.org/dc/elements/1.1/>
-      @prefix dcterms : <http://purl.org/dc/terms/>
-      @prefix kumquat : <#{Kumquat::Application::NAMESPACE_URI}>
+    def reindex
+      # In case we are coming in via rake, we have to reference all of our
+      # model classes before ActiveMedusa::Base.class_for_predicate will work
+      [Item, Collection, Bytestream]
+      delete_missing_ids
+      index_node(ActiveMedusa::Configuration.instance.fedora_url)
+    end
 
-      id = . :: xsd:string;
-      uuid = fcrepo:uuid :: xsd:string;
-      #{Solr::Solr::CLASS_KEY} = kumquat:#{kq_predicates::CLASS} :: xsd:string;
-      #{Solr::Solr::COLLECTION_KEY_KEY} = kumquat:#{kq_predicates::COLLECTION_KEY} :: xsd:string;
-      #{Solr::Solr::FULL_TEXT_KEY} = kumquat:#{kq_predicates::FULL_TEXT} :: xsd:string;
-      #{Solr::Solr::HEIGHT_KEY} = kumquat:#{kq_predicates::HEIGHT} :: xsd:integer;
-      #{Solr::Solr::PAGE_INDEX_KEY} = kumquat:#{kq_predicates::PAGE_INDEX} :: xsd:integer;
-      #{Solr::Solr::PARENT_URI_KEY} = kumquat:#{kq_predicates::PARENT_URI} :: xsd:string;
-      #{Solr::Solr::PUBLISHED_KEY} = kumquat:#{kq_predicates::PUBLISHED} :: xsd:boolean;
-      #{Solr::Solr::WEB_ID_KEY} = kumquat:#{kq_predicates::WEB_ID} :: xsd:string;
-      #{Solr::Solr::WIDTH_KEY} = kumquat:#{kq_predicates::WIDTH} :: xsd:integer;
-      dc_contributor = dc:contributor :: xsd:string;
-      dc_coverage = dc:coverage :: xsd:string;
-      dc_creator = dc:creator :: xsd:string;
-      dc_date = dc:date :: xsd:string;
-      dc_description = dc:description :: xsd:string;
-      dc_format = dc:format :: xsd:string;
-      dc_identifier = dc:identifier :: xsd:string;
-      dc_language = dc:language :: xsd:string;
-      dc_publisher = dc:publisher :: xsd:string;
-      dc_relation = dc:relation :: xsd:string;
-      dc_rights = dc:rights :: xsd:string;
-      dc_source = dc:source :: xsd:string;
-      dc_subject = dc:subject :: xsd:string;
-      dc_title = dc:title :: xsd:string;
-      dc_type = dc:type :: xsd:string;
-      dcterm_abstract = dcterms:abstract :: xsd:string;
-      dcterm_accessRights = dcterms:accessRights :: xsd:string;
-      dcterm_accrualMethod = dcterms:accrualMethod :: xsd:string;
-      dcterm_accrualPeriodicity = dcterms:accrualPeriodicity :: xsd:string;
-      dcterm_accrualPolicy = dcterms:accrualPolicy :: xsd:string;
-      dcterm_alternative = dcterms:alternative :: xsd:string;
-      dcterm_audience = dcterms:audience :: xsd:string;
-      dcterm_available = dcterms:available :: xsd:string;
-      dcterm_bibliographicCitation = dcterms:bibliographicCitation :: xsd:string;
-      dcterm_conformsTo = dcterms:conformsTo :: xsd:string;
-      dcterm_contributor = dcterms:contributor :: xsd:string;
-      dcterm_coverage = dcterms:coverage :: xsd:string;
-      dcterm_created = dcterms:created :: xsd:string;
-      dcterm_creator = dcterms:creator :: xsd:string;
-      dcterm_date = dcterms:date :: xsd:string;
-      dcterm_dateAccepted = dcterms:dateAccepted :: xsd:string;
-      dcterm_dateCopyrighted = dcterms:dateCopyrighted :: xsd:string;
-      dcterm_dateSubmitted = dcterms:dateSubmitted :: xsd:string;
-      dcterm_description = dcterms:description :: xsd:string;
-      dcterm_educationLevel = dcterms:educationLevel :: xsd:string;
-      dcterm_extent = dcterms:extent :: xsd:string;
-      dcterm_format = dcterms:format :: xsd:string;
-      dcterm_hasFormat = dcterms:hasFormat :: xsd:string;
-      dcterm_hasPart = dcterms:hasPart :: xsd:string;
-      dcterm_hasVersion = dcterms:hasVersion :: xsd:string;
-      dcterm_identifier = dcterms:identifier :: xsd:string;
-      dcterm_instructionalMethod = dcterms:instructionalMethod :: xsd:string;
-      dcterm_isFormatOf = dcterms:isFormatOf :: xsd:string;
-      dcterm_isPartOf = dcterms:isPartOf :: xsd:string;
-      dcterm_isReferencedBy = dcterms:isReferencedBy :: xsd:string;
-      dcterm_isReplacedBy = dcterms:isReplacedBy :: xsd:string;
-      dcterm_isRequiredBy = dcterms:isRequiredBy :: xsd:string;
-      dcterm_issued = dcterms:issued :: xsd:string;
-      dcterm_isVersionOf = dcterms:isVersionOf :: xsd:string;
-      dcterm_language = dcterms:language :: xsd:string;
-      dcterm_license = dcterms:license :: xsd:string;
-      dcterm_mediator = dcterms:mediator :: xsd:string;
-      dcterm_MediaType = dcterms:MediaType :: xsd:string;
-      dcterm_medium = dcterms:medium :: xsd:string;
-      dcterm_modified = dcterms:modified :: xsd:string;
-      dcterm_provenance = dcterms:provenance :: xsd:string;
-      dcterm_publisher = dcterms:publisher :: xsd:string;
-      dcterm_references = dcterms:references :: xsd:string;
-      dcterm_relation = dcterms:relation :: xsd:string;
-      dcterm_replaces = dcterms:replaces :: xsd:string;
-      dcterm_requires = dcterms:requires :: xsd:string;
-      dcterm_rights = dcterms:rights :: xsd:string;
-      dcterm_rightsHolder = dcterms:rightsHolder :: xsd:string;
-      dcterm_source = dcterms:source :: xsd:string;
-      dcterm_spatial = dcterms:spatial :: xsd:string;
-      dcterm_subject = dcterms:subject :: xsd:string;
-      dcterm_tableOfContents = dcterms:tableOfContents :: xsd:string;
-      dcterm_temporal = dcterms:temporal :: xsd:string;
-      dcterm_title = dcterms:title :: xsd:string;
-      dcterm_type = dcterms:type :: xsd:string;
-      dcterm_valid = dcterms:valid :: xsd:string;"
-      http = HTTPClient.new
-      url = "#{Kumquat::Application.kumquat_config[:fedora_url].chomp('/')}"\
-      "/fedora:system/fedora:transform/fedora:ldpath/#{INDEXING_TRANSFORM_NAME}/fedora:Container"
-      http.put(url, body, { 'Content-Type' => 'application/rdf+ldpath' })
+    private
+
+    def delete_ids(ids)
+      if ids.any?
+        Rails.logger.debug("Deleting #{ids} missing records from Solr")
+        body = "<delete><query>#{Solr::Fields::ID}:(#{ids.to_a.join(' OR ')})</query></delete>"
+        Solr::Solr.client.post('update', params: { 'stream.body' => body})
+      end
+    end
+
+    ##
+    # Gets a list of all node URIs from Solr and deletes any that
+    # don't exist in the repository.
+    #
+    def delete_missing_ids
+      chunk_size = 1000
+      solr = Solr::Solr.client
+      params = { q: '*:*', fl: Solr::Fields::ID, start: 0, rows: 0 }
+      response = solr.get('select', params: params)
+      num_results = response['response']['numFound'].to_i
+      num_chunks = (num_results / chunk_size.to_f).ceil
+      ids = Set.new
+      num_chunks.times do |i|
+        params[:rows] = chunk_size
+        params[:start] = i * num_results
+        response = Solr::Solr.client.get('select', params: params)
+        response['response']['docs'].each do |doc|
+          ids << doc[Solr::Fields::ID.to_s] unless
+              exists_in_fedora?(doc[Solr::Fields::ID.to_s])
+        end
+      end
+      delete_ids(ids)
+    end
+
+    def exists_in_fedora?(url)
+      http = ActiveMedusa::Fedora.client
+      begin
+        http.head(url)
+      rescue HTTPClient::BadResponseError => e
+        return false if [404, 410].include?(e.res.status)
+      end
+      true
+    end
+
+    ##
+    # Recursive method that indexes the node at the given URL and all of its
+    # children.
+    #
+    # @param url [String]
+    #
+    def index_node(url)
+      graph = fetch_graph(url)
+      class_uri = graph.any_object(ActiveMedusa::Configuration.
+                                       instance.class_predicate)
+      if class_uri
+        begin
+          instance = ActiveMedusa::Base.load(url)
+          instance.reindex
+        rescue
+          # noop
+        end
+      end
+
+      # index its children
+      graph.each_statement do |st|
+        if st.predicate.to_s == 'http://www.w3.org/ns/ldp#contains'
+          index_node(st.object.to_s)
+        end
+      end
+
+      Solr::Solr.client.commit
+    end
+
+    def fetch_graph(url)
+      http = ActiveMedusa::Fedora.client
+      response = http.get(url + '/fcr:metadata', nil,
+                          { 'Accept' => 'application/n-triples' })
+      graph = RDF::Graph.new
+      graph.from_ntriples(response.body)
+      graph
     end
 
   end

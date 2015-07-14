@@ -1,11 +1,10 @@
 module ItemsHelper
 
-  PREFIXES = { # TODO: externalize this
-      dc: 'http://purl.org/dc/elements/1.1/',
-      dcterms: 'http://purl.org/dc/terms/'
-  }
-
-  def download_button(item)
+  ##
+  # @param item [Repository::Item]
+  # @param options [Hash] with available keys: `:for_admin` (boolean)
+  #
+  def download_button(item, options = {})
     return nil unless item.master_bytestream
     html = '<div class="btn-group">
       <button type="button" class="btn btn-default dropdown-toggle"
@@ -23,27 +22,44 @@ module ItemsHelper
       html += '<li class="divider"></li>'
       derivatives.each do |bs|
         html += '<li>'
-        html += link_to(bs.repository_url) do
+        html += link_to(bs.public_repository_url) do
           download_label_for_bytestream(bs)
         end
         html += '</li>'
       end
     end
+    if options[:for_admin]
+      json_ld_url = admin_repository_item_url(item, format: :jsonld)
+      rdf_xml_url = admin_repository_item_url(item, format: :rdf)
+      ttl_url = admin_repository_item_url(item, format: :ttl)
+    else
+      json_ld_url = repository_item_url(item, format: :jsonld)
+      rdf_xml_url = repository_item_url(item, format: :rdf)
+      ttl_url = repository_item_url(item, format: :ttl)
+    end
+    html += '<li class="divider"></li>'
+    html += '<li>' + link_to('JSON-LD', json_ld_url) + '</li>'
+    html += '<li>' + link_to('RDF/XML', rdf_xml_url) + '</li>'
+    html += '<li>' + link_to('Turtle', ttl_url) + '</li>'
     html += '</ul>'
     html += '</div>'
     raw(html)
   end
 
   ##
-  # @param items ActiveKumquat::ResultSet
+  # @param items [ActiveMedusa::Relation]
+  # @param options [Hash] Hash with available keys: `:show_collection_facet` (boolean)
   #
-  def facets_as_panels(items)
-    term_limit = DB::Option::integer(DB::Option::Key::FACET_TERM_LIMIT)
+  def facets_as_panels(items, options = {})
+    return nil unless items.facet_fields
+    term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
     panels = ''
     items.facet_fields.each do |facet|
-      panel = '<div class="panel panel-default">'
       next unless facet.terms.select{ |t| t.count > 0 }.any?
-      panel += "<div class=\"panel-heading\">
+      next if facet.field == 'kq_collection_facet' and
+          !options[:show_collection_facet]
+      panel = "<div class=\"panel panel-default\">
+      <div class=\"panel-heading\">
         <h3 class=\"panel-title\">#{facet.label}</h3>
       </div>
       <div class=\"panel-body\">
@@ -51,31 +67,42 @@ module ItemsHelper
       facet.terms.each_with_index do |term, i|
         break if i >= term_limit
         next if term.count < 1
-        term_params = params.deep_dup
-        clear_link = nil
-        if term_params[:fq] and term_params[:fq].include?(term.facet_query)
-          term_params = term.removed_from_params(term_params)
-          clear_link = link_to(term_params, class: 'kq-clear') do
-            content_tag(:i, nil, class: 'fa fa-remove')
-          end
-          term_html = "<span class=\"kq-selected-term\">#{term.name}</span>"
+        checked = (params[:fq] and params[:fq].include?(term.facet_query)) ?
+            'checked' : nil
+        checked_params = term.removed_from_params(params.deep_dup)
+        unchecked_params = term.added_to_params(params.deep_dup)
+
+        if facet.field == 'kq_collection_facet'
+          collection = Repository::Collection.find_by_key(term.name)
+          term_label = collection.title
         else
-          term_html = link_to(term.name, term.added_to_params(term_params))
+          term_label = term.label
         end
-        panel += "<li class=\"kq-term\">
-          <span class=\"kq-term-name\">#{term_html}</span>
-          <span class=\"kq-count badge\">#{term.count}</span>
-          #{clear_link}
-        </li>"
+
+        panel += "<li class=\"kq-term\">"
+        panel += "<div class=\"checkbox\">"
+        panel += "<label>"
+        panel += "<input type=\"checkbox\" name=\"psap-facet-term\" #{checked} "\
+        "data-checked-href=\"#{url_for(unchecked_params)}\" "\
+        "data-unchecked-href=\"#{url_for(checked_params)}\">"
+        panel += "<span class=\"kq-term-name\">#{term_label}</span> "
+        panel += "<span class=\"kq-count badge\">#{term.count}</span>"
+        panel += "</label>"
+        panel += "</div>"
+        panel += "</li>"
       end
       panels += panel + '</ul></div></div>'
     end
     raw(panels)
   end
 
+  ##
+  # @param describable [Describable]
+  # @return [String] HTML <i> tag
+  #
   def icon_for(describable)
     icon = 'fa-cube'
-    if describable.kind_of?(Repository::Item)
+    if describable.class.to_s == 'Repository::Item' # TODO: why doesn't describable.kind_of?(Repository::Item) work?
       if describable.is_audio?
         icon = 'fa-volume-up'
       elsif describable.is_image?
@@ -84,15 +111,19 @@ module ItemsHelper
         icon = 'fa-file-text-o'
       elsif describable.is_video?
         icon = 'fa-film'
-      elsif describable.children.any?
+      elsif describable.items.any?
         icon = 'fa-cubes'
       end
-    elsif describable.kind_of?(Repository::Collection)
+    elsif describable.class.to_s == 'Repository::Collection' or # TODO: why doesn't describable.kind_of?(Repository::Collection) work?
+        describable == Repository::Collection
       icon = 'fa-folder-open-o'
     end
     raw("<i class=\"fa #{icon}\"></i>")
   end
 
+  ##
+  # @param item [Repository::Item]
+  #
   def is_favorite?(item)
     cookies[:favorites] and cookies[:favorites].
         split(FavoritesController::COOKIE_DELIMITER).
@@ -100,51 +131,70 @@ module ItemsHelper
   end
 
   ##
-  # @param items ActiveKumquat::Entity
-  # @param start integer
-  # @param options Hash with available keys:
-  # :show_remove_from_favorites_buttons, :show_add_to_favorites_buttons,
-  # :show_collections, :show_description, :thumbnail_size
+  # @param items [ActiveMedusa::Relation]
+  # @param start [integer]
+  # @param options [Hash] with available keys:
+  # :link_to_admin (boolean), :show_remove_from_favorites_buttons (boolean),
+  # :show_add_to_favorites_buttons (boolean),
+  # :show_collections (boolean), :show_description (boolean),
+  # :thumbnail_size (integer),
+  # :thumbnail_shape (Repository::Bytestream::Shape constant)
   #
   def items_as_list(items, start, options = {})
     options[:show_description] = true unless
         options.keys.include?(:show_description)
+    options[:thumbnail_shape] = Repository::Bytestream::Shape::ORIGINAL unless
+        options.keys.include?(:thumbnail_shape)
 
     html = "<ol start=\"#{start + 1}\">"
-    items.each do |item|
+    items.each do |entity|
+      link_target = options[:link_to_admin] ?
+          admin_repository_item_path(entity) : polymorphic_path(entity)
       html += '<li>'\
         '<div>'
-      if item.kind_of?(Repository::Item)
-        html += link_to(item, class: 'kq-thumbnail-link') do
-          thumbnail_tag(item,
-                        options[:thumbnail_size] ? options[:thumbnail_size] : 256)
+      html += link_to(link_target, class: 'kq-thumbnail-link') do
+        if entity.class.to_s == 'Repository::Collection' # TODO: why does entity.kind_of?(Repository::Collection) return false?
+          media_types = "(#{Repository::Bytestream::types_with_image_derivatives.join(' OR ')})"
+          item = Repository::Item.
+              where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
+              filter(Solr::Fields::COLLECTION => entity.repository_url).
+              omit_entity_query(true).
+              facet(false).order("random_#{SecureRandom.hex}").limit(1).first
+          item ||= Repository::Collection
+        else
+          item = entity
         end
+        thumbnail_tag(item,
+                      options[:thumbnail_size] ? options[:thumbnail_size] : 256,
+                      options[:thumbnail_shape])
       end
       html += '<span class="kq-title">'
-      html += link_to(item.title, item)
-      if options[:show_remove_from_favorites_buttons]
+      html += link_to(entity.title, link_target)
+      if options[:show_remove_from_favorites_buttons] and
+          entity.kind_of?(Repository::Item)
         html += ' <button class="btn btn-xs btn-danger ' +
-            'kq-remove-from-favorites" data-web-id="' + item.web_id + '">'
+            'kq-remove-from-favorites" data-web-id="' + entity.web_id + '">'
         html += '<i class="fa fa-heart"></i> Remove'
         html += '</button>'
       end
-      if options[:show_add_to_favorites_buttons]
+      if options[:show_add_to_favorites_buttons] and
+          entity.kind_of?(Repository::Item)
         html += ' <button class="btn btn-default btn-xs ' +
-            'kq-add-to-favorites" data-web-id="' + item.web_id + '">'
+            'kq-add-to-favorites" data-web-id="' + entity.web_id + '">'
         html += '<i class="fa fa-heart-o"></i>'
         html += '</button>'
       end
       html += '</span>'
-      if options[:show_collections]
+      if options[:show_collections] and entity.class.to_s == 'Repository::Item' # TODO: why does entity.kind_of?(Repository::Item) return false?
         html += '<br>'
-        html += link_to(item.collection) do
-          raw("#{self.icon_for(item.collection)} #{item.collection.title}")
+        html += link_to(entity.collection) do
+          raw("#{self.icon_for(entity.collection)} #{entity.collection.title}")
         end
       end
       if options[:show_description]
         html += '<br>'
         html += '<span class="kq-description">'
-        html += truncate(item.description.to_s, length: 400)
+        html += truncate(entity.description.to_s, length: 400)
         html += '</span>'
       end
       html += '</div>'
@@ -155,7 +205,30 @@ module ItemsHelper
   end
 
   ##
-  # @return integer
+  # @param search_term [String]
+  # @param suggestions [Array<String>]
+  # @return [String] HTML string
+  #
+  def no_results_help(search_term, suggestions)
+    html = ''
+    if search_term.present?
+      html += "<p class=\"alert alert-warning\">Sorry, we couldn't find "\
+      "anything matching &quot;#{h(search_term)}&quot;.</p>"
+      if suggestions.any?
+        html += "<p>Did you mean:</p><ul>"
+        suggestions.each do |suggestion|
+          html += "<li>#{link_to(suggestion, { q: suggestion })}?</li>"
+        end
+        html += '</ul>'
+      end
+    else
+      html += '<p>No items.</p>'
+    end
+    raw(html)
+  end
+
+  ##
+  # @return [Integer]
   #
   def num_favorites
     cookies[:favorites] ?
@@ -163,22 +236,24 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
+  # @param item [Repository::Item]
+  # @param options [Hash] with available keys: `:link_to_admin` [Boolean]
   #
-  def pages_as_list(item)
-    return nil unless item.children.any? or item.parent
-    items = item.children.any? ? item.children : item.parent.children
+  def pages_as_list(item, options = {})
+    return nil unless item.items.any? or item.parent_item
+    items = item.items.any? ? item.items : item.parent_item.items
     html = '<ol>'
     items.each do |child|
+      link_target = options[:link_to_admin] ?
+          admin_repository_item_path(child) : repository_item_path(child)
       html += '<li><div>'
       if item == child
         html += thumbnail_tag(child, 256)
-        html += "<strong class=\"kq-text\">#{truncate(child.title, length: 40)}</strong>"
+        html += "<strong class=\"kq-text kq-title\">#{truncate(child.title, length: 40)}</strong>"
       else
-        html += link_to(child) do
-          thumbnail_tag(child, 256)
-        end
-        html += link_to(truncate(child.title, length: 40), child)
+        html += link_to(link_target) { thumbnail_tag(child, 256) }
+        html += link_to(truncate(child.title, length: 40), link_target,
+                        class: 'kq-title')
       end
       html += '</div></li>'
     end
@@ -187,10 +262,10 @@ module ItemsHelper
   end
 
   ##
-  # @param items array
-  # @param per_page integer
-  # @param current_page integer
-  # @param max_links integer (ideally odd)
+  # @param items [Array]
+  # @param per_page [Integer]
+  # @param current_page [Integer]
+  # @param max_links [Integer] (ideally odd)
   #
   def paginate(items, per_page, current_page, max_links = 9)
     return '' unless items.total_length > per_page
@@ -239,6 +314,25 @@ module ItemsHelper
     raw(html)
   end
 
+  ##
+  # Returns the status of a search or browse action, e.g. "Showing n of n
+  # items".
+  #
+  # @param items [ActiveMedusa::Relation]
+  # @param start [Integer]
+  # @param num_results_shown [Integer]
+  # @return [String]
+  #
+  def search_status(items, start, num_results_shown)
+    total = items.total_length
+    last = [total, start + num_results_shown].min
+    raw("Showing #{start + 1}&ndash;#{last} of #{total} items")
+  end
+
+  ##
+  # @param item [Repository::Item]
+  # @return [String] HTML string
+  #
   def share_button(item)
     html = '<div class="btn-group">
       <button type="button" class="btn btn-default dropdown-toggle"
@@ -249,7 +343,7 @@ module ItemsHelper
     description = item.description ? CGI::escape(item.description) : nil
     # email
     html += '<li>'
-    html += link_to("mailto:?subject=#{CGI::escape(item.title)}") do
+    html += link_to("mailto:?subject=#{item.title}&body=#{repository_item_url(item)}") do
       raw('<i class="fa fa-envelope"></i> Email')
     end
     html += '</li>'
@@ -291,29 +385,60 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
-  # @param size integer One of DerivativeManagement::STATIC_IMAGE_SIZES
+  # @param item [Repository::Item]
+  # @param limit [Integer]
+  # @return [String] HTML unordered list
   #
-  def thumbnail_tag(item, size)
-    return unless item
+  def similar_items_as_list(item, limit = 5)
+    html = ''
+    items = item.more_like_this.limit(limit)
+    if items.any?
+      html += '<ul>'
+      items.each do |item|
+        html += '<li>'
+        html += link_to(repository_item_path(item)) do
+          thumbnail_tag(item, 256, Repository::Bytestream::Shape::SQUARE)
+        end
+        html += link_to(truncate(item.title, length: 40),
+                        repository_item_path(item), class: 'kq-title')
+        html += '</li>'
+      end
+      html += '</ul>'
+    end
+    raw(html)
+  end
+
+  ##
+  # @param entity [Repository::Item] or some other object suitable for passing
+  # to `icon_for`
+  # @param size [Integer] One of the sizes in `Derivable::IMAGE_DERIVATIVES`
+  # @param shape [String] One of the `Repository::Bytestream::Shape` constants
+  #
+  def thumbnail_tag(entity, size,
+                    shape = Repository::Bytestream::Shape::ORIGINAL)
     html = "<div class=\"kq-thumbnail\">"
-    thumb_url = item.derivative_image_url(size)
-    if thumb_url
-      html += image_tag(thumb_url, alt: 'Thumbnail image')
+    if entity.class.to_s == 'Repository::Item' # TODO: why doesn't entity.kind_of?(Repository::Item) work?
+      thumb_url = entity.derivative_image_url(size, shape)
+      if thumb_url
+        html += image_tag(thumb_url, alt: 'Thumbnail image')
+      else
+        html += self.icon_for(entity)
+      end
     else
-      html += self.icon_for(item)
+      html += self.icon_for(entity)
     end
     html += '</div>'
     raw(html)
   end
 
   ##
-  # @param describable Describable
-  # @param options :full_label_info boolean
+  # @param describable [Describable]
+  # @param options [Hash] Hash with the following options: `:full_label_info`
+  # [Boolean]
   #
   def triples_to_dl(describable, options = {})
     exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
-        [Kumquat::Application::NAMESPACE_URI])
+        [Kumquat::NAMESPACE_URI])
 
     # process triples into an array of hashes, collapsing identical subjects
     triples = []
@@ -365,10 +490,10 @@ module ItemsHelper
             value += components.map{ |c| "<li>#{c.strip}</li>" }.join
             value += '</ul>'
           else
-            value = object.strip
+            value = auto_link(object.strip)
           end
         else
-          value = object.strip
+          value = auto_link(object.strip)
         end
         dl += "<dd>#{value}</dd>"
       end
@@ -378,7 +503,7 @@ module ItemsHelper
   end
 
   ##
-  # @param item Repository::Item
+  # @param item [Repository::Item]
   #
   def viewer_for(item)
     if item.is_pdf?
@@ -390,7 +515,8 @@ module ItemsHelper
     elsif item.is_text?
       # We don't provide a viewer for text as this is handled separately in
       # show-item view by reading the item's full_text property. Full text and
-      # a viewer are not mutually exclusive.
+      # a viewer are not mutually exclusive -- an image may have full text, an
+      # audio clip may have a transcript, etc.
     elsif item.is_video?
       return video_player_for(item)
     end
@@ -401,7 +527,7 @@ module ItemsHelper
 
   def audio_player_for(item)
     tag = "<audio controls>
-      <source src=\"#{item.master_bytestream.repository_url}\"
+      <source src=\"#{item.master_bytestream.public_repository_url}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the audio tag.
     </audio>"
@@ -446,7 +572,7 @@ module ItemsHelper
 
   def video_player_for(item)
     tag = "<video controls id=\"kq-video-player\">
-      <source src=\"#{item.master_bytestream.repository_url}\"
+      <source src=\"#{item.master_bytestream.public_repository_url}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the video tag.
     </video>"
@@ -463,7 +589,7 @@ module ItemsHelper
     type = MIME::Types[bytestream.media_type].first
     if type and type.friendly
       parts << type.friendly
-    else
+    elsif bytestream.media_type.present?
       parts << bytestream.media_type
     end
     if bytestream.width and bytestream.width > 0 and bytestream.height and
@@ -477,14 +603,14 @@ module ItemsHelper
   end
 
   def human_label_for_uri(describable, uri)
-    if describable.kind_of?(Repository::Item)
-      collection = describable.collection
-    else
+    if describable.class.to_s == 'Repository::Collection' # TODO: why does entity.kind_of?(Repository::Collection) return false?
       collection = describable
+    else
+      collection = describable.collection
     end
     label = nil
-    p = DB::RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
-    p = DB::RDFPredicate.where(uri: uri, collection: nil) unless p.any?
+    p = RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
+    p = RDFPredicate.where(uri: uri, collection: nil) unless p.any?
     if p.any?
       label = p.first.label # try to use the collection's custom label
       label = p.first.default_label unless label # fall back to the global label

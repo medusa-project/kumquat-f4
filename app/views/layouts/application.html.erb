@@ -2,20 +2,17 @@
 <html>
   <head>
     <title><%= yield :title %> |
-      <%= DB::Option.string(DB::Option::Key::WEBSITE_NAME) %></title>
+      <%= Option.string(Option::Key::WEBSITE_NAME) %></title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="copyright"
-          content="<%= DB::Option.string(DB::Option::Key::COPYRIGHT_STATEMENT) %>">
+          content="<%= Option.string(Option::Key::COPYRIGHT_STATEMENT) %>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
-
-    <link href='http://fonts.googleapis.com/css?family=Oswald|PT+Sans'
-          rel='stylesheet' type='text/css'>
 
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -60,11 +57,11 @@
                 <li><%= link_to "All Items (#{@num_items})", repository_items_path %></li>
                 <li class="divider"></li>
                 <li><%= link_to "Images (#{@num_images})",
-                                repository_items_path(q: 'kq_system_media_type:image/*') %></li>
+                                repository_items_path(q: "#{Solr::Fields::MEDIA_TYPE}:image/*") %></li>
                 <li><%= link_to "Videos (#{@num_videos})",
-                                repository_items_path(q: 'kq_system_media_type:video/*') %></li>
+                                repository_items_path(q: "#{Solr::Fields::MEDIA_TYPE}:video/*") %></li>
                 <li><%= link_to "Sound Recordings (#{@num_audios})",
-                                repository_items_path(q: 'kq_system_media_type:audio/*') %></li>
+                                repository_items_path(q: "#{Solr::Fields::MEDIA_TYPE}:audio/*") %></li>
               </ul>
             </li>
             <li id="favorites-nav">

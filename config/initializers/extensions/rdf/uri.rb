@@ -6,7 +6,7 @@ module RDF
   class URI
 
     def prefix
-      prefix_model = DB::URIPrefix.all.where(uri: self.prefixable).limit(1)
+      prefix_model = URIPrefix.all.where(uri: self.prefixable).limit(1)
       prefix_model.any? ? prefix_model.first.prefix : nil
     end
 

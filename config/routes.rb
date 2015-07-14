@@ -64,6 +64,7 @@ Rails.application.routes.draw do
     match '/master', to: 'items#master_bytestream', via: 'get',
           as: :master_bytestream
   end
+  match '/oai-pmh', to: 'oai_pmh#index', via: %w(get post), as: 'oai_pmh'
   match '/search', to: 'search#index', via: 'get'
   match '/search', to: 'search#search', via: 'post'
   match '/signin', to: 'sessions#new', via: 'get'
@@ -71,12 +72,20 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root 'dashboard#index'
-    resources :collections, param: :key, as: :repository_collections,
-              concerns: :publishable do
-      resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
+    resources :collections, param: :key, except: [:new, :edit],
+              as: :repository_collections, concerns: :publishable do
+      resources :rdf_predicates, path: 'rdf-predicates'
     end
     resources :collections, param: :key, as: :db_collections
-    resources :rdf_predicates, path: 'rdf-predicates', only: [:index, :create]
+    match '/items/search', to: 'items#search', via: %w(get post),
+          as: 'repository_items_search'
+    resources :items, param: :web_id, as: :repository_items, concerns: :publishable do
+      match '/full-text/clear', to: 'items#clear_full_text', via: 'patch',
+            as: 'clear_full_text'
+      match '/full-text/extract', to: 'items#extract_full_text', via: 'patch',
+            as: 'extract_full_text'
+    end
+    resources :rdf_predicates, path: 'rdf-predicates'
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',
@@ -87,8 +96,9 @@ Rails.application.routes.draw do
           via: 'get', as: 'server_search_server_status'
     match '/settings', to: 'settings#index', via: 'get'
     match '/settings', to: 'settings#update', via: 'patch'
-    resources :db_themes, controller: 'themes', path: 'themes', except: :show
-    resources :uri_prefixes, path: 'uri-prefixes', only: [:index, :create]
+    match '/tasks', to: 'tasks#index', via: 'get'
+    resources :themes, controller: :themes, path: 'themes', except: :show
+    resources :uri_prefixes, path: 'uri-prefixes'
     resources :users, param: :username do
       match '/enable', to: 'users#enable', via: 'patch', as: 'enable'
       match '/disable', to: 'users#disable', via: 'patch', as: 'disable'

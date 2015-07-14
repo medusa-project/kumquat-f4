@@ -469,7 +469,10 @@ if (typeof PDFJS === 'undefined') {
   var regex = /Android\s[0-2][^\d]/;
   var isOldAndroid = regex.test(navigator.userAgent);
 
-  if (isSafari || isOldAndroid) {
+  // Range requests are broken in Chrome 39 and 40, https://crbug.com/442318
+  var isChromeWithRangeBug = /Chrome\/(39|40)\./.test(navigator.userAgent);
+
+  if (isSafari || isOldAndroid || isChromeWithRangeBug) {
     PDFJS.disableRange = true;
     PDFJS.disableStream = true;
   }
@@ -560,5 +563,15 @@ if (typeof PDFJS === 'undefined') {
   if (isIOS || isAndroid) {
     // 5MP
     PDFJS.maxCanvasPixels = 5242880;
+  }
+})();
+
+// Disable fullscreen support for certain problematic configurations.
+// Support: IE11+ (when embedded).
+(function checkFullscreenSupport() {
+  var isEmbeddedIE = (navigator.userAgent.indexOf('Trident') >= 0 &&
+                      window.parent !== window);
+  if (isEmbeddedIE) {
+    PDFJS.disableFullscreen = true;
   }
 })();

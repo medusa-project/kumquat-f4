@@ -132,7 +132,9 @@
    <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false" />
 
    <dynamicField name="*_dt"  type="date"    indexed="true"  stored="true"/>
-   <dynamicField name="*_dts" type="date"    indexed="true"  stored="true" multiValued="true"/>
+   <dynamicField name="*_dts" type="date"    indexed="false"  stored="true"/>
+   <dynamicField name="*_dtsi" type="date"    indexed="true"  stored="true"/>
+   <dynamicField name="*_dtsim" type="date"    indexed="true"  stored="true" multiValued="true"/>
    <dynamicField name="*_p"  type="location" indexed="true" stored="true"/>
 
    <!-- some trie-coded dynamic fields for faster range queries -->

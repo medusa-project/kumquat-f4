@@ -8,8 +8,8 @@ module Solr
     CLASS = :kq_sys_class_s
     COLLECTION = :kq_sys_collection_s
     COLLECTION_KEY = :kq_sys_collection_key_s
-    CREATED_AT = :kq_sys_created_at_dts
-    DATE = :kq_meta_date_dts
+    CREATED_AT = :kq_sys_created_at_dtsi
+    DATE = :kq_meta_date_dtsi
     # each of these requires a localized label (solr_field_*)
     FACET_FIELDS = [:kq_collection_facet, :kq_contributor_facet,
                     :kq_coverage_facet, :kq_creator_facet, :kq_date_facet,
@@ -25,7 +25,7 @@ module Solr
     PUBLISHED = :kq_sys_published_b
     SEARCH_ALL = :kq_searchall_txt
     SINGLE_TITLE = :kq_meta_title_s
-    UPDATED_AT = :kq_sys_updated_at_dts
+    UPDATED_AT = :kq_sys_updated_at_dtsi
     UUID = :kq_sys_uuid_s
     WEB_ID = :kq_sys_web_id_s
     WIDTH = :kq_sys_width_i

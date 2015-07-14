@@ -1,4 +1,17 @@
 GIT
+  remote: git://github.com/medusa-project/active-medusa.git
+  revision: 736a616c9c6ac9a0d7486149097effd3ee662312
+  tag: 1.0.0
+  specs:
+    active-medusa (1.0.0)
+      activemodel
+      activesupport
+      globalid
+      rdf
+      rdf-turtle
+      rsolr
+
+GIT
   remote: git://github.com/medusa-project/httpclient.git
   revision: f676352ceaecb61ecca722b36c920c2a0bb52e8b
   specs:
@@ -12,17 +25,6 @@ GIT
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
       rails (~> 4.0)
-
-PATH
-  remote: ~/Projects/active_medusa
-  specs:
-    active-medusa (0.0.0)
-      activemodel
-      activesupport
-      globalid
-      rdf
-      rdf-turtle
-      rsolr
 
 GEM
   remote: https://rubygems.org/

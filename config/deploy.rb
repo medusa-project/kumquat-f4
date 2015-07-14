@@ -8,9 +8,9 @@ set :repo_url, 'https://github.com/medusa-project/kumquat.git'
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :home, '/services/medusa'
+set :home, '/home/kumquat'
 set :deploy_to, "#{fetch(:home)}/kumquat-capistrano"
-set :bin, "#{fetch(:home)}/kumquat-bin"
+set :bin, "#{fetch(:home)}/bin"
 # we have defined a UIUC-specific environment to keep the production
 # environment brand-free for the benefit of other users.
 set :rails_env, 'uiuc_production'

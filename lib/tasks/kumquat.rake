@@ -1,7 +1,7 @@
 namespace :kumquat do
 
   desc 'Import content from CONTENTdm'
-  task :cdm_import, [:source_path] => :environment do |task, args|
+  task :import_cdm, [:source_path] => :environment do |task, args|
     delegate = Contentdm::ImportDelegate.new(args[:source_path])
     Import::Importer.new(delegate).import
   end
@@ -12,8 +12,8 @@ namespace :kumquat do
     Import::Importer.new(delegate).import
   end
 
-  desc 'Import the sample collection'
-  task :sample_import => :environment do
+  desc 'Import the demo collections'
+  task :import_demo => :environment do
     delegate = SampleData::ImportDelegate.new
     Import::Importer.new(delegate).import
   end

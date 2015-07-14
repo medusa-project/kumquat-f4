@@ -7,10 +7,10 @@ module Admin
       begin
         @theme.save!
       rescue => e
-        flash[:error] = "#{e}"
+        flash['error'] = "#{e}"
         render 'new'
       else
-        flash[:success] = "Theme \"#{@theme.name}\" created."
+        flash['success'] = "Theme \"#{@theme.name}\" created."
         redirect_to admin_themes_url
       end
     end
@@ -20,9 +20,9 @@ module Admin
       begin
         @theme.destroy!
       rescue => e
-        flash[:error] = "#{e}"
+        flash['error'] = "#{e}"
       else
-        flash[:success] = "Theme \"#{@theme.name}\" deleted."
+        flash['success'] = "Theme \"#{@theme.name}\" deleted."
       ensure
         redirect_to admin_themes_url
       end
@@ -46,10 +46,10 @@ module Admin
         @theme.update(sanitized_params)
         @theme.save!
       rescue => e
-        flash[:error] = "#{e}"
+        flash['error'] = "#{e}"
         render 'edit'
       else
-        flash[:success] = "Theme \"#{@theme.name}\" updated."
+        flash['success'] = "Theme \"#{@theme.name}\" updated."
         redirect_to admin_themes_url
       end
     end

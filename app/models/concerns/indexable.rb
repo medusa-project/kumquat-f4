@@ -4,7 +4,7 @@ module Indexable
 
   included do
     after_save :reindex
-    after_destroy :delete_from_solr
+    after_save :delete_from_solr # TODO: this is a workaround for after_destroy not working
   end
 
   ##
@@ -42,7 +42,7 @@ module Indexable
   end
 
   def delete_from_solr
-    Solr::Solr.client.delete_by_id(self.repository_url)
+    Solr::Solr.client.delete_by_id(self.repository_url) if self.destroyed?
   end
 
   def reindex

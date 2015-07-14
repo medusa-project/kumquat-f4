@@ -24,7 +24,8 @@ module Repository
     validates :key, length: { minimum: 2, maximum: 20 }
     #validates :title, length: { minimum: 2, maximum: 200 }
 
-    after_destroy :delete_db_counterpart
+    # TODO: this is a workaround for after_destroy not working
+    after_save :delete_db_counterpart
 
     ##
     # Convenience method that deletes a collection with the given key.
@@ -94,8 +95,10 @@ module Repository
     # Deletes the corresponding database model.
     #
     def delete_db_counterpart
-      db_cp = db_counterpart
-      db_cp.destroy! if db_cp
+      if self.destroyed?
+        db_cp = db_counterpart
+        db_cp.destroy! if db_cp
+      end
     end
 
   end

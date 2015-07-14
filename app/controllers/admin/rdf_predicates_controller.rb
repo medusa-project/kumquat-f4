@@ -3,23 +3,39 @@ module Admin
   class RdfPredicatesController < ControlPanelController
 
     def create
-      @new_predicate = RDFPredicate.new(sanitized_params)
-      begin
-        @new_predicate.save!
-      rescue ActiveRecord::RecordInvalid
-        response.headers['X-Kumquat-Result'] = 'error'
-        render partial: 'shared/validation_messages',
-               locals: { entity: @new_predicate }
-      rescue => e
-        response.headers['X-Kumquat-Result'] = 'error'
-        flash['error'] = "#{e}"
-        keep_flash
-        render 'create'
-      else
-        response.headers['X-Psap-Result'] = 'success'
-        flash['success'] = "RDF predicate \"#{@new_predicate.label}\" created."
-        keep_flash
-        render 'create' # create.js.erb will reload the page
+      if params[:predicate_labels] # edit collection predicates
+        begin
+          collection = Repository::Collection.find_by_key(
+              params[:repository_collection_key])
+          db_collection = collection.db_counterpart
+          command = UpdateDBCollectionCommand.new(db_collection, params)
+          executor.execute(command)
+        rescue => e
+          flash['error'] = e.message
+        else
+          flash['success'] = 'Collection RDF predicates updated.'
+        ensure
+          redirect_to :back
+        end
+      else # create a new global predicate
+        @new_predicate = RDFPredicate.new(sanitized_params)
+        begin
+          @new_predicate.save!
+        rescue ActiveRecord::RecordInvalid
+          response.headers['X-Kumquat-Result'] = 'error'
+          render partial: 'shared/validation_messages',
+                 locals: { entity: @new_predicate }
+        rescue => e
+          response.headers['X-Kumquat-Result'] = 'error'
+          flash['error'] = "#{e}"
+          keep_flash
+          render 'create'
+        else
+          response.headers['X-Psap-Result'] = 'success'
+          flash['success'] = "RDF predicate \"#{@new_predicate.label}\" created."
+          keep_flash
+          render 'create' # create.js.erb will reload the page
+        end
       end
     end
 

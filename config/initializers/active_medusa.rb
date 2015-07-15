@@ -1,11 +1,9 @@
 ActiveMedusa::Configuration.new do |config|
-  kq_config = YAML.load_file(File.join(Rails.root, 'config', 'kumquat.yml'))[Rails.env]
-
-  config.fedora_url = kq_config[:fedora_url]
+  config.fedora_url = 'http://fedora-dev.library.illinois.edu:8080/fedora/rest/kumquat'
   config.logger = Rails.logger
   config.class_predicate = 'http://example.org/hasClass'
-  config.solr_url = kq_config[:solr_url]
-  config.solr_core = kq_config[:solr_core]
+  config.solr_url = 'http://solr-dev.library.illinois.edu:8983/solr'
+  config.solr_core = 'kumquat'
   config.solr_more_like_this_endpoint = '/mlt'
   config.solr_class_field = Solr::Fields::CLASS
   config.solr_uri_field = :id

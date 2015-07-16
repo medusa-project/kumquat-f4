@@ -6,7 +6,8 @@
   <ol class="breadcrumb">
     <li><%= link_to 'Home', root_path %></li>
     <li><%= link_to 'Collections', repository_collections_path %></li>
-    <li class="active"><%= truncate(@collection.title, length: 50) %></li>
+    <li><%= link_to truncate(@collection.title, length: 50), @collection %></li>
+    <li class="active">Items</li>
   </ol>
 <% end %>
 

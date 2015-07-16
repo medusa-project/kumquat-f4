@@ -560,7 +560,9 @@ module ItemsHelper
   end
 
   def pdf_viewer_for(item)
-    nil
+    link_to(repository_item_master_bytestream_url(item)) do
+      thumbnail_tag(item, 256)
+    end
   end
 
   def video_player_for(item)

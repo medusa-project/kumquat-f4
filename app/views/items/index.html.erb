@@ -1,15 +1,7 @@
 <% provide(:title, 'Items') %>
 <% provide(:body_id, 'items_index') %>
 
-<% case session[:browse_context] %>
-<% when ItemsController::BrowseContext::BROWSING_COLLECTION %>
-  <ol class="breadcrumb">
-    <li><%= link_to 'Home', root_path %></li>
-    <li><%= link_to 'Collections', repository_collections_path %></li>
-    <li><%= link_to truncate(@collection.title, length: 50), @collection %></li>
-    <li class="active">Items</li>
-  </ol>
-<% end %>
+<%= breadcrumb(collection: @collection, context: session[:browse_context]) %>
 
 <div class="btn-group pull-right">
   <button type="button" class="btn btn-default dropdown-toggle"

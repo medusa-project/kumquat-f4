@@ -10,6 +10,19 @@
   </ol>
 <% end %>
 
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default dropdown-toggle"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fa fa-eye"></i> <!-- also consider: fa-code, fa-binoculars -->
+    View As&hellip; <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><%= link_to 'JSON-LD', params.merge(format: :jsonld) %></li>
+    <li><%= link_to 'RDF/XML', params.merge(format: :rdfxml) %></li>
+    <li><%= link_to 'Turtle', params.merge(format: :ttl) %></li>
+  </ul>
+</div>
+
 <% if @collection %>
   <% provide(:active_nav, 'collections') %>
   <h1><%= @collection.title %>

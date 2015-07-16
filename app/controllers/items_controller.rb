@@ -42,15 +42,31 @@ class ItemsController < WebsiteController
       @items = @items.where(Solr::Fields::COLLECTION => @collection.repository_url)
     end
     # if there is no user-entered query, sort by title. Otherwise, use the
-    # default sort, which is by relevancy
+    # default sort, which is by relevance
     @items = @items.order(Solr::Fields::SINGLE_TITLE) if params[:q].blank?
     @items = @items.start(@start).limit(@limit)
     @current_page = (@start / @limit.to_f).ceil + 1 if @limit > 0 || 1
     @num_results_shown = [@limit, @items.total_length].min
 
-    # if there are no results, get some suggestions
-    if @items.total_length < 1 and params[:q].present?
-      @suggestions = Solr::Solr.new.suggestions(params[:q])
+    respond_to do |format|
+      format.html do
+        # if there are no results, get some suggestions
+        if @items.total_length < 1 and params[:q].present?
+          @suggestions = Solr::Solr.new.suggestions(params[:q])
+        end
+      end
+      format.jsonld do
+        render text: RDFWriter.new(@items, :jsonld, request.url, request.host,
+                                   request.port).to_s
+      end
+      format.rdf do
+        render text: RDFWriter.new(@items, :rdfxml, request.url, request.host,
+                                   request.port).to_s
+      end
+      format.ttl do
+        render text: RDFWriter.new(@items, :ttl, request.url, request.host,
+                                   request.port).to_s
+      end
     end
   end
 

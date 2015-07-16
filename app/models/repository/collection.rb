@@ -6,7 +6,7 @@ module Repository
     include Indexable
     include Introspection
 
-    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::COLLECTION
+    entity_class_uri 'http://pcdm.org/models#Collection'
 
     has_many :items, class_name: 'Repository::Item'
 

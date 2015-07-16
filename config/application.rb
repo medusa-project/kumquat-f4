@@ -15,10 +15,7 @@ module Kumquat
   # sense. These will be appended to NAMESPACE_URI.
   #
   class RDFObjects
-    BYTESTREAM = 'Bytestream'
-    COLLECTION = 'Collection'
     DERIVATIVE_BYTESTREAM = 'Bytestream/Type/Derivative'
-    ITEM = 'Item'
     MASTER_BYTESTREAM = 'Bytestream/Type/Master'
     ORIGINAL_SHAPE = 'Bytestream/Shape/Original'
     SQUARE_SHAPE = 'Bytestream/Shape/Square'

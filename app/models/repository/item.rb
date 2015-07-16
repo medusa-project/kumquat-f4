@@ -9,7 +9,7 @@ module Repository
 
     WEB_ID_LENGTH = 5
 
-    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ITEM
+    entity_class_uri 'http://pcdm.org/models#Object'
 
     belongs_to :collection, class_name: 'Repository::Collection',
                rdf_predicate: Kumquat::NAMESPACE_URI +

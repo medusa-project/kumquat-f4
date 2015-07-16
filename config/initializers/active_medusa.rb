@@ -1,8 +1,8 @@
 ActiveMedusa::Configuration.new do |config|
   config.fedora_url = 'http://fedora-dev.library.illinois.edu:8080/fedora/rest/kumquat'
   config.logger = Rails.logger
-  config.class_predicate = 'http://example.org/hasClass'
   config.solr_url = 'http://solr-dev.library.illinois.edu:8983/solr'
+  config.class_predicate = 'http://www.w3.org/2000/01/rdf-schema#Class'
   config.solr_core = 'kumquat'
   config.solr_more_like_this_endpoint = '/mlt'
   config.solr_class_field = Solr::Fields::CLASS

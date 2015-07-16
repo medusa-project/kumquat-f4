@@ -16,7 +16,7 @@ module Repository
       MASTER = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::MASTER_BYTESTREAM
     end
 
-    entity_class_uri Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::BYTESTREAM
+    entity_class_uri 'http://pcdm.org/models#File'
 
     belongs_to :item, class_name: 'Repository::Item',
                rdf_predicate: Kumquat::NAMESPACE_URI +

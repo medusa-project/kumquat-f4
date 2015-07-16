@@ -15,7 +15,7 @@ namespace :kumquat do
   desc 'Import the demo collections'
   task :import_demo => :environment do
     delegate = SampleData::ImportDelegate.new
-    Import::Importer.new(delegate).import
+    Import::Importer.new(delegate).import(commit: true)
   end
 
   desc 'Set the default theme'

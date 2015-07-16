@@ -30,11 +30,11 @@ module ItemsHelper
     end
     if options[:for_admin]
       json_ld_url = admin_repository_item_url(item, format: :jsonld)
-      rdf_xml_url = admin_repository_item_url(item, format: :rdf)
+      rdf_xml_url = admin_repository_item_url(item, format: :rdfxml)
       ttl_url = admin_repository_item_url(item, format: :ttl)
     else
       json_ld_url = repository_item_url(item, format: :jsonld)
-      rdf_xml_url = repository_item_url(item, format: :rdf)
+      rdf_xml_url = repository_item_url(item, format: :rdfxml)
       ttl_url = repository_item_url(item, format: :ttl)
     end
     html += '<li class="divider"></li>'

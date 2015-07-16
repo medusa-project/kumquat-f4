@@ -59,7 +59,7 @@ class ItemsController < WebsiteController
         render text: RDFWriter.new(@items, :jsonld, request.url, request.host,
                                    request.port).to_s
       end
-      format.rdf do
+      format.rdfxml do
         render text: RDFWriter.new(@items, :rdfxml, request.url, request.host,
                                    request.port).to_s
       end
@@ -87,7 +87,7 @@ class ItemsController < WebsiteController
             @item.parent_item.items : @item.items
       end
       format.jsonld { render text: @item.public_rdf_graph(uri).to_jsonld }
-      format.rdf { render text: @item.public_rdf_graph(uri).to_rdfxml }
+      format.rdfxml { render text: @item.public_rdf_graph(uri).to_rdfxml }
       format.ttl { render text: @item.public_rdf_graph(uri).to_ttl }
     end
   end

@@ -24,7 +24,7 @@ module Admin
     @keep_flash = false
 
     def can_access_control_panel
-      unless current_user.has_permission?('control_panel.access')
+      unless current_user.has_permission?(Permission::ACCESS_CONTROL_PANEL)
         flash['error'] = 'Access denied.'
         redirect_to root_url
       end

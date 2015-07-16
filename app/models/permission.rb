@@ -22,7 +22,7 @@ class Permission < ActiveRecord::Base
   validates :key, presence: true, length: { maximum: 255 },
             uniqueness: { case_sensitive: false }
 
-  CONTROL_PANEL_ACCESS = 'control_panel.access'
+  ACCESS_CONTROL_PANEL = 'control_panel.access'
   COLLECTIONS_CREATE = 'collections.create'
   COLLECTIONS_DELETE = 'collections.delete'
   COLLECTIONS_UPDATE = 'collections.update'

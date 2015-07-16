@@ -82,6 +82,10 @@ to get a conventional list of items with thumbnail on the left, title and
 description on the right.
 */
 .kq-list-results ol {
+  $max-image-height: 180px;
+  $max-image-width: 180px;
+  $icon-size: 140px;
+
   margin-left:0px;
   padding-left:0px;
   li {
@@ -93,14 +97,15 @@ description on the right.
       width: 100%;
       div.kq-thumbnail {
         float:left;
-        font-size:75px;
-        height: 140px;
+        font-size: $icon-size;
+        height: $max-image-height;
         margin-right: 20px;
         text-align: center;
-        width: 140px;
+        width: $max-image-width;
         img {
-          max-height: 140px;
-          max-width: 140px;
+          max-height: $max-image-height;
+          max-width: $max-image-width;
+          vertical-align:top;
         }
       }
       .kq-title {

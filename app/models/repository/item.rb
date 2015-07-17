@@ -111,12 +111,8 @@ module Repository
       doc[Solr::Fields::WEB_ID] =
           self.rdf_graph.any_object(kq_predicates::WEB_ID)
 
-=begin TODO: fix this
       date = self.rdf_graph.any_object(kq_predicates::DATE).to_s.strip
-      if date.present?
-        data[Solr::Fields::DATE] = DateTime.parse(date).iso8601 + 'Z'
-      end
-=end
+      doc[Solr::Fields::DATE] = normalized_date(date)
 
       Solr::Solr.client.add(doc)
     end
@@ -135,6 +131,25 @@ module Repository
         break unless self.class.find_by_web_id(proposed_id)
       end
       proposed_id
+    end
+
+    ##
+    # Tries to extract a date from an input string.
+    #
+    # @param date_str [String]
+    # @return [DateTime, nil]
+    #
+    def normalized_date(date_str)
+      if date_str.present?
+        # if the string contains a 4 digit number, assume it's a year
+        year = date_str.match(/[0-9]{4,}/)
+        if year
+          dt = DateTime.strptime(year.to_s, '%Y')
+          return dt.iso8601 + 'Z'
+          # TODO: extract months/days
+        end
+      end
+      nil
     end
 
   end

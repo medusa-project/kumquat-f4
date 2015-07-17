@@ -72,7 +72,7 @@ module Import
           parent_item = Repository::Item.find_by_uri(parent_url) if parent_url
 
           # create the item
-          item = Repository::Item.create!(
+          item = Repository::Item.new(
               collection: collection,
               parent_url: parent_url || collection.repository_url,
               parent_item: parent_item,
@@ -81,7 +81,10 @@ module Import
               web_id: @import_delegate.web_id_of_item_at_index(index),
               rdf_graph: @import_delegate.metadata_of_item_at_index(index),
               transaction_url: tx_url)
-          unless item.full_text.present?
+          media_type = @import_delegate.media_type_of_item_at_index(index)
+          item.media_type = media_type if media_type.present?
+          item.save!
+          if item.full_text.blank?
             item.extract_and_update_full_text
             item.save!
           end
@@ -101,7 +104,6 @@ module Import
                   shape: Repository::Bytestream::Shape::ORIGINAL,
                   upload_pathname: pathname,
                   transaction_url: tx_url)
-              media_type = @import_delegate.media_type_of_item_at_index(index)
               bs.media_type = media_type unless media_type.blank?
               bs.save!
               Rails.logger.debug "Created master bytestream"
@@ -118,7 +120,6 @@ module Import
                   shape: Repository::Bytestream::Shape::ORIGINAL,
                   external_resource_url: url,
                   transaction_url: tx_url)
-              media_type = @import_delegate.media_type_of_item_at_index(index)
               bs.media_type = media_type unless media_type.blank?
               bs.save!
               Rails.logger.debug "Created master bytestream URL"

@@ -28,6 +28,13 @@ module Repository
              rdf_predicate: Kumquat::NAMESPACE_URI +
                  Kumquat::RDFPredicates::FULL_TEXT,
              solr_field: Solr::Fields::FULL_TEXT
+    # The media type of the master bytestream. This duplicates the same
+    # property on the master bytestream, but it's needed in order to make Solr
+    # queries less awkward.
+    property :media_type,
+             type: :string,
+             rdf_predicate: 'http://purl.org/dc/terms/MediaType',
+             solr_field: Solr::Fields::MEDIA_TYPE
     property :page_index,
              type: :integer,
              rdf_predicate: Kumquat::NAMESPACE_URI +
@@ -95,6 +102,7 @@ module Repository
           self.rdf_graph.any_object(kq_predicates::FULL_TEXT)
       doc[Solr::Fields::ITEM] =
           self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_ITEM)
+      doc[Solr::Fields::MEDIA_TYPE] = self.media_type
       doc[Solr::Fields::PAGE_INDEX] =
           self.rdf_graph.any_object(kq_predicates::PAGE_INDEX)
       doc[Solr::Fields::PUBLISHED] =

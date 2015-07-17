@@ -23,10 +23,8 @@ class CollectionsController < WebsiteController
 
     # Get a random image item to show. Limit to displayable media types.
     media_types = Repository::Bytestream::derivable_image_types.join(' OR ')
-    @item = Repository::Item.
-        where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
-        filter(Solr::Fields::COLLECTION => @collection.repository_url).
-        omit_entity_query(true).
+    @item = @collection.items.
+        where("#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
         facet(false).order("random_#{SecureRandom.hex}").limit(1).first
   end
 

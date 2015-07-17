@@ -112,7 +112,7 @@ module Admin
           @collections = Repository::Collection.all
         end
         format.jsonld { stream(RDFStreamer.new(@items, :jsonld), 'export.json') }
-        format.rdf { stream(RDFStreamer.new(@items, :rdf), 'export.rdf') }
+        format.rdfxml { stream(RDFStreamer.new(@items, :rdf), 'export.rdf') }
         format.ttl { stream(RDFStreamer.new(@items, :ttl), 'export.ttl') }
       end
     end

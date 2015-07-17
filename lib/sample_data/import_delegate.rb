@@ -84,6 +84,7 @@ module SampleData
       collection_of_item_at_index(index).each_statement do |statement|
         graph << statement if
             !statement.predicate.to_s.start_with?(LOCAL_NAMESPACE) and
+                statement.predicate.to_s != 'http://purl.org/dc/terms/MediaType' and
                 !statement.object.to_s.blank?
       end
       graph

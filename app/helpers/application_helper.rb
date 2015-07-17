@@ -71,7 +71,7 @@ module ApplicationHelper
         html += "<li class=\"active\">#{truncate(item.title, length: 50)}</li>"\
           "</ol>"
       when ItemsController::BrowseContext::BROWSING_COLLECTION
-        html += "<ol class=\"breadcrumb\">"\
+        html = "<ol class=\"breadcrumb\">"\
           "<li>#{link_to 'Home', root_path}</li>"\
           "<li>#{link_to 'Collections', repository_collections_path}</li>"\
           "<li>#{link_to item.collection.title, item.collection}</li>"\

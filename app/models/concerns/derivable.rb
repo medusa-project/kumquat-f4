@@ -135,7 +135,6 @@ module Derivable
   # @param src [String] Path to source master video
   #
   def generate_derivatives_for_video(src)
-    generate_video_derivatives_for_video(src)
     generate_image_derivatives_for_video(src)
   end
 
@@ -191,37 +190,6 @@ module Derivable
               parent_url: self.item.repository_url,
               item: self.item,
               shape: Repository::Bytestream::Shape::SQUARE,
-              type: Repository::Bytestream::Type::DERIVATIVE,
-              transaction_url: self.transaction_url)
-        end
-      ensure
-        File.delete(upload_pathname) if File.exist?(upload_pathname)
-        tempfile.unlink
-      end
-    end
-  end
-
-  ##
-  # @param src [String] Path to source master video
-  #
-  def generate_video_derivatives_for_video(src)
-    VIDEO_DERIVATIVES.each do |profile|
-      tempfile = Tempfile.new("deriv-#{profile[:size]}")
-      upload_pathname = "#{tempfile.path}.#{profile[:extension]}"
-      begin
-        system "ffmpeg -i \"#{src}\" -loglevel fatal "\
-        "-acodec #{profile[:audio_codec]} -ab #{profile[:audio_bitrate]}k "\
-        "-c:v #{profile[:video_codec]} -b:v #{profile[:video_bitrate]}k "\
-        "-vf scale=#{profile[:size]}:-1 \"#{upload_pathname}\""
-
-        if File.exist?(upload_pathname)
-          # create a new Bytestream using the temp file as a source
-          Repository::Bytestream.create!(
-              upload_pathname: upload_pathname,
-              media_type: profile[:media_type],
-              parent_url: self.item.repository_url,
-              item: self.item,
-              shape: Repository::Bytestream::Shape::ORIGINAL,
               type: Repository::Bytestream::Type::DERIVATIVE,
               transaction_url: self.transaction_url)
         end

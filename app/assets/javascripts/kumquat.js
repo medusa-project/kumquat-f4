@@ -52,6 +52,46 @@ var Kumquat = {
 
     },
 
+    SearchBar: function() {
+
+        var ELEMENT = $('#kq-search-nav');
+        var SPEED = 200;
+        var visible = false;
+        var self = this;
+
+        construct();
+
+        function construct() {
+            // set initial position
+            ELEMENT.css('margin-top', -ELEMENT.height() -
+                $('#kq-main-nav').css('margin-bottom').replace(/px/, '') - 2);
+            ELEMENT.find('#kq-date-search-button').on('click', function() {
+
+            });
+            ELEMENT.find('#kq-place-search-button').on('click', function() {
+
+            });
+            ELEMENT.find('#kq-term-search-button').on('click', function() {
+
+            });
+        }
+
+        this.hide = function() {
+            ELEMENT.animate({ 'margin-top': '-=' + ELEMENT.height() + 'px' }, SPEED);
+            visible = false;
+        };
+
+        this.show = function() {
+            ELEMENT.animate({ 'margin-top': '+=' + ELEMENT.height() + 'px' }, SPEED);
+            visible = true;
+        };
+
+        this.toggle = function() {
+            visible ? self.hide() : self.show();
+        };
+
+    },
+
     Util: {
 
         v4UUID: function() {
@@ -84,6 +124,12 @@ var Kumquat = {
             if ($(this).val().match(/kq_/)) {
                 $(this).val(null);
             }
+        });
+
+        var search_bar = new Kumquat.SearchBar();
+        $('#search-nav').on('click', function() {
+            search_bar.toggle();
+            return false;
         });
     },
 

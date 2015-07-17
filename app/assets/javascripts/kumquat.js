@@ -78,6 +78,13 @@ var Kumquat = {
         // make the active nav bar nav active
         $('.navbar-nav li').removeClass('active');
         $('.navbar-nav li#' + $('body').attr('data-nav') + '-nav').addClass('active');
+
+        // clear kq_* text from any search fields
+        $('input[name="q"]').each(function() {
+            if ($(this).val().match(/kq_/)) {
+                $(this).val(null);
+            }
+        });
     },
 
     /**

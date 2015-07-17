@@ -164,9 +164,11 @@ module ItemsHelper
         else
           item = entity
         end
-        thumbnail_tag(item,
-                      options[:thumbnail_size] ? options[:thumbnail_size] : 256,
-                      options[:thumbnail_shape])
+        raw('<div class="kq-thumbnail">' +
+          thumbnail_tag(item,
+                        options[:thumbnail_size] ? options[:thumbnail_size] : 256,
+                        options[:thumbnail_shape]) +
+        '</div>')
       end
       html += '<span class="kq-title">'
       html += link_to(entity.title, link_target)
@@ -248,10 +250,14 @@ module ItemsHelper
           admin_repository_item_path(child) : repository_item_path(child)
       html += '<li><div>'
       if item == child
-        html += thumbnail_tag(child, 256)
+        html += raw('<div class="kq-thumbnail">' +
+            thumbnail_tag(child, 256) +
+            '</div>')
         html += "<strong class=\"kq-text kq-title\">#{truncate(child.title, length: 40)}</strong>"
       else
-        html += link_to(link_target) { thumbnail_tag(child, 256) }
+        html += link_to(link_target) do
+          raw('<div class="kq-thumbnail">' + thumbnail_tag(child, 256) + '</div>')
+        end
         html += link_to(truncate(child.title, length: 40), link_target,
                         class: 'kq-title')
       end
@@ -396,9 +402,11 @@ module ItemsHelper
       html += '<ul>'
       items.each do |item|
         html += '<li>'
+        html += '<div class="kq-thumbnail">'
         html += link_to(repository_item_path(item)) do
           thumbnail_tag(item, 256, Repository::Bytestream::Shape::SQUARE)
         end
+        html += '</div>'
         html += link_to(truncate(item.title, length: 40),
                         repository_item_path(item), class: 'kq-title')
         html += '</li>'
@@ -413,10 +421,11 @@ module ItemsHelper
   # to `icon_for`
   # @param size [Integer] One of the sizes in `Derivable::IMAGE_DERIVATIVES`
   # @param shape [String] One of the `Repository::Bytestream::Shape` constants
+  # @return [String]
   #
   def thumbnail_tag(entity, size,
                     shape = Repository::Bytestream::Shape::ORIGINAL)
-    html = "<div class=\"kq-thumbnail\">"
+    html = ''
     if entity.class.to_s == 'Repository::Item' # TODO: why doesn't entity.kind_of?(Repository::Item) work?
       thumb_url = entity.derivative_image_url(size, shape)
       if thumb_url
@@ -427,7 +436,6 @@ module ItemsHelper
     else
       html += self.icon_for(entity)
     end
-    html += '</div>'
     raw(html)
   end
 

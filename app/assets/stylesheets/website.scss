@@ -164,13 +164,11 @@ to get a grid of image tiles, flowing from left to right and downwards.
 
 body#landing, body#collections_show {
   .kq-main-image {
-    .kq-thumbnail {
-      margin-bottom: 0.3em;
-      img {
-        border: 4px solid #404040;
-        max-height: 450px;
-        max-width: 90%;
-      }
+    img {
+      border: 4px solid #404040;
+      display:block;
+      max-height: 450px;
+      max-width: 90%;
     }
     a {
       color:#606060;

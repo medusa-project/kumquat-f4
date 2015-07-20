@@ -510,6 +510,23 @@ module ItemsHelper
       triple[:objects] << statement.object.to_s if triple
     end
 
+    # sort the triples array according to the profile, putting undefined
+    # triples last
+    triples_in_order = profile.triples.order(:index)
+    triples.sort! do |a, b|
+      retval = 1
+      t1 = triples_in_order.find_by_predicate(a[:predicate])
+      if t1
+        t2 = triples_in_order.find_by_predicate(b[:predicate])
+        if t2
+          retval = t1.index <=> t2.index
+        else
+          retval = 1
+        end
+      end
+      retval
+    end
+
     dl = '<dl class="kq-triples">'
     triples.each do |struct|
       next unless struct[:objects].select{ |o| !o.strip.blank? }.any?

@@ -453,17 +453,28 @@ module ItemsHelper
   end
 
   ##
+  # Returns an HTML definition list of all triples associated with the given
+  # `Describable`, excluding any marked as not visible in the given
+  # `MetadataProfile`.
+  #
   # @param describable [Describable]
-  # @param options [Hash] Hash with the following options: `:full_label_info`
-  # [Boolean]
+  # @param options [Hash] Options hash.
+  # @option options [Boolean] :full_label_info
+  # @option options [MetadataProfile] :metadata_profile
+  # @return [String]
   #
   def triples_to_dl(describable, options = {})
     exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
         [Kumquat::NAMESPACE_URI])
+    profile = options[:metadata_profile] ||
+        MetadataProfile.find_by_default(true)
+    hidden_profile_predicates = profile.triples.where(visible: false).
+        map{ |f| f.predicate }
 
     # process triples into an array of hashes, collapsing identical subjects
     triples = []
     describable.rdf_graph.each_statement do |statement|
+      next if hidden_profile_predicates.include?(statement.predicate.to_s)
       # assemble a label for the predicate
       if options[:full_label_info]
         prefix = statement.predicate.prefix

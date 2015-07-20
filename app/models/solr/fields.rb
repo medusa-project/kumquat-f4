@@ -11,10 +11,11 @@ module Solr
     CREATED_AT = :kq_sys_created_at_dtsi
     DATE = :kq_meta_date_dtsi
     # each of these requires a localized label (solr_field_*)
-    FACET_FIELDS = [:kq_collection_facet, :kq_contributor_facet,
-                    :kq_coverage_facet, :kq_creator_facet, :kq_date_facet,
-                    :kq_format_facet, :kq_language_facet, :kq_publisher_facet,
-                    :kq_source_facet, :kq_subject_facet, :kq_type_facet]
+    DEFAULT_FACET_FIELDS = [
+        :kq_collection_facet, :kq_contributor_facet, :kq_coverage_facet,
+        :kq_creator_facet, :kq_date_facet, :kq_format_facet,
+        :kq_language_facet, :kq_publisher_facet, :kq_source_facet,
+        :kq_subject_facet, :kq_type_facet]
     FULL_TEXT = :kq_sys_full_text_txt
     HEIGHT = :kq_sys_height_i
     ID = :id

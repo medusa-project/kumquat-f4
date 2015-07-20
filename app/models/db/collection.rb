@@ -2,9 +2,10 @@ module DB
 
   class Collection < ActiveRecord::Base
 
-    has_many :rdf_predicates, class_name: 'RDFPredicate'
-    belongs_to :theme, class_name: 'Theme'
+    belongs_to :metadata_profile
+    belongs_to :theme
 
+    validates :metadata_profile, presence: true
     validates :key, length: { minimum: 2, maximum: 20 }
 
     self.table_name = 'collections'

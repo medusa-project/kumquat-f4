@@ -1,0 +1,38 @@
+<% provide :title, @profile.name %>
+<% provide :body_id, 'metadata_profiles_show' %>
+<% provide :active_nav, 'metadata' %>
+
+<ol class="breadcrumb">
+  <li><%= link_to 'Home', admin_root_path %></li>
+  <li><%= link_to 'Metadata Profiles', admin_metadata_profiles_path %></li>
+  <li class="active"><%= @profile.name %></li>
+</ol>
+
+<h1><%= @profile.name %></h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>RDF Predicate</th>
+      <th>Label</th>
+      <th>Visible</th>
+      <th>Searchable</th>
+      <th>Facetable</th>
+      <th>Solr Facet Field</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @profile.triples.order(:index).each_with_index do |triple, i| %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= triple.predicate %></td>
+        <td><%= triple.label %></td>
+        <td><%= boolean(triple.visible) %></td>
+        <td><%= boolean(triple.searchable) %></td>
+        <td><%= boolean(triple.facetable) %></td>
+        <td><%= triple.facet_field %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

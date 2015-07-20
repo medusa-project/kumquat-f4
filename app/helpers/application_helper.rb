@@ -16,6 +16,17 @@ module ApplicationHelper
   end
 
   ##
+  # Formats a boolean for display.
+  #
+  # @param boolean [Boolean]
+  # @return [String]
+  #
+  def boolean(boolean)
+    raw(boolean ? '<span class="text-success">&check;</span>' :
+            '<span class="text-danger">&times;</span>')
+  end
+
+  ##
   # @param options [Hash]
   # @option options [Repository::Collection] :collection
   # @option options [ItemsController::BrowseContext] :context

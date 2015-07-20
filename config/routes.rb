@@ -73,9 +73,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root 'dashboard#index'
     resources :collections, param: :key, except: [:new, :edit],
-              as: :repository_collections, concerns: :publishable do
-      resources :rdf_predicates, path: 'rdf-predicates'
-    end
+              as: :repository_collections, concerns: :publishable
     resources :collections, param: :key, as: :db_collections
     match '/items/search', to: 'items#search', via: %w(get post),
           as: 'repository_items_search'
@@ -85,7 +83,7 @@ Rails.application.routes.draw do
       match '/full-text/extract', to: 'items#extract_full_text', via: 'patch',
             as: 'extract_full_text'
     end
-    resources :rdf_predicates, path: 'rdf-predicates'
+    resources :metadata_profiles, path: 'metadata-profiles'
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',

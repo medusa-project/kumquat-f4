@@ -79,6 +79,8 @@ module Admin
       @collection = Repository::Collection.find_by_key(params[:key])
       raise ActiveRecord::RecordNotFound unless @collection
 
+      @metadata_profile_options_for_select = MetadataProfile.order(:name).
+          map{ |t| [ t.name, t.id ] }
       @theme_options_for_select = [[ 'None (Use Global)', nil ]] +
           Theme.order(:name).map{ |t| [ t.name, t.id ] }
     end
@@ -159,7 +161,8 @@ module Admin
     end
 
     def sanitized_db_params
-      params.require(:db_collection).permit(:id, :theme_id)
+      params.require(:db_collection).permit(:id, :metadata_profile_id,
+                                            :theme_id)
     end
 
     def sanitized_repo_params

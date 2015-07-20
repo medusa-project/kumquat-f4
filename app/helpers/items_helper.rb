@@ -48,23 +48,36 @@ module ItemsHelper
 
   ##
   # @param items [ActiveMedusa::Relation]
-  # @param options [Hash] Hash with available keys: `:show_collection_facet` (boolean)
+  # @param options [Hash] Options hash.
+  # @option options [Boolean] :show_collection_facet
+  # @option options [MetadataProfile] :metadata_profile
   #
   def facets_as_panels(items, options = {})
-    return nil unless items.facet_fields
+    return nil unless items.facet_fields # nothing to do
+
+    # get the list of facets to display from the provided metadata profile; or,
+    # if not supplied, the default profile.
+    profile = options[:metadata_profile] ||
+        MetadataProfile.where(default: true).limit(1).first
+    profile_facet_fields = profile.triples.where(facetable: true).order(:index)
+
     term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
-    panels = ''
-    items.facet_fields.each do |facet|
-      next unless facet.terms.select{ |t| t.count > 0 }.any?
-      next if facet.field == 'kq_collection_facet' and
+
+    html = ''
+    profile_facet_fields.each do |profile_facet|
+      result_facet = items.facet_fields.
+          select{ |f| f.field == profile_facet.facet_field }.first
+      next unless result_facet and
+          result_facet.terms.select{ |t| t.count > 0 }.any?
+      next if result_facet.field == 'kq_collection_facet' and
           !options[:show_collection_facet]
       panel = "<div class=\"panel panel-default\">
       <div class=\"panel-heading\">
-        <h3 class=\"panel-title\">#{facet.label}</h3>
+        <h3 class=\"panel-title\">#{profile_facet.label}</h3>
       </div>
       <div class=\"panel-body\">
         <ul>"
-      facet.terms.each_with_index do |term, i|
+      result_facet.terms.each_with_index do |term, i|
         break if i >= term_limit
         next if term.count < 1
         checked = (params[:fq] and params[:fq].include?(term.facet_query)) ?
@@ -72,7 +85,7 @@ module ItemsHelper
         checked_params = term.removed_from_params(params.deep_dup)
         unchecked_params = term.added_to_params(params.deep_dup)
 
-        if facet.field == 'kq_collection_facet'
+        if result_facet.field == 'kq_collection_facet'
           collection = Repository::Collection.find_by_key(term.name)
           term_label = collection.title
         else
@@ -91,9 +104,9 @@ module ItemsHelper
         panel += "</div>"
         panel += "</li>"
       end
-      panels += panel + '</ul></div></div>'
+      html += panel + '</ul></div></div>'
     end
-    raw(panels)
+    raw(html)
   end
 
   ##
@@ -611,14 +624,9 @@ module ItemsHelper
     else
       collection = describable.collection
     end
-    label = nil
-    p = RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
-    p = RDFPredicate.where(uri: uri, collection: nil) unless p.any?
-    if p.any?
-      label = p.first.label # try to use the collection's custom label
-      label = p.first.default_label unless label # fall back to the global label
-    end
-    label
+    triple = collection.db_counterpart.metadata_profile.triples.
+        where(predicate: uri).first
+    triple ? triple.label : nil
   end
 
 end

@@ -56,7 +56,8 @@ module Repository
     def db_counterpart
       unless @db_counterpart
         @db_counterpart = DB::Collection.find_by_key(self.key) ||
-            DB::Collection.create!(key: self.key)
+            DB::Collection.create!(key: self.key,
+                                   metadata_profile: MetadataProfile.find_by_default(true))
       end
       @db_counterpart
     end

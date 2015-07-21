@@ -23,6 +23,19 @@ module Admin
       end
     end
 
+    def destroy
+      profile = MetadataProfile.find(params[:id])
+      begin
+        profile.destroy!
+      rescue => e
+        flash['error'] = "#{e}"
+      else
+        flash['success'] = "Metadata profile \"#{profile.name}\" deleted."
+      ensure
+        redirect_to admin_metadata_profiles_url
+      end
+    end
+
     def index
       @profiles = MetadataProfile.order(:name)
       @new_profile = MetadataProfile.new

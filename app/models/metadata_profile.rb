@@ -4,4 +4,7 @@ class MetadataProfile < ActiveRecord::Base
            class_name: 'DB::Collection', dependent: :restrict_with_error
   has_many :triples, inverse_of: :metadata_profile, dependent: :destroy
 
+  validates :name, presence: true, length: { minimum: 2 },
+            uniqueness: { case_sensitive: false }
+
 end

@@ -2,6 +2,24 @@ module Admin
 
   class MetadataProfilesController < ControlPanelController
 
+    ##
+    # Responds to PATCH /admin/metadata-profiles/:id/clone
+    #
+    def clone
+      profile = MetadataProfile.find(params[:metadata_profile_id])
+      begin
+        clone = profile.dup
+        clone.name = ('Clone of ' + clone.name)[0..[clone.class.max_length(:name).to_i, 99999].max - 1]
+        clone.save!
+      rescue => e
+        flash['error'] = "#{e}"
+        redirect_to :back
+      else
+        flash['success'] = "Cloned #{profile.name} as \"#{clone.name}\"."
+        redirect_to admin_metadata_profile_path(clone)
+      end
+    end
+
     def create
       @profile = MetadataProfile.new(sanitized_params)
       begin

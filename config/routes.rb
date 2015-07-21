@@ -83,7 +83,9 @@ Rails.application.routes.draw do
       match '/full-text/extract', to: 'items#extract_full_text', via: 'patch',
             as: 'extract_full_text'
     end
-    resources :metadata_profiles, path: 'metadata-profiles'
+    resources :metadata_profiles, path: 'metadata-profiles' do
+      match '/clone', to: 'metadata_profiles#clone', via: 'patch', as: 'clone'
+    end
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',

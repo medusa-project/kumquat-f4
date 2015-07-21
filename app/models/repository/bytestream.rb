@@ -30,7 +30,7 @@ module Repository
              solr_field: Solr::Fields::HEIGHT
     property :media_type,
              type: :string,
-             rdf_predicate: 'http://purl.org/dc/terms/MediaType',
+             rdf_predicate: 'http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#hasMimeType',
              solr_field: Solr::Fields::MEDIA_TYPE
     property :shape,
              type: :anyURI,

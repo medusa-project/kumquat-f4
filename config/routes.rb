@@ -90,6 +90,8 @@ Rails.application.routes.draw do
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',
           via: 'get', as: 'server_image_server_status'
+    match '/server/reindex', to: 'server#reindex', via: 'patch',
+          as: 'server_reindex'
     match '/server/repository-status', to: 'server#repository_status',
           via: 'get', as: 'server_repository_status'
     match '/server/search-server-status', to: 'server#search_server_status',

@@ -24,6 +24,7 @@ en:
   permission_collections_create: Create Collections
   permission_collections_delete: Delete Collections
   permission_collections_update: Update Collections
+  permission_reindex: Reindex
   permission_roles_create: Create Roles
   permission_roles_delete: Delete Roles
   permission_roles_update: Update Roles

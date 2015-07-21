@@ -34,6 +34,8 @@ Permission.create!(key: 'collections.update',
                    roles: [roles[:admin], roles[:cataloger]])
 Permission.create!(key: 'control_panel.access',
                    roles: [roles[:admin], roles[:cataloger]])
+Permission.create!(key: 'reindex',
+                   roles: [roles[:admin], roles[:cataloger]])
 Permission.create!(key: 'roles.create',
                    roles: [roles[:admin]])
 Permission.create!(key: 'roles.delete',

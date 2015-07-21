@@ -34,30 +34,48 @@ module Admin
 
     def update
       @profile = MetadataProfile.find(params[:id])
-      begin
-        @profile.update(sanitized_params)
-        @profile.save!
-      rescue ActiveRecord::RecordInvalid
-        response.headers['X-Kumquat-Result'] = 'error'
-        render partial: 'shared/validation_messages',
-               locals: { entity: @profile }
-      rescue => e
-        response.headers['X-Kumquat-Result'] = 'error'
-        flash['error'] = "#{e}"
-        keep_flash
-        render 'update'
+      if request.xhr?
+        begin
+          @profile.update(sanitized_params)
+          @profile.save!
+        rescue ActiveRecord::RecordInvalid
+          response.headers['X-Kumquat-Result'] = 'error'
+          render partial: 'shared/validation_messages',
+                 locals: { entity: @profile }
+        rescue => e
+          response.headers['X-Kumquat-Result'] = 'error'
+          flash['error'] = "#{e}"
+          keep_flash
+          render 'update'
+        else
+          response.headers['X-Psap-Result'] = 'success'
+          flash['success'] = "Metadata profile \"#{@profile.name}\" updated."
+          keep_flash
+          render 'update' # update.js.erb will reload the page
+        end
       else
-        response.headers['X-Psap-Result'] = 'success'
-        flash['success'] = "Metadata profile \"#{@profile.name}\" updated."
-        keep_flash
-        render 'update' # update.js.erb will reload the page
+        begin
+          @profile.update(sanitized_params)
+          @profile.save!
+        rescue ActiveRecord::RecordInvalid
+          response.headers['X-Kumquat-Result'] = 'error'
+          render 'show'
+        rescue => e
+          response.headers['X-Kumquat-Result'] = 'error'
+          flash['error'] = "#{e}"
+          render 'show'
+        else
+          response.headers['X-Psap-Result'] = 'success'
+          flash['success'] = "Metadata profile \"#{@profile.name}\" updated."
+          redirect_to :back
+        end
       end
     end
 
     private
 
     def sanitized_params
-      params.require(:metadata_profile).permit(:name)
+      params.require(:metadata_profile).permit(:default, :name)
     end
 
   end

@@ -42,6 +42,7 @@
     <thead>
       <tr>
         <th></th>
+        <th></th>
         <th>RDF Predicate</th>
         <th>Label</th>
         <th>Visible</th>
@@ -54,6 +55,12 @@
       <% @profile.triples.order(:index).each_with_index do |triple, i| %>
         <tr>
           <td><%= i + 1 %></td>
+          <td>
+            <%= link_to 'Delete', admin_triple_path(triple),
+                        class: 'btn btn-danger btn-xs', method: :delete,
+                        data: { confirm: 'Are you sure you want to delete '\
+                        'this triple?' } %>
+          </td>
           <td><%= triple.predicate %></td>
           <td><%= triple.label %></td>
           <td><%= boolean(triple.visible) %></td>

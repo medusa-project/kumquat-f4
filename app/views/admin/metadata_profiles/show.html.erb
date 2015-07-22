@@ -27,32 +27,67 @@
 
 <h1><%= @profile.name %></h1>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <th>RDF Predicate</th>
-      <th>Label</th>
-      <th>Visible</th>
-      <th>Searchable</th>
-      <th>Facetable</th>
-      <th>Solr Facet Field</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @profile.triples.order(:index).each_with_index do |triple, i| %>
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default" data-toggle="modal"
+          data-target="#kq-add-triple-modal">
+    <i class="fa fa-plus"></i> Add Triple
+  </button>
+</div>
+
+<h2>Triples</h2>
+
+<% if @profile.triples.count > 0 %>
+
+  <table class="table table-striped">
+    <thead>
       <tr>
-        <td><%= i + 1 %></td>
-        <td><%= triple.predicate %></td>
-        <td><%= triple.label %></td>
-        <td><%= boolean(triple.visible) %></td>
-        <td><%= boolean(triple.searchable) %></td>
-        <td><%= boolean(triple.facetable) %></td>
-        <td><%= triple.facet_field %></td>
+        <th></th>
+        <th>RDF Predicate</th>
+        <th>Label</th>
+        <th>Visible</th>
+        <th>Searchable</th>
+        <th>Facetable</th>
+        <th>Solr Facet Field</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @profile.triples.order(:index).each_with_index do |triple, i| %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= triple.predicate %></td>
+          <td><%= triple.label %></td>
+          <td><%= boolean(triple.visible) %></td>
+          <td><%= boolean(triple.searchable) %></td>
+          <td><%= boolean(triple.facetable) %></td>
+          <td><%= triple.facet_field %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<% else %>
+
+  <p>This profile has no triples.</p>
+
+<% end %>
+
+<div class="modal fade" id="kq-add-triple-modal" tabindex="-1" role="dialog"
+     aria-labelledby="kq-add-triple-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="kq-add-triple-modal-label">Add Triple</h4>
+      </div>
+      <div class="modal-body">
+        <%= render partial: 'triple_form', locals: { triple: @new_triple,
+                                                     context: :new } %>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="kq-edit-profile-modal" tabindex="-1" role="dialog"
      aria-labelledby="kq-edit-profile-modal-label">

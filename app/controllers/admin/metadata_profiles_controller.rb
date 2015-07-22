@@ -61,6 +61,7 @@ module Admin
 
     def show
       @profile = MetadataProfile.find(params[:id])
+      @new_triple = Triple.new
     end
 
     def update

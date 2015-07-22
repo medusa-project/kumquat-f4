@@ -31,6 +31,7 @@ class Permission < ActiveRecord::Base
   DISABLE_USERS = 'users.disable'
   ENABLE_USERS = 'users.enable'
   PUBLISH_COLLECTIONS = 'collections.publish'
+  REINDEX = 'reindex'
   ROLES_CREATE = 'roles.create'
   ROLES_DELETE = 'roles.delete'
   ROLES_UPDATE = 'roles.update'

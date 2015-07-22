@@ -82,8 +82,8 @@
         <h4 class="modal-title" id="kq-add-triple-modal-label">Add Triple</h4>
       </div>
       <div class="modal-body">
-        <%= render partial: 'triple_form', locals: { triple: @new_triple,
-                                                     context: :new } %>
+        <%= render partial: 'admin/triples/form',
+                   locals: { triple: @new_triple, context: :new } %>
       </div>
     </div>
   </div>

@@ -67,8 +67,8 @@ module Admin
     private
 
     def sanitized_params
-      params.require(:triple).permit(:label, :metadata_profile_id, :predicate,
-                                     :searchable, :visible)
+      params.require(:triple).permit(:index, :label, :metadata_profile_id,
+                                     :predicate, :searchable, :visible)
     end
 
   end

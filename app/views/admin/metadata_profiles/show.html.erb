@@ -54,7 +54,7 @@
     <tbody>
       <% @profile.triples.order(:index).each_with_index do |triple, i| %>
         <tr>
-          <td><%= i + 1 %></td>
+          <td><%= triple.index + 1%></td>
           <td>
             <%= link_to 'Delete', admin_triple_path(triple),
                         class: 'btn btn-danger btn-xs', method: :delete,

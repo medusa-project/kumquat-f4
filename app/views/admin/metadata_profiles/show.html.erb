@@ -43,6 +43,7 @@
       <tr>
         <th></th>
         <th></th>
+        <th></th>
         <th>RDF Predicate</th>
         <th>Label</th>
         <th>Visible</th>
@@ -55,6 +56,13 @@
       <% @profile.triples.order(:index).each_with_index do |triple, i| %>
         <tr>
           <td><%= triple.index + 1%></td>
+          <td>
+            <button type="button" class="btn btn-default btn-xs kq-edit-triple"
+                    data-toggle="modal" data-target="#kq-edit-triple-modal"
+                    data-triple-id="<%= triple.id %>">
+              Edit
+            </button>
+          </td>
           <td>
             <%= link_to 'Delete', admin_triple_path(triple),
                         class: 'btn btn-danger btn-xs', method: :delete,
@@ -90,7 +98,8 @@
       </div>
       <div class="modal-body">
         <%= render partial: 'admin/triples/form',
-                   locals: { triple: @new_triple, context: :new } %>
+                   locals: { triple: @new_triple, profile: @profile,
+                             context: :new } %>
       </div>
     </div>
   </div>
@@ -109,6 +118,23 @@
       <div class="modal-body">
         <%= render partial: 'form', locals: { profile: @profile,
                                               context: :edit } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="kq-edit-triple-modal" tabindex="-1" role="dialog"
+     aria-labelledby="kq-edit-triple-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="kq-edit-triple-modal-label">Edit Triple</h4>
+      </div>
+      <div class="modal-body">
+        <% # will be populated via XHR %>
       </div>
     </div>
   </div>

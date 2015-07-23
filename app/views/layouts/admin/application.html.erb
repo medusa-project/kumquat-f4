@@ -20,6 +20,8 @@
   <body <%= !yield(:body_id).empty? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
         <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
 
+    <%= hidden_field_tag :root_url, root_url %>
+
     <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
 
       <div class="container-fluid">

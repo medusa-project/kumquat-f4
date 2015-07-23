@@ -42,15 +42,24 @@ module Admin
     ##
     # XHR only
     #
+    def edit
+      triple = Triple.find(params[:id])
+      profile = triple.metadata_profile
+      render partial: 'admin/triples/form',
+             locals: { triple: triple, profile: profile, context: :edit }
+    end
+
+    ##
+    # XHR only
+    #
     def update
-      @triple = MetadataProfile.find(params[:id])
+      triple = Triple.find(params[:id])
       begin
-        @triple.update(sanitized_params)
-        @triple.save!
+        triple.update!(sanitized_params)
       rescue ActiveRecord::RecordInvalid
         response.headers['X-Kumquat-Result'] = 'error'
         render partial: 'shared/validation_messages',
-               locals: { entity: @triple }
+               locals: { entity: triple }
       rescue => e
         response.headers['X-Kumquat-Result'] = 'error'
         flash['error'] = "#{e}"
@@ -58,7 +67,7 @@ module Admin
         render 'update'
       else
         response.headers['X-Psap-Result'] = 'success'
-        flash['success'] = "Triple \"#{@triple.label}\" updated."
+        flash['success'] = "Triple \"#{triple.label}\" updated."
         keep_flash
         render 'update' # update.js.erb will reload the page
       end

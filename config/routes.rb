@@ -100,7 +100,7 @@ Rails.application.routes.draw do
     match '/settings', to: 'settings#update', via: 'patch'
     match '/tasks', to: 'tasks#index', via: 'get'
     resources :themes, controller: :themes, path: 'themes', except: :show
-    resources :triples, only: [:create, :update, :destroy]
+    resources :triples, only: [:create, :update, :destroy, :edit]
     resources :uri_prefixes, path: 'uri-prefixes'
     resources :users, param: :username do
       match '/enable', to: 'users#enable', via: 'patch', as: 'enable'

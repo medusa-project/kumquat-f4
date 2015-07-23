@@ -1,7 +1,7 @@
 <% position_options = options_from_collection_for_select(
         [Triple.new(predicate: 'Nothing (First)', index: 0)] +
                 triple.metadata_profile.triples.order(:index),
-        :index, :predicate) %>
+        :index, :predicate, selected: triple.index ? triple.index - 1 : 0) %>
 
 <%= form_for([:admin, triple], remote: true) do |f| %>
   <div class="kq-error-messages">

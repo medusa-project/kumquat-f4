@@ -1,5 +1,6 @@
 class Triple < ActiveRecord::Base
 
+  belongs_to :facet, inverse_of: :triples
   belongs_to :metadata_profile, inverse_of: :triples
 
   after_save :adjust_profile_triple_indexes_after_save

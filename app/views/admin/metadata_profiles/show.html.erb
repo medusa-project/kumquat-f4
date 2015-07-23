@@ -48,8 +48,8 @@
         <th>Label</th>
         <th>Visible</th>
         <th>Searchable</th>
-        <th>Facetable</th>
-        <th>Solr Facet Field</th>
+        <th>Facet</th>
+        <th>Facet Label</th>
       </tr>
     </thead>
     <tbody>
@@ -73,8 +73,8 @@
           <td><%= triple.label %></td>
           <td><%= boolean(triple.visible) %></td>
           <td><%= boolean(triple.searchable) %></td>
-          <td><%= boolean(triple.facetable) %></td>
-          <td><%= triple.facet_field %></td>
+          <td><%= triple.facet %></td>
+          <td><%= triple.facet_label %></td>
         </tr>
       <% end %>
     </tbody>

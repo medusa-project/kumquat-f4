@@ -1,18 +1,18 @@
 module Admin
 
-  class TriplesController < ControlPanelController
+  class FacetsController < ControlPanelController
 
     ##
     # XHR only
     #
     def create
-      @triple = Triple.new(sanitized_params)
+      @facet = Facet.new(sanitized_params)
       begin
-        @triple.save!
+        @facet.save!
       rescue ActiveRecord::RecordInvalid
         response.headers['X-Kumquat-Result'] = 'error'
         render partial: 'shared/validation_messages',
-               locals: { entity: @triple }
+               locals: { entity: @facet }
       rescue => e
         response.headers['X-Kumquat-Result'] = 'error'
         flash['error'] = "#{e}"
@@ -20,46 +20,41 @@ module Admin
         render 'create'
       else
         response.headers['X-Psap-Result'] = 'success'
-        flash['success'] = "Triple \"#{@triple.label}\" created."
+        flash['success'] = "Facet \"#{@facet.name}\" created."
         keep_flash
         render 'create' # create.js.erb will reload the page
       end
     end
 
     def destroy
-      triple = Triple.find(params[:id])
+      facet = Facet.find(params[:id])
       begin
-        triple.destroy!
+        facet.destroy!
       rescue => e
         flash['error'] = "#{e}"
       else
-        flash['success'] = "Triple \"#{triple.label}\" deleted."
+        flash['success'] = 'Facet deleted.'
       ensure
         redirect_to :back
       end
     end
 
-    ##
-    # XHR only
-    #
-    def edit
-      triple = Triple.find(params[:id])
-      profile = triple.metadata_profile
-      render partial: 'admin/triples/form',
-             locals: { triple: triple, profile: profile, context: :edit }
+    def index
+      @facets = Facet.all.order(:index)
+      @new_facet = Facet.new
     end
 
     ##
     # XHR only
     #
     def update
-      triple = Triple.find(params[:id])
+      facet = Facet.find(params[:id])
       begin
-        triple.update!(sanitized_params)
+        facet.update!(sanitized_params)
       rescue ActiveRecord::RecordInvalid
         response.headers['X-Kumquat-Result'] = 'error'
         render partial: 'shared/validation_messages',
-               locals: { entity: triple }
+               locals: { entity: facet }
       rescue => e
         response.headers['X-Kumquat-Result'] = 'error'
         flash['error'] = "#{e}"
@@ -67,7 +62,7 @@ module Admin
         render 'update'
       else
         response.headers['X-Psap-Result'] = 'success'
-        flash['success'] = "Triple \"#{triple.label}\" updated."
+        flash['success'] = "Facet \"#{facet.name}\" updated."
         keep_flash
         render 'update' # update.js.erb will reload the page
       end
@@ -76,9 +71,7 @@ module Admin
     private
 
     def sanitized_params
-      params.require(:triple).permit(:facet_id, :facet_label, :index, :label,
-                                     :metadata_profile_id, :predicate,
-                                     :searchable, :visible)
+      params.require(:facet).permit(:index, :name, :solr_field)
     end
 
   end

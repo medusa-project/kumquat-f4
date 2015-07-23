@@ -75,6 +75,7 @@ Rails.application.routes.draw do
     resources :collections, param: :key, except: [:new, :edit],
               as: :repository_collections, concerns: :publishable
     resources :collections, param: :key, as: :db_collections
+    resources :facets
     match '/items/search', to: 'items#search', via: %w(get post),
           as: 'repository_items_search'
     resources :items, param: :web_id, as: :repository_items, concerns: :publishable do

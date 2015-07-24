@@ -6,6 +6,10 @@ class Triple < ActiveRecord::Base
   after_save :adjust_profile_triple_indexes_after_save
   after_destroy :adjust_profile_triple_indexes_after_destroy
 
+  def solr_field
+    Solr::Solr::field_name_for_predicate(self.predicate)
+  end
+
   private
 
   ##

@@ -22,7 +22,7 @@ module Solr
     # endpoint.
     #
     SCHEMA = {
-        copyFields: [
+        copyFields: [ # TODO: replace these with a "normalized fields" feature
             # Map various fields to Kumquat's own schema. The main purpose
             # of this is to normalize the DC elements and terms.
             {
@@ -308,230 +308,6 @@ module Solr
             {
                 source: 'uri_http_purl_org_dc_terms_valid_txt',
                 dest: 'kq_meta_valid_txt'
-            },
-
-            # Copy a bunch of different fields into one for easy searching
-            {
-                source: 'kq_sys_full_text_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_contributor_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_coverage_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_creator_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_description_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_format_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_identifier_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_language_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_publisher_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_relation_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_source_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_subject_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_title_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_type_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_abstract_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_alternative_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_contributor_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_coverage_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_creator_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_description_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_format_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_identifier_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_language_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_mediator_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_medium_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_provenance_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_publisher_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_rights_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_rightsHolder_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_source_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_subject_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_tableOfContents_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_title_txt',
-                dest: Fields::SEARCH_ALL
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_type_txt',
-                dest: Fields::SEARCH_ALL
-            },
-
-            # Create a string version of various fields for faceting
-            {
-                source: 'kq_sys_collection_key_s',
-                dest: 'kq_collection_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_contributor_txt',
-                dest: 'kq_contributor_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_contributor_txt',
-                dest: 'kq_contributor_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_coverage_txt',
-                dest: 'kq_coverage_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_coverage_txt',
-                dest: 'kq_coverage_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_creator_txt',
-                dest: 'kq_creator_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_creator_txt',
-                dest: 'kq_creator_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_date_txt',
-                dest: 'kq_date_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_date_txt',
-                dest: 'kq_date_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_format_txt',
-                dest: 'kq_format_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_format_txt',
-                dest: 'kq_format_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_language_txt',
-                dest: 'kq_language_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_language_txt',
-                dest: 'kq_language_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_publisher_txt',
-                dest: 'kq_publisher_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_publisher_txt',
-                dest: 'kq_publisher_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_source_txt',
-                dest: 'kq_source_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_source_txt',
-                dest: 'kq_source_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_subject_txt',
-                dest: 'kq_subject_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_subject_txt',
-                dest: 'kq_subject_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_elements_1_1_type_txt',
-                dest: 'kq_type_facet'
-            },
-            {
-                source: 'uri_http_purl_org_dc_terms_type_txt',
-                dest: 'kq_type_facet'
             }
         ],
         dynamicFields: [
@@ -550,10 +326,21 @@ module Solr
                                  '/' + Kumquat::Application.kumquat_config[:solr_core])
 
     ##
-    # @return RSolr
+    # @return [RSolr]
     #
     def self.client
       @@client
+    end
+
+    ##
+    # Gets the Solr-compatible field name for a given predicate.
+    #
+    # @param predicate [String]
+    #
+    def self.field_name_for_predicate(predicate)
+      # convert all non-alphanumerics to underscores and then replace
+      # repeating underscores with a single underscore
+      'uri_' + predicate.to_s.gsub(/[^0-9a-z ]/i, '_').gsub(/\_+/, '_') + '_txt'
     end
 
     def initialize
@@ -569,8 +356,8 @@ module Solr
     end
 
     ##
-    # @param term string Search term
-    # @return array of string suggestions
+    # @param term [String] Search term
+    # @return [Array] String suggestions
     #
     def suggestions(term)
       result = Solr::client.get('suggest', params: { q: term })
@@ -579,47 +366,63 @@ module Solr
     end
 
     ##
-    # Creates the set of fields needed by the application. For this to work,
-    # Solr must be using the ManagedIndexSchemaFactory.
+    # Creates the set of fields needed by the application. This requires
+    # Solr 5.2+ with the ManagedIndexSchemaFactory enabled.
     #
-    # @return HTTP::Message or nil if there were no fields to create
+    # @return [HTTP::Message, nil] Nil if there were no fields to create.
     #
     def update_schema
-      # http://mirrors.advancedhosters.com/apache/lucene/solr/ref-guide/apache-solr-ref-guide-5.0.pdf
-      # https://cwiki.apache.org/confluence/display/solr/Schema+API
-      # http://wiki.apache.org/solr/SchemaRESTAPI
-      # TODO: Solr 5.1 allows updating existing fields in the schema
-      # get the current list of fields
-      response = @http.get("#{@url}/schema")
-      struct = JSON.parse(response.body)
-
       # Solr will throw an error if we try to add a field that already exists,
-      # so send it only fields that don't already exist.
-      if SCHEMA[:dynamicFields]
-          dynamic_fields_to_add = SCHEMA[:dynamicFields].reject do |kf|
-              struct['schema']['dynamicFields'].
-                  map{ |sf| sf['name'] }.include?(kf[:name])
-          end
-        post_fields('add-dynamic-field', dynamic_fields_to_add)
+      # so we have to send it only fields that don't already exist.
+      response = @http.get("#{@url}/schema")
+      current = JSON.parse(response.body)
+
+      # dynamic fields
+      dynamic_fields_to_add = SCHEMA[:dynamicFields].reject do |kf|
+        current['schema']['dynamicFields'].
+            map{ |sf| sf['name'] }.include?(kf[:name])
       end
-      if SCHEMA[:fields]
-        fields_to_add = SCHEMA[:fields].reject do |kf|
-          struct['schema']['fields'].map{ |sf| sf['name'] }.include?(kf[:name])
-        end
-        post_fields('add-field', fields_to_add)
+      post_fields('add-dynamic-field', dynamic_fields_to_add)
+
+      # copy faceted triples into facet fields
+      facetable_fields = Triple.where('facet_id IS NOT NULL').
+          uniq(&:predicate).map do |t|
+        { source: self.class.field_name_for_predicate(t.predicate),
+          dest: t.facet.solr_field }
       end
-      if SCHEMA[:copyFields]
-        copy_fields_to_add = SCHEMA[:copyFields].reject do |kf|
-          struct['schema']['copyFields'].
-              map{ |sf| "#{sf['source']}-#{sf['dest']}" }.
-              include?("#{kf[:source]}-#{kf[:dest]}")
-        end
-        post_fields('add-copy-field', copy_fields_to_add)
+      facetable_fields << {
+          source: Fields::COLLECTION,
+          dest: Facet.where(name: 'Collection').first.solr_field }
+      facetable_fields_to_add = facetable_fields.reject do |ff|
+        current['schema']['copyFields'].
+            map{ |sf| "#{sf['source']}-#{sf['dest']}" }.
+            include?("#{ff[:source]}-#{ff[:dest]}")
       end
+      post_fields('add-copy-field', facetable_fields_to_add)
+
+      # copy various fields into a search-all field
+      search_all_fields_to_add = search_all_fields.reject do |ff|
+        current['schema']['copyFields'].
+            map{ |sf| "#{sf['source']}-#{sf['dest']}" }.
+            include?("#{ff[:source]}-#{ff[:dest]}")
+      end
+      post_fields('add-copy-field', search_all_fields_to_add)
+
+      # other copyFields
+      copy_fields_to_add = SCHEMA[:copyFields].reject do |kf|
+        current['schema']['copyFields'].
+            map{ |sf| "#{sf['source']}-#{sf['dest']}" }.
+            include?("#{kf[:source]}-#{kf[:dest]}")
+      end
+      post_fields('add-copy-field', copy_fields_to_add)
     end
 
     private
 
+    ##
+    # @param key [String]
+    # @param fields [Array]
+    #
     def post_fields(key, fields)
       if fields.any?
         json = JSON.generate({ key => fields })
@@ -627,10 +430,25 @@ module Solr
                              { 'Content-Type' => 'application/json' })
         message = JSON.parse(response.body)
         if message['errors']
-          puts message['errors']
-          raise 'Failed to update Solr schema'
+          raise "Failed to update Solr schema: #{message['errors']}"
         end
       end
+    end
+
+    ##
+    # Returns a list of fields that will be copied into a "search-all" field
+    # for easy searching.
+    #
+    # @return [Array] Array of strings
+    #
+    def search_all_fields
+      dest = 'kq_searchall_txt'
+      fields = Triple.all.uniq(&:predicate).map do |t|
+        { source: self.class.field_name_for_predicate(t.predicate),
+          dest: dest }
+      end
+      fields << { source: 'kq_sys_full_text_txt', dest: dest }
+      fields
     end
 
   end

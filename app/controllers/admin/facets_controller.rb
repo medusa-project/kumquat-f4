@@ -9,6 +9,7 @@ module Admin
       @facet = Facet.new(sanitized_params)
       begin
         @facet.save!
+        Solr::Solr.new.update_schema
       rescue ActiveRecord::RecordInvalid
         response.headers['X-Kumquat-Result'] = 'error'
         render partial: 'shared/validation_messages',
@@ -51,6 +52,7 @@ module Admin
       facet = Facet.find(params[:id])
       begin
         facet.update!(sanitized_params)
+        Solr::Solr.new.update_schema
       rescue ActiveRecord::RecordInvalid
         response.headers['X-Kumquat-Result'] = 'error'
         render partial: 'shared/validation_messages',

@@ -59,21 +59,24 @@ module ItemsHelper
     # if not supplied, the default profile.
     profile = options[:metadata_profile] ||
         MetadataProfile.where(default: true).limit(1).first
-    profile_facet_fields = profile.triples.where(facetable: true).order(:index)
+    virtual_collection_triple = Triple.new(facet: Facet.find_by_name('Collection'),
+                                           facet_label: 'Collection')
+    profile_facetable_triples = [virtual_collection_triple] +
+        profile.triples.where('facet_id IS NOT NULL').order(:index)
 
     term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
 
     html = ''
-    profile_facet_fields.each do |profile_facet|
+    profile_facetable_triples.each do |triple|
       result_facet = items.facet_fields.
-          select{ |f| f.field == profile_facet.facet_field }.first
+          select{ |f| f.field == triple.facet.solr_field }.first
       next unless result_facet and
           result_facet.terms.select{ |t| t.count > 0 }.any?
       next if result_facet.field == 'kq_collection_facet' and
           !options[:show_collection_facet]
       panel = "<div class=\"panel panel-default\">
       <div class=\"panel-heading\">
-        <h3 class=\"panel-title\">#{profile_facet.label}</h3>
+        <h3 class=\"panel-title\">#{triple.facet_label}</h3>
       </div>
       <div class=\"panel-body\">
         <ul>"
@@ -86,8 +89,8 @@ module ItemsHelper
         unchecked_params = term.added_to_params(params.deep_dup)
 
         if result_facet.field == 'kq_collection_facet'
-          collection = Repository::Collection.find_by_key(term.name)
-          term_label = collection.title
+          collection = Repository::Collection.find_by_uri(term.name)
+          term_label = collection.title if collection
         else
           term_label = term.label
         end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150428182435) do
+ActiveRecord::Schema.define(version: 20150723194926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,23 @@ ActiveRecord::Schema.define(version: 20150428182435) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "theme_id"
+    t.integer  "metadata_profile_id"
+  end
+
+  create_table "facets", force: :cascade do |t|
+    t.integer  "index"
+    t.string   "name"
+    t.string   "solr_field"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "metadata_profiles", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "collection_id"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.boolean  "default",       default: false
   end
 
   create_table "options", force: :cascade do |t|
@@ -39,16 +56,6 @@ ActiveRecord::Schema.define(version: 20150428182435) do
   create_table "permissions_roles", id: false, force: :cascade do |t|
     t.integer "permission_id"
     t.integer "role_id"
-  end
-
-  create_table "rdf_predicates", force: :cascade do |t|
-    t.integer  "collection_id"
-    t.string   "uri"
-    t.string   "label"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.boolean  "deletable",     default: true
-    t.string   "solr_field"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -81,6 +88,20 @@ ActiveRecord::Schema.define(version: 20150428182435) do
     t.boolean  "default",    default: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+  end
+
+  create_table "triples", force: :cascade do |t|
+    t.string   "predicate"
+    t.string   "object"
+    t.string   "label"
+    t.boolean  "searchable",          default: true
+    t.boolean  "visible",             default: true
+    t.integer  "index"
+    t.integer  "metadata_profile_id"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "facet_id"
+    t.string   "facet_label"
   end
 
   create_table "uri_prefixes", force: :cascade do |t|

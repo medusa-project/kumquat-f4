@@ -24,6 +24,7 @@ en:
   permission_collections_create: Create Collections
   permission_collections_delete: Delete Collections
   permission_collections_update: Update Collections
+  permission_reindex: Reindex
   permission_roles_create: Create Roles
   permission_roles_delete: Delete Roles
   permission_roles_update: Update Roles
@@ -35,16 +36,3 @@ en:
   permission_users_update: Update Other Users
   permission_users_update_self: Update Self
   permission_users_view: View Users
-
-  # system metadata element labels
-  solr_field_kq_collection_facet: Collection
-  solr_field_kq_contributor_facet: Contributor
-  solr_field_kq_coverage_facet: Coverage
-  solr_field_kq_creator_facet: Creator
-  solr_field_kq_date_facet: Date
-  solr_field_kq_format_facet: Format
-  solr_field_kq_language_facet: Language
-  solr_field_kq_publisher_facet: Publisher
-  solr_field_kq_source_facet: Source
-  solr_field_kq_subject_facet: Subject
-  solr_field_kq_type_facet: Type

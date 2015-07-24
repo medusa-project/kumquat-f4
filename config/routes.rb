@@ -73,10 +73,9 @@ Rails.application.routes.draw do
   namespace :admin do
     root 'dashboard#index'
     resources :collections, param: :key, except: [:new, :edit],
-              as: :repository_collections, concerns: :publishable do
-      resources :rdf_predicates, path: 'rdf-predicates'
-    end
+              as: :repository_collections, concerns: :publishable
     resources :collections, param: :key, as: :db_collections
+    resources :facets
     match '/items/search', to: 'items#search', via: %w(get post),
           as: 'repository_items_search'
     resources :items, param: :web_id, as: :repository_items, concerns: :publishable do
@@ -85,11 +84,15 @@ Rails.application.routes.draw do
       match '/full-text/extract', to: 'items#extract_full_text', via: 'patch',
             as: 'extract_full_text'
     end
-    resources :rdf_predicates, path: 'rdf-predicates'
+    resources :metadata_profiles, path: 'metadata-profiles' do
+      match '/clone', to: 'metadata_profiles#clone', via: 'patch', as: 'clone'
+    end
     resources :roles, param: :key
     match '/server', to: 'server#index', via: 'get'
     match '/server/image-server-status', to: 'server#image_server_status',
           via: 'get', as: 'server_image_server_status'
+    match '/server/reindex', to: 'server#reindex', via: 'patch',
+          as: 'server_reindex'
     match '/server/repository-status', to: 'server#repository_status',
           via: 'get', as: 'server_repository_status'
     match '/server/search-server-status', to: 'server#search_server_status',
@@ -98,6 +101,7 @@ Rails.application.routes.draw do
     match '/settings', to: 'settings#update', via: 'patch'
     match '/tasks', to: 'tasks#index', via: 'get'
     resources :themes, controller: :themes, path: 'themes', except: :show
+    resources :triples, only: [:create, :update, :destroy, :edit]
     resources :uri_prefixes, path: 'uri-prefixes'
     resources :users, param: :username do
       match '/enable', to: 'users#enable', via: 'patch', as: 'enable'

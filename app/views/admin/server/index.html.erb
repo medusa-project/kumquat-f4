@@ -67,6 +67,8 @@
           <dt>Core</dt>
           <dd><%= Kumquat::Application.kumquat_config[:solr_core] %></dd>
         </dl>
+        <%= link_to 'Reindex', admin_server_reindex_url,
+                    class: 'btn btn-warning btn-sm', method: :patch %>
       </div>
     </div>
 

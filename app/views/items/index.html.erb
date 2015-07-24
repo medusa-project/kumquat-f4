@@ -1,4 +1,3 @@
-<% provide(:title, 'Items') %>
 <% provide(:body_id, 'items_index') %>
 
 <%= breadcrumb(collection: @collection, context: session[:browse_context]) %>
@@ -17,6 +16,7 @@
 </div>
 
 <% if @collection %>
+  <% provide(:title, @collection.title) %>
   <% provide(:active_nav, 'collections') %>
   <h1><%= @collection.title %>
     <% if @collection.subtitle %>
@@ -24,6 +24,7 @@
     <% end %>
   </h1>
 <% else %>
+  <% provide(:title, 'Items') %>
   <% provide(:active_nav, 'items') %>
 <% end %>
 

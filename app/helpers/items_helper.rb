@@ -48,23 +48,39 @@ module ItemsHelper
 
   ##
   # @param items [ActiveMedusa::Relation]
-  # @param options [Hash] Hash with available keys: `:show_collection_facet` (boolean)
+  # @param options [Hash] Options hash.
+  # @option options [Boolean] :show_collection_facet
+  # @option options [MetadataProfile] :metadata_profile
   #
   def facets_as_panels(items, options = {})
-    return nil unless items.facet_fields
+    return nil unless items.facet_fields # nothing to do
+
+    # get the list of facets to display from the provided metadata profile; or,
+    # if not supplied, the default profile.
+    profile = options[:metadata_profile] ||
+        MetadataProfile.where(default: true).limit(1).first
+    virtual_collection_triple = Triple.new(facet: Facet.find_by_name('Collection'),
+                                           facet_label: 'Collection')
+    profile_facetable_triples = [virtual_collection_triple] +
+        profile.triples.where('facet_id IS NOT NULL').order(:index)
+
     term_limit = Option::integer(Option::Key::FACET_TERM_LIMIT)
-    panels = ''
-    items.facet_fields.each do |facet|
-      next unless facet.terms.select{ |t| t.count > 0 }.any?
-      next if facet.field == 'kq_collection_facet' and
+
+    html = ''
+    profile_facetable_triples.each do |triple|
+      result_facet = items.facet_fields.
+          select{ |f| f.field == triple.facet.solr_field }.first
+      next unless result_facet and
+          result_facet.terms.select{ |t| t.count > 0 }.any?
+      next if result_facet.field == 'kq_collection_facet' and
           !options[:show_collection_facet]
       panel = "<div class=\"panel panel-default\">
       <div class=\"panel-heading\">
-        <h3 class=\"panel-title\">#{facet.label}</h3>
+        <h3 class=\"panel-title\">#{triple.facet_label}</h3>
       </div>
       <div class=\"panel-body\">
         <ul>"
-      facet.terms.each_with_index do |term, i|
+      result_facet.terms.each_with_index do |term, i|
         break if i >= term_limit
         next if term.count < 1
         checked = (params[:fq] and params[:fq].include?(term.facet_query)) ?
@@ -72,9 +88,9 @@ module ItemsHelper
         checked_params = term.removed_from_params(params.deep_dup)
         unchecked_params = term.added_to_params(params.deep_dup)
 
-        if facet.field == 'kq_collection_facet'
-          collection = Repository::Collection.find_by_key(term.name)
-          term_label = collection.title
+        if result_facet.field == 'kq_collection_facet'
+          collection = Repository::Collection.find_by_uri(term.name)
+          term_label = collection.title if collection
         else
           term_label = term.label
         end
@@ -91,9 +107,9 @@ module ItemsHelper
         panel += "</div>"
         panel += "</li>"
       end
-      panels += panel + '</ul></div></div>'
+      html += panel + '</ul></div></div>'
     end
-    raw(panels)
+    raw(html)
   end
 
   ##
@@ -440,17 +456,28 @@ module ItemsHelper
   end
 
   ##
+  # Returns an HTML definition list of all triples associated with the given
+  # `Describable`, excluding any marked as not visible in the given
+  # `MetadataProfile`.
+  #
   # @param describable [Describable]
-  # @param options [Hash] Hash with the following options: `:full_label_info`
-  # [Boolean]
+  # @param options [Hash] Options hash.
+  # @option options [Boolean] :full_label_info
+  # @option options [MetadataProfile] :metadata_profile
+  # @return [String]
   #
   def triples_to_dl(describable, options = {})
     exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
         [Kumquat::NAMESPACE_URI])
+    profile = options[:metadata_profile] ||
+        MetadataProfile.find_by_default(true)
+    hidden_profile_predicates = profile.triples.where(visible: false).
+        map{ |f| f.predicate }
 
     # process triples into an array of hashes, collapsing identical subjects
     triples = []
     describable.rdf_graph.each_statement do |statement|
+      next if hidden_profile_predicates.include?(statement.predicate.to_s)
       # assemble a label for the predicate
       if options[:full_label_info]
         prefix = statement.predicate.prefix
@@ -484,6 +511,23 @@ module ItemsHelper
       triple = triples.
           select{ |t2| t2[:predicate] == statement.predicate.to_s }.first
       triple[:objects] << statement.object.to_s if triple
+    end
+
+    # sort the triples array according to the profile, putting undefined
+    # triples last
+    triples_in_order = profile.triples.order(:index)
+    triples.sort! do |a, b|
+      retval = 1
+      t1 = triples_in_order.find_by_predicate(a[:predicate])
+      if t1
+        t2 = triples_in_order.find_by_predicate(b[:predicate])
+        if t2
+          retval = t1.index <=> t2.index
+        else
+          retval = 1
+        end
+      end
+      retval
     end
 
     dl = '<dl class="kq-triples">'
@@ -611,14 +655,9 @@ module ItemsHelper
     else
       collection = describable.collection
     end
-    label = nil
-    p = RDFPredicate.where(uri: uri, collection: collection.db_counterpart)
-    p = RDFPredicate.where(uri: uri, collection: nil) unless p.any?
-    if p.any?
-      label = p.first.label # try to use the collection's custom label
-      label = p.first.default_label unless label # fall back to the global label
-    end
-    label
+    triple = collection.db_counterpart.metadata_profile.triples.
+        where(predicate: uri).first
+    triple ? triple.label : nil
   end
 
 end

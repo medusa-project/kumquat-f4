@@ -22,6 +22,7 @@
     <th>Key</th>
     <th>Published</th>
     <th>Items</th>
+    <th>Metadata Profile</th>
     <th>Theme</th>
   </thead>
   <tbody>
@@ -32,6 +33,7 @@
         <td><span class="label <%= collection.published ? 'label-success' : 'label-danger' %>">
             <%= collection.published ? 'Published' : 'Unpublished' %></span></td>
         <td><%= collection.num_items %></td>
+        <td><%= collection.db_counterpart.metadata_profile.name %></td>
         <td><%= collection.db_counterpart.theme ? collection.db_counterpart.theme.name : '' %></td>
       </tr>
     <% end %>

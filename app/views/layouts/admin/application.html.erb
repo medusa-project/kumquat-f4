@@ -20,6 +20,8 @@
   <body <%= !yield(:body_id).empty? ? raw("id=\"#{yield(:body_id)}\"") : nil %>
         <%= raw("data-nav=\"#{yield(:active_nav)}\"") %>>
 
+    <%= hidden_field_tag :root_url, root_url %>
+
     <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
 
       <div class="container-fluid">
@@ -44,11 +46,21 @@
               <ul class="dropdown-menu">
                 <li><%= link_to 'Collections', admin_repository_collections_path %></li>
                 <li><%= link_to 'Items', admin_repository_items_path %></li>
+              </ul>
+            </li>
+
+            <li class="dropdown" id="metadata-nav">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Metadata <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><%= link_to 'Profiles', admin_metadata_profiles_path %></li>
+                <li><%= link_to 'Facets', admin_facets_path %></li>
                 <li class="divider"></li>
-                <li><%= link_to 'RDF Predicates', admin_rdf_predicates_path %></li>
                 <li><%= link_to 'URI Prefixes', admin_uri_prefixes_path %></li>
               </ul>
             </li>
+
             <li class="dropdown" id="website-nav">
               <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                 Website <b class="caret"></b>

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  triple_id: 1
+  index: 1
+
+two:
+  triple_id: 1
+  index: 1

@@ -5,6 +5,9 @@ development:
   :solr_url: http://localhost:8983/solr/
   :solr_core: collection1
 
+uiuc_development:
+  <<: *development
+
 test:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
@@ -18,3 +21,6 @@ production:
   :iiif_url: http://localhost/loris/
   :solr_url: http://localhost:8983/solr/
   :solr_core: collection1
+
+uiuc_production:
+  <<: *production

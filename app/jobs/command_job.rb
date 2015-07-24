@@ -13,7 +13,8 @@ class CommandJob < Job
   def perform(args)
     self.task.status_text = args[:task_status_text]
     self.task.save!
-    command = args[:command].constantize.new(args[:args])
+    command = args[:args] ? args[:command].constantize.new(args[:args]) :
+        args[:command].constantize.new
     command.task = self.task
     executor = CommandExecutor.new
     executor.execute(command)

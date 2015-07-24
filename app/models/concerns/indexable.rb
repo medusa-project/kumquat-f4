@@ -34,7 +34,7 @@ module Indexable
       if Repository::Fedora::MANAGED_PREDICATES.select{ |p| pred.start_with?(p) or
           obj.start_with?(p) }.empty? and
           self.class.properties.map{ |p| p.rdf_predicate }.select{ |p| pred == p }.empty?
-        doc[field_name_for_predicate(pred)] = obj
+        doc[Solr::Solr::field_name_for_predicate(pred)] = obj
       end
     end
 
@@ -47,19 +47,6 @@ module Indexable
 
   def reindex
     raise 'Must implement reindex()'
-  end
-
-  private
-
-  ##
-  # Gets the Solr-compatible field name for a given predicate.
-  #
-  # @param predicate [String]
-  #
-  def field_name_for_predicate(predicate)
-    # convert all non-alphanumerics to underscores and then replace
-    # repeating underscores with a single underscore
-    'uri_' + predicate.to_s.gsub(/[^0-9a-z ]/i, '_').gsub(/\_+/, '_') + '_txt'
   end
 
 end

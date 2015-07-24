@@ -106,8 +106,8 @@ module Admin
           @num_results_shown = [@limit, @items.total_length].min
 
           # these are used by the search form
-          @predicates_for_select = RDFPredicate.order(:uri).
-              map{ |p| [ p.uri, p.solr_field ] }.uniq
+          @predicates_for_select = Triple.order(:predicate).
+              map{ |p| [p.predicate, Solr::Solr::field_name_for_predicate(p.predicate) ] }.uniq
           @predicates_for_select.unshift([ 'Any Triple', Solr::Fields::SEARCH_ALL ])
           @collections = Repository::Collection.all
         end

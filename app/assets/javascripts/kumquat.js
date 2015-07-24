@@ -54,7 +54,7 @@ var Kumquat = {
 
     SearchBar: function() {
 
-        var ELEMENT = $('#kq-search-nav');
+        var ELEMENT = $('#kq-search-accordion');
         var SPEED = 200;
         var visible = false;
         var self = this;
@@ -63,26 +63,23 @@ var Kumquat = {
 
         function construct() {
             // set initial position
-            ELEMENT.css('margin-top', -ELEMENT.height() -
-                $('#kq-main-nav').css('margin-bottom').replace(/px/, '') - 2);
-            ELEMENT.find('#kq-date-search-button').on('click', function() {
-
-            });
-            ELEMENT.find('#kq-place-search-button').on('click', function() {
-
-            });
-            ELEMENT.find('#kq-term-search-button').on('click', function() {
-
-            });
+            ELEMENT.css('margin-top', 0 - height() -
+                parseFloat($('#kq-main-nav').css('margin-bottom').replace(/px/, '')) - 2);
         }
 
+        function height() {
+            return ELEMENT.height() +
+                parseFloat(ELEMENT.css('padding-bottom').replace(/px/, '')) +
+                parseFloat(ELEMENT.css('padding-top').replace(/px/, ''));
+        };
+
         this.hide = function() {
-            ELEMENT.animate({ 'margin-top': '-=' + ELEMENT.height() + 'px' }, SPEED);
+            ELEMENT.animate({ 'margin-top': '-=' + height() + 'px' }, SPEED);
             visible = false;
         };
 
         this.show = function() {
-            ELEMENT.animate({ 'margin-top': '+=' + ELEMENT.height() + 'px' }, SPEED);
+            ELEMENT.animate({ 'margin-top': '+=' + height() + 'px' }, SPEED);
             visible = true;
         };
 

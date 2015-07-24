@@ -53,6 +53,11 @@ h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .b
   font-family: 'PT Sans', sans-serif;
 }
 
+#kq-main-nav {
+  position: relative;
+  z-index: 10;
+}
+
 form.kq-quick-search {
   width: 18em;
   .input-group {
@@ -60,8 +65,9 @@ form.kq-quick-search {
   }
 }
 
-#kq-search-nav {
-  z-index: -1;
+#kq-search-accordion {
+  margin-bottom:1em;
+  padding: 1em;
 }
 
 /*

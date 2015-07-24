@@ -448,6 +448,8 @@ URIPrefix.create!(prefix: 'dc',
                   uri: 'http://purl.org/dc/elements/1.1/')
 URIPrefix.create!(prefix: 'dcterms',
                   uri: 'http://purl.org/dc/terms/')
+URIPrefix.create!(prefix: 'ebucore',
+                  uri: 'http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#')
 URIPrefix.create!(prefix: 'foaf',
                   uri: 'http://xmlns.com/foaf/0.1/')
 URIPrefix.create!(prefix: 'iana',

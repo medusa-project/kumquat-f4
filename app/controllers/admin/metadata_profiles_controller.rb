@@ -68,8 +68,7 @@ module Admin
       @profile = MetadataProfile.find(params[:id])
       if request.xhr?
         begin
-          @profile.update(sanitized_params)
-          @profile.save!
+          @profile.update!(sanitized_params)
         rescue ActiveRecord::RecordInvalid
           response.headers['X-Kumquat-Result'] = 'error'
           render partial: 'shared/validation_messages',
@@ -87,8 +86,7 @@ module Admin
         end
       else
         begin
-          @profile.update(sanitized_params)
-          @profile.save!
+          @profile.update!(sanitized_params)
         rescue ActiveRecord::RecordInvalid
           response.headers['X-Kumquat-Result'] = 'error'
           render 'show'

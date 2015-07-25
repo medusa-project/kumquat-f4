@@ -2,9 +2,9 @@
 
   <ul class="nav nav-pills nav-justified" role="tablist">
     <li role="presentation" class="active">
-      <a href="#kq-term-search" aria-controls="kq-term-search"
-         id="kq-term-search-button" data-toggle="tab">
-        <span class="fa fa-terminal"></span> Term
+      <a href="#kq-text-search" aria-controls="kq-text-search"
+         id="kq-text-search-button" data-toggle="tab">
+        <span class="fa fa-terminal"></span> Text
       </a>
     </li>
     <li role="presentation">
@@ -21,26 +21,70 @@
     </li>
   </ul>
 
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="kq-term-search">
-      <p>Term search</p>
-      <p>Term search</p>
-      <p>Term search</p>
-      <p>Term search</p>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="kq-date-search">
-      <p>Date search</p>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="kq-place-search">
-      <p>Place search</p>
-    </div>
-  </div>
+  <%= form_tag(controller: 'items', action: 'search', method: :post) do %>
 
-</div>
+    <div class="row">
 
+      <div class="col-sm-8">
 
+        <div class="tab-content">
 
-<!--
+          <div role="tabpanel" class="tab-pane active" id="kq-text-search">
+            <div class="form-group form-inline">
+              <%= select_tag 'fields[]', options_for_select(@predicates_for_select),
+                             class: 'form-control' %>
+              <%= text_field_tag 'terms[]', '', placeholder: 'Search Term',
+                                 class: 'form-control' %>
+            </div>
+            <%= submit_tag 'Search', class: 'btn btn-lg btn-primary' %>
+          </div>
+
+          <div role="tabpanel" class="tab-pane" id="kq-date-search">
+            <p>Not available yet.</p>
+          </div>
+
+          <div role="tabpanel" class="tab-pane" id="kq-place-search">
+            <div class="row">
+              <div class="col-sm-6">
+                <div style="width:400px; height: 250px; background-color: black;
+                        border: 1px dotted white; text-align:center; vertical-align:middle;
+                        display: table-cell; font-size:2.5em; color: #808080;">Map goes here</div>
+              </div>
+              <div class="col-sm-6">
+                <p>This is a placeholder pane for a hypothetical spatial search
+                  component. This component will depend on specially-encoded item-level geodata,
+                  which does not yet exist, and would presumably use Solr geospatial search
+                  features in conjunction with something like the Google Maps API.</p>
+                <button class="btn btn-lg btn-primary" onclick="alert('Patience!')">Search</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-sm-4 kq-collections">
+        <button type="button" class="btn btn-xs btn-default kq-check-all">Check All</button>
+        <button type="button" class="btn btn-xs btn-default kq-uncheck-all">Uncheck All</button>
+        <ol>
+          <% @collections.each do |collection| %>
+            <li>
+              <div class="checkbox">
+                <label><%= check_box_tag('keys[]', collection.key, checked: true) %><%= collection.title %></label>
+              </div>
+            </li>
+          <% end %>
+        </ol>
+      </div>
+
+    </div> <!-- .row -->
+
+  <% end %>
+
+</div> <!-- #kq-search-accordion -->
+
+  <!--
 <form method="get" action="<%= repository_items_path %>"
       class="navbar-form navbar-right kq-quick-search" role="search">
   <div class="input-group">

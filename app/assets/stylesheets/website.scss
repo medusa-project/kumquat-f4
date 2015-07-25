@@ -54,6 +54,7 @@ h2, h3, h4, h5, h6, dt, .navbar-header a, #kq-navbar-collapse a, .breadcrumb, .b
 }
 
 #kq-main-nav {
+  border-radius: 0px;
   position: relative;
   z-index: 10;
 }
@@ -67,7 +68,35 @@ form.kq-quick-search {
 
 #kq-search-accordion {
   margin-bottom:1em;
-  padding: 1em;
+  padding: 2em;
+
+  > form > .row > .col-sm-4 {
+    padding: 1em;
+  }
+
+  #kq-text-search {
+    input[type=text] {
+      width: 50%;
+    }
+    select {
+      width: 40%;
+    }
+  }
+
+  .panel-body {
+    max-height:50em;
+    overflow-y: scroll;
+  }
+  .kq-fields .form-group:first-child .kq-remove-field {
+    display:none;
+  }
+  .kq-collections {
+    ol {
+      list-style:none;
+      margin-left:0px;
+      padding-left:0px;
+    }
+  }
 }
 
 /*

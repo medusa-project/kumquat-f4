@@ -17,6 +17,12 @@ class WebsiteController < ApplicationController
     @num_videos = Repository::Item.
         where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:video/*").
         omit_entity_query(true).facet(false).limit(1).count
+
+    # data for the nav bar search
+    @collections = Repository::Collection.all
+    @predicates_for_select = Triple.order(:label).
+        map{ |p| [ p.label, p.solr_field ] }.uniq
+    @predicates_for_select.unshift([ 'Any Field', Solr::Fields::SEARCH_ALL ])
   end
 
   private

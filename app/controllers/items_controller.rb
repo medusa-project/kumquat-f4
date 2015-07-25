@@ -70,6 +70,35 @@ class ItemsController < WebsiteController
     end
   end
 
+  ##
+  # Responds to POST /search. Translates the input from the advanced search
+  # form into a query string compatible with ItemsController.index, and
+  # 302-redirects to it.
+  #
+  def search
+    where_clauses = []
+
+    # fields
+    if params[:fields].any?
+      params[:fields].each_with_index do |field, index|
+        if params[:terms].length > index and !params[:terms][index].blank?
+          where_clauses << "#{field}:#{params[:terms][index]}"
+        end
+      end
+    end
+
+    # collections
+    keys = []
+    if params[:keys].any?
+      keys = params[:keys].select{ |k| !k.blank? }
+    end
+    if keys.any? and keys.length < Repository::Collection.all.length
+      where_clauses << "#{Solr::Fields::COLLECTION_KEY}:+(#{keys.join(' ')})"
+    end
+
+    redirect_to repository_items_path(q: where_clauses.join(' AND '))
+  end
+
   def show
     begin
       @item = Repository::Item.find_by_web_id(params[:web_id])

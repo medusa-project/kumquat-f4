@@ -16,9 +16,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'active-medusa', path: '~/Projects/active_medusa'
 #gem 'active-medusa', github: 'medusa-project/active-medusa', tag: '1.0.0'
-gem 'backburner'
 gem 'bcrypt', '~> 3.1.7' # Use ActiveModel has_secure_password
 gem 'bootstrap-sass', '~> 3.3.4.1'
+gem 'delayed_job_active_record'
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'httpclient', git: 'git://github.com/medusa-project/httpclient.git'
 gem 'jquery-cookie-rails'

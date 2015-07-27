@@ -28,5 +28,8 @@ ActiveMedusa::Configuration.new do |config|
   config.solr_uri_field = :id
   config.solr_uuid_field = Solr::Fields::UUID
   config.solr_default_search_field = Solr::Fields::SEARCH_ALL
-  config.solr_default_facetable_fields = Facet.all.map{ |f| f.solr_field }
+  # Facet will be undefined if the database has not yet been seeded
+  if defined?(Facet) == 'constant' and Facet.class == Facet
+    config.solr_default_facetable_fields = Facet.all.map{ |f| f.solr_field }
+  end
 end

@@ -62,9 +62,11 @@ var Kumquat = {
         construct();
 
         function construct() {
-            // set initial position
-            ELEMENT.css('margin-top', 0 - height() -
-                parseFloat($('#kq-main-nav').css('margin-bottom').replace(/px/, '')) - 2);
+            if (ELEMENT.length) {
+                // set initial position
+                ELEMENT.css('margin-top', 0 - height() -
+                    parseFloat($('#kq-main-nav').css('margin-bottom').replace(/px/, '')) - 2);
+            }
         }
 
         function height() {

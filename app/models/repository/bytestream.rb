@@ -81,6 +81,16 @@ module Repository
       self.rdf_graph.any_object('http://www.loc.gov/premis/rdf/v1#hasSize').to_i
     end
 
+    ##
+    # Returns the PREMIS filename. Not available until the instance has been
+    # persisted.
+    #
+    # @return [String]
+    #
+    def filename
+      self.rdf_graph.any_object('http://www.loc.gov/premis/rdf/v1#hasOriginalName').to_s
+    end
+
     def guess_media_type
       type = nil
       if self.upload_pathname and File.exist?(self.upload_pathname)
@@ -109,11 +119,6 @@ module Repository
 
     def is_video?
       self.media_type and self.media_type.start_with?('video/')
-    end
-
-    def public_repository_url
-      self.repository_url.gsub(ActiveMedusa::Configuration.instance.fedora_url,
-                               Kumquat::Application.kumquat_config[:public_fedora_url])
     end
 
     ##

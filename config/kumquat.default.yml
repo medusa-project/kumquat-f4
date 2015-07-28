@@ -1,6 +1,5 @@
 development:
   :fedora_url: http://localhost:8080/fedora/rest/
-  :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
   # should match `source_prefix` in loris2.conf
   :iiif_fedora_url: http://localhost:8080/fedora/rest/
@@ -12,7 +11,6 @@ uiuc_development:
 
 test:
   :fedora_url: http://localhost:8080/fedora/rest/
-  :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
   # should match `source_prefix` in loris2.conf
   :iiif_fedora_url: http://localhost:8080/fedora/rest/
@@ -21,7 +19,6 @@ test:
 
 production:
   :fedora_url: http://localhost:8080/fedora/rest/
-  :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
   # should match `source_prefix` in loris2.conf
   :iiif_fedora_url: http://localhost:8080/fedora/rest/

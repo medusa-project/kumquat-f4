@@ -22,7 +22,7 @@ module ItemsHelper
       html += '<li class="divider"></li>'
       derivatives.each do |bs|
         html += '<li>'
-        html += link_to(bs.public_repository_url) do
+        html += link_to(bytestream_url(bs)) do
           download_label_for_bytestream(bs)
         end
         html += '</li>'
@@ -396,7 +396,7 @@ module ItemsHelper
     html += '</li>'
     # pinterest
     html += '<li>'
-    html += link_to("http://pinterest.com/pin/create/button/?url=#{CGI::escape(repository_item_url(item))}&media=#{CGI::escape(item.derivative_image_url(512).to_s)}&description=#{CGI::escape(item.title)}") do
+    html += link_to("http://pinterest.com/pin/create/button/?url=#{CGI::escape(repository_item_url(item))}&media=#{CGI::escape(bytestream_url(item.derivative_image(512)))}&description=#{CGI::escape(item.title)}") do
       raw('<i class="fa fa-pinterest-square"></i> Pinterest')
     end
     html += '</li>'
@@ -443,11 +443,11 @@ module ItemsHelper
                     shape = Repository::Bytestream::Shape::ORIGINAL)
     html = ''
     if entity.class.to_s == 'Repository::Item' # TODO: why doesn't entity.kind_of?(Repository::Item) work?
-      thumb_url = entity.derivative_image_url(size, shape)
-      if thumb_url
+      bs = entity.derivative_image(size, shape)
+      if bs
         # no alt because it may appear in a huge font size if the image is 404
         # for some reason
-        html += image_tag(thumb_url, alt: '')
+        html += image_tag(bytestream_url(bs), alt: '')
       else
         html += self.icon_for(entity)
       end
@@ -581,7 +581,7 @@ module ItemsHelper
 
   def audio_player_for(item)
     tag = "<audio controls>
-      <source src=\"#{item.master_bytestream.public_repository_url}\"
+      <source src=\"#{bytestream_url(item.master_bytestream)}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the audio tag.
     </audio>"
@@ -621,7 +621,7 @@ module ItemsHelper
 
   def video_player_for(item)
     tag = "<video controls id=\"kq-video-player\">
-      <source src=\"#{item.master_bytestream.public_repository_url}\"
+      <source src=\"#{bytestream_url(item.master_bytestream)}\"
               type=\"#{item.master_bytestream.media_type}\">
         Your browser does not support the video tag.
     </video>"

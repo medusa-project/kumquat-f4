@@ -56,6 +56,7 @@ Rails.application.routes.draw do
 
   match '/auth/:provider/callback', to: 'sessions#create', via: [:get, :post],
         as: :auth # used by omniauth
+  resources :bytestreams, only: :show
   resources :collections, param: :key, only: [:index, :show], as: :repository_collections do
     resources 'items', only: :index
   end

@@ -5,16 +5,15 @@ module BytestreamOwner
   #
   # @param size [Integer] One of the sizes in `IMAGE_DERIVATIVES`
   # @param shape [String] One of the `Repository::Bytestream::Shape` constants
-  # @return [String]
+  # @return [Repository::Bytestream, nil]
   #
-  def derivative_image_url(size, shape = Repository::Bytestream::Shape::ORIGINAL)
+  def derivative_image(size, shape = Repository::Bytestream::Shape::ORIGINAL)
     q = "("\
       "(#{Solr::Fields::WIDTH}:#{size} AND #{Solr::Fields::HEIGHT}:[* TO #{size}]) "\
       "OR (#{Solr::Fields::HEIGHT}:#{size} AND #{Solr::Fields::WIDTH}:[* TO #{size}])"\
       ") "\
       "AND #{Solr::Fields::BYTESTREAM_SHAPE}:\"#{shape}\""
-    bs = self.bytestreams.where(q).limit(1).first
-    bs ? bs.public_repository_url : nil
+    self.bytestreams.where(q).limit(1).first
   end
 
   def is_audio?

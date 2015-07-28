@@ -13,7 +13,7 @@ module ImageServing
       bs = self.master_image
       if bs
         config = Kumquat::Application.kumquat_config
-        bs_path = bs.repository_url.gsub(config[:fedora_url], '').chomp('/')
+        bs_path = bs.repository_url.gsub(config[:iiif_fedora_url], '').chomp('/')
         iiif_url = config[:iiif_url].chomp('/')
         url = "#{iiif_url}/#{bs_path}"
       end

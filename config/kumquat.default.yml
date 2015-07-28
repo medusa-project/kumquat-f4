@@ -2,6 +2,8 @@ development:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
+  # should match `source_prefix` in loris2.conf
+  :iiif_fedora_url: http://localhost:8080/fedora/rest/
   :solr_url: http://localhost:8983/solr/
   :solr_core: collection1
 
@@ -12,6 +14,8 @@ test:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
+  # should match `source_prefix` in loris2.conf
+  :iiif_fedora_url: http://localhost:8080/fedora/rest/
   :solr_url: http://localhost:8983/solr/
   :solr_core: collection1
 
@@ -19,6 +23,8 @@ production:
   :fedora_url: http://localhost:8080/fedora/rest/
   :public_fedora_url: http://localhost:8080/fedora/rest/
   :iiif_url: http://localhost/loris/
+  # should match `source_prefix` in loris2.conf
+  :iiif_fedora_url: http://localhost:8080/fedora/rest/
   :solr_url: http://localhost:8983/solr/
   :solr_core: collection1
 

@@ -445,7 +445,9 @@ module ItemsHelper
     if entity.class.to_s == 'Repository::Item' # TODO: why doesn't entity.kind_of?(Repository::Item) work?
       thumb_url = entity.derivative_image_url(size, shape)
       if thumb_url
-        html += image_tag(thumb_url, alt: 'Thumbnail image')
+        # no alt because it may appear in a huge font size if the image is 404
+        # for some reason
+        html += image_tag(thumb_url, alt: '')
       else
         html += self.icon_for(entity)
       end

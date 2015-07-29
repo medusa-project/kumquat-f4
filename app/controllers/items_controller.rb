@@ -14,19 +14,10 @@ class ItemsController < WebsiteController
   #
   # Responds to GET /items/:web_id/master
   #
-  def master_bytestream # TODO: replace with BytestreamsController.show
+  def master_bytestream
     @item = Repository::Item.find_by_web_id(params[:repository_item_web_id])
     raise ActiveRecord::RecordNotFound, 'Item not found' unless @item
-
-    bs = @item.master_bytestream
-    if bs and bs.repository_url
-      options = {}
-      options[:type] = bs.media_type if bs.media_type
-      options[:filename] = bs.filename if bs.filename
-      send_file(open(bs.repository_url), options)
-    else
-      render text: '404 Not Found', status: 404
-    end
+    redirect_to bytestream_url(@item.master_bytestream)
   end
 
   def index

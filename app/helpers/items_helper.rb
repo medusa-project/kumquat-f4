@@ -395,8 +395,11 @@ module ItemsHelper
     end
     html += '</li>'
     # pinterest
+    url = "http://pinterest.com/pin/create/button/?url=#{CGI::escape(repository_item_url(item))}&description=#{CGI::escape(item.title)}"
+    bs = item.derivative_image(512)
+    url += "&media=#{CGI::escape(bytestream_url(bs))}" if bs
     html += '<li>'
-    html += link_to("http://pinterest.com/pin/create/button/?url=#{CGI::escape(repository_item_url(item))}&media=#{CGI::escape(bytestream_url(item.derivative_image(512)))}&description=#{CGI::escape(item.title)}") do
+    html += link_to(url) do
       raw('<i class="fa fa-pinterest-square"></i> Pinterest')
     end
     html += '</li>'

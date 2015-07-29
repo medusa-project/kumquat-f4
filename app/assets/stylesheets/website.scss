@@ -68,10 +68,14 @@ form.kq-quick-search {
 
 #kq-search-accordion {
   margin-bottom:1em;
-  padding: 2em;
+  overflow:hidden;
 
-  > form > .row > .col-sm-4 {
-    padding: 1em;
+  > div {
+    padding: 1.5em;
+  }
+
+  .nav-pills {
+    margin-bottom: 1em;
   }
 
   #kq-text-search {

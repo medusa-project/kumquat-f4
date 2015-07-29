@@ -56,6 +56,9 @@ var Kumquat = {
 
         var ELEMENT = $('#kq-search-accordion');
         var SPEED = 200;
+        var computed_height = ELEMENT.height();
+        var vertical_padding = parseFloat(ELEMENT.css('padding-top').replace(/px/, '')) +
+            parseFloat(ELEMENT.css('padding-bottom').replace(/px/, '')) + 50;
         var visible = false;
         var self = this;
 
@@ -63,25 +66,19 @@ var Kumquat = {
 
         function construct() {
             if (ELEMENT.length) {
-                // set initial position
-                ELEMENT.css('margin-top', 0 - height() -
-                    parseFloat($('#kq-main-nav').css('margin-bottom').replace(/px/, '')) - 2);
+                ELEMENT.css('margin-top',
+                    '-' + $('#kq-main-nav').css('margin-bottom'));
+                ELEMENT.css('height', 0);
             }
         }
 
-        function height() {
-            return ELEMENT.height() +
-                parseFloat(ELEMENT.css('padding-bottom').replace(/px/, '')) +
-                parseFloat(ELEMENT.css('padding-top').replace(/px/, ''));
-        };
-
         this.hide = function() {
-            ELEMENT.animate({ 'margin-top': '-=' + height() + 'px' }, SPEED);
+            ELEMENT.animate({ 'height': '-=' + (computed_height + vertical_padding) + 'px' }, SPEED);
             visible = false;
         };
 
         this.show = function() {
-            ELEMENT.animate({ 'margin-top': '+=' + height() + 'px' }, SPEED);
+            ELEMENT.animate({ 'height': '+=' + (computed_height + vertical_padding) + 'px' }, SPEED);
             visible = true;
         };
 

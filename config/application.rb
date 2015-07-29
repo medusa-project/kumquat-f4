@@ -71,5 +71,12 @@ module Kumquat
     # TODO: why is this necessary? Without it, sometimes the following occurs:
     # Repository::Collection.db_counterpart: A copy of Repository::Collection has been removed from the module tree but is still active!
     config.autoload_once_paths << File.join(Rails.root, 'app/models')
+
+    config.after_initialize do
+      # the rest of the ActiveMedusa configuration is in
+      # config/initializers/active_medusa.rb
+      ActiveMedusa::Configuration.instance.solr_default_facetable_fields =
+          Facet.all.map{ |f| f.solr_field }
+    end
   end
 end

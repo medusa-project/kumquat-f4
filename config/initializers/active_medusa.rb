@@ -28,8 +28,7 @@ ActiveMedusa::Configuration.new do |config|
   config.solr_uri_field = :id
   config.solr_uuid_field = Solr::Fields::UUID
   config.solr_default_search_field = Solr::Fields::SEARCH_ALL
-  # Facet will be undefined if the database has not yet been seeded
-  if defined?(Facet) == 'constant' and Facet.class == Facet
-    config.solr_default_facetable_fields = Facet.all.map{ |f| f.solr_field }
-  end
+  # config.solr_default_facetable_fields is set in an after_initialize hook in
+  # application.rb; can't be done here as ActiveRecord hasn't been initialized
+  # yet
 end

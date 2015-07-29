@@ -14,14 +14,18 @@ class BytestreamsController < WebsiteController
       Net::HTTP.start(repo_url.host, repo_url.port) do |http|
         request = Net::HTTP::Get.new(repo_url)
         http.request(request) do |res|
-          response.content_type = bs.media_type if bs.media_type
-          response.header['Content-Disposition'] =
-              "attachment; filename=#{bs.filename || 'binary'}"
-          res.read_body do |chunk|
-            response.stream.write chunk
+          if res.kind_of?(Net::HTTPTemporaryRedirect)
+            redirect_to res.header['Location']
+          else
+            response.content_type = bs.media_type if bs.media_type
+            response.header['Content-Disposition'] =
+                "attachment; filename=#{bs.filename || 'binary'}"
+            res.read_body do |chunk|
+              response.stream.write chunk
+            end
           end
+          response.stream.close
         end
-        response.stream.close
       end
 
       # The following is simpler but may be less efficient due to open() not

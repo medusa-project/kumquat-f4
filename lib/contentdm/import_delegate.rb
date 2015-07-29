@@ -101,7 +101,7 @@ module Contentdm
           file.each_line do |line|
             parts = line.gsub(/\t+/, "\t").split("\t")
             col_alias = parts.first.strip
-            if col_alias[0] != '#'
+            if col_alias.length and col_alias[0] != '#'
               collection_folder_pathname = File.join(
                   File.expand_path(@source_path), col_alias)
               next unless File.directory?(collection_folder_pathname)

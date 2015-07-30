@@ -2,6 +2,23 @@ module Derivable
 
   extend ActiveSupport::Concern
 
+  ##
+  # A list of image media types for which we can presume to be able
+  # to generate derivatives. This will be a subset of
+  # TYPES_WITH_IMAGE_DERIVATIVES.
+  #
+  DERIVABLE_IMAGE_TYPES = %w(gif jp2 jpg png tif).map do |ext| # TODO: there are more than this
+    MIME::Types.of(ext).map{ |type| type.to_s }
+  end
+
+  ##
+  # A list of media types for which we can expect that image
+  # derivatives will be available. This will be a superset of
+  # DERIVABLE_IMAGE_TYPES.
+  #
+  TYPES_WITH_IMAGE_DERIVATIVES = DERIVABLE_IMAGE_TYPES +
+      %w(video/mpeg video/quicktime video/mp4) # TODO: there are more than this
+
   IMAGE_DERIVATIVES = [ # sizes are scale-to-fit
       {
           extension: 'jpg',

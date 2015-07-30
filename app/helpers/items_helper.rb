@@ -170,7 +170,7 @@ module ItemsHelper
         '<div>'
       html += link_to(link_target, class: 'kq-thumbnail-link') do
         if entity.class.to_s == 'Repository::Collection' # TODO: why does entity.kind_of?(Repository::Collection) return false?
-          media_types = "(#{Repository::Bytestream::types_with_image_derivatives.join(' OR ')})"
+          media_types = "(#{Derivable::TYPES_WITH_IMAGE_DERIVATIVES.join(' OR ')})"
           item = Repository::Item.
               where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
               filter(Solr::Fields::COLLECTION => entity.repository_url).

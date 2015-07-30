@@ -140,7 +140,7 @@ module Admin
           @pages = @item.parent_item ? @item.parent_item.items : @item.items
         end
         format.jsonld { render text: @item.admin_rdf_graph(uri).to_jsonld }
-        format.rdf { render text: @item.admin_rdf_graph(uri).to_rdfxml }
+        format.rdfxml { render text: @item.admin_rdf_graph(uri).to_rdfxml }
         format.ttl { render text: @item.admin_rdf_graph(uri).to_ttl }
       end
     end

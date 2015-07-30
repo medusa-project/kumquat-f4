@@ -55,6 +55,9 @@ var Kumquat = {
     SearchBar: function() {
 
         var ELEMENT = $('#kq-search-accordion');
+        if (!ELEMENT.length) {
+            return false;
+        }
         var SPEED = 200;
         var computed_height = ELEMENT.height();
         var vertical_padding = parseFloat(ELEMENT.css('padding-top').replace(/px/, '')) +
@@ -65,11 +68,9 @@ var Kumquat = {
         construct();
 
         function construct() {
-            if (ELEMENT.length) {
-                ELEMENT.css('margin-top',
-                    '-' + $('#kq-main-nav').css('margin-bottom'));
-                ELEMENT.css('height', 0);
-            }
+            ELEMENT.css('margin-top',
+                '-' + $('#kq-main-nav').css('margin-bottom'));
+            ELEMENT.css('height', 0);
         }
 
         this.hide = function() {

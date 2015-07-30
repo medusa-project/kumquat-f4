@@ -471,7 +471,7 @@ module ItemsHelper
   # @option options [MetadataProfile] :metadata_profile
   # @return [String]
   #
-  def triples_to_dl(describable, options = {})
+  def triples_as_dl(describable, options = {})
     exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
         [Kumquat::NAMESPACE_URI])
     profile = options[:metadata_profile] ||

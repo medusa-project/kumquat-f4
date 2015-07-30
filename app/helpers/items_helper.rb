@@ -462,101 +462,67 @@ module ItemsHelper
 
   ##
   # Returns an HTML definition list of all triples associated with the given
-  # `Describable`, excluding any marked as not visible in the given
-  # `MetadataProfile`.
+  # `Describable`, according to the settings of the given `MetadataProfile`.
   #
   # @param describable [Describable]
   # @param options [Hash] Options hash.
   # @option options [Boolean] :full_label_info
-  # @option options [MetadataProfile] :metadata_profile
-  # @return [String]
+  # @option options [MetadataProfile] :metadata_profile If nil, the default
+  #   profile will be used.
+  # @return [String] HTML definition list element
   #
   def triples_as_dl(describable, options = {})
-    exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
-        [Kumquat::NAMESPACE_URI])
-    profile = options[:metadata_profile] ||
-        MetadataProfile.find_by_default(true)
-    hidden_profile_predicates = profile.triples.where(visible: false).
-        map{ |f| f.predicate }
+    triples = processed_triples(describable, options)
 
-    # process triples into an array of hashes, collapsing identical subjects
-    triples = []
-    describable.rdf_graph.each_statement do |statement|
-      next if hidden_profile_predicates.include?(statement.predicate.to_s)
-      # assemble a label for the predicate
+    html = '<dl class="kq-triples">'
+    triples.each do |triple|
+      next unless triple[:objects].select{ |o| !o.strip.blank? }.any?
+      html += "<dt>#{triple[:label]}</dt>"
+      html += triple[:objects].map{ |object| "<dd>#{object}</dd>" }.join
+    end
+    html += '</dl>'
+    raw(html)
+  end
+
+  ##
+  # Returns an HTML table of all triples associated with the given
+  # `Describable`, according to the settings of the given `MetadataProfile`.
+  #
+  # @param describable [Describable]
+  # @param options [Hash] Options hash.
+  # @option options [Boolean] :full_label_info
+  # @option options [MetadataProfile] :metadata_profile If nil, the default
+  #   profile will be used.
+  # @return [String] HTML table element
+  #
+  def triples_as_table(describable, options = {})
+    triples = processed_triples(describable, options)
+
+    html = '<table class="table table-condensed kq-triples">'
+    triples.each do |triple|
+      next unless triple[:objects].select{ |o| !o.strip.blank? }.any?
+      html += '<tr>'
       if options[:full_label_info]
-        prefix = statement.predicate.prefix
-        if prefix
-          label = "<span class=\"kq-predicate-uri\">#{prefix}:</span>"\
-          "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.term}</span>"
-        else
-          label = "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.to_s}</span>"
-        end
-        readable = human_label_for_uri(describable, statement.predicate.to_s)
-        label = "#{readable} | #{label}" if readable
+        html += "<td>#{triple[:label]}</td>"
       else
-        label = human_label_for_uri(describable, statement.predicate.to_s)
-        unless label # if there is no label, try to use "prefix:term" format
-          prefix = statement.predicate.prefix
-          if prefix
-            label = "<span class=\"kq-predicate-uri\">#{prefix}:</span>"\
-          "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.term}</span>"
-          end
-        end
-        label = "<span class=\"kq-predicate-uri-lpc\">#{statement.predicate.to_s}</span>" unless label
+        html += "<td>#{triple[:label] || triple[:prefixed_predicate] ||
+            triple[:predicate]}</td>"
       end
-      triples << {
-          predicate: statement.predicate.to_s, label: label, objects: []
-      }
-    end
-    describable.rdf_graph.each_statement do |statement|
-      # Exclude certain predicates & objects from display
-      next if exclude_uris.select{ |p| statement.predicate.to_s.start_with?(p) or
-          statement.object.to_s.start_with?(p) }.any?
-      triple = triples.
-          select{ |t2| t2[:predicate] == statement.predicate.to_s }.first
-      triple[:objects] << statement.object.to_s if triple
-    end
-
-    # sort the triples array according to the profile, putting undefined
-    # triples last
-    triples_in_order = profile.triples.order(:index)
-    triples.sort! do |a, b|
-      retval = 1
-      t1 = triples_in_order.find_by_predicate(a[:predicate])
-      if t1
-        t2 = triples_in_order.find_by_predicate(b[:predicate])
-        if t2
-          retval = t1.index <=> t2.index
-        else
-          retval = 1
-        end
+      if options[:full_label_info]
+        html += "<td>#{triple[:prefixed_predicate] || triple[:predicate]}</td>"
       end
-      retval
-    end
-
-    dl = '<dl class="kq-triples">'
-    triples.each do |struct|
-      next unless struct[:objects].select{ |o| !o.strip.blank? }.any?
-      dl += "<dt>#{struct[:label]}</dt>"
-      struct[:objects].each do |object|
-        if struct[:predicate].end_with?('/subject')
-          components = object.strip.split(';')
-          if components.length > 1
-            value = '<ul>'
-            value += components.map{ |c| "<li>#{c.strip}</li>" }.join
-            value += '</ul>'
-          else
-            value = auto_link(object.strip)
-          end
-        else
-          value = auto_link(object.strip)
-        end
-        dl += "<dd>#{value}</dd>"
+      html += '<td>'
+      if triple[:objects].length > 1
+        html += '<ul>'
+        html += triple[:objects].map { |object| "<li>#{object}</li>" }.join
+        html += '</ul>'
+      elsif triple[:objects].length == 1
+        html += auto_link(triple[:objects].first.strip)
       end
+      html += '</td></tr>'
     end
-    dl += '</dl>'
-    raw(dl)
+    html += '</table>'
+    raw(html)
   end
 
   ##
@@ -663,6 +629,63 @@ module ItemsHelper
     triple = collection.db_counterpart.metadata_profile.triples.
         where(predicate: uri).first
     triple ? triple.label : nil
+  end
+
+  ##
+  # @return [Array] Array of hashes with :label, :prefixed_predicate, and
+  #   :objects keys.
+  #
+  def processed_triples(describable, options)
+    exclude_uris = (Repository::Fedora::MANAGED_PREDICATES +
+        [Kumquat::NAMESPACE_URI])
+    profile = options[:metadata_profile] ||
+        MetadataProfile.find_by_default(true)
+    hidden_profile_predicates = profile.triples.where(visible: false).
+        map{ |f| f.predicate }
+
+    # process triples into an array of hashes, collapsing identical subjects
+    triples = []
+    describable.rdf_graph.each_statement do |statement|
+      next if hidden_profile_predicates.include?(statement.predicate.to_s)
+      triple = {
+          predicate: statement.predicate.to_s,
+          objects: []
+      }
+      # assemble a label for the predicate
+      prefix = statement.predicate.prefix
+      if prefix
+        triple[:prefixed_predicate] = "#{prefix}:#{statement.predicate.term}"
+      end
+      triple[:label] = human_label_for_uri(describable, statement.predicate.to_s)
+      triples << triple
+    end
+    describable.rdf_graph.each_statement do |statement|
+      # Exclude certain predicates & objects from display
+      next if exclude_uris.select{ |p| statement.predicate.to_s.start_with?(p) or
+          statement.object.to_s.start_with?(p) }.any?
+      triple = triples.
+          select{ |t2| t2[:predicate] == statement.predicate.to_s }.first
+      triple[:objects] << statement.object.to_s if triple and
+          statement.object.to_s.present?
+    end
+
+    # sort the triples array according to the profile, putting undefined
+    # triples last
+    triples_in_order = profile.triples.order(:index)
+    triples.sort! do |a, b|
+      retval = 1
+      t1 = triples_in_order.find_by_predicate(a[:predicate])
+      if t1
+        t2 = triples_in_order.find_by_predicate(b[:predicate])
+        if t2
+          retval = t1.index <=> t2.index
+        else
+          retval = 1
+        end
+      end
+      retval
+    end
+    triples
   end
 
 end

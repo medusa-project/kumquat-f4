@@ -2,8 +2,8 @@ module Repository
 
   class Bytestream < ActiveMedusa::Binary
 
+    include ActiveMedusa::Indexable
     include Derivable
-    include Indexable
 
     class Shape
       ORIGINAL = Kumquat::NAMESPACE_URI + Kumquat::RDFObjects::ORIGINAL_SHAPE
@@ -119,23 +119,41 @@ module Repository
       end
     end
 
-    def to_param
-      self.uuid
+    ##
+    # Overrides ActiveMedusa::Indexable.solr_document
+    #
+    def solr_document
+      doc = super
+      doc[Solr::Fields::BYTE_SIZE] = self.byte_size
+      doc[Solr::Fields::CREATED_AT] =
+          self.rdf_graph.any_object('http://fedora.info/definitions/v4/repository#created').to_s
+      doc[Solr::Fields::UPDATED_AT] =
+          self.rdf_graph.any_object('http://fedora.info/definitions/v4/repository#lastModified').to_s
+
+      # add arbitrary triples from the instance's rdf_graph, excluding
+      # property/association/repo-managed triples
+      exclude_predicates = Repository::Fedora::MANAGED_PREDICATES
+      exclude_predicates += self.class.properties.
+          select{ |p| p.class == self.class }.map(&:rdf_predicate)
+      exclude_predicates += self.class.associations.
+          select{ |a| a.class == self.class and
+          a.type == Association::Type::BELONGS_TO }.map(&:rdf_predicate)
+      exclude_predicates += ['http://fedora.info/definitions/v4/repository#created',
+                             'http://fedora.info/definitions/v4/repository#lastModified']
+
+      self.rdf_graph.each_statement do |st|
+        pred = st.predicate.to_s
+        obj = st.object.to_s
+        unless exclude_predicates.include?(pred)
+          doc[Solr::Solr::field_name_for_predicate(pred)] = obj
+        end
+      end
+
+      doc
     end
 
-    def reindex
-      kq_predicates = Kumquat::RDFPredicates
-
-      doc = base_solr_document
-      doc[Solr::Fields::ITEM] =
-          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_ITEM)
-      doc[Solr::Fields::BYTE_SIZE] = self.byte_size
-      doc[Solr::Fields::HEIGHT] = self.height
-      doc[Solr::Fields::MEDIA_TYPE] = self.media_type
-      doc[Solr::Fields::BYTESTREAM_SHAPE] = self.shape
-      doc[Solr::Fields::BYTESTREAM_TYPE] = self.type
-      doc[Solr::Fields::WIDTH] = self.width
-      Solr::Solr.client.add(doc)
+    def to_param
+      self.uuid
     end
 
     private
@@ -146,8 +164,8 @@ module Repository
     end
 
     ##
-    # @param pathname string
-    # @return void
+    # @param pathname [String]
+    # @return [void]
     #
     def read_dimensions_from_pathname(pathname)
       glue = '|'

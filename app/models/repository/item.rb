@@ -2,10 +2,10 @@ module Repository
 
   class Item < ActiveMedusa::Container
 
+    include ActiveMedusa::Indexable
     include BytestreamOwner
     include Describable
     include ImageServing
-    include Indexable
 
     WEB_ID_LENGTH = 5
 
@@ -58,7 +58,7 @@ module Repository
     before_create { self.web_id = generate_web_id }
 
     def initialize(params = {})
-      @published = true
+      self.published = true
       super
     end
 
@@ -67,7 +67,7 @@ module Repository
     end
 
     ##
-    # @return boolean True if any text was extracted; false if not
+    # @return [Boolean] True if any text was extracted; false if not
     #
     def extract_and_update_full_text
       if self.master_bytestream and self.master_bytestream.repository_url
@@ -75,8 +75,7 @@ module Repository
           yomu = Yomu.new(self.master_bytestream.repository_url)
           self.full_text = yomu.text.force_encoding('UTF-8')
         rescue Errno::EPIPE
-          # nothing we can do
-          return false
+          return false # nothing we can do
         else
           return self.full_text.present?
         end
@@ -84,37 +83,48 @@ module Repository
       false
     end
 
-    def to_s
-      self.title || self.web_id
+    ##
+    # Overrides ActiveMedusa::Indexable.solr_document
+    #
+    def solr_document
+      kq_predicates = Kumquat::RDFPredicates
+      doc = super
+      doc[Solr::Fields::SINGLE_TITLE] = self.title
+      date = self.rdf_graph.any_object(kq_predicates::DATE).to_s.strip
+      doc[Solr::Fields::DATE] = normalized_date(date)
+      doc[Solr::Fields::CREATED_AT] =
+          self.rdf_graph.any_object('http://fedora.info/definitions/v4/repository#created').to_s
+      doc[Solr::Fields::UPDATED_AT] =
+          self.rdf_graph.any_object('http://fedora.info/definitions/v4/repository#lastModified').to_s
+
+      # add arbitrary triples from the instance's rdf_graph, excluding
+      # property/association/repo-managed triples
+      exclude_predicates = Repository::Fedora::MANAGED_PREDICATES
+      exclude_predicates += self.class.properties.
+          select{ |p| p.class == self.class }.map(&:rdf_predicate)
+      exclude_predicates += self.class.associations.
+          select{ |a| a.class == self.class and
+          a.type == Association::Type::BELONGS_TO }.map(&:rdf_predicate)
+      exclude_predicates += ['http://fedora.info/definitions/v4/repository#created',
+                             'http://fedora.info/definitions/v4/repository#lastModified']
+
+      self.rdf_graph.each_statement do |st|
+        pred = st.predicate.to_s
+        obj = st.object.to_s
+        unless exclude_predicates.include?(pred)
+          doc[Solr::Solr::field_name_for_predicate(pred)] = obj
+        end
+      end
+
+      doc
     end
 
     def to_param
       self.web_id
     end
 
-    def reindex
-      kq_predicates = Kumquat::RDFPredicates
-
-      doc = base_solr_document
-      doc[Solr::Fields::COLLECTION] =
-          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_COLLECTION)
-      doc[Solr::Fields::FULL_TEXT] =
-          self.rdf_graph.any_object(kq_predicates::FULL_TEXT)
-      doc[Solr::Fields::ITEM] =
-          self.rdf_graph.any_object(kq_predicates::IS_MEMBER_OF_ITEM)
-      doc[Solr::Fields::MEDIA_TYPE] = self.media_type
-      doc[Solr::Fields::PAGE_INDEX] =
-          self.rdf_graph.any_object(kq_predicates::PAGE_INDEX)
-      doc[Solr::Fields::PUBLISHED] =
-          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
-      doc[Solr::Fields::SINGLE_TITLE] = self.title
-      doc[Solr::Fields::WEB_ID] =
-          self.rdf_graph.any_object(kq_predicates::WEB_ID)
-
-      date = self.rdf_graph.any_object(kq_predicates::DATE).to_s.strip
-      doc[Solr::Fields::DATE] = normalized_date(date)
-
-      Solr::Solr.client.add(doc)
+    def to_s
+      self.title || self.web_id
     end
 
     private

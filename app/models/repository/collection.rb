@@ -2,8 +2,8 @@ module Repository
 
   class Collection < ActiveMedusa::Container
 
+    include ActiveMedusa::Indexable
     include Describable
-    include Indexable
     include Introspection
 
     entity_class_uri 'http://pcdm.org/models#Collection'
@@ -36,7 +36,7 @@ module Repository
     def self.delete_with_key(key, transaction_url = nil)
       root_container_url = Kumquat::Application.kumquat_config[:fedora_url]
       col_to_delete = Repository::Collection.new(
-          repository_url: "#{root_container_url.chomp('/')}/#{key}",
+          repository_url: "#{root_container_url.chomp('/')}/#{key}", # TODO: this is not reliable
           key: key,
           transaction_url: transaction_url)
       col_to_delete.delete(also_tombstone: true)
@@ -69,17 +69,37 @@ module Repository
       @num_items
     end
 
-    def reindex
-      kq_predicates = Kumquat::RDFPredicates
-
-      doc = base_solr_document
-      doc[Solr::Fields::COLLECTION_KEY] =
-          self.rdf_graph.any_object(kq_predicates::COLLECTION_KEY)
-      doc[Solr::Fields::PUBLISHED] =
-          self.rdf_graph.any_object(kq_predicates::PUBLISHED)
+    ##
+    # Overrides ActiveMedusa::Indexable.solr_document
+    #
+    def solr_document
+      doc = super
       doc[Solr::Fields::SINGLE_TITLE] = self.title
+      doc[Solr::Fields::CREATED_AT] =
+          self.rdf_graph.any_object('http://fedora.info/definitions/v4/repository#created').to_s
+      doc[Solr::Fields::UPDATED_AT] =
+          self.rdf_graph.any_object('http://fedora.info/definitions/v4/repository#lastModified').to_s
 
-      Solr::Solr.client.add(doc)
+      # add arbitrary triples from the instance's rdf_graph, excluding
+      # property/association/repo-managed triples
+      exclude_predicates = Repository::Fedora::MANAGED_PREDICATES
+      exclude_predicates += self.class.properties.
+          select{ |p| p.class == self.class }.map(&:rdf_predicate)
+      exclude_predicates += self.class.associations.
+          select{ |a| a.class == self.class and
+          a.type == Association::Type::BELONGS_TO }.map(&:rdf_predicate)
+      exclude_predicates += ['http://fedora.info/definitions/v4/repository#created',
+                             'http://fedora.info/definitions/v4/repository#lastModified']
+
+      self.rdf_graph.each_statement do |st|
+        pred = st.predicate.to_s
+        obj = st.object.to_s
+        unless exclude_predicates.include?(pred)
+          doc[Solr::Solr::field_name_for_predicate(pred)] = obj
+        end
+      end
+
+      doc
     end
 
     def to_param

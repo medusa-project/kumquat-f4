@@ -1,9 +1,9 @@
 GIT
   remote: git://github.com/medusa-project/active-medusa.git
-  revision: dcc468faffbb771da428cd7cc28c5abc2db457d5
-  tag: 1.0.0
+  revision: 216a58370cdac6e8a70e6c128cb13be56d211e14
+  tag: 1.1.0
   specs:
-    active-medusa (1.0.0)
+    active-medusa (1.1.0)
       activemodel
       activesupport
       globalid
@@ -256,7 +256,6 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootstrap-sass (~> 3.3.4.1)
   capistrano-bundler
-  capistrano-passenger
   capistrano-rails
   capistrano-rvm
   coffee-rails (~> 4.1.0)
@@ -286,3 +285,6 @@ DEPENDENCIES
   therubyracer
   uglifier (>= 1.3.0)
   yomu
+
+BUNDLED WITH
+   1.10.6

@@ -21,6 +21,7 @@ module Solr
     SEARCH_ALL = :kq_searchall_txt
     SINGLE_TITLE = :kq_meta_title_s
     UPDATED_AT = :kq_sys_updated_at_dtsi
+    URI = :id
     UUID = :kq_sys_uuid_s
     WEB_ID = :kq_sys_web_id_s
     WIDTH = :kq_sys_width_i

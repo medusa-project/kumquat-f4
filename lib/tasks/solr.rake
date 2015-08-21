@@ -5,6 +5,11 @@ namespace :solr do
     Solr::Solr.new.clear
   end
 
+  desc 'Commit the Solr index'
+  task :commit => :environment do
+    Solr::Solr.client.commit
+  end
+
   desc 'Reindex the repository in Solr'
   task :reindex => :environment do
     Repository::Fedora.new.reindex

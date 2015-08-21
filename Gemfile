@@ -42,7 +42,6 @@ gem 'yomu' # text extraction from PDF, .docx, etc.
 group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
-  gem 'capistrano-passenger'
   gem 'capistrano-rvm'
   gem 'puma' # puma supports chunked responses
 end

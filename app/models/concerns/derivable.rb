@@ -95,7 +95,7 @@ module Derivable
         # create a new Bytestream using the temp file as a source
         Repository::Bytestream.create!(
             upload_pathname: upload_pathname,
-            parent_url: self.item.repository_url,
+            parent_url: self.item.id,
             item: self.item,
             shape: Repository::Bytestream::Shape::ORIGINAL,
             type: Repository::Bytestream::Type::DERIVATIVE,
@@ -119,7 +119,7 @@ module Derivable
           # create a new Bytestream using the temp file as a source
           Repository::Bytestream.create!(
               upload_pathname: upload_pathname,
-              parent_url: self.item.repository_url,
+              parent_url: self.item.id,
               item: self.item,
               shape: Repository::Bytestream::Shape::ORIGINAL,
               type: Repository::Bytestream::Type::DERIVATIVE,
@@ -176,7 +176,7 @@ module Derivable
         Repository::Bytestream.create!(
             upload_pathname: upload_pathname,
             media_type: profile[:media_type],
-            parent_url: self.item.repository_url,
+            parent_url: self.item.id,
             item: self.item,
             shape: Repository::Bytestream::Shape::SQUARE,
             type: Repository::Bytestream::Type::DERIVATIVE,
@@ -204,7 +204,7 @@ module Derivable
           Repository::Bytestream.create!(
               upload_pathname: upload_pathname,
               media_type: profile[:media_type],
-              parent_url: self.item.repository_url,
+              parent_url: self.item.id,
               item: self.item,
               shape: Repository::Bytestream::Shape::SQUARE,
               type: Repository::Bytestream::Type::DERIVATIVE,

@@ -64,7 +64,7 @@ module Repository
 
     def num_items
       @num_items = Repository::Item.
-          where(Solr::Fields::COLLECTION => self.repository_url).
+          where(Solr::Fields::COLLECTION => self.id).
           where("-#{Solr::Fields::ITEM}:[* TO *]").count unless @num_items
       @num_items
     end

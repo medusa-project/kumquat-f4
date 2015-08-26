@@ -38,8 +38,8 @@
               <li>
                 <div class="checkbox">
                   <label>
-                    <%= check_box_tag('collections[]', collection.repository_url,
-                                      (params[:collections].present? and params[:collections].include?(collection.repository_url))) %>
+                    <%= check_box_tag('collections[]', collection.id,
+                                      (params[:collections].present? and params[:collections].include?(collection.id))) %>
                     <%= collection.title %>
                   </label>
                 </div>

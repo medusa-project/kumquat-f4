@@ -14,7 +14,7 @@ class CollectionsController < WebsiteController
   def show
     begin
       @collection = Repository::Collection.find_by_key(params[:key])
-    rescue HTTPClient::BadResponseError => e
+    rescue ActiveMedusa::RepositoryError => e
       render text: '410 Gone', status: 410 if e.res.code == 410
       @skip_after_actions = true
       return

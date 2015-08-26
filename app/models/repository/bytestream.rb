@@ -153,7 +153,7 @@ module Repository
     end
 
     def to_param
-      self.uuid
+      self.id
     end
 
     private

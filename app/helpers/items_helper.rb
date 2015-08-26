@@ -173,7 +173,7 @@ module ItemsHelper
           media_types = "(#{Derivable::TYPES_WITH_IMAGE_DERIVATIVES.join(' OR ')})"
           item = Repository::Item.
               where("{!join from=#{Solr::Fields::ITEM} to=#{Solr::Fields::ID}}#{Solr::Fields::MEDIA_TYPE}:(#{media_types})").
-              filter(Solr::Fields::COLLECTION => entity.repository_url).
+              filter(Solr::Fields::COLLECTION => entity.id).
               omit_entity_query(true).
               facet(false).order("random_#{SecureRandom.hex}").limit(1).first
           item ||= Repository::Collection

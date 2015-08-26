@@ -96,7 +96,7 @@
     <!-- Repository pane -->
     <div role="tabpanel" class="tab-pane" id="kq-repository">
       <h3>Fedora URL</h3>
-      <p><%= link_to @item.repository_url, @item.repository_url %></p>
+      <p><%= link_to @item.id, @item.id %></p>
       <h3>Fedora RDF (Turtle)</h3>
       <pre><%= @item.rdf_graph.dump(:ttl) %></pre>
     </div>

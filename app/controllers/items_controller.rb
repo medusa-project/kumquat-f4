@@ -33,7 +33,7 @@ class ItemsController < WebsiteController
     if params[:repository_collection_key]
       @collection = Repository::Collection.find_by_key(params[:repository_collection_key])
       raise ActiveRecord::RecordNotFound, 'Collection not found' unless @collection
-      @items = @items.where(Solr::Fields::COLLECTION => @collection.repository_url)
+      @items = @items.where(Solr::Fields::COLLECTION => @collection.id)
     end
     # if there is no user-entered query, sort by title. Otherwise, use the
     # default sort, which is by relevance
@@ -96,7 +96,7 @@ class ItemsController < WebsiteController
   def show
     begin
       @item = Repository::Item.find_by_web_id(params[:web_id])
-    rescue HTTPClient::BadResponseError => e
+    rescue ActiveMedusa::RepositoryError => e
       render text: '410 Gone', status: 410 if e.res.code == 410
       @skip_after_actions = true
       return

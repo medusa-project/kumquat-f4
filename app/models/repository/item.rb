@@ -63,16 +63,16 @@ module Repository
     end
 
     def ==(other)
-      other.kind_of?(self.class) and self.uuid == other.uuid
+      other.kind_of?(self.class) and self.id == other.id
     end
 
     ##
     # @return [Boolean] True if any text was extracted; false if not
     #
     def extract_and_update_full_text
-      if self.master_bytestream and self.master_bytestream.repository_url
+      if self.master_bytestream and self.master_bytestream.id
         begin
-          yomu = Yomu.new(self.master_bytestream.repository_url)
+          yomu = Yomu.new(self.master_bytestream.id)
           self.full_text = yomu.text.force_encoding('UTF-8')
         rescue Errno::EPIPE
           return false # nothing we can do

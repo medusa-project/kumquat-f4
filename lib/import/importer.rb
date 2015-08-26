@@ -74,7 +74,7 @@ module Import
           # create the item
           item = Repository::Item.new(
               collection: collection,
-              parent_url: parent_url || collection.repository_url,
+              parent_url: parent_url || collection.id,
               parent_item: parent_item,
               full_text: @import_delegate.full_text_of_item_at_index(index),
               requested_slug: @import_delegate.slug_of_item_at_index(index),
@@ -88,17 +88,17 @@ module Import
             item.extract_and_update_full_text
             item.save!
           end
-          Rails.logger.debug "Created #{item.repository_url} (#{index + 1}/#{item_count})"
+          Rails.logger.debug "Created #{item.id} (#{index + 1}/#{item_count})"
 
           import_id = @import_delegate.import_id_of_item_at_index(index)
-          @import_id_uri_map[import_id] = item.repository_url
+          @import_id_uri_map[import_id] = item.id
 
           # append its master bytestream
           pathname = @import_delegate.master_pathname_of_item_at_index(index)
           if pathname
             if File.exists?(pathname)
               bs = Repository::Bytestream.new(
-                  parent_url: item.repository_url,
+                  parent_url: item.id,
                   item: item,
                   type: Repository::Bytestream::Type::MASTER,
                   shape: Repository::Bytestream::Shape::ORIGINAL,
@@ -114,7 +114,7 @@ module Import
             url = @import_delegate.master_url_of_item_at_index(index)
             if url
               bs = Repository::Bytestream.new(
-                  parent_url: item.repository_url,
+                  parent_url: item.id,
                   item: item,
                   type: Repository::Bytestream::Type::MASTER,
                   shape: Repository::Bytestream::Shape::ORIGINAL,

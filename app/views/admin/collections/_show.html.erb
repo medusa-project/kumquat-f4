@@ -34,7 +34,7 @@
 
 <h1><%= @collection.title %>
   <small><%= link_to(pluralize(@collection.num_items, 'item'),
-                     admin_repository_items_path('collections[]' => @collection.repository_url)) %></small>
+                     admin_repository_items_path('collections[]' => @collection.id)) %></small>
   <% if @collection.subtitle %>
     <br><small><%= @collection.subtitle %></small>
   <% end %>

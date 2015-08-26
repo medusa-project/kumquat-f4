@@ -82,5 +82,5 @@
 </div>
 
 <% if Rails.env.development? %>
-  <p>DEVELOPMENT: repository URL: <%= link_to @item.repository_url, @item.repository_url %></p>
+  <p>DEVELOPMENT: repository URL: <%= link_to @item.id, @item.id %></p>
 <% end %>

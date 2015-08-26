@@ -15,7 +15,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 #gem 'active-medusa', path: '~/Projects/active_medusa'
-gem 'active-medusa', github: 'medusa-project/active-medusa', tag: '1.1.0'
+gem 'active-medusa', github: 'medusa-project/active-medusa', tag: '2.0.0'
 gem 'bcrypt', '~> 3.1.7' # Use ActiveModel has_secure_password
 gem 'bootstrap-sass', '~> 3.3.4.1'
 gem 'delayed_job_active_record'

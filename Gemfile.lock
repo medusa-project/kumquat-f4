@@ -1,9 +1,9 @@
 GIT
   remote: git://github.com/medusa-project/active-medusa.git
-  revision: 216a58370cdac6e8a70e6c128cb13be56d211e14
-  tag: 1.1.0
+  revision: 34babb1eb3f31ae4c3bbca8f829a3d661e2fa8ae
+  tag: 2.0.0
   specs:
-    active-medusa (1.1.0)
+    active-medusa (2.0.0)
       activemodel
       activesupport
       globalid

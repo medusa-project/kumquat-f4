@@ -48,7 +48,7 @@ module Repository
                  Kumquat::RDFPredicates::WIDTH,
              solr_field: Solr::Fields::WIDTH
 
-    before_save :assign_technical_info
+    before_create :assign_technical_info
     before_create :update_owning_item
 
     ##

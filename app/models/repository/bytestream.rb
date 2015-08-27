@@ -49,6 +49,7 @@ module Repository
              solr_field: Solr::Fields::WIDTH
 
     before_save :assign_technical_info
+    before_create :update_owning_item
 
     ##
     # Returns the PREMIS byte size, populated by the repository. Not available
@@ -174,6 +175,16 @@ module Repository
       if parts.length == 2
         self.width = parts[0].strip.to_i
         self.height = parts[1].strip.to_i
+      end
+    end
+
+    ##
+    # If a master bytestream with a media type, assign the media type to the
+    # owning item and save it.
+    #
+    def update_owning_item
+      if self.type == Type::MASTER and self.item.media_type != self.media_type
+        self.item.update(media_type: self.media_type)
       end
     end
 

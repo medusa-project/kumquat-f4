@@ -73,8 +73,6 @@ module Import
               web_id: @import_delegate.web_id_of_item_at_index(index),
               rdf_graph: @import_delegate.metadata_of_item_at_index(index),
               transaction_url: tx_url)
-          media_type = @import_delegate.media_type_of_item_at_index(index)
-          item.media_type = media_type if media_type.present?
           item.save!
           if item.full_text.blank?
             item.extract_and_update_full_text
@@ -96,6 +94,7 @@ module Import
                   shape: Repository::Bytestream::Shape::ORIGINAL,
                   upload_pathname: pathname,
                   transaction_url: tx_url)
+              media_type = @import_delegate.media_type_of_item_at_index(index)
               bs.media_type = media_type unless media_type.blank?
               bs.save!
               Rails.logger.debug "Created master bytestream"

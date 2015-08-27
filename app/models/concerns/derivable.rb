@@ -52,7 +52,7 @@ module Derivable
   ]
 
   included do
-    before_create :generate_derivatives
+    after_create :generate_derivatives
   end
 
   ##

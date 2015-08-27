@@ -71,6 +71,10 @@ var Kumquat = {
             ELEMENT.css('margin-top',
                 '-' + $('#kq-main-nav').css('margin-bottom'));
             ELEMENT.css('height', 0);
+
+            ELEMENT.find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                ELEMENT.animate({ 'height': ELEMENT.find('div').height() + 50 });
+            });
         }
 
         this.hide = function() {

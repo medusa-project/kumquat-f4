@@ -12,30 +12,22 @@ module Import
     end
 
     ##
-    # @param options [Hash] with available keys: `:commit` [Boolean],
-    # `:transactional` [Boolean]
+    # @param options [Hash] with available keys: `:transactional` [Boolean]
     #
     def import(options = {})
       if options[:transactional]
         ActiveMedusa::Base.transaction do |tx_url|
-          do_import(tx_url, options[:commit])
+          do_import(tx_url)
         end
       else
         do_import
       end
-      puts 'Import complete.'
-      unless options[:commit]
-        solr_url = Kumquat::Application.kumquat_config[:solr_url].chomp('/')
-        solr_core = Kumquat::Application.kumquat_config[:solr_core]
-        puts "Remember to commit the Solr index once it has ingested "\
-        "everything, e.g.: "\
-        "curl #{solr_url}/#{solr_core}/update?commit=true"
-      end
+      Rails.logger.info 'Import complete.'
     end
 
     private
 
-    def do_import(tx_url = nil, commit = true)
+    def do_import(tx_url = nil)
       item_count = @import_delegate.total_number_of_items.to_i
       return if item_count < 1 # nothing to do
 
@@ -134,7 +126,6 @@ module Import
         task.save!
         raise e
       else
-        Solr::Solr.client.commit if commit
         task.status = Task::Status::SUCCEEDED
         task.save!
       end

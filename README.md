@@ -7,7 +7,7 @@ Kumquat has several dependencies that need to be installed first:
 * PostgreSQL
 * Fedora (see ActiveMedusa readme for details)
 * Solr 5.2+
-* Loris
+* IIIF Image API 2.0-compliant image server
 
 These will be covered in sequence.
 
@@ -32,96 +32,18 @@ the output of `$ identify -list format`.
 ### Fedora
 
 [https://wiki.duraspace.org/display/FEDORA4x/Deploying+Fedora+4+Complete+Guide]
+(https://wiki.duraspace.org/display/FEDORA4x/Deploying+Fedora+4+Complete+Guide])
 
 ### Solr
 
 Download and extract Solr. Create a core for Kumquat by copying
 `config/solr/kumquat` into `solr-5.x.x/server/solr`.
 
-### Loris
+### IIIF Image API 2.0 image server
 
-The following instructions will set up Loris using the version of Apache
-included with OS X. There is also an alternative option using Docker which is
-not covered here; see the
-[https://github.com/pulibrary/loris/blob/development/docker/README.md](Loris
-website).
-
-#### Create a user and group
-
-`$ sudo dscl . create /Users/loris`
-
-`$ sudo dscl . create /Users/loris UserShell /bin/bash`
-
-`$ sudo dscl . create /Users/loris RealName "Loris User"`
-
-`$ sudo dscl . create /Users/loris UniqueID 300`
-
-`$ sudo dscl . create /Users/loris PrimaryGroupID 300`
-
-`$ sudo dscl . create /Groups/loris gid 300`
-
-`$ sudo dscl . create /Groups/loris passwd "*"`
-
-`$ sudo dscl . create /Groups/loris GroupMembership loris`
-
-#### Install mod_wsgi
-
-`$ git clone https://github.com/GrahamDumpleton/mod_wsgi.git`
-
-`$ cd mod_wsgi`
-
-`$ ./configure`
-
-`$ make`
-
-`$ sudo make install`
-
-#### Install Python dependencies
-
-`$ sudo pip install configobj Pillow werkzeug logging requests`
-
-#### Install Loris
-
-`$ git clone https://github.com/pulibrary/loris.git`
-
-`$ cd loris`
-
-`$ sudo ./setup.py install`
-
-`$ sudo mkdir /var/log/loris /var/cache/loris`
-
-`$ sudo touch /var/log/loris/loris.log`
-
-`$ sudo chown -R loris:loris /var/log/loris /var/cache/loris`
-
-`$ sudo cp etc/loris2.conf /etc/loris2`
-
-#### Configure Apache
-
-1. Add the following line to `/etc/apache2/httpd.conf`:
-
-   `LoadModule wsgi_module libexec/apache2/mod_wsgi.so`
-
-   and make sure the `headers_module` and `expires_module` lines are
-   uncommented.
-
-2. `$ cd /etc/apache2/other`
-
-   Create a file here called `loris.conf` containing:
-
-        ExpiresActive On
-        ExpiresDefault "access plus 5184000 seconds"
-
-        AllowEncodedSlashes On
-
-        WSGIDaemonProcess loris user=loris group=loris processes=10 threads=15 maximum-requests=10000
-        WSGIScriptAlias /loris /var/www/loris2/loris2.wsgi
-        WSGIProcessGroup loris
-
-        SetEnvIf Request_URI ^/loris loris
-        CustomLog ${APACHE_LOG_DIR}/loris-access.log combined env=loris
-
-3. Verify that the configuration is valid: `$ apachectl configtest`
+The easiest server to get running is [Cantaloupe]
+(https://github.com/medusa-project/cantaloupe). Use the `HttpResolver` and set
+`HttpResolver.uri_prefix` to the Fedora root container.
 
 ### Kumquat
 
@@ -175,11 +97,9 @@ Edit these as necessary.
 
 `$ solr-5.x.x/bin/solr start`
 
-### Loris
+### Cantaloupe
 
-`$ apachectl stop`
-
-`$ apachectl start`
+`$ java -Dcantaloupe.config=/path/to/cantaloupe.properties -jar Cantaloupe-x.x.x.jar`
 
 ### Delayed Job
 
@@ -192,11 +112,11 @@ the Control Panel.
 
 1. Install/update the Solr schema:
 
-  `$ bundle exec rake kumquat:update_solr_schema`
+  `$ bundle exec rake solr:update_schema`
 
-2. Import the sample collections:
+2. Import the demo collections:
 
-  `$ bundle exec rake kumquat:sample_import`
+  `$ bundle exec rake kumquat:import_demo`
 
 3. `$ rails server`
 

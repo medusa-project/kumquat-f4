@@ -29,6 +29,7 @@ gem 'mime-types'
 gem 'omniauth'
 gem 'omniauth-password', git: 'git://github.com/wearepistachio/omniauth-password.git'
 gem 'pg'
+gem 'puma' # puma supports chunked responses
 gem 'rails_autolink'
 gem 'rdf'
 gem 'rdf-turtle'
@@ -43,7 +44,6 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
-  gem 'puma' # puma supports chunked responses
 end
 
 group :development, :test do
@@ -53,8 +53,4 @@ group :development, :test do
   #gem 'web-console', '~> 2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   #gem 'spring'
-end
-
-group :production do
-  gem 'passenger'
 end

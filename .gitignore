@@ -16,6 +16,9 @@
 !/log/.keep
 /tmp
 
+.DS_Store
+.idea
+
 /config/database.yml
 /config/kumquat.yml
 
